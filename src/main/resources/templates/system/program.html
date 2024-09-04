@@ -1,0 +1,246 @@
+<!--
+=========================================================
+* Material Dashboard 2 - v3.0.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:replace="~{layout/configlayout :: configFragment}"></head>
+
+<body class="g-sidenav-show  bg-gray-200">
+<th:block th:replace="~{layout/sidelayout :: sideFragment}"></th:block>
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <th:block th:replace="~{layout/headerlayout :: headerFragment}"></th:block>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card my-4">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
+                            <h6 class="text-white text-capitalize ps-3">프로그램 등록</h6>
+                        </div>
+                    </div>
+<!--                    <div class="card-body">-->
+<!--                        <div style="width: 100%">-->
+<!--                            <a class="m-0 text-dark">총 <a class="m-0 text-dark" id="totCnt"></a>건</a>-->
+<!--                            <span class="justify-content-end float-right" style="padding-bottom: 5px">-->
+<!--                                <button type="button" class="btn btn-secondary btn-sm" id="btnAdd">추가</button>-->
+<!--                                <button type="button" class="btn btn-success btn-sm" id="btnSave">저장</button>-->
+<!--                                <button type="button" class="btn btn-danger btn-sm" id="btnDelete">삭제</button>-->
+<!--                            </span>-->
+<!--                        </div>-->
+<!--                        <div id="authManageResourceGrid"></div>-->
+<!--                    </div>-->
+                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin: 0px 10px">
+                                <a class="m-0 text-dark">총 <span class="m-0 text-dark" id="totCnt"></span>건</a>
+                                <span style="display: flex; gap: 5px; align-items: center;">
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnAdd">추가</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="btnSave">저장</button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="btnDelete">삭제</button>
+                                </span>
+                            </div>
+                            <div id="authManageResourceGrid" style="height: 600px"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    const apiUrl = '/api/system/resources';
+
+    let authManageResourceGrid;
+
+    $(document).ready(function() {
+        initEvent();
+        // initCommonCode();
+        initGrid();
+    });
+    const initEvent = () => {
+        $("#btnAdd").on('click', fn_appendRow);
+        $("#btnSave").on('click', fn_saveRow);
+        $("#btnDelete").on('click', fn_deleteRow);
+    }
+
+    const initCommonCode = () => {
+        $.ajax({
+            url: '/common/role/list',
+            data: null,
+            type: 'GET',
+            success: (result) => {
+                $.each(result, (index, item) => {
+                    let obj = {};
+                    obj.text= item.roleDesc;
+                    obj.value = item.roleId;
+                })
+            }
+        });
+    }
+
+    const initGrid = () => {
+        const Grid = tui.Grid;
+
+        authManageResourceGrid = new Grid({
+            el: document.getElementById('authManageResourceGrid'),
+            columns: [
+                {
+                    header: '리소스ID',
+                    name: 'resourcesId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    hidden: true
+                },
+                {
+                    header: '리소스명',
+                    name: 'resourcesName',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '순서',
+                    name: 'resourcesOrderNum',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+            ],
+            bodyHeight: 500,
+            rowHeaders: ['rowNum', 'checkbox']
+        });
+
+        // search();
+    }
+
+    const search = () => {
+        $.ajax({
+            url: apiUrl,
+            data: null,
+            type: 'GET',
+            success: (result) => {
+                authManageResourceGrid.resetData(result);
+                $("#totCnt").html(result.length);
+            }
+        });
+    }
+
+    const fn_appendRow = () => {
+        authManageResourceGrid.appendRow('', {
+        });
+    }
+
+    const fn_saveRow = () => {
+        let modifiedData = authManageResourceGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        search();
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        search();
+                    }
+                }
+            })
+        }
+    }
+
+    const fn_deleteRow = () => {
+        const checkedRows = authManageResourceGrid.getCheckedRows();
+        if (checkedRows <= 0) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        let confirmResult = confirm("총 " + checkedRows.length + "건의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            authManageResourceGrid.removeCheckedRows();
+
+            const modifiedData = authManageResourceGrid.getModifiedRows();
+
+            let params = [];
+            for (let i = 0; i < modifiedData.deletedRows.length; i++) {
+                modifiedData.deletedRows[i].rowStatus = 'D';
+                params.push(modifiedData.deletedRows[i]);
+            }
+
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        search();
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        search();
+                    }
+                }
+            })
+        }
+
+    }
+
+    const tabChange = (tabNum) => {
+        if(tabNum == '1'){
+            location.href='/system/auth-manage/user';
+        }else if(tabNum == '2'){
+            location.href='/system/auth-manage/role';
+        }else if(tabNum == '3'){
+            location.href='/system/auth-manage/resource';
+        }
+    }
+</script>
+<script src="/assets/js/material-dashboard.min.js?v=3.0.0"></script>
+</body>
+
+</html>

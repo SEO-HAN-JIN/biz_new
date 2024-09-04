@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout/configlayout :: configFragment}"></head>
+
+<body>
+    <div>
+        <div class="main-body"></div>
+    </div>
+
+    <script type="text/javascript">
+        window.onload = () => {
+            const _onLoadPage = "[[${loadPage}]]";
+
+            let franmeName = null;
+
+            let url = new URL(_onLoadPage, location.origin);
+
+            const iframeEl = document.createElement('iframe');
+            iframeEl.style.width = '100%';
+            iframeEl.style.minHeight = '1000px';
+            iframeEl.src = url;
+
+            const mainBody = document.querySelector('.main-body');
+            const container = document.createElement('div');
+
+            mainBody.appendChild(container);
+            container.appendChild(iframeEl);
+
+            // iframeEl.addEventListener('load', function() {
+            //     console.log("## contentDocument.body.scrollHeight ##", document.body.scrollHeight);
+            //     iframeEl.style.height = document.body.scrollHeight +"px";
+            //
+            //     // 메인페이지로 이동하는 경우 height 조절 시점 변경
+            //     const insideIframe = document.body.querySelector('iframe').contentWindow.document.querySelector("body").scrollHeight;
+            //     console.log("## insideIframe ##", insideIframe);
+            //     if (parseInt(insideIframe) <= parseInt(document.body.scrollHeight)) {
+            //         iframeEl.style.height = insideIframe +"px";
+            //     }
+            // });
+        };
+    </script>
+</body>
+</html>
