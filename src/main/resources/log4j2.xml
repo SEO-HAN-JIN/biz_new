@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Properties>
+        <Property name="logFileName">Log4j Test</Property>
+        <Property name="consoleLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,
+            ERROR=red, INFO=green, DEBUG=blue} [%c] %style{[%t]}{yellow}- %m%n
+        </Property>
+        <Property name="fileLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,
+            ERROR=red, INFO=green, DEBUG=blue} [%c{1.}] %style{[%t]}{yellow}- %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${consoleLayout}"/>
+        </Console>
+        <Console name="SlowConsole" target="SYSTEM_OUT">
+            <PatternLayout disableAnsi="false" pattern="${consoleLayout}"/>
+        </Console>
+        <!--        <RollingFile name="file" fileName="logs/${logFileName}.log"-->
+        <!--                     filePattern="logs/${logFileName}.%d{yyyy-MM-dd}.log">-->
+        <!--            <PatternLayout pattern="${fileLayout}"/>-->
+        <!--            <Policies>-->
+        <!--                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>&lt;!&ndash; 시간별 로그 파일 생성&ndash;&gt;-->
+        <!--                <OnStartupTriggeringPolicy  modulate="true"/>&lt;!&ndash; 시간별 로그 파일 생성&ndash;&gt;-->
+        <!--            </Policies>-->
+        <!--            <DefaultRolloverStrategy max="10" fileIndex="min"/>&lt;!&ndash; 롤링 파일 5개 까지 생성 &ndash;&gt;-->
+        <!--        </RollingFile>-->
+    </Appenders>
+
+    <Loggers>
+        <ROOT level="INFO">
+            <AppenderRef ref="SlowConsole"/>
+            <!--            <AppenderRef ref="file"/>-->
+            <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
+        </ROOT>
+
+        <!--        <Logger name="com.example" level="INFO" additivity="false">-->
+        <!--            <AppenderRef ref="SlowConsole"/>-->
+        <!--            <AppenderRef ref="file"/>-->
+        <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
+        <!--        </Logger>-->
+
+        <!--        <Logger name="com.gsitm" level="INFO" additivity="false">-->
+        <!--            <AppenderRef ref="SlowConsole"/>-->
+        <!--            <AppenderRef ref="file"/>-->
+        <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
+        <!--        </Logger>-->
+
+    </Loggers>
+</Configuration>

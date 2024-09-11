@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.MenuMapper">
+
+    <select id="findUpMenuList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.MenuMapper.findUpMenuList */
+        SELECT *
+          FROM MENU
+         WHERE MENU_UP_ID IS NULL
+    </select>
+
+    <select id="findMenuListByMenuUpId" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.MenuMapper.findMenuListByMenuUpId */
+        SELECT *
+          FROM MENU
+         WHERE MENU_UP_ID   = #{menuUpId}
+    </select>
+
+</mapper>

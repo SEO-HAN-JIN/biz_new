@@ -9,9 +9,14 @@ import org.springframework.web.servlet.ModelAndView;
 public class SystemWeb {
 
     @GetMapping("/")
-    public ModelAndView index(ModelAndView modelAndView) {
-        modelAndView.addObject("loadPage", "main/index/view");
-        modelAndView.setViewName("layout/defaultlayout");
+    public String index(ModelAndView modelAndView) {
+        return "/index";
+    }
+
+    @GetMapping("/{dept1}")
+    public ModelAndView view(@PathVariable("dept1") String dept1, ModelAndView modelAndView) {
+
+        modelAndView.setViewName(dept1);
         return modelAndView;
     }
 
@@ -20,11 +25,6 @@ public class SystemWeb {
 
         modelAndView.setViewName(dept1 + "/" + dept2);
         return modelAndView;
-    }
-
-    @GetMapping("/index")
-    public String index() {
-        return "main/index";
     }
 
 }

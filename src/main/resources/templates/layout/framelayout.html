@@ -4,9 +4,16 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 
 <head th:replace="~{layout/configlayout :: configFragment}"></head>
-<body class="g-sidenav-show  bg-gray-200">
-    <th:block th:replace="~{layout/sidelayout :: sideFragment}"></th:block>
-    <div layout:fragment="content"></div>
+<body>
+    <div id="app">
+        <th:block th:replace="~{layout/sidelayout :: sideFragment}"></th:block>
+        <div id="main">
+            <th:block th:replace="~{layout/headerlayout :: headerFragment}"></th:block>
+            <div layout:fragment="content"></div>
+            <th:block th:replace="~{layout/footerlayout :: footerFragment}"></th:block>
+        </div>
+    </div>
+
 </body>
 
 </html>

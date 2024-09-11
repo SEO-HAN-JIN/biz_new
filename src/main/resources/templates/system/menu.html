@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+            
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>메뉴관리</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">시스템</li>
+                        <li class="breadcrumb-item">메뉴관리</li>
+                        <li class="breadcrumb-item active" aria-current="page">메뉴관리</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section id="horizontal-input">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <div class="col-lg-2 col-3">
+                                        <label class="col-form-label" for="first-name">이름</label>
+                                    </div>
+                                    <div class="col-lg-10 col-9">
+                                        <input type="text" id="first-name" class="form-control form-control-sm" name="fname"
+                                               placeholder="First Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <div class="col-lg-2 col-3">
+                                        <label class="col-form-label" for="last-name">소속</label>
+                                    </div>
+                                    <div class="col-lg-10 col-9">
+                                        <input type="text" id="last-name" class="form-control form-control-sm" name="fname"
+                                               placeholder="Last Name">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-secondary">조회</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row" id="basic-table">
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">(대)메뉴</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btnAddUpMenuGrid">추가</button>
+                                <button type="button" class="btn btn-success btn-sm" id="btnSaveUpMenuGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteUpMenuGrid">삭제</button>
+                            </div>
+                        </div>
+                        <div id="upMenuGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">(중)메뉴</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btnAddMenuGrid">추가</button>
+                                <button type="button" class="btn btn-success btn-sm" id="btnSaveMenuGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteMenuGrid">삭제</button>
+                            </div>
+                        </div>
+                        <div id="menuGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="/config/js/common.js" defer></script>
+<script type="text/javascript">
+
+    const apiUrl = '/api/system/menu';
+
+    let upMenuGrid;
+    let menuGrid;
+
+    $(document).ready(function() {
+        console.log("## hi ##");
+        initEvent();
+        initUpMenuGrid();
+        initMenuGrid();
+    });
+
+    const initEvent = () => {
+        $("#btnAddUpMenuGrid").on('click', fn_appendRow);
+        $("#btnSaveUpMenuGrid").on('click', fn_saveRow);
+        $("#btnDeleteUpMenuGrid").on('click', fn_deleteRow);
+    }
+
+    const initUpMenuGrid = () => {
+        const Grid = tui.Grid;
+
+        upMenuGrid = new Grid({
+            el: document.getElementById('upMenuGrid'),
+            columns: [
+                {
+                    header: '메뉴명',
+                    name: 'menuNm',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '메뉴ID',
+                    name: 'menuId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '정렬순서',
+                    name: 'menuSrtOrd',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+            ],
+            bodyHeight: 500,
+            // rowHeaders: ['rowNum', 'checkbox']
+        });
+
+        upMenuGrid.on('click', (ev) => {
+            let value = upMenuGrid.getRow(ev.rowKey);
+            if (!isNull(value)) {
+                searchMenuGrid(value);
+            }
+        })
+
+    }
+
+    const initMenuGrid = () => {
+        const Grid = tui.Grid;
+
+        menuGrid = new Grid({
+            el: document.getElementById('menuGrid'),
+            columns: [
+                {
+                    header: '메뉴명',
+                    name: 'menuNm',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '메뉴ID',
+                    name: 'menuId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '정렬순서',
+                    name: 'menuSrtOrd',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '상위메뉴ID',
+                    name: 'menuUpId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+            ],
+            bodyHeight: 500,
+            // rowHeaders: ['rowNum', 'checkbox']
+        });
+
+        searchUpMenuGrid();
+    }
+
+    const searchUpMenuGrid = () => {
+        $.ajax({
+            url: apiUrl + "/up/list",
+            data: null,
+            type: 'GET',
+            success: (result) => {
+                upMenuGrid.resetData(result);
+            }
+        });
+    }
+
+    const searchMenuGrid = (param) => {
+        let params = {
+            menuUpId : param.menuId
+        };
+
+        $.ajax({
+            url: apiUrl + "/list",
+            data:params,
+            type: 'GET',
+            success: (result) => {
+                menuGrid.resetData(result);
+            }
+        })
+    }
+
+    const fn_appendRow = () => {
+        upMenuGrid.appendRow('', {});
+    }
+
+    const fn_saveRow = () => {
+        let modifiedData = upMenuGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchUpMenuGrid();
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchUpMenuGrid();
+                    }
+                }
+            })
+        }
+    }
+
+    const fn_deleteRow = () => {
+        const checkedRows = upMenuGrid.getCheckedRows();
+        if (checkedRows <= 0) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        let confirmResult = confirm("총 " + checkedRows.length + "건의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            upMenuGrid.removeCheckedRows();
+
+            const modifiedData = upMenuGrid.getModifiedRows();
+
+            let params = [];
+            for (let i = 0; i < modifiedData.deletedRows.length; i++) {
+                modifiedData.deletedRows[i].rowStatus = 'D';
+                params.push(modifiedData.deletedRows[i]);
+            }
+
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchUpMenuGrid();
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchUpMenuGrid();
+                    }
+                }
+            })
+        }
+    }
+
+</script>
+</div>
+
+</html>
