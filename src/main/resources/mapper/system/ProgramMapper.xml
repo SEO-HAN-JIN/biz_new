@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.ProgramMapper">
+
+    <select id="findProgramList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.ProgramMapper.findProgramList */
+        SELECT PROGRAM_ID
+             , PROGRAM_NM
+             , PROGRAM_URL
+             , USE_YN
+             , PROGRAM_SRT_ORD
+          FROM PROGRAM
+         WHERE 1=1
+        <if test='programNm != null  and programNm != "" '>
+            AND PROGRAM_NM LIKE CONCAT('%', #{programNm}, '%')
+                OR PROGRAM_URL LIKE CONCAT('%', #{programNm}, '%')
+        </if>
+         ORDER BY PROGRAM_SRT_ORD
+    </select>
+
+    <insert id="saveProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.saveProgramList */
+        INSERT INTO PROGRAM (
+            PROGRAM_NM
+            , PROGRAM_URL
+            , USE_YN
+            , PROGRAM_SRT_ORD
+        ) VALUES (
+            #{programNm}
+            , #{programUrl}
+            , #{useYn}
+            , #{programSrtOrd}
+        )
+    </insert>
+
+    <update id="updateProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.updateProgramList */
+        UPDATE PROGRAM
+           SET PROGRAM_NM       = #{programNm}
+             , PROGRAM_URL      = #{programUrl}
+             , USE_YN           = #{useYn}
+             , PROGRAM_SRT_ORD  = #{programSrtOrd}
+         WHERE PROGRAM_ID       = #{programId}
+    </update>
+
+    <delete id="deleteProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.deleteProgramList */
+        DELETE FROM PROGRAM
+         WHERE PROGRAM_ID      = #{programId}
+    </delete>
+    
+</mapper>
