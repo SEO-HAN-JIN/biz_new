@@ -26,20 +26,20 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" id="searchForm">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group row align-items-center">
                                     <div class="col-lg-2 col-3">
-                                        <label class="col-form-label" for="first-name">이름</label>
+                                        <label class="col-form-label" for="first-name">메뉴명</label>
                                     </div>
                                     <div class="col-lg-10 col-9">
                                         <input type="text" id="first-name" class="form-control form-control-sm" name="fname"
-                                               placeholder="First Name">
+                                               placeholder="메뉴명">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <!-- <div class="col-md-6">
                                 <div class="form-group row align-items-center">
                                     <div class="col-lg-2 col-3">
                                         <label class="col-form-label" for="last-name">소속</label>
@@ -49,8 +49,8 @@
                                                placeholder="Last Name">
                                     </div>
                                 </div>
-                            </div>
-                            <a href="#" class="btn btn-secondary">조회</a>
+                            </div> -->
+                            <a href="#" class="btn btn-secondary" id="searchBtn">조회</a>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,6 @@
         </div>
     </section>
 </div>
-<script src="/config/js/common.js" defer></script>
 <script type="text/javascript">
 
     const apiUrl = '/api/system/menu';
@@ -107,16 +106,21 @@
     let menuGrid;
 
     $(document).ready(function() {
-        console.log("## hi ##");
         initEvent();
         initUpMenuGrid();
         initMenuGrid();
     });
 
     const initEvent = () => {
-        $("#btnAddUpMenuGrid").on('click', fn_appendRow);
-        $("#btnSaveUpMenuGrid").on('click', fn_saveRow);
-        $("#btnDeleteUpMenuGrid").on('click', fn_deleteRow);
+        $("#btnAddUpMenuGrid").on('click', fn_appendUpMenuGrid);
+        $("#btnSaveUpMenuGrid").on('click', fn_saveUpMenuGrid);
+        $("#btnDeleteUpMenuGrid").on('click', fn_deleteUpMenuGrid);
+
+        $("#btnAddMenuGrid").on('click', fn_appendMenuGrid);
+        $("#btnSaveMenuGrid").on('click', fn_saveMenuGrid);
+        $("#btnDeleteMenuGrid").on('click', fn_deleteMenuGrid);
+
+        $("#searchBtn").on('click', searchUpMenuGrid);
     }
 
     const initUpMenuGrid = () => {
@@ -218,16 +222,22 @@
                 },
             ],
             bodyHeight: 500,
-            // rowHeaders: ['rowNum', 'checkbox']
+            // rowHeaders: ['rowNum', 'checkbox']   
         });
 
         searchUpMenuGrid();
     }
 
     const searchUpMenuGrid = () => {
+        menuGrid.clear();
+
+        const param = {
+            menuNm : $("#first-name").val()
+        };
+
         $.ajax({
             url: apiUrl + "/up/list",
-            data: null,
+            data: param,
             type: 'GET',
             success: (result) => {
                 upMenuGrid.resetData(result);
@@ -250,11 +260,11 @@
         })
     }
 
-    const fn_appendRow = () => {
+    const fn_appendUpMenuGrid = () => {
         upMenuGrid.appendRow('', {});
     }
 
-    const fn_saveRow = () => {
+    const fn_saveUpMenuGrid = () => {
         let modifiedData = upMenuGrid.getModifiedRows();
         const createdData = modifiedData.createdRows;
         const updatedData = modifiedData.updatedRows;
@@ -277,7 +287,7 @@
 
         if (result) {
             $.ajax({
-                url: apiUrl,
+                url: apiUrl + "/up/list",
                 data: JSON.stringify(params),
                 contentType:'application/json',
                 type: 'POST',
@@ -294,30 +304,24 @@
         }
     }
 
-    const fn_deleteRow = () => {
-        const checkedRows = upMenuGrid.getCheckedRows();
-        if (checkedRows <= 0) {
+    const fn_deleteUpMenuGrid = () => {
+        const focusedCell = upMenuGrid.getFocusedCell();
+        if (isNull(focusedCell)) {
             alert("삭제할 행을 선택해주세요.");
             return;
         }
 
-        let confirmResult = confirm("총 " + checkedRows.length + "건의 데이터를 삭제하시겠습니까?");
+        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
         if (confirmResult) {
-            upMenuGrid.removeCheckedRows();
-
-            const modifiedData = upMenuGrid.getModifiedRows();
-
-            let params = [];
-            for (let i = 0; i < modifiedData.deletedRows.length; i++) {
-                modifiedData.deletedRows[i].rowStatus = 'D';
-                params.push(modifiedData.deletedRows[i]);
+            const focusRow = upMenuGrid.getRow(focusedCell.rowKey);
+            let params = {
+                menuId : focusRow.menuId
             }
-
             $.ajax({
-                url: apiUrl,
+                url: apiUrl + "/up/list",
                 data: JSON.stringify(params),
                 contentType:'application/json',
-                type: 'POST',
+                type: 'DELETE',
                 success: (result) => {
                     if (result > 0) {
                         alert("삭제가 완료되었습니다.");
@@ -325,6 +329,93 @@
                     } else {
                         alert("삭제에 실패하였습니다.");
                         searchUpMenuGrid();
+                    }
+                }
+            })
+        }
+    }
+
+    const fn_appendMenuGrid = () => {
+        const upMenuFocusedCell = upMenuGrid.getFocusedCell();
+        const upMenuGridData = upMenuGrid.getRow(upMenuFocusedCell.rowKey);
+        console.log("##upMenuGridData ##", upMenuGridData.menuId);
+
+        const rowData = {menuNm: "", menuId: "", menuSrtOrd: "", menuUpId: upMenuGridData.menuId};
+                
+        menuGrid.appendRow(rowData, {});
+    }
+
+    const fn_saveMenuGrid = () => {
+        const upMenuFocusedCell = upMenuGrid.getFocusedCell();
+        const upMenuFocusData = upMenuGrid.getRow(upMenuFocusedCell.rowKey);
+
+        let modifiedData = menuGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl + "/list",
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchMenuGrid(upMenuFocusData);
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchMenuGrid(upMenuFocusData);
+                    }
+                }
+            })
+        }
+    }
+
+    const fn_deleteMenuGrid = () => {
+        const upMenuFocusedCell = upMenuGrid.getFocusedCell();
+        const upMenuFocusData = upMenuGrid.getRow(upMenuFocusedCell.rowKey);
+
+        const focusedCell = menuGrid.getFocusedCell();
+        if (isNull(focusedCell)) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            const focusRow = menuGrid.getRow(focusedCell.rowKey);
+            let params = {
+                menuId : focusRow.menuId
+            }
+            $.ajax({
+                url: apiUrl + "/list",
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'DELETE',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchMenuGrid(upMenuFocusData);
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchMenuGrid(upMenuFocusData);
                     }
                 }
             })

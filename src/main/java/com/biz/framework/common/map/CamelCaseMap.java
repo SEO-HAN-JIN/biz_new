@@ -1,4 +1,4 @@
-package com.biz.framework.common.dto;
+package com.biz.framework.common.map;
 
 import com.google.common.base.CaseFormat;
 

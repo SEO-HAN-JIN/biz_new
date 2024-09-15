@@ -9,6 +9,10 @@
         SELECT *
           FROM MENU
          WHERE MENU_UP_ID IS NULL
+        <if test='menuNm != null  and menuNm != "" '>
+            AND MENU_NM LIKE CONCAT('%', #{menuNm}, '%')
+        </if>
+         ORDER BY MENU_SRT_ORD
     </select>
 
     <select id="findMenuListByMenuUpId" resultType="CamelCaseMap">
@@ -16,6 +20,40 @@
         SELECT *
           FROM MENU
          WHERE MENU_UP_ID   = #{menuUpId}
+         ORDER BY MENU_SRT_ORD
     </select>
 
+    <insert id="saveMenuList">
+        /* com.biz.framework.mapper.MenuMapper.saveMenuList */
+        INSERT INTO MENU (
+            MENU_NM
+            , MENU_SRT_ORD
+            , MENU_UP_ID
+        ) VALUES (
+            #{menuNm}
+            , #{menuSrtOrd}
+            , #{menuUpId}
+        )
+    </insert>
+
+    <update id="updateMenuList">
+        /* com.biz.framework.mapper.MenuMapper.updateMenuList */
+        UPDATE MENU
+           SET MENU_NM          = #{menuNm}
+             , MENU_SRT_ORD     = #{menuSrtOrd}
+             , MENU_UP_ID       = #{menuUpId}
+         WHERE MENU_ID          = #{menuId}
+        <if test='menuUpId != null  and menuUpId != "" '>
+           AND MENU_UP_ID       = #{menuUpId}
+        </if>
+    </update>
+
+    <delete id="deleteMenu">
+        /* com.biz.framework.mapper.MenuMapper.deleteMenu */
+        DELETE FROM MENU
+         WHERE MENU_ID      = #{menuId}
+        <if test='menuUpId != null  and menuUpId != "" '>
+            AND MENU_UP_ID  = #{menuUpId}
+        </if>
+    </delete>
 </mapper>
