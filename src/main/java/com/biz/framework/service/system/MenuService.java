@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +46,20 @@ public class MenuService {
         int result = 0;
         result += menuMapper.deleteMenu(menuDto);
         return result;
+    }
+
+    public List<MenuDto> findMenuHierarchy(MenuDto menuDto) {
+        List<MenuDto> findList = menuMapper.findMenuList(menuDto);
+
+        List<MenuDto> upMenuList = findList.stream().filter(s -> s.getMenuUpId() == null).toList();
+        for (MenuDto upMenu : upMenuList) {
+            String menuId = upMenu.getMenuId();
+            List<MenuDto> menuList = findList.stream().filter(s -> menuId.equals(s.getMenuUpId())).toList();
+
+            if (!CollectionUtils.isEmpty(menuList)) {
+                upMenu.set_children(menuList);
+            }
+        }
+        return upMenuList;
     }
 }

@@ -56,4 +56,14 @@
             AND MENU_UP_ID  = #{menuUpId}
         </if>
     </delete>
+
+    <select id="findMenuList" resultType="com.biz.framework.dto.MenuDto">
+        /* com.biz.framework.mapper.MenuMapper.findMenuList */
+        SELECT MENU_ID
+             , MENU_NM
+             , MENU_SRT_ORD
+             , MENU_UP_ID
+          FROM MENU
+         ORDER BY MENU_SRT_ORD
+    </select>
 </mapper>

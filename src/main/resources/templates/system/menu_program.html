@@ -60,38 +60,77 @@
 
     <section class="section">
         <div class="row" id="basic-table">
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title mb-0">(대)메뉴</h4>
+                        <h4 class="card-title">메뉴 목록</h4>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-end" style="width: 100%;">
                             <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
-                                <button type="button" class="btn btn-secondary btn-sm" id="btnAddUpMenuGrid">추가</button>
-                                <button type="button" class="btn btn-success btn-sm" id="btnSaveUpMenuGrid">저장</button>
-                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteUpMenuGrid">삭제</button>
+                                <!-- 빈 div로 버튼 자리 확보 -->
+                                <div style="height: 32px;"></div>
                             </div>
                         </div>
-                        <div id="upMenuGrid"></div>
+                        <div id="menuGrid"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">(중)메뉴</h4>
+                        <h4 class="card-title">프로그램 목록</h4>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-end" style="width: 100%;">
                             <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
-                                <button type="button" class="btn btn-secondary btn-sm" id="btnAddMenuGrid">추가</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#programModal">추가</button>
                                 <button type="button" class="btn btn-success btn-sm" id="btnSaveMenuGrid">저장</button>
                                 <button type="button" class="btn btn-danger btn-sm" id="btnDeleteMenuGrid">삭제</button>
                             </div>
                         </div>
-                        <div id="menuGrid"></div>
+                        <div id="programGrid"></div>
+                    </div>
+
+                    <!-- Vertically Centered modal Modal -->
+                    <div class="modal fade" id="programModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalCenterTitle">프로그램 목록
+                                    </h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <i data-feather="x"></i>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="#" class="d-flex align-items-center justify-content-between mb-4">
+                                        <div class="d-flex align-items-center flex-grow-1 me-3">
+                                            <label for="mp_modal_pgmNm" class="mb-0 me-2"></label>
+                                            <input id="mp_modal_pgmNm" type="text" placeholder="프로그램명 혹은 url" class="form-control">
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-check d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">조회</span>
+                                        </button>
+                                    </form>
+                                    <div id="pgmModalGrid"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light-secondary"
+                                        data-bs-dismiss="modal">
+                                        <i class="bx bx-x d-block d-sm-none"></i>
+                                        <span class="d-none d-sm-block">닫기</span>
+                                    </button>
+                                    <button type="button" class="btn btn-primary ms-1" data-bs-dismiss="modal" id="modalAcceptBtn">
+                                        <i class="bx bx-check d-block d-sm-none"></i>
+                                        <span class="d-none d-sm-block">적용</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -102,47 +141,208 @@
 
     const apiUrl = '/api/system/menu';
 
-    let upMenuGrid;
     let menuGrid;
+    let programGrid;
+    let pgmModalGrid;
 
     $(document).ready(function() {
         initEvent();
-        initUpMenuGrid();
         initMenuGrid();
+        initPgtmGrid();
+        initPgmModalGrid();
     });
 
     const initEvent = () => {
-        $("#btnAddUpMenuGrid").on('click', fn_appendUpMenuGrid);
-        $("#btnSaveUpMenuGrid").on('click', fn_saveUpMenuGrid);
-        $("#btnDeleteUpMenuGrid").on('click', fn_deleteUpMenuGrid);
-
-        $("#btnAddMenuGrid").on('click', fn_appendMenuGrid);
-        $("#btnSaveMenuGrid").on('click', fn_saveMenuGrid);
-        $("#btnDeleteMenuGrid").on('click', fn_deleteMenuGrid);
-
-        $("#searchBtn").on('click', searchUpMenuGrid);
+        $("#searchBtn").on('click', searchPgmGrid);
+        $('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+        $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
+        $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
+        $("#modalAcceptBtn").on('click', modalAcceptBtn);
     }
 
-    const initUpMenuGrid = () => {
+    const openPgmModal = () => {
+        pgmModalGrid.refreshLayout();
+
+        const param = {
+            programNm : $("#mp_modal_pgmNm").val()
+        };
+
+        $.ajax({
+            url: "/api/system/program",
+            data: param,
+            type: 'GET',
+            success: (result) => {
+                pgmModalGrid.resetData(result);
+            }
+        });
+    }
+
+    const closeBeforeModal = () => {
+        console.log('모달이 곧 닫힙니다!');
+    }
+
+    const closeAfterModal = () => {
+        console.log('모달이 닫혔습니다!');
+    }
+    
+
+    const modalAcceptBtn = () => {
+        const menuGridFocusedCell = menuGrid.getFocusedCell();
+        const menuGridFocusRow = menuGrid.getRow(menuGridFocusedCell.rowKey);
+        console.log("## menuGridFocusRow ##", menuGridFocusRow)
+        if (isNull(menuGridFocusRow) || isNull(menuGridFocusRow.menuUpId)) {
+            alert("하위 메뉴를 선택헤주세요.");
+        } else {
+            const focusedCell = pgmModalGrid.getFocusedCell();
+            const focusRow = pgmModalGrid.getRow(focusedCell.rowKey);
+            console.log("## focusRow ##", focusRow);
+    
+            const rowData = {
+                programId: focusRow.programId,
+                programNm: focusRow.programNm,
+                programUrl: focusRow.programUrl,
+                useYn: focusRow.useYn,
+                programSrtOrd: focusRow.programSrtOrd
+            };
+            programGrid.appendRow(rowData, {});
+        }
+    }
+
+    const initMenuGrid = () => {
+        menuGrid = new tui.Grid({
+            el: document.getElementById('menuGrid'),
+            // data: treeData,
+            // rowHeaders: ['rowNum', 'radio'],
+            bodyHeight: 500,
+            virtualScrolling: true,
+            treeColumnOptions: {
+              name: 'menuNm',
+              useCascadingCheckbox: false
+            },
+            columns: [
+            {
+                header: '메뉴명',
+                name: 'menuNm',
+                editOptions: {
+                    type: 'text',
+                    useViewMode: true
+                }
+            },
+            {
+                header: '메뉴ID',
+                name: 'menuId',
+                editOptions: {
+                    type: 'text',
+                    useViewMode: true
+                }
+              }
+            ]
+        });
+
+        menuGrid.on('click', (ev) => {
+            let value = menuGrid.getRow(ev.rowKey);
+            if (!isNull(value) && !isNull(value.menuUpId)) {
+            }
+        })
+
+        searchMenuGrid();
+    }
+
+    const initPgtmGrid = () => {
         const Grid = tui.Grid;
 
-        upMenuGrid = new Grid({
-            el: document.getElementById('upMenuGrid'),
+        programGrid = new Grid({
+            el: document.getElementById('programGrid'),
             columns: [
                 {
-                    header: '메뉴명',
-                    name: 'menuNm',
+                    header: '프로그램ID',
+                    name: 'programId',
                     align: 'center',
                     whiteSpace: 'normal',
-                    editor: 'text',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '프로그램명',
+                    name: 'programNm',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
                     formatter: function(e) {
                         return e.value
                     },
                     // hidden: true
                 },
                 {
-                    header: '메뉴ID',
-                    name: 'menuId',
+                    header: '프로그램URL',
+                    name: 'programUrl',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '사용여부',
+                    name: 'useYn',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                }
+            ],
+            bodyHeight: 500,
+            // rowHeaders: ['rowNum']
+        });
+    }
+
+    const initPgmModalGrid = () => {
+        const Grid = tui.Grid;
+
+        pgmModalGrid = new Grid({
+            el: document.getElementById('pgmModalGrid'),
+            columns: [
+                {
+                    header: '프로그램ID',
+                    name: 'programId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '프로그램명',
+                    name: 'programNm',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '프로그램URL',
+                    name: 'programUrl',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '사용여부',
+                    name: 'useYn',
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
@@ -152,97 +352,37 @@
                 },
                 {
                     header: '정렬순서',
-                    name: 'menuSrtOrd',
+                    name: 'programSrtOrd',
                     align: 'center',
                     whiteSpace: 'normal',
-                    editor: 'text',
+                    // editor: 'text',
                     formatter: function(e) {
                         return e.value
                     }
                 },
             ],
             bodyHeight: 500,
-            // rowHeaders: ['rowNum', 'checkbox']
-        });
-
-        upMenuGrid.on('click', (ev) => {
-            let value = upMenuGrid.getRow(ev.rowKey);
-            if (!isNull(value)) {
-                searchMenuGrid(value);
-            }
-        })
-
-    }
-
-    const initMenuGrid = () => {
-        const treeData = [{name: 'abc', artist: 'etf', type: 'axd', release: '123', genre: 'axs'}]
-        const grid = new tui.Grid({
-            el: document.getElementById('menuGrid'),
-            data: treeData,
-            rowHeaders: ['checkbox'],
-            bodyHeight: 500,
-            treeColumnOptions: {
-              name: 'name',
-              useCascadingCheckbox: true
-            },
-            columns: [
-              {
-                header: 'Name',
-                name: 'name',
-                width: 300
-              },
-              {
-                header: 'Artist',
-                name: 'artist'
-              },
-              {
-                header: 'Type',
-                name: 'type'
-              },
-              {
-                header: 'Release',
-                name: 'release'
-              },
-              {
-                header: 'Genre',
-                name: 'genre'
-              }
-            ]
-        });
-
-        searchUpMenuGrid();
-    }
-
-    const searchUpMenuGrid = () => {
-        menuGrid.clear();
-
-        const param = {
-            menuNm : $("#first-name").val()
-        };
-
-        $.ajax({
-            url: apiUrl + "/up/list",
-            data: param,
-            type: 'GET',
-            success: (result) => {
-                upMenuGrid.resetData(result);
-            }
+            rowHeaders: ['rowNum']
         });
     }
 
     const searchMenuGrid = (param) => {
         let params = {
-            menuUpId : param.menuId
+            menuNm : $("#first-name").val()
         };
 
         $.ajax({
-            url: apiUrl + "/list",
+            url: apiUrl + "/hierarchy",
             data:params,
             type: 'GET',
             success: (result) => {
                 menuGrid.resetData(result);
             }
-        })
+        });
+    }
+
+    const searchPgmGrid = () => {
+        
     }
 
     const fn_appendUpMenuGrid = () => {
@@ -279,10 +419,10 @@
                 success: (result) => {
                     if (result > 0) {
                         alert("저장이 완료되었습니다.");
-                        searchUpMenuGrid();
+                        searchPgmGrid();
                     } else {
                         alert("저장에 실패하였습니다.");
-                        searchUpMenuGrid();
+                        searchPgmGrid();
                     }
                 }
             })
@@ -310,10 +450,10 @@
                 success: (result) => {
                     if (result > 0) {
                         alert("삭제가 완료되었습니다.");
-                        searchUpMenuGrid();
+                        searchPgmGrid();
                     } else {
                         alert("삭제에 실패하였습니다.");
-                        searchUpMenuGrid();
+                        searchPgmGrid();
                     }
                 }
             })

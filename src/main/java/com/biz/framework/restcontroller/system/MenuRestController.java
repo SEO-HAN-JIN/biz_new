@@ -6,6 +6,8 @@ import com.biz.framework.service.system.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -43,5 +45,10 @@ public class MenuRestController {
     @DeleteMapping("/list")
     public int deleteMenuList(@RequestBody MenuDto menuDto) {
         return menuService.deleteMenuList(menuDto);
+    }
+
+    @GetMapping("/hierarchy")
+    public List<MenuDto> findMenuAll(MenuDto menuDto) {
+        return menuService.findMenuHierarchy(menuDto);
     }
 }
