@@ -19,4 +19,7 @@ public interface ProgramMapper {
     int deleteMenuProgramList(ProgramDto programDto);
 
     int checkMenuPgmDupl(ProgramDto programDto);
+
+    List<ProgramDto> findRelProgram();
+
 }

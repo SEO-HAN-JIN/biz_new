@@ -75,4 +75,8 @@ public class ProgramService {
         }
         return result;
     }
+
+    public List<ProgramDto> findRelProgram() {
+        return programMapper.findRelProgram();
+    }
 }

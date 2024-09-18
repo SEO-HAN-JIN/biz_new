@@ -2,7 +2,9 @@ package com.biz.framework.service.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.MenuDto;
+import com.biz.framework.dto.ProgramDto;
 import com.biz.framework.mapper.system.MenuMapper;
+import com.biz.framework.mapper.system.ProgramMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class MenuService {
 
     private final MenuMapper menuMapper;
+    private final ProgramMapper programMapper;
 
     public List<CamelCaseMap> findUpMenuList(MenuDto menuDto) {
         return menuMapper.findUpMenuList(menuDto);
@@ -49,7 +52,7 @@ public class MenuService {
     }
 
     public List<MenuDto> findMenuHierarchy(MenuDto menuDto) {
-        List<MenuDto> findList = menuMapper.findMenuList(menuDto);
+        List<MenuDto> findList = menuMapper.findMenuList();
 
         List<MenuDto> upMenuList = findList.stream().filter(s -> s.getMenuUpId() == null).toList();
         for (MenuDto upMenu : upMenuList) {
@@ -62,4 +65,17 @@ public class MenuService {
         }
         return upMenuList;
     }
+    
+//    public List<CamelCaseMap> findSideLayout() {
+//        List<MenuDto> menuList = menuMapper.findMenuList();
+//        List<ProgramDto> programList = programMapper.findRelProgram();
+//
+//        ArrayList<CamelCaseMap> result = new ArrayList<>();
+//
+//        for (MenuDto menuDto : menuList) {
+//            if (menuDto.getMenuUpId() == null) {    // 대분류
+//
+//            }
+//        }
+//    }
 }

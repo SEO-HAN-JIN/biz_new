@@ -17,5 +17,5 @@ public interface MenuMapper {
     int updateMenuList(MenuDto menuDto);
     int deleteMenu(MenuDto menuDto);
 
-    List<MenuDto> findMenuList(MenuDto menuDto);
+    List<MenuDto> findMenuList();
 }

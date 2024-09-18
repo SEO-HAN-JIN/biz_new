@@ -64,6 +64,6 @@
              , MENU_SRT_ORD
              , MENU_UP_ID
           FROM MENU
-         ORDER BY MENU_SRT_ORD
+         ORDER BY MENU_UP_ID IS NOT NULL, MENU_SRT_ORD
     </select>
 </mapper>
