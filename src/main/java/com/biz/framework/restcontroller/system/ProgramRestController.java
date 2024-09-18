@@ -24,4 +24,24 @@ public class ProgramRestController {
     public int saveProgramList(@RequestBody List<ProgramDto> programDtoList) {
         return programService.saveProgramList(programDtoList);
     }
+
+    @DeleteMapping
+    public int deleteProgramList(@RequestBody List<ProgramDto> programDtoList) {
+        return programService.deleteProgramList(programDtoList);
+    }
+
+    @GetMapping("/rel/menu")
+    public List<CamelCaseMap> findMenuProgramList(ProgramDto programDto) {
+        return programService.findProgramMenuList(programDto);
+    }
+
+    @PostMapping("/rel/menu")
+    public int saveMenuProgramList(@RequestBody List<ProgramDto> programDtoList) {
+        return programService.saveMenuProgramList(programDtoList);
+    }
+
+    @DeleteMapping("/rel/menu")
+    public int deleteMenuProgramList(@RequestBody List<ProgramDto> programDtoList) {
+        return programService.delteMenuProgramList(programDtoList);
+    }
 }

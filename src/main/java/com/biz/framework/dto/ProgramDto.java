@@ -13,4 +13,6 @@ public class ProgramDto extends BaseDto {
     private String programUrl;
     private String useYn;
     private String programSrtOrd;
+
+    private String menuId;
 }

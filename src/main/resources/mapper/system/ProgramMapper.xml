@@ -50,5 +50,44 @@
         DELETE FROM PROGRAM
          WHERE PROGRAM_ID      = #{programId}
     </delete>
-    
+
+    <select id="findProgramMenuList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.ProgramMapper.findProgramMenuList */
+        SELECT MP.MENU_ID
+             , MP.PROGRAM_ID
+             , P.PROGRAM_NM
+             , P.PROGRAM_URL
+             , P.USE_YN
+             , P.PROGRAM_SRT_ORD
+          FROM MENU_PROGRAM         MP
+          LEFT JOIN PROGRAM         P
+            ON P.PROGRAM_ID         = MP.PROGRAM_ID
+         WHERE MP.MENU_ID           = #{menuId}
+         ORDER BY P.PROGRAM_SRT_ORD
+    </select>
+
+    <select id="checkMenuPgmDupl">
+        /* com.biz.framework.mapper.ProgramMapper.checkMenuPgmDupl */
+        SELECT COUNT(1)
+        FROM MENU_PROGRAM
+        WHERE MENU_ID      = #{menuId}
+        AND PROGRAM_ID   = #{programId}
+    </select>
+
+    <insert id="saveMenuProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.saveMenuProgramList */
+        INSERT INTO MENU_PROGRAM (
+            MENU_ID
+            , PROGRAM_ID
+        ) VALUES (
+            #{menuId}
+            , #{programId}
+        )
+    </insert>
+
+    <delete id="deleteMenuProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.deleteMenuProgramList */
+        DELETE FROM MENU_PROGRAM
+         WHERE PROGRAM_ID   = #{programId}
+    </delete>
 </mapper>

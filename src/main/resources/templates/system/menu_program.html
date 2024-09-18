@@ -86,8 +86,8 @@
                         <div class="d-flex justify-content-end" style="width: 100%;">
                             <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
                                 <button type="button" class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#programModal">추가</button>
-                                <button type="button" class="btn btn-success btn-sm" id="btnSaveMenuGrid">저장</button>
-                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteMenuGrid">삭제</button>
+                                <button type="button" class="btn btn-success btn-sm" id="btnSavePgmGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeletePgmGrid">삭제</button>
                             </div>
                         </div>
                         <div id="programGrid"></div>
@@ -140,6 +140,7 @@
 <script type="text/javascript">
 
     const apiUrl = '/api/system/menu';
+    const apiPgmUrl = '/api/system/program';
 
     let menuGrid;
     let programGrid;
@@ -148,12 +149,14 @@
     $(document).ready(function() {
         initEvent();
         initMenuGrid();
-        initPgtmGrid();
+        initPgmGrid();
         initPgmModalGrid();
     });
 
     const initEvent = () => {
         $("#searchBtn").on('click', searchPgmGrid);
+        $("#btnSavePgmGrid").on('click', fn_savePgmGrid);
+        $("#btnDeletePgmGrid").on('click', fn_deletePgmGrid);
         $('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
         $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
         $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
@@ -189,13 +192,12 @@
     const modalAcceptBtn = () => {
         const menuGridFocusedCell = menuGrid.getFocusedCell();
         const menuGridFocusRow = menuGrid.getRow(menuGridFocusedCell.rowKey);
-        console.log("## menuGridFocusRow ##", menuGridFocusRow)
+
         if (isNull(menuGridFocusRow) || isNull(menuGridFocusRow.menuUpId)) {
             alert("하위 메뉴를 선택헤주세요.");
         } else {
             const focusedCell = pgmModalGrid.getFocusedCell();
             const focusRow = pgmModalGrid.getRow(focusedCell.rowKey);
-            console.log("## focusRow ##", focusRow);
     
             const rowData = {
                 programId: focusRow.programId,
@@ -231,6 +233,7 @@
             {
                 header: '메뉴ID',
                 name: 'menuId',
+                align: 'center',
                 editOptions: {
                     type: 'text',
                     useViewMode: true
@@ -240,15 +243,17 @@
         });
 
         menuGrid.on('click', (ev) => {
+            programGrid.clear();
             let value = menuGrid.getRow(ev.rowKey);
             if (!isNull(value) && !isNull(value.menuUpId)) {
+                searchPgmGrid(value);
             }
         })
-
+        
         searchMenuGrid();
     }
 
-    const initPgtmGrid = () => {
+    const initPgmGrid = () => {
         const Grid = tui.Grid;
 
         programGrid = new Grid({
@@ -298,7 +303,7 @@
                 }
             ],
             bodyHeight: 500,
-            // rowHeaders: ['rowNum']
+            rowHeaders: ['checkbox']
         });
     }
 
@@ -381,80 +386,91 @@
         });
     }
 
-    const searchPgmGrid = () => {
-        
+    const searchPgmGrid = (params) => {
+        if (!isNull(params) && !isNull(params.menuUpId)) {
+            let param = {
+                menuId : params.menuId
+            };
+    
+            $.ajax({
+                url: apiPgmUrl + "/rel/menu",
+                data: param,
+                method: 'GET',
+                success: (result) => {
+                    programGrid.resetData(result);
+                }
+            });
+        }
     }
 
-    const fn_appendUpMenuGrid = () => {
-        upMenuGrid.appendRow('', {});
-    }
-
-    const fn_saveUpMenuGrid = () => {
-        let modifiedData = upMenuGrid.getModifiedRows();
+    const fn_savePgmGrid = () => {
+        let modifiedData = programGrid.getModifiedRows();
         const createdData = modifiedData.createdRows;
-        const updatedData = modifiedData.updatedRows;
-
         const createdLength = !isNull(createdData.length) ? createdData.length : 0;
-        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
 
-        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+        const result = confirm("총 " + createdLength + "건의 데이터를 저장하시겠습니까?");
+
+        const menuFocusedCell = menuGrid.getFocusedCell();
+        const menuData =  menuGrid.getRow(menuFocusedCell.rowKey);
 
         let params = [];
         for (let i = 0; i < createdData.length; i++) {
             createdData[i].rowStatus = 'C';
+            createdData[i].menuId = menuData.menuId;
             params.push(createdData[i]);
-        }
-
-        for (let i = 0; i < updatedData.length; i++) {
-            updatedData[i].rowStatus = 'U';
-            params.push(updatedData[i]);
         }
 
         if (result) {
             $.ajax({
-                url: apiUrl + "/up/list",
+                url: apiPgmUrl + "/rel/menu",
                 data: JSON.stringify(params),
                 contentType:'application/json',
                 type: 'POST',
                 success: (result) => {
                     if (result > 0) {
                         alert("저장이 완료되었습니다.");
-                        searchPgmGrid();
+                        searchPgmGrid(menuData);
                     } else {
-                        alert("저장에 실패하였습니다.");
-                        searchPgmGrid();
+                        alert("저장에 실패하였습니다");
+                        searchPgmGrid(menuData);
                     }
+                },
+                error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchPgmGrid(menuData);
                 }
             })
         }
     }
 
-    const fn_deleteUpMenuGrid = () => {
-        const focusedCell = upMenuGrid.getFocusedCell();
-        if (isNull(focusedCell)) {
+    const fn_deletePgmGrid = () => {
+        const params = programGrid.getCheckedRows();
+        if (params.length === 0) {
             alert("삭제할 행을 선택해주세요.");
             return;
         }
 
-        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        const menuFocusedCell = menuGrid.getFocusedCell();
+        const menuData =  menuGrid.getRow(menuFocusedCell.rowKey);
+
+        const confirmResult = confirm("총 " + params.length + "개 행의 데이터를 삭제하시겠습니까?");
         if (confirmResult) {
-            const focusRow = upMenuGrid.getRow(focusedCell.rowKey);
-            let params = {
-                menuId : focusRow.menuId
-            }
             $.ajax({
-                url: apiUrl + "/up/list",
+                url: apiPgmUrl + "/rel/menu",
                 data: JSON.stringify(params),
                 contentType:'application/json',
                 type: 'DELETE',
                 success: (result) => {
                     if (result > 0) {
                         alert("삭제가 완료되었습니다.");
-                        searchPgmGrid();
+                        searchPgmGrid(menuData);
                     } else {
                         alert("삭제에 실패하였습니다.");
-                        searchPgmGrid();
+                        searchPgmGrid(menuData);
                     }
+                },
+                error: (result) => {
+                    alert("삭제에 실패하였습니다.");
                 }
             })
         }

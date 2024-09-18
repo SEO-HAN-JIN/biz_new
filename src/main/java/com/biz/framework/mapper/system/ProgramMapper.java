@@ -13,4 +13,10 @@ public interface ProgramMapper {
     int saveProgramList(ProgramDto programDto);
     int updateProgramList(ProgramDto programDto);
     int deleteProgramList(ProgramDto programDto);
+
+    List<CamelCaseMap> findProgramMenuList(ProgramDto programDto);
+    int saveMenuProgramList(ProgramDto programDto);
+    int deleteMenuProgramList(ProgramDto programDto);
+
+    int checkMenuPgmDupl(ProgramDto programDto);
 }

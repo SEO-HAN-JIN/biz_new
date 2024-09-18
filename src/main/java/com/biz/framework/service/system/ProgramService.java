@@ -1,5 +1,6 @@
 package com.biz.framework.service.system;
 
+import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.MenuDto;
 import com.biz.framework.dto.ProgramDto;
@@ -36,9 +37,42 @@ public class ProgramService {
         return result;
     }
 
-    public int deleteProgramList(ProgramDto programDto) {
+    public int deleteProgramList(List<ProgramDto> programDtoList) {
         int result = 0;
-        result += programMapper.deleteProgramList(programDto);
+        if (!CollectionUtils.isEmpty(programDtoList)) {
+            for (ProgramDto programDto : programDtoList) {
+                result += programMapper.deleteProgramList(programDto);
+            }
+        }
+        return result;
+    }
+
+    public List<CamelCaseMap> findProgramMenuList(ProgramDto programDto) {
+        return programMapper.findProgramMenuList(programDto);
+    }
+
+    public int saveMenuProgramList(List<ProgramDto> programDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(programDtoList)) {
+            for (ProgramDto programDto : programDtoList) {
+                int checkResult = programMapper.checkMenuPgmDupl(programDto);
+                if (checkResult > 0) {
+                    throw new ServiceException("중복된 데이터가 존재합니다.");
+                }
+                result += programMapper.saveMenuProgramList(programDto);
+            }
+        }
+        return result;
+    }
+
+
+    public int delteMenuProgramList(List<ProgramDto> programDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(programDtoList)) {
+            for (ProgramDto programDto : programDtoList) {
+                result += programMapper.deleteMenuProgramList(programDto);
+            }
+        }
         return result;
     }
 }

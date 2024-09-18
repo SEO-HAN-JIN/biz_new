@@ -173,7 +173,6 @@
 
     const fn_saveUpMenuGrid = () => {
         let modifiedData = programGrid.getModifiedRows();
-        console.log("## modifiedData ##", modifiedData);
         const createdData = modifiedData.createdRows;
         const updatedData = modifiedData.updatedRows;
 
@@ -213,23 +212,19 @@
     }
 
     const fn_deleteUpMenuGrid = () => {
-        const focusedCell = programGrid.getFocusedCell();
-        if (isNull(focusedCell)) {
+        const params = programGrid.getCheckedRows();
+        if (params.length === 0) {
             alert("삭제할 행을 선택해주세요.");
             return;
         }
 
-        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        const confirmResult = confirm("총 " + params.length + "개 행의 데이터를 삭제하시겠습니까?");
         if (confirmResult) {
-            const focusRow = programGrid.getRow(focusedCell.rowKey);
-            let params = {
-                menuId : focusRow.menuId
-            }
             $.ajax({
                 url: apiUrl,
                 data: JSON.stringify(params),
                 contentType:'application/json',
-                type: 'DELETE',
+                method: 'DELETE',
                 success: (result) => {
                     if (result > 0) {
                         alert("삭제가 완료되었습니다.");
