@@ -1,13 +1,11 @@
 package com.biz.framework.restcontroller.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.MenuDto;
+import com.biz.framework.dto.system.MenuDto;
 import com.biz.framework.service.system.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController

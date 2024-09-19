@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.UserMapper">
+
+    <select id="findUsers" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.UserMapper.findUsers */
+        SELECT USER_ID
+             , USER_NM
+          FROM USER
+         WHERE 1=1
+        <if test='userNm != null  and userNm != "" '>
+            AND USER_ID LIKE CONCAT('%', #{userNm}, '%')
+                OR USER_NM LIKE CONCAT('%', #{userNm}, '%')
+        </if>
+    </select>
+
+    <insert id="saveRoles">
+        /* com.biz.framework.mapper.system.RoleMapper.saveRoles */
+        INSERT INTO ROLE (
+            ROLE_NM
+            , ROLE_DESC
+        ) VALUES (
+            #{roleNm}
+            , #{roleDesc}
+        )
+    </insert>
+
+    <update id="updateRoles">
+        /* com.biz.framework.mapper.system.RoleMapper.updateRoles */
+        UPDATE ROLE
+           SET ROLE_NM       = #{roleNm}
+             , ROLE_DESC     = #{roleDesc}
+         WHERE ROLE_ID       = #{roleId}
+    </update>
+
+    <delete id="deleteRoles">
+        /* com.biz.framework.mapper.system.RoleMapper.deleteRoles */
+        DELETE FROM ROLE
+         WHERE ROLE_ID     = #{roleId}
+    </delete>
+
+</mapper>
