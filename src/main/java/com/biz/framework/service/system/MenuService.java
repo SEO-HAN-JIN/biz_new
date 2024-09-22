@@ -65,17 +65,9 @@ public class MenuService {
         }
         return upMenuList;
     }
-    
-//    public List<CamelCaseMap> findSideLayout() {
-//        List<MenuDto> menuList = menuMapper.findMenuList();
-//        List<ProgramDto> programList = programMapper.findRelProgram();
-//
-//        ArrayList<CamelCaseMap> result = new ArrayList<>();
-//
-//        for (MenuDto menuDto : menuList) {
-//            if (menuDto.getMenuUpId() == null) {    // 대분류
-//
-//            }
-//        }
-//    }
+
+
+    public List<CamelCaseMap> findSideLayout() {
+        return menuMapper.findSideLayout();
+    }
 }
