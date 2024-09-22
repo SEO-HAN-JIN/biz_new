@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+            
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>권한 등록</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">시스템</li>
+                        <li class="breadcrumb-item">권한관리</li>
+                        <li class="breadcrumb-item active" aria-current="page">권한 등록</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section id="horizontal-input">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body" id="searchForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <div class="col-lg-2 col-3">
+                                        <label class="col-form-label" for="roleNm">권한명</label>
+                                    </div>
+                                    <div class="col-lg-10 col-9">
+                                        <input type="text" id="roleNm" class="form-control form-control-sm" name="fname"
+                                               placeholder="권한명">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-secondary" id="searchBtn">조회</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    권한 목록
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-end" style="width: 100%;">
+                    <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnAddRoleGrid">추가</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="btnSaveRoleGrid">저장</button>
+                        <button type="button" class="btn btn-danger btn-sm" id="btnDeleteRoleGrid">삭제</button>
+                    </div>
+                </div>
+                <div id="roleGrid"></div>
+            </div>
+        </div>
+    </section>
+</div>
+<script type="text/javascript">
+
+    const apiUrl = '/api/system/roles';
+
+    let roleGrid;
+
+    $(document).ready(function() {
+        initEvent();
+        initRoleGrid();
+    });
+
+    const initEvent = () => {
+        $("#btnAddRoleGrid").on('click', fn_appendRoleGrid);
+        $("#btnSaveRoleGrid").on('click', fn_saveRoleGrid);
+        $("#btnDeleteRoleGrid").on('click', fn_deleteRoleGrid);
+
+        $("#searchBtn").on('click', searchRoleGrid);
+    }
+
+    const initRoleGrid = () => {
+        const Grid = tui.Grid;
+
+        roleGrid = new Grid({
+            el: document.getElementById('roleGrid'),
+            columns: [
+                {
+                    header: '권한ID',
+                    name: 'roleId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                },
+                {
+                    header: '권한명',
+                    name: 'roleNm',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+                {
+                    header: '설명',
+                    name: 'roleDesc',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                },
+            ],
+            bodyHeight: 500,
+            rowHeaders: ['checkbox']
+        });
+
+        searchRoleGrid();
+    }
+
+    const searchRoleGrid = () => {
+        const param = {
+            roleNm : $("#roleNm").val()
+        };
+
+        $.ajax({
+            url: apiUrl,
+            data: param,
+            type: 'GET',
+            success: (result) => {
+                roleGrid.resetData(result);
+            }
+        });
+    }
+
+    const fn_appendRoleGrid = () => {
+        roleGrid.appendRow('', {});
+    }
+
+    const fn_saveRoleGrid = () => {
+        let modifiedData = roleGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchRoleGrid();
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchRoleGrid();
+                    }
+                }
+            })
+        }
+    }
+
+    const fn_deleteRoleGrid = () => {
+        const params = roleGrid.getCheckedRows();
+        if (params.length === 0) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        const confirmResult = confirm("총 " + params.length + "개 행의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                method: 'DELETE',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchRoleGrid();
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchRoleGrid();
+                    }
+                }
+            })
+        }
+    }
+
+</script>
+</div>
+
+</html>

@@ -2,8 +2,7 @@ package com.biz.framework.service.system;
 
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.MenuDto;
-import com.biz.framework.dto.ProgramDto;
+import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.mapper.system.ProgramMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

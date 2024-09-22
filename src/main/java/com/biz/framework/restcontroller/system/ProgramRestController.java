@@ -1,7 +1,7 @@
 package com.biz.framework.restcontroller.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.ProgramDto;
+import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.service.system.ProgramService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

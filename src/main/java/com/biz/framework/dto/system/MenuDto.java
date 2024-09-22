@@ -1,4 +1,4 @@
-package com.biz.framework.dto;
+package com.biz.framework.dto.system;
 
 import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;

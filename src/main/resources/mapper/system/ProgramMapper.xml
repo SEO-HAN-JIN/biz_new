@@ -91,7 +91,7 @@
          WHERE PROGRAM_ID   = #{programId}
     </delete>
 
-    <select id="findRelProgram" resultType="com.biz.framework.dto.ProgramDto">
+    <select id="findRelProgram" resultType="com.biz.framework.dto.system.ProgramDto">
         /* com.biz.framework.mapper.ProgramMapper.findRelProgram */
         SELECT MP.MENU_ID
              , P.PROGRAM_ID
