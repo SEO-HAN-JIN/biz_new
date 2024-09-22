@@ -39,7 +39,7 @@ PRIMARY KEY (`role_id`)
 )
 
 CREATE TABLE `role_user` (
-`role_id` bigint(20) NOT NULL,
-`user_id` bigint(20) NOT NULL,
+`role_id` bigint NOT NULL,
+`user_id` varchar(100) NOT NULL,
 PRIMARY KEY (`role_id`,`user_id`)
 )

@@ -155,18 +155,13 @@
     });
 
     const initEvent = () => {
-        // $("#btnAddUserGrid").on('click', fn_appendUserGrid);
         $("#btnSaveUserGrid").on('click', fn_saveUserGrid);
         $("#btnDeleteUserGrid").on('click', fn_deleteUserGrid);
 
         $("#searchBtn").on('click', searchRoleGrid);
 
-        $('#userModal').off('shown.bs.modal').on('shown.bs.modal', function () {
-            console.log('모달이 열렸습니다.');
-        });
-
         // modal
-        // $('#userModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+        $('#userModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
         $("#modalAcceptBtn").on('click', modalAcceptBtn);
     }
 
@@ -228,6 +223,17 @@
         userGrid = new Grid({
             el: document.getElementById('userGrid'),
             columns: [
+                {
+                    header: '권한ID',
+                    name: 'roleId',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    //hidden: true
+                },
                 {
                     header: '사용자ID',
                     name: 'userId',
@@ -291,14 +297,23 @@
     }
 
     const modalAcceptBtn = () => {
-        const focusedCell = userPopGrid.getFocusedCell();
-        const focusRow = userPopGrid.getRow(focusedCell.rowKey);
+        const roleFocusedCell = roleGrid.getFocusedCell();
+        const roleFocusRowData = roleGrid.getRow(roleFocusedCell.rowKey);
+        if (isNull(roleFocusRowData)) {
+            alert("권한목록을 선택해 주세요.");
+            return;
+        }
+        const checkedRows = userPopGrid.getCheckedRows();
 
-        const rowData = {
-            userId: focusRow.userId,
-            userNm: focusRow.userNm,
-        };
-        userPopGrid.appendRow(rowData, {});
+        let rowDataList = [];
+        checkedRows.forEach((el) => {
+            let obj = {};
+            obj.roleId = roleFocusRowData.roleId;
+            obj.userId = el.userId;
+            obj.userNm = el.userNm;
+            rowDataList.push(obj);
+        })
+        userGrid.appendRows(rowDataList, {});
 
         $('#userModal').modal('hide'); // jQuery 사용 시
     }
@@ -339,6 +354,7 @@
     }
 
     const openPgmModal = () => {
+        userPopGrid.clear();
         userPopGrid.refreshLayout();
 
         const param = {
@@ -394,7 +410,7 @@
 
         if (result) {
             $.ajax({
-                url: apiUrl + "/list",
+                url: apiUrl + "/users",
                 data: JSON.stringify(params),
                 contentType:'application/json',
                 type: 'POST',

@@ -41,4 +41,15 @@
          WHERE ROLE_ID     = #{roleId}
     </delete>
 
+    <insert id="saveRoleUser">
+        /* com.biz.framework.mapper.system.RoleMapper.saveRoleUser */
+        INSERT INTO ROLE_USER (
+            role_id
+          , user_id
+        )
+        VALUES(
+            #{roleId},
+            #{userId}
+        )
+    </insert>
 </mapper>

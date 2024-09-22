@@ -35,4 +35,9 @@ public class RoleRestController {
 //        return
 //    }
 
+    @PostMapping("/users")
+    public int saveRoleUser(@RequestBody List<RoleDto> roleDtoList) {
+        return roleService.saveRoleUsers(roleDtoList);
+    }
+
 }

@@ -46,4 +46,14 @@ public class RoleService {
         return result;
     }
 
+    public int saveRoleUsers(List<RoleDto> roleDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(roleDtoList)) {
+            for (RoleDto roleDto : roleDtoList) {
+                result += roleMapper.saveRoleUser(roleDto);
+            }
+        }
+
+        return result;
+    }
 }

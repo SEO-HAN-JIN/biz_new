@@ -13,4 +13,6 @@ public interface RoleMapper {
     int saveRoles(RoleDto roleDto);
     int updateRoles(RoleDto roleDto);
     int deleteRoles(RoleDto roleDto);
+
+    int saveRoleUser(RoleDto roleDto);
 }
