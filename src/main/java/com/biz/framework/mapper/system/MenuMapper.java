@@ -18,4 +18,6 @@ public interface MenuMapper {
     int deleteMenu(MenuDto menuDto);
 
     List<MenuDto> findMenuList();
+
+    List<CamelCaseMap> findSideLayout();
 }

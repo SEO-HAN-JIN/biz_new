@@ -66,4 +66,36 @@
           FROM MENU
          ORDER BY MENU_UP_ID IS NOT NULL, MENU_SRT_ORD
     </select>
+
+    <select id="findSideLayout" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.MenuMapper.findSideLayout */
+        SELECT CASE WHEN MENU_ID LIKE '%PGM%' THEN '3'
+                    WHEN MENU_UP_ID IS NOT NULL THEN '2'
+                    ELSE '1' END AS CATEGORY
+             , MENU_ID
+             , MENU_UP_ID
+             , URL
+             , MENU_NM
+             , SRT_ORD
+          FROM (
+            select menu_id
+                , menu_up_id
+                , ''	as url
+                , menu_nm
+                , menu_srt_ord  as srt_ord
+            from menu m
+            union all
+            select CONCAT('PGM', mp.program_id)	as menu_id
+                , mp.menu_id		as menu_up_id
+                , program_url 		as url
+                , program_nm 		as menu_nm
+                , program_srt_ord 	as srt_ord
+            from menu_program  mp
+            join program 		 p
+            on p.program_id  = mp.program_id
+            WHERE P.USE_YN      = 'Y'
+        ) AS A
+        ORDER BY
+            CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, SRT_ORD
+    </select>
 </mapper>
