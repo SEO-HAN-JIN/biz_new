@@ -52,4 +52,30 @@
             #{userId}
         )
     </insert>
+
+    <select id="checkRoleUserDupl" resultType="int">
+        /* com.biz.framework.mapper.system.RoleMapper.checkRoleUserDupl */
+        SELECT COUNT(1)
+          FROM ROLE_USER
+         WHERE ROLE_ID = #{roleId}
+           AND USER_ID = #{userId}
+    </select>
+
+    <select id="findRoleUser" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.RoleMapper.findRoleUser */
+        SELECT R.ROLE_ID
+             , R.USER_ID
+             , U.USER_NM
+          FROM ROLE_USER    R
+          JOIN USER         U
+            ON U.USER_ID    = R.USER_ID
+         WHERE ROLE_ID      = #{roleId}
+    </select>
+
+    <delete id="deleteRoleUser">
+        /* com.biz.framework.mapper.system.RoleMapper.deleteRoleUser */
+        DELETE FROM ROLE_USER
+         WHERE ROLE_ID = #{roleId}
+           AND USER_ID = #{userId}
+    </delete>
 </mapper>

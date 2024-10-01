@@ -344,7 +344,7 @@
         };
 
         $.ajax({
-            url: apiUrl +"users",
+            url: apiUrl +"/users",
             data:params,
             type: 'GET',
             success: (result) => {
@@ -422,6 +422,9 @@
                         alert("저장에 실패하였습니다.");
                         searchUserGrid(upMenuFocusData);
                     }
+                }, error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchUserGrid(upMenuFocusData);
                 }
             })
         }
@@ -431,21 +434,18 @@
         const upMenuFocusedCell = roleGrid.getFocusedCell();
         const upMenuFocusData = roleGrid.getRow(upMenuFocusedCell.rowKey);
 
-        const focusedCell = userGrid.getFocusedCell();
-        if (isNull(focusedCell)) {
+        const checkedRows = userGrid.getCheckedRows();
+
+        if (checkedRows.length <=0 ) {
             alert("삭제할 행을 선택해주세요.");
             return;
         }
 
         const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
         if (confirmResult) {
-            const focusRow = userGrid.getRow(focusedCell.rowKey);
-            let params = {
-                menuId : focusRow.menuId
-            }
             $.ajax({
-                url: apiUrl + "/list",
-                data: JSON.stringify(params),
+                url: apiUrl + "/users",
+                data: JSON.stringify(checkedRows),
                 contentType:'application/json',
                 type: 'DELETE',
                 success: (result) => {
@@ -456,6 +456,10 @@
                         alert("삭제에 실패하였습니다.");
                         searchUserGrid(upMenuFocusData);
                     }
+                },
+                error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchUserGrid(upMenuFocusData);
                 }
             })
         }

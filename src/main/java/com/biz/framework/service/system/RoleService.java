@@ -1,5 +1,6 @@
 package com.biz.framework.service.system;
 
+import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.dto.system.RoleDto;
@@ -50,10 +51,27 @@ public class RoleService {
         int result = 0;
         if (!CollectionUtils.isEmpty(roleDtoList)) {
             for (RoleDto roleDto : roleDtoList) {
+                if (roleMapper.checkRoleUserDupl(roleDto) > 0) {
+                    throw new ServiceException("중복된 데이터가 존재합니다.");
+                };
                 result += roleMapper.saveRoleUser(roleDto);
             }
         }
 
+        return result;
+    }
+
+    public List<CamelCaseMap> findRoleUser(RoleDto roleDto) {
+        return roleMapper.findRoleUser(roleDto);
+    }
+
+    public int deleteRoleUser(List<RoleDto> roleDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(roleDtoList)) {
+            for (RoleDto roleDto : roleDtoList) {
+                result += roleMapper.deleteRoleUser(roleDto);
+            }
+        }
         return result;
     }
 }
