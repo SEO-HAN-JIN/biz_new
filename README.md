@@ -23,10 +23,9 @@ CREATE TABLE `menu_program` (
 PRIMARY KEY (`menu_id`,`program_id`)
 )
 
--- biz.`user` definition
-
 CREATE TABLE `user` (
 `user_id` varchar(100) NOT NULL,
+`user_pw` varchar(100) NOT NULL,
 `user_nm` varchar(100) NOT NULL,
 PRIMARY KEY (`user_id`)
 )
