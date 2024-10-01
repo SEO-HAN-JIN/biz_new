@@ -96,6 +96,6 @@
             WHERE P.USE_YN      = 'Y'
         ) AS A
         ORDER BY
-            CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, SRT_ORD
+            CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, CATEGORY, SRT_ORD
     </select>
 </mapper>
