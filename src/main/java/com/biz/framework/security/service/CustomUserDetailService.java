@@ -13,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,8 +44,16 @@ public class CustomUserDetailService implements UserDetailsService {
             roles.add(new SimpleGrantedAuthority(roleId));
         }
 
-        UserContext userContext = new UserContext(user, roles);
-        return userContext;
+        CustomUserDetails customUserDetails = CustomUserDetails.builder()
+                .username(user.getUserId())
+                .password(user.getUserPw())
+                .authorities(roles)
+                .isAccountNonExpired(true)
+                .isAccountNonLocked(true)
+                .isCredentialsNonExpired(true)
+                .isEnabled(true)
+                .build();
 
+        return customUserDetails;
     }
 }
