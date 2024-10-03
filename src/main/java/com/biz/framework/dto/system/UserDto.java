@@ -8,5 +8,6 @@ import lombok.Setter;
 @Getter
 public class UserDto extends BaseDto {
     private String userId;
+    private String userPw;
     private String userNm;
 }

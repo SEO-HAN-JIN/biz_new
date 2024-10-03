@@ -69,7 +69,13 @@
           FROM ROLE_USER    R
           JOIN USER         U
             ON U.USER_ID    = R.USER_ID
-         WHERE ROLE_ID      = #{roleId}
+         WHERE 1=1
+        <if test='roleId != null  and userId != "" '>
+            AND R.ROLE_ID      = #{roleId}
+        </if>
+        <if test='userId != null  and userId != "" '>
+            AND R.USER_ID      = #{userId}
+        </if>
     </select>
 
     <delete id="deleteRoleUser">
