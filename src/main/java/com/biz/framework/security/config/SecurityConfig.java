@@ -1,30 +1,30 @@
 package com.biz.framework.security.config;
 
 //import com.biz.framework.security.service.CustomUserDetailService;
+import com.biz.framework.security.handler.CustomAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AuthenticationFailureHandler authenticationFailureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**").permitAll()  // 정적 자원 및 로그인 페이지 허용
+                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**").permitAll()  // 정적 자원 및 로그인 페이지 허용
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
@@ -33,8 +33,11 @@ public class SecurityConfig {
                         .passwordParameter("userPw")
                         .loginProcessingUrl("/login_proc")
                         .defaultSuccessUrl("/", true)
+                        .failureHandler(authenticationFailureHandler)
                         .permitAll()
                 )
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.accessDeniedHandler(accessDeniedHandler()))
         ;
         return http.build();
     }
@@ -43,6 +46,13 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        CustomAccessDeniedHandler customAccessDeniedHandler = new CustomAccessDeniedHandler();
+        customAccessDeniedHandler.setErrorPage("/denied");
+        return customAccessDeniedHandler;
     }
 
 }
