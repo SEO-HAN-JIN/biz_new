@@ -6,6 +6,7 @@ import com.biz.framework.service.system.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.relation.Role;
 import java.util.List;
 
 @RestController
@@ -30,14 +31,19 @@ public class RoleRestController {
         return roleService.deleteRoles(roleDtoList);
     }
 
-//    @GetMapping("/users")
-//    public List<CamelCaseMap> findRelUsers(RoleDto roleDto) {
-//        return
-//    }
-
     @PostMapping("/users")
     public int saveRoleUser(@RequestBody List<RoleDto> roleDtoList) {
         return roleService.saveRoleUsers(roleDtoList);
+    }
+
+    @GetMapping("/users")
+    public List<CamelCaseMap> findRoleUser(RoleDto roleDto) {
+        return roleService.findRoleUser(roleDto);
+    }
+
+    @DeleteMapping("/users")
+    public int deleteRoleUser(@RequestBody List<RoleDto> roleDtoList) {
+        return roleService.deleteRoleUser(roleDtoList);
     }
 
 }

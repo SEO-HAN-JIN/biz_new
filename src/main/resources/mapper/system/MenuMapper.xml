@@ -57,7 +57,7 @@
         </if>
     </delete>
 
-    <select id="findMenuList" resultType="com.biz.framework.dto.MenuDto">
+    <select id="findMenuList" resultType="com.biz.framework.dto.system.MenuDto">
         /* com.biz.framework.mapper.MenuMapper.findMenuList */
         SELECT MENU_ID
              , MENU_NM

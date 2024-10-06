@@ -1,7 +1,7 @@
 package com.biz.framework.mapper.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.ProgramDto;
+import com.biz.framework.dto.system.ProgramDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

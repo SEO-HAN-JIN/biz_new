@@ -14,5 +14,10 @@ public interface RoleMapper {
     int updateRoles(RoleDto roleDto);
     int deleteRoles(RoleDto roleDto);
 
+    int checkRoleUserDupl(RoleDto roleDto);
+
     int saveRoleUser(RoleDto roleDto);
+    List<CamelCaseMap> findRoleUser(RoleDto roleDto);
+
+    int deleteRoleUser(RoleDto roleDto);
 }

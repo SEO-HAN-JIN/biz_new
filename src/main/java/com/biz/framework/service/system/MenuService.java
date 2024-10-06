@@ -1,8 +1,7 @@
 package com.biz.framework.service.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.MenuDto;
-import com.biz.framework.dto.ProgramDto;
+import com.biz.framework.dto.system.MenuDto;
 import com.biz.framework.mapper.system.MenuMapper;
 import com.biz.framework.mapper.system.ProgramMapper;
 import lombok.RequiredArgsConstructor;
