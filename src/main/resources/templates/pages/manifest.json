@@ -23,6 +23,18 @@
     "file": "assets/compiled/svg/Iconly---Bold.svg",
     "src": "assets/static/fonts/Iconly---Bold.svg"
   },
+//  "assets/static/fonts/NanumGothic-Regular.ttf": {
+//    "file": "assets/compiled/fonts/NanumGothic-Regular.ttf",
+//    "src": "assets/static/fonts/NanumGothic-Regular.ttf"
+//  },
+//  "assets/static/fonts/NanumGothic-Bold.ttf": {
+//    "file": "assets/compiled/fonts/NanumGothic-Bold.ttf",
+//    "src": "assets/static/fonts/NanumGothic-Bold.ttf"
+//  },
+//  "assets/static/fonts/NanumGothic-ExtraBold.ttf": {
+//    "file": "assets/compiled/fonts/NanumGothic-ExtraBold.ttf",
+//    "src": "assets/static/fonts/NanumGothic-ExtraBold.ttf"
+//  },
   "assets/static/fonts/Iconly---Bold.ttf": {
     "file": "assets/compiled/fonts/Iconly---Bold.ttf",
     "src": "assets/static/fonts/Iconly---Bold.ttf"
