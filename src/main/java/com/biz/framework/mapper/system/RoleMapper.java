@@ -1,6 +1,7 @@
 package com.biz.framework.mapper.system;
 
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.dto.system.RoleDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -20,4 +21,10 @@ public interface RoleMapper {
     List<CamelCaseMap> findRoleUser(RoleDto roleDto);
 
     int deleteRoleUser(RoleDto roleDto);
+
+    List<CamelCaseMap> findProgramList(RoleDto roleDto);
+
+    int saveRelProgramList(ProgramDto programDto);
+
+    int deleteRelProgramList(ProgramDto programDto);
 }

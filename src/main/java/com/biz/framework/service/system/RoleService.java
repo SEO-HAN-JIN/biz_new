@@ -74,4 +74,30 @@ public class RoleService {
         }
         return result;
     }
+
+    public List<CamelCaseMap> findProgramList(RoleDto roleDto) {
+        return roleMapper.findProgramList(roleDto);
+    }
+
+    public int saveRelProgramList(List<ProgramDto> programDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(programDtoList)) {
+            for (ProgramDto programDto : programDtoList) {
+                result += roleMapper.saveRelProgramList(programDto);
+            }
+        }
+
+        return result;
+    }
+
+    public int deleteRelProgramList(List<ProgramDto> programDtoList) {
+        int result = 0;
+        if (!CollectionUtils.isEmpty(programDtoList)) {
+            for (ProgramDto programDto : programDtoList) {
+                result += roleMapper.deleteRelProgramList(programDto);
+            }
+        }
+
+        return result;
+    }
 }

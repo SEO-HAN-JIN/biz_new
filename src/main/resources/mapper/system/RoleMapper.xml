@@ -84,4 +84,37 @@
          WHERE ROLE_ID = #{roleId}
            AND USER_ID = #{userId}
     </delete>
+
+    <select id="findProgramList">
+        /* com.biz.framework.mapper.system.RoleMapper.findProgramList */
+        SELECT RP.ROLE_ID
+             , RP.PROGRAM_ID
+             , P.PROGRAM_NM
+             , P.PROGRAM_URL
+             , P.USE_YN
+         FROM ROLE_PROGRAM  RP
+         JOIN PROGRAM       P
+           ON P.PROGRAM_ID  = RP.PROGRAM_ID
+        WHERE RP.ROLE_ID   = #{roleId}
+    </select>
+
+    <insert id="saveRelProgramList">
+        /* com.biz.framework.mapper.system.RoleMapper.saveRelProgramList */
+        INSERT INTO ROLE_PROGRAM
+        (
+            ROLE_ID
+            , PROGRAM_ID
+        ) VALUES
+        (
+            #{roleId}
+            , #{programId}
+        )
+    </insert>
+
+    <delete id="deleteRelProgramList">
+        /* com.biz.framework.mapper.system.RoleMapper.deleteRelProgramList */
+        DELETE FROM ROLE_PROGRAM
+        WHERE ROLE_ID = #{roleId}
+          AND PROGRAM_ID = #{programId}
+    </delete>
 </mapper>
