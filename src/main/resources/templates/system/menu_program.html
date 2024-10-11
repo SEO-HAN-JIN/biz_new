@@ -393,14 +393,14 @@
                 menuId : params.menuId
             };
     
-            // $.ajax({
-            //     url: apiPgmUrl + "/rel/menu",
-            //     data: param,
-            //     method: 'GET',
-            //     success: (result) => {
-            //         programGrid.resetData(result);
-            //     }
-            // });
+            $.ajax({
+                url: apiPgmUrl + "/rel/menu",
+                data: param,
+                method: 'GET',
+                success: (result) => {
+                    programGrid.resetData(result);
+                }
+            });
         }
     }
 
