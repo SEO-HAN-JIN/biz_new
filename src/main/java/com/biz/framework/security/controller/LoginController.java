@@ -1,6 +1,7 @@
 package com.biz.framework.security.controller;
 
 import com.biz.framework.dto.system.UserDto;
+import com.biz.framework.security.service.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -39,8 +40,9 @@ public class LoginController {
     @GetMapping("/denied")
     public String denied(@RequestParam(value = "exception", required = false) String exception, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDto userDto = (UserDto) authentication.getPrincipal();
-        model.addAttribute("userId", userDto.getUserId());
+        CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
+//        UserDto userDto = (UserDto) authentication.getPrincipal();
+        model.addAttribute("userId", principal.getUsername());
         model.addAttribute("exception", exception);
 
         return "error-403";

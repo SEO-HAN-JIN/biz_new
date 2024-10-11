@@ -2,6 +2,7 @@ package com.biz.framework.security.config;
 
 //import com.biz.framework.security.service.CustomUserDetailService;
 import com.biz.framework.security.handler.CustomAccessDeniedHandler;
+import com.biz.framework.security.manager.CustomAuthorizationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +27,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // 권장되는 CSRF 비활성화 설정 방식
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**").permitAll()  // 정적 자원 및 로그인 페이지 허용
-                        .anyRequest().authenticated()
+                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**", "/", "/denied*").permitAll()  // 정적 자원 및 로그인 페이지 허용
+//                        .anyRequest().authenticated()
+                        .anyRequest().access(new CustomAuthorizationManager())
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
