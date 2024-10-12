@@ -42,3 +42,9 @@ CREATE TABLE `role_user` (
 `user_id` varchar(100) NOT NULL,
 PRIMARY KEY (`role_id`,`user_id`)
 )
+
+CREATE TABLE `role_program` (
+`role_id` bigint NOT NULL,
+`program_id` bigint NOT NULL,
+PRIMARY KEY (`program_id`,`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
