@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -63,7 +64,9 @@ public class MenuService {
     }
 
 
-    public List<CamelCaseMap> findSideLayout(String userId) {
-        return menuMapper.findSideLayout(userId);
+    public List<CamelCaseMap> findSideLayout(List<String> authorityList) {
+        HashMap<String, List<String>> param = new HashMap<>();
+        param.put("authorityList", authorityList);
+        return menuMapper.findSideLayout(param);
     }
 }

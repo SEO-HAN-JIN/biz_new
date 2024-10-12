@@ -4,6 +4,7 @@ import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.system.MenuDto;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -18,5 +19,5 @@ public interface MenuMapper {
 
     List<MenuDto> findMenuList();
 
-    List<CamelCaseMap> findSideLayout(String userId);
+    List<CamelCaseMap> findSideLayout(HashMap<String, List<String>> param);
 }

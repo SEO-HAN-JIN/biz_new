@@ -5,6 +5,7 @@ import com.biz.framework.security.dto.AuthenticationDto;
 import com.biz.framework.service.system.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,8 @@ public class SideLayoutRestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AuthenticationDto authenticationDto = (AuthenticationDto) authentication.getPrincipal();
 
-        List<CamelCaseMap> sideLayout = menuService.findSideLayout(authenticationDto.getUserId());
+        List<String> authorityList = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        List<CamelCaseMap> sideLayout = menuService.findSideLayout(authorityList);
 
         Map<String, Object> result = new HashMap<>();
         result.put("userName", authenticationDto.getUserNm());

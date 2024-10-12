@@ -69,6 +69,25 @@
 
     <select id="findSideLayout" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.MenuMapper.findSideLayout */
+        with pgm as (
+            select distinct CONCAT('PGM', mp.program_id)	as menu_id
+                 , mp.menu_id		            as menu_up_id
+                 , program_url 		            as url
+                 , program_nm 		            as menu_nm
+                 , program_srt_ord 	            as srt_ord
+              from menu_program     mp
+              join program 		    p
+                on p.program_id     = mp.program_id
+              join role_program     rp
+                on rp.program_id    = p.program_id
+              join role_user 		ru
+                on ru.role_id		= rp.role_id
+             where 1=1
+               AND RU.ROLE_ID  IN
+            <foreach item="item" collection="authorityList" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        )
         SELECT CASE WHEN MENU_ID LIKE '%PGM%' THEN '3'
                     WHEN MENU_UP_ID IS NOT NULL THEN '2'
                     ELSE '1' END AS CATEGORY
@@ -78,24 +97,42 @@
              , MENU_NM
              , SRT_ORD
           FROM (
-            select menu_id
-                , menu_up_id
-                , ''	as url
-                , menu_nm
-                , menu_srt_ord  as srt_ord
-            from menu m
-            union all
-            select CONCAT('PGM', mp.program_id)	as menu_id
-                , mp.menu_id		as menu_up_id
-                , program_url 		as url
-                , program_nm 		as menu_nm
-                , program_srt_ord 	as srt_ord
-            from menu_program  mp
-            join program 		 p
-            on p.program_id  = mp.program_id
-            WHERE P.USE_YN      = 'Y'
-        ) AS A
-        ORDER BY
-            CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, CATEGORY, SRT_ORD
+                select um.menu_id
+                     , um.menu_up_id
+                     , '' 	as url
+                     , um.menu_nm
+                     , um.menu_srt_ord as srt_ord
+                  from menu		as um
+                  join (
+                    select m.menu_id
+                         , m.menu_up_id
+                         , '' 	as url
+                         , m.menu_nm
+                         , m.menu_srt_ord as srt_ord
+                      from menu 		m
+                      join pgm			p
+                        on p.menu_up_id	= m.menu_id
+                    ) md
+                    on md.menu_up_id	= um.menu_id
+                 group by um.menu_id
+                union all
+                 select m.menu_id
+                      , m.menu_up_id
+                      , '' 	as url
+                      , m.menu_nm
+                      , m.menu_srt_ord as srt_ord
+                   from menu 		m
+                   join pgm			p
+                     on p.menu_up_id	= m.menu_id
+                  group by m.menu_id
+                union all
+                 select menu_id
+                      , menu_up_id
+                      , url
+                      , menu_nm
+                      , srt_ord
+                   from pgm
+            ) AS A
+        ORDER BY CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, CATEGORY, SRT_ORD
     </select>
 </mapper>
