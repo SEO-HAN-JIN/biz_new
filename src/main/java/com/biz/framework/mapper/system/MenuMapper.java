@@ -18,5 +18,5 @@ public interface MenuMapper {
 
     List<MenuDto> findMenuList();
 
-    List<CamelCaseMap> findSideLayout();
+    List<CamelCaseMap> findSideLayout(String userId);
 }

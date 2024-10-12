@@ -89,6 +89,7 @@
         /* com.biz.framework.mapper.ProgramMapper.deleteMenuProgramList */
         DELETE FROM MENU_PROGRAM
          WHERE PROGRAM_ID   = #{programId}
+           AND MENU_ID      = #{menuId}
     </delete>
 
     <select id="findRelProgram" resultType="com.biz.framework.dto.system.ProgramDto">

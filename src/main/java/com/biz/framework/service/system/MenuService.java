@@ -63,7 +63,7 @@ public class MenuService {
     }
 
 
-    public List<CamelCaseMap> findSideLayout() {
-        return menuMapper.findSideLayout();
+    public List<CamelCaseMap> findSideLayout(String userId) {
+        return menuMapper.findSideLayout(userId);
     }
 }

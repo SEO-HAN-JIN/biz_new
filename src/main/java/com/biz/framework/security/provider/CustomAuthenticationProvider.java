@@ -1,5 +1,6 @@
 package com.biz.framework.security.provider;
 
+import com.biz.framework.security.dto.AuthenticationDto;
 import com.biz.framework.security.service.CustomUserDetails;
 import com.biz.framework.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +28,17 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String userId = authentication.getName();
         String userPw = (String) authentication.getCredentials();
 
-        CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(userId);
+        UserContext userContext = (UserContext) userDetailsService.loadUserByUsername(userId);
+        AuthenticationDto authenticationDto = userContext.getAuthenticationDto();
 
 //        if (!passwordEncoder.matches(userPw, userContext.getUser().getUserPw())) {
 //            throw new BadCredentialsException("BadCredentialException");
 //        }
-        if (!userPw.equals(userDetails.getPassword())) {
+        if (!userPw.equals(authenticationDto.getUserPw())) {
             throw new BadCredentialsException("BadCredentialException");
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(authenticationDto, null, authenticationDto.getAuthorities());
         return authenticationToken;
     }
 

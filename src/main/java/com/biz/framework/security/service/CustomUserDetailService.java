@@ -5,6 +5,7 @@ import com.biz.framework.dto.system.RoleDto;
 import com.biz.framework.dto.system.UserDto;
 import com.biz.framework.mapper.system.RoleMapper;
 import com.biz.framework.mapper.system.UserMapper;
+import com.biz.framework.security.dto.AuthenticationDto;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.Required;
 import org.springframework.context.annotation.Configuration;
@@ -44,16 +45,12 @@ public class CustomUserDetailService implements UserDetailsService {
             roles.add(new SimpleGrantedAuthority(roleId));
         }
 
-        CustomUserDetails customUserDetails = CustomUserDetails.builder()
-                .username(user.getUserId())
-                .password(user.getUserPw())
+        AuthenticationDto auth = AuthenticationDto.builder()
+                .userId(user.getUserId())
+                .userPw(user.getUserPw())
+                .userNm(user.getUserNm())
                 .authorities(roles)
-                .isAccountNonExpired(true)
-                .isAccountNonLocked(true)
-                .isCredentialsNonExpired(true)
-                .isEnabled(true)
                 .build();
-
-        return customUserDetails;
+        return new UserContext(auth, roles);
     }
 }
