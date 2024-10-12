@@ -21,15 +21,16 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 public class SecurityConfig {
 
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final CustomAuthorizationManager customAuthorizationManager;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // 권장되는 CSRF 비활성화 설정 방식
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**", "/", "/denied*").permitAll()  // 정적 자원 및 로그인 페이지 허용
-//                        .anyRequest().authenticated()
-                        .anyRequest().access(new CustomAuthorizationManager())
+                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**", "/denied*", "/api/sidelayout").permitAll()  // 정적 자원 및 로그인 페이지 허용
+                        .requestMatchers("/").authenticated()
+                        .anyRequest().access(customAuthorizationManager)
                 )
                 .formLogin(login -> login
                         .loginPage("/login")

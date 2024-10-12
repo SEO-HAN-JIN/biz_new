@@ -41,7 +41,7 @@ public class LoginController {
     public String denied(@RequestParam(value = "exception", required = false) String exception, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-//        UserDto userDto = (UserDto) authentication.getPrincipal();
+
         model.addAttribute("userId", principal.getUsername());
         model.addAttribute("exception", exception);
 

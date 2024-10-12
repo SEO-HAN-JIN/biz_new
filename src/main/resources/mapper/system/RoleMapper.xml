@@ -117,4 +117,15 @@
         WHERE ROLE_ID = #{roleId}
           AND PROGRAM_ID = #{programId}
     </delete>
+
+    <select id="findRoleProgram">
+        /* com.biz.framework.mapper.system.RoleMapper.findRoleProgram */
+        SELECT RP.ROLE_ID
+             , RP.PROGRAM_ID
+          FROM ROLE_PROGRAM     RP
+          JOIN PROGRAM          P
+            ON P.PROGRAM_ID     = RP.PROGRAM_ID
+         WHERE CONCAT(P.PROGRAM_URL, '/')    LIKE CONCAT(TRIM(#{programUrl}), '/', '%')
+           AND P.USE_YN         = 'Y'
+    </select>
 </mapper>

@@ -27,4 +27,6 @@ public interface RoleMapper {
     int saveRelProgramList(ProgramDto programDto);
 
     int deleteRelProgramList(ProgramDto programDto);
+
+    List<CamelCaseMap> findRoleProgram(ProgramDto programDto);
 }

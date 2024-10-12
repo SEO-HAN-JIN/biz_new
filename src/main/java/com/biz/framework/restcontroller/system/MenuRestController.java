@@ -49,9 +49,4 @@ public class MenuRestController {
     public List<MenuDto> findMenuHierarchy(MenuDto menuDto) {
         return menuService.findMenuHierarchy(menuDto);
     }
-
-    @GetMapping("/sidelayout")
-    public List<CamelCaseMap> findAllList() {
-        return menuService.findSideLayout();
-    }
 }
