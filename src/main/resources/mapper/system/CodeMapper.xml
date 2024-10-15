@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.CodeMapper">
+
+    <select id="findCdpatt" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.CodeMapper.findCdpatt */
+        SELECT PATTERN_CODE
+             , PATTERN_NAME
+          FROM CDPATT
+         WHERE 1=1
+        <if test='patternName != null  and patternName != "" '>
+            AND PATTERN_NAME LIKE CONCAT('%', #{patternName}, '%')
+        </if>
+    </select>
+
+    <insert id="saveCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.saveCdpatt */
+        INSERT INTO CDPATT (
+            PATTERN_CODE
+            , PATTERN_NAME
+        ) VALUES (
+            #{patternCode}
+            , #{patternName}
+        )
+    </insert>
+
+    <update id="updateCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.updateCdpatt */
+        UPDATE CDPATT
+           SET PATTERN_NAME     = #{patternName}
+         WHERE PATTERN_CODE     = #{patternCode}
+    </update>
+
+    <delete id="deleteCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.deleteCdpatt */
+        DELETE FROM CDPATT
+        WHERE PATTERN_CODE = #{patternCode}
+    </delete>
+
+    <select id="findCdbase" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.CodeMapper.findCdbase */
+        SELECT CD.PATTERN_CODE
+             , CD.BASE_CODE
+             , CD.CODE_NAME
+             , CD.DISPLAY_ORDER
+          FROM CDBASE               CD
+         WHERE CD.PATTERN_CODE      = #{patternCode}
+         ORDER BY CD.DISPLAY_ORDER
+    </select>
+
+    <select id="checkMenuPgmDupl">
+        /* com.biz.framework.mapper.ProgramMapper.checkMenuPgmDupl */
+        SELECT COUNT(1)
+        FROM MENU_PROGRAM
+        WHERE MENU_ID      = #{menuId}
+        AND PROGRAM_ID   = #{programId}
+    </select>
+
+    <insert id="saveMenuProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.saveMenuProgramList */
+        INSERT INTO MENU_PROGRAM (
+            MENU_ID
+            , PROGRAM_ID
+        ) VALUES (
+            #{menuId}
+            , #{programId}
+        )
+    </insert>
+
+    <delete id="deleteMenuProgramList">
+        /* com.biz.framework.mapper.ProgramMapper.deleteMenuProgramList */
+        DELETE FROM MENU_PROGRAM
+         WHERE PROGRAM_ID   = #{programId}
+           AND MENU_ID      = #{menuId}
+    </delete>
+
+    <select id="findRelProgram" resultType="com.biz.framework.dto.system.ProgramDto">
+        /* com.biz.framework.mapper.ProgramMapper.findRelProgram */
+        SELECT MP.MENU_ID
+             , P.PROGRAM_ID
+             , P.PROGRAM_NM
+             , P.PROGRAM_URL
+             , P.USE_YN
+             , P.PROGRAM_SRT_ORD
+          FROM MENU_PROGRAM         MP
+          LEFT JOIN PROGRAM         P
+            ON P.PROGRAM_ID         = MP.PROGRAM_ID
+         ORDER BY P.PROGRAM_SRT_ORD
+    </select>
+</mapper>

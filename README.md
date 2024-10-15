@@ -49,8 +49,16 @@ CREATE TABLE `role_program` (
 PRIMARY KEY (`program_id`,`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `cdpatt` (
+`pattern_code` varchar(100) NOT NULL,
+`pattern_name` varchar(100) NOT NULL,
+PRIMARY KEY (`pattern_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE `cdbase` (
+`pattern_code` varchar(100) NOT NULL,
 `base_code` varchar(100) NOT NULL,
-`code_name` varchar(100) NOT NULL,
-`display_order` bigint DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+`cdoe_name` varchar(100) DEFAULT NULL,
+`display_order` bigint(20) DEFAULT NULL,
+PRIMARY KEY (`pattern_code`,`base_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

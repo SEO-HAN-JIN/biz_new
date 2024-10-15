@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+            
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>공통코드관리</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">시스템</li>
+                        <li class="breadcrumb-item">코드관리</li>
+                        <li class="breadcrumb-item active" aria-current="page">공통코드관리</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section id="horizontal-input">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body" id="searchForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row align-items-center">
+                                    <div class="col-lg-2 col-3">
+                                        <label class="col-form-label" for="codeName">코드명</label>
+                                    </div>
+                                    <div class="col-lg-10 col-9">
+                                        <input type="text" id="codeName" class="form-control form-control-sm" name="codeName" placeholder="코드명">
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row" id="basic-table">
+            <div class="col-12 col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">유형코드</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <!-- 빈 div로 버튼 자리 확보 -->
+                                <div style="height: 32px;"></div>
+                            </div>
+                        </div>
+                        <div id="codeMstGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">기초코드</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <button type="button" class="btn btn-primary btn-sm" id="btnAddCodeDetailGrid">추가</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnSaveCodeDetailGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteCodeDetailGrid">삭제</button>
+                            </div>
+                        </div>
+                        <div id="codeDetailGrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<script type="text/javascript">
+
+    const apiUrl = '/api/system/codes';
+
+    let codeMstGrid;
+    let codeDetailGrid;
+    let pgmPopGrid;
+
+    $(document).ready(function() {
+        initEvent();
+        initCodeMstGrid();
+        initCodeDetailGrid();
+    });
+
+    const initEvent = () => {
+        $("#btnAddCodeDetailGrid").on('click', fn_appendCodeDetailGrid);
+        $("#btnSaveCodeDetailGrid").on('click', fn_saveCodeDetailGrid);
+        $("#btnDeleteCodeDetailGrid").on('click', fn_deleteCodeDetailGrid);
+
+        $("#searchBtn").on('click', searchCodeMstGrid);
+    }
+
+    const initCodeMstGrid = () => {
+        const Grid = tui.Grid;
+
+        codeMstGrid = new Grid({
+            el: document.getElementById('codeMstGrid'),
+            columns: [
+                {
+                    header: '유형코드',
+                    name: 'patternCode',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    width: 10
+                    // hidden: true
+                },
+                {
+                    header: '유형이름',
+                    name: 'patternName',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    }
+                }
+            ],
+            bodyHeight: 500,
+            // rowHeaders: ['rowNum', 'checkbox']
+        });
+
+        codeMstGrid.on('click', (ev) => {
+            let value = codeMstGrid.getRow(ev.rowKey);
+            if (!isNull(value)) {
+                searchCodeDetailGrid(value);
+            }
+        })
+
+    }
+
+    const initCodeDetailGrid = () => {
+        const Grid = tui.Grid;
+
+        codeDetailGrid = new Grid({
+            el: document.getElementById('codeDetailGrid'),
+            columns: [
+                {
+                    header: '유형코드',
+                    name: 'patternCode',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    editable: false,
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    hidden: true
+                },
+                {
+                    header: '코드',
+                    name: 'baseCode',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    editable: false,
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    //hidden: true
+                },
+                {
+                    header: '코드명',
+                    name: 'codeName',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    hidden: true
+                },
+                {
+                    header: '순서',
+                    name: 'displayOrder',
+                    align: 'center',
+                    whiteSpace: 'normal',
+                    // editor: 'text',
+                    formatter: function(e) {
+                        return e.value
+                    },
+                    // hidden: true
+                }
+            ],
+            bodyHeight: 500,
+            rowHeaders: ['rowNum', 'checkbox']
+        });
+
+        searchCodeMstGrid();
+    }
+
+    const searchCodeMstGrid = () => {
+        codeDetailGrid.clear();
+
+        const param = {
+            menuNm : $("#first-name").val()
+        };
+
+        $.ajax({
+            url: apiUrl,
+            data: param,
+            type: 'GET',
+            success: (result) => {
+                codeMstGrid.resetData(result);
+            },
+            error: (xhr, status, error) => {
+                alert("권한목록 조회에 실패하였습니다.");
+            }
+        });
+    }
+
+    const searchCodeDetailGrid = (param) => {
+        let params = {
+            roleId : param.roleId
+        };
+
+        $.ajax({
+            url: apiUrl +"/program",
+            data:params,
+            type: 'GET',
+            success: (result) => {
+                codeDetailGrid.resetData(result);
+            }
+        })
+    }
+
+    const fn_appendCodeDetailGrid = () => {
+        const upMenuFocusedCell = codeMstGrid.getFocusedCell();
+        const upCodeDetailGridData = codeMstGrid.getRow(upMenuFocusedCell.rowKey);
+
+        const rowData = {menuNm: "", menuId: "", menuSrtOrd: "", menuUpId: upCodeDetailGridData.menuId};
+
+        codeDetailGrid.appendRow(rowData, {});
+    }
+
+    const fn_saveCodeDetailGrid = () => {
+        const upMenuFocusedCell = codeMstGrid.getFocusedCell();
+        const upMenuFocusData = codeMstGrid.getRow(upMenuFocusedCell.rowKey);
+
+        let modifiedData = codeDetailGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl + "/program/save",
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchCodeDetailGrid(upMenuFocusData);
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchCodeDetailGrid(upMenuFocusData);
+                    }
+                }, error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchCodeDetailGrid(upMenuFocusData);
+                }
+            })
+        }
+    }
+
+    const fn_deleteCodeDetailGrid = () => {
+        const upMenuFocusedCell = codeMstGrid.getFocusedCell();
+        const upMenuFocusData = codeMstGrid.getRow(upMenuFocusedCell.rowKey);
+
+        const checkedRows = codeDetailGrid.getCheckedRows();
+
+        if (checkedRows.length <=0 ) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            $.ajax({
+                url: apiUrl + "/program/delete",
+                data: JSON.stringify(checkedRows),
+                contentType:'application/json',
+                type: 'DELETE',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchCodeDetailGrid(upMenuFocusData);
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchCodeDetailGrid(upMenuFocusData);
+                    }
+                },
+                error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchCodeDetailGrid(upMenuFocusData);
+                }
+            })
+        }
+    }
+
+</script>
+</div>
+
+</html>
