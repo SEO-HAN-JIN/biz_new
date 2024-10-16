@@ -58,7 +58,7 @@ PRIMARY KEY (`pattern_code`)
 CREATE TABLE `cdbase` (
 `pattern_code` varchar(100) NOT NULL,
 `base_code` varchar(100) NOT NULL,
-`cdoe_name` varchar(100) DEFAULT NULL,
+`code_name` varchar(100) DEFAULT NULL,
 `display_order` bigint(20) DEFAULT NULL,
 PRIMARY KEY (`pattern_code`,`base_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
