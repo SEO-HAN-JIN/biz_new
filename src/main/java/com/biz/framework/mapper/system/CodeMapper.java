@@ -14,6 +14,7 @@ public interface CodeMapper {
     int saveCdpatt(CodeDto codeDto);
     int updateCdpatt(CodeDto codeDto);
     int deleteCdpatt(CodeDto codeDto);
+    int deleteCdbaseByPatternCode(CodeDto codeDto);
 
     List<CamelCaseMap> findCdbase(CodeDto codeDto);
     int saveCdbase(CodeDto codeDto);
@@ -21,5 +22,4 @@ public interface CodeMapper {
     int deleteCdbase(CodeDto codeDto);
 
     int checkCdbase(CodeDto codeDto);
-
 }

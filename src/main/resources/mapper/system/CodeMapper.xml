@@ -46,6 +46,13 @@
         WHERE PATTERN_CODE = #{patternCode}
     </delete>
 
+    <delete id="deleteCdbaseByPatternCode">
+        /* com.biz.framework.mapper.system.CodeMapper.deleteCdbaseByPatternCode */
+        DELETE FROM CDBASE
+        WHERE PATTERN_CODE = #{patternCode}
+
+    </delete>
+
     <select id="findCdbase" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.system.CodeMapper.findCdbase */
         SELECT CD.PATTERN_CODE

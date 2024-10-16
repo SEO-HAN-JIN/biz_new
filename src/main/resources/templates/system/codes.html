@@ -31,10 +31,10 @@
                             <div class="col-md-6">
                                 <div class="form-group row align-items-center">
                                     <div class="col-lg-2 col-3">
-                                        <label class="col-form-label" for="codeName">코드명</label>
+                                        <label class="col-form-label" for="patternName">유형이름</label>
                                     </div>
                                     <div class="col-lg-10 col-9">
-                                        <input type="text" id="codeName" class="form-control form-control-sm" name="codeName" placeholder="코드명">
+                                        <input type="text" id="patternName" class="form-control form-control-sm" name="patternName" placeholder="유형이름">
                                     </div>
                                 </div>
                             </div>
@@ -125,13 +125,6 @@
                     align: 'center',
                     whiteSpace: 'normal',
                     editor: 'text', // editor 추가
-                    editable: (value, rowData) => {
-                        // rowKey로 해당 행의 데이터를 가져오기
-                        const row = codeMstGrid.getRow(rowData.rowKey);
-                        console.log("## row ##", row);
-                        // rowState가 'created'인 경우에만 수정 가능
-                        return row && row._attributes && row._attributes.rowState === 'created';
-                    },
                     formatter: function(e) {
                         return e.value;
                     },
@@ -142,7 +135,7 @@
                     name: 'patternName',
                     align: 'center',
                     whiteSpace: 'normal',
-                    // editor: 'text',
+                    editor: 'text',
                     editable: false,
                     formatter: function(e) {
                         return e.value
@@ -150,8 +143,26 @@
                 }
             ],
             bodyHeight: 500,
-            // rowHeaders: ['rowNum', 'checkbox']
+            rowHeaders: ['rowNum', 'checkbox']
         });
+
+            // patternCode 입력을 차단하는 beforeChange 이벤트
+            codeMstGrid.on('beforeChange', (ev) => {
+                const change = ev.changes[0];
+            
+                if (change.columnName === 'patternCode') {
+                    // 모든 변경된 행 상태를 가져오기
+                    const modifiedRows = codeMstGrid.getModifiedRows();
+            
+                    // 현재 행의 rowKey가 'created' 상태인지 확인
+                    const isCreated = modifiedRows.createdRows.some(row => row.rowKey === change.rowKey);
+            
+            
+                    if (!isCreated) {
+                        ev.stop(); // 입력을 차단
+                    }
+                }
+            });
 
         codeMstGrid.on('click', (ev) => {
             let value = codeMstGrid.getRow(ev.rowKey);
@@ -159,17 +170,6 @@
                 searchCodeDetailGrid(value);
             }
         })
-
-        // 입력 조건을 검사하는 이벤트 핸들러
-        codeMstGrid.on('beforeChange', (ev) => {
-            console.log("## ev ##", ev);
-            const row = codeMstGrid.getRow(ev.rowKey);
-            // rowState가 'created'인 경우에만 입력 가능
-            console.log("## row ##", row);
-            if (row._attributes.rowState !== 'created') {
-                ev.stop(); // 입력을 차단
-            }
-        });
 
     }
 
@@ -196,7 +196,7 @@
                     name: 'baseCode',
                     align: 'center',
                     whiteSpace: 'normal',
-                    // editor: 'text',
+                    editor: 'text',
                     editable: true,
                     formatter: function(e) {
                         return e.value
@@ -208,18 +208,18 @@
                     name: 'codeName',
                     align: 'center',
                     whiteSpace: 'normal',
-                    // editor: 'text',
+                    editor: 'text',
                     formatter: function(e) {
                         return e.value
                     },
-                    hidden: true
+                    // hidden: true
                 },
                 {
                     header: '순서',
                     name: 'displayOrder',
                     align: 'center',
                     whiteSpace: 'normal',
-                    // editor: 'text',
+                    editor: 'text',
                     formatter: function(e) {
                         return e.value
                     },
@@ -230,6 +230,24 @@
             rowHeaders: ['rowNum', 'checkbox']
         });
 
+        // patternCode 입력을 차단하는 beforeChange 이벤트
+        codeDetailGrid.on('beforeChange', (ev) => {
+            const change = ev.changes[0];
+        
+            if (change.columnName === 'baseCode') {
+                // 모든 변경된 행 상태를 가져오기
+                const modifiedRows = codeDetailGrid.getModifiedRows();
+        
+                // 현재 행의 rowKey가 'created' 상태인지 확인
+                const isCreated = modifiedRows.createdRows.some(row => row.rowKey === change.rowKey);
+        
+        
+                if (!isCreated) {
+                    ev.stop(); // 입력을 차단
+                }
+            }
+        });
+        
         searchCodeMstGrid();
     }
 
@@ -237,7 +255,7 @@
         codeDetailGrid.clear();
 
         const param = {
-            patterName : $("#patterName").val()
+            patternName : $("#patternName").val()
         };
 
         $.ajax({
@@ -271,8 +289,12 @@
     const fn_appendCodeDetailGrid = () => {
         const upMenuFocusedCell = codeMstGrid.getFocusedCell();
         const upCodeDetailGridData = codeMstGrid.getRow(upMenuFocusedCell.rowKey);
+        if (isNull(upCodeDetailGridData)) {
+            alert("유형코드를 선택해주세요.");
+            return;
+        }
 
-        const rowData = {menuNm: "", menuId: "", menuSrtOrd: "", menuUpId: upCodeDetailGridData.menuId};
+        const rowData = {patternCode: upCodeDetailGridData.patternCode, baseCode: "", codeName: "", displayOrder: ""};
 
         codeDetailGrid.appendRow(rowData, {});
     }

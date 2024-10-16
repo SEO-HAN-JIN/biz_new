@@ -43,6 +43,7 @@ public class CodeService {
         if (!CollectionUtils.isEmpty(codeDtoList)) {
             for (CodeDto codeDto : codeDtoList) {
                 result += codeMapper.deleteCdpatt(codeDto);
+                result += codeMapper.deleteCdbaseByPatternCode(codeDto);
             }
         }
         return result;
