@@ -48,7 +48,7 @@
 
     <section class="section">
         <div class="row" id="basic-table">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-5">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">유형코드</h4>
@@ -56,8 +56,9 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-end" style="width: 100%;">
                             <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
-                                <!-- 빈 div로 버튼 자리 확보 -->
-                                <div style="height: 32px;"></div>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnAddCodeMstGrid">추가</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnSaveCodeMstGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteCodeMstGrid">삭제</button>
                             </div>
                         </div>
                         <div id="codeMstGrid"></div>
@@ -65,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-md-8">
+            <div class="col-12 col-md-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">기초코드</h4>
@@ -101,6 +102,10 @@
     });
 
     const initEvent = () => {
+        $("#btnAddCodeMstGrid").on('click', fn_appendCodeMstGrid);
+        $("#btnSaveCodeMstGrid").on('click', fn_saveCodeMstGrid);
+        $("#btnDeleteCodeMstGrid").on('click', fn_deleteCodeMstGrid);
+
         $("#btnAddCodeDetailGrid").on('click', fn_appendCodeDetailGrid);
         $("#btnSaveCodeDetailGrid").on('click', fn_saveCodeDetailGrid);
         $("#btnDeleteCodeDetailGrid").on('click', fn_deleteCodeDetailGrid);
@@ -119,12 +124,18 @@
                     name: 'patternCode',
                     align: 'center',
                     whiteSpace: 'normal',
-                    // editor: 'text',
-                    formatter: function(e) {
-                        return e.value
+                    editor: 'text', // editor 추가
+                    editable: (value, rowData) => {
+                        // rowKey로 해당 행의 데이터를 가져오기
+                        const row = codeMstGrid.getRow(rowData.rowKey);
+                        console.log("## row ##", row);
+                        // rowState가 'created'인 경우에만 수정 가능
+                        return row && row._attributes && row._attributes.rowState === 'created';
                     },
-                    width: 10
-                    // hidden: true
+                    formatter: function(e) {
+                        return e.value;
+                    },
+                    width: 70
                 },
                 {
                     header: '유형이름',
@@ -132,6 +143,7 @@
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
+                    editable: false,
                     formatter: function(e) {
                         return e.value
                     }
@@ -147,6 +159,17 @@
                 searchCodeDetailGrid(value);
             }
         })
+
+        // 입력 조건을 검사하는 이벤트 핸들러
+        codeMstGrid.on('beforeChange', (ev) => {
+            console.log("## ev ##", ev);
+            const row = codeMstGrid.getRow(ev.rowKey);
+            // rowState가 'created'인 경우에만 입력 가능
+            console.log("## row ##", row);
+            if (row._attributes.rowState !== 'created') {
+                ev.stop(); // 입력을 차단
+            }
+        });
 
     }
 
@@ -174,7 +197,7 @@
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
-                    editable: false,
+                    editable: true,
                     formatter: function(e) {
                         return e.value
                     },
@@ -214,29 +237,29 @@
         codeDetailGrid.clear();
 
         const param = {
-            menuNm : $("#first-name").val()
+            patterName : $("#patterName").val()
         };
 
         $.ajax({
-            url: apiUrl,
+            url: apiUrl + "/master",
             data: param,
             type: 'GET',
             success: (result) => {
                 codeMstGrid.resetData(result);
             },
             error: (xhr, status, error) => {
-                alert("권한목록 조회에 실패하였습니다.");
+                alert("유형코드목록 조회를 실패하였습니다.");
             }
         });
     }
 
     const searchCodeDetailGrid = (param) => {
         let params = {
-            roleId : param.roleId
+            patternCode : param.patternCode
         };
 
         $.ajax({
-            url: apiUrl +"/program",
+            url: apiUrl +"/detail",
             data:params,
             type: 'GET',
             success: (result) => {
@@ -252,6 +275,54 @@
         const rowData = {menuNm: "", menuId: "", menuSrtOrd: "", menuUpId: upCodeDetailGridData.menuId};
 
         codeDetailGrid.appendRow(rowData, {});
+    }
+
+    const fn_appendCodeMstGrid = () => {
+        codeMstGrid.appendRow({}, {});
+    }
+
+    const fn_saveCodeMstGrid = () => {
+
+        let modifiedData = codeMstGrid.getModifiedRows();
+        const createdData = modifiedData.createdRows;
+        const updatedData = modifiedData.updatedRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+        const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        for (let i = 0; i < updatedData.length; i++) {
+            updatedData[i].rowStatus = 'U';
+            params.push(updatedData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl + "/master",
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchCodeMstGrid();
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchCodeMstGrid();
+                    }
+                }, error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchCodeMstGrid();
+                }
+            })
+        }
     }
 
     const fn_saveCodeDetailGrid = () => {
@@ -280,7 +351,7 @@
 
         if (result) {
             $.ajax({
-                url: apiUrl + "/program/save",
+                url: apiUrl + "/detail",
                 data: JSON.stringify(params),
                 contentType:'application/json',
                 type: 'POST',
@@ -300,6 +371,38 @@
         }
     }
 
+    const fn_deleteCodeMstGrid = () => {
+        const checkedRows = codeMstGrid.getCheckedRows();
+
+        if (checkedRows.length <=0 ) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            $.ajax({
+                url: apiUrl + "/master",
+                data: JSON.stringify(checkedRows),
+                contentType:'application/json',
+                type: 'DELETE',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchCodeMstGrid();
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchCodeMstGrid();
+                    }
+                },
+                error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchCodeMstGrid();
+                }
+            })
+        }
+    }
+
     const fn_deleteCodeDetailGrid = () => {
         const upMenuFocusedCell = codeMstGrid.getFocusedCell();
         const upMenuFocusData = codeMstGrid.getRow(upMenuFocusedCell.rowKey);
@@ -314,7 +417,7 @@
         const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
         if (confirmResult) {
             $.ajax({
-                url: apiUrl + "/program/delete",
+                url: apiUrl + "/detail",
                 data: JSON.stringify(checkedRows),
                 contentType:'application/json',
                 type: 'DELETE',

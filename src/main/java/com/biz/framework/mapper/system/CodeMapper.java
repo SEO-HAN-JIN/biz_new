@@ -11,16 +11,15 @@ import java.util.List;
 public interface CodeMapper {
     List<CamelCaseMap> findCdpatt(CodeDto codeDto);
 
-    int saveProgramList(ProgramDto programDto);
-    int updateProgramList(ProgramDto programDto);
-    int deleteProgramList(ProgramDto programDto);
+    int saveCdpatt(CodeDto codeDto);
+    int updateCdpatt(CodeDto codeDto);
+    int deleteCdpatt(CodeDto codeDto);
 
-    List<CamelCaseMap> findProgramMenuList(ProgramDto programDto);
-    int saveMenuProgramList(ProgramDto programDto);
-    int deleteMenuProgramList(ProgramDto programDto);
+    List<CamelCaseMap> findCdbase(CodeDto codeDto);
+    int saveCdbase(CodeDto codeDto);
+    int updateCdbase(CodeDto codeDto);
+    int deleteCdbase(CodeDto codeDto);
 
-    int checkMenuPgmDupl(ProgramDto programDto);
-
-    List<ProgramDto> findRelProgram();
+    int checkCdbase(CodeDto codeDto);
 
 }

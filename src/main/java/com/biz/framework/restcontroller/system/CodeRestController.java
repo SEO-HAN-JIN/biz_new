@@ -16,33 +16,33 @@ public class CodeRestController {
 
     private final CodeService codeService;
 
-    @GetMapping
+    @GetMapping("/master")
     public List<CamelCaseMap> findCdpatt(CodeDto codeDto) {
         return codeService.findCdpatt(codeDto);
     }
 
-    @PostMapping
-    public int saveProgramList(@RequestBody List<ProgramDto> programDtoList) {
-        return codeService.saveProgramList(programDtoList);
+    @PostMapping("/master")
+    public int saveMaster(@RequestBody List<CodeDto> codeDtoList) {
+        return codeService.saveMaster(codeDtoList);
     }
 
-    @DeleteMapping
-    public int deleteProgramList(@RequestBody List<ProgramDto> programDtoList) {
-        return codeService.deleteProgramList(programDtoList);
+    @DeleteMapping("/master")
+    public int deleteMaster(@RequestBody List<CodeDto> codeDtoList) {
+        return codeService.deleteMaster(codeDtoList);
     }
 
-    @GetMapping("/rel/menu")
-    public List<CamelCaseMap> findMenuProgramList(ProgramDto programDto) {
-        return codeService.findProgramMenuList(programDto);
+    @GetMapping("/detail")
+    public List<CamelCaseMap> findDetailList(CodeDto codeDto) {
+        return codeService.findDetailList(codeDto);
     }
 
-    @PostMapping("/rel/menu")
-    public int saveMenuProgramList(@RequestBody List<ProgramDto> programDtoList) {
-        return codeService.saveMenuProgramList(programDtoList);
+    @PostMapping("/detail")
+    public int saveDetail(@RequestBody List<CodeDto> codeDtoList) {
+        return codeService.saveDetail(codeDtoList);
     }
 
-    @DeleteMapping("/rel/menu")
-    public int deleteMenuProgramList(@RequestBody List<ProgramDto> programDtoList) {
-        return codeService.delteMenuProgramList(programDtoList);
+    @DeleteMapping("/detail")
+    public int deleteDetail(@RequestBody List<CodeDto> codeDtoList) {
+        return codeService.deleteDetail(codeDtoList);
     }
 }

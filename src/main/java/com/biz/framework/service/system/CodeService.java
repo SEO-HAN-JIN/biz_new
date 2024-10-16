@@ -24,13 +24,13 @@ public class CodeService {
         return codeMapper.findCdpatt(codeDto);
     }
 
-    public int saveProgramList(List<ProgramDto> programDtoList) {
+    public int saveMaster(List<CodeDto> codeDtoList) {
         int result = 0;
-        if (!CollectionUtils.isEmpty(programDtoList)) {
-            for (ProgramDto programDto : programDtoList) {
-                switch (programDto.getRowStatus()) {
-                    case C -> result += codeMapper.saveProgramList(programDto);
-                    case U -> result += codeMapper.updateProgramList(programDto);
+        if (!CollectionUtils.isEmpty(codeDtoList)) {
+            for (CodeDto codeDto : codeDtoList) {
+                switch (codeDto.getRowStatus()) {
+                    case C -> result += codeMapper.saveCdpatt(codeDto);
+                    case U -> result += codeMapper.updateCdpatt(codeDto);
                 }
             }
         }
@@ -38,46 +38,45 @@ public class CodeService {
         return result;
     }
 
-    public int deleteProgramList(List<ProgramDto> programDtoList) {
+    public int deleteMaster(List<CodeDto> codeDtoList) {
         int result = 0;
-        if (!CollectionUtils.isEmpty(programDtoList)) {
-            for (ProgramDto programDto : programDtoList) {
-                result += codeMapper.deleteProgramList(programDto);
+        if (!CollectionUtils.isEmpty(codeDtoList)) {
+            for (CodeDto codeDto : codeDtoList) {
+                result += codeMapper.deleteCdpatt(codeDto);
             }
         }
         return result;
     }
 
-    public List<CamelCaseMap> findProgramMenuList(ProgramDto programDto) {
-        return codeMapper.findProgramMenuList(programDto);
+    public List<CamelCaseMap> findDetailList(CodeDto codeDto) {
+        return codeMapper.findCdbase(codeDto);
     }
 
-    public int saveMenuProgramList(List<ProgramDto> programDtoList) {
+    public int saveDetail(List<CodeDto> codeDtoList) {
         int result = 0;
-        if (!CollectionUtils.isEmpty(programDtoList)) {
-            for (ProgramDto programDto : programDtoList) {
-                int checkResult = codeMapper.checkMenuPgmDupl(programDto);
+        if (!CollectionUtils.isEmpty(codeDtoList)) {
+            for (CodeDto codeDto : codeDtoList) {
+                int checkResult = codeMapper.checkCdbase(codeDto);
                 if (checkResult > 0) {
                     throw new ServiceException("중복된 데이터가 존재합니다.");
                 }
-                result += codeMapper.saveMenuProgramList(programDto);
+                switch (codeDto.getRowStatus()) {
+                    case C -> result += codeMapper.saveCdbase(codeDto);
+                    case U -> result += codeMapper.updateCdbase(codeDto);
+                }
             }
         }
         return result;
     }
 
 
-    public int delteMenuProgramList(List<ProgramDto> programDtoList) {
+    public int deleteDetail(List<CodeDto> codeDtoList) {
         int result = 0;
-        if (!CollectionUtils.isEmpty(programDtoList)) {
-            for (ProgramDto programDto : programDtoList) {
-                result += codeMapper.deleteMenuProgramList(programDto);
+        if (!CollectionUtils.isEmpty(codeDtoList)) {
+            for (CodeDto codeDto : codeDtoList) {
+                result += codeMapper.deleteCdbase(codeDto);
             }
         }
         return result;
-    }
-
-    public List<ProgramDto> findRelProgram() {
-        return codeMapper.findRelProgram();
     }
 }
