@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.CodeMapper">
+
+    <select id="findCdpatt" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.CodeMapper.findCdpatt */
+        SELECT PATTERN_CODE
+             , PATTERN_NAME
+          FROM CDPATT
+         WHERE 1=1
+        <if test='patternName != null  and patternName != "" '>
+            AND PATTERN_NAME LIKE CONCAT('%', #{patternName}, '%')
+        </if>
+    </select>
+
+    <select id="checkCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.checkCdpatt */
+        SELECT COUNT(1)
+        FROM CDPATT
+        WHERE PATTERN_CODE      = #{patternCode}
+    </select>
+
+    <insert id="saveCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.saveCdpatt */
+        INSERT INTO CDPATT (
+            PATTERN_CODE
+            , PATTERN_NAME
+        ) VALUES (
+            #{patternCode}
+            , #{patternName}
+        )
+    </insert>
+
+    <update id="updateCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.updateCdpatt */
+        UPDATE CDPATT
+           SET PATTERN_NAME     = #{patternName}
+         WHERE PATTERN_CODE     = #{patternCode}
+    </update>
+
+    <delete id="deleteCdpatt">
+        /* com.biz.framework.mapper.system.CodeMapper.deleteCdpatt */
+        DELETE FROM CDPATT
+        WHERE PATTERN_CODE = #{patternCode}
+    </delete>
+
+    <delete id="deleteCdbaseByPatternCode">
+        /* com.biz.framework.mapper.system.CodeMapper.deleteCdbaseByPatternCode */
+        DELETE FROM CDBASE
+        WHERE PATTERN_CODE = #{patternCode}
+
+    </delete>
+
+    <select id="findCdbase" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.CodeMapper.findCdbase */
+        SELECT CD.PATTERN_CODE
+             , CD.BASE_CODE
+             , CD.CODE_NAME
+             , CD.DISPLAY_ORDER
+          FROM CDBASE               CD
+         WHERE CD.PATTERN_CODE      = #{patternCode}
+         ORDER BY CD.DISPLAY_ORDER
+    </select>
+
+    <select id="checkCdbase">
+        /* com.biz.framework.mapper.system.CodeMapper.checkCdbase */
+        SELECT COUNT(1)
+        FROM CDBASE
+        WHERE PATTERN_CODE  = #{patternCode}
+          AND BASE_CODE     = #{baseCode}
+    </select>
+
+    <insert id="saveCdbase">
+        /* com.biz.framework.mapper.system.CodeMapper.saveCdbase */
+        INSERT INTO CDBASE (
+            PATTERN_CODE
+            , BASE_CODE
+            , CODE_NAME
+            , DISPLAY_ORDER
+        ) VALUES (
+            #{patternCode}
+            , #{baseCode}
+            , #{codeName}
+            , #{displayOrder}
+        )
+    </insert>
+
+    <delete id="deleteCdbase">
+        /* com.biz.framework.mapper.system.CodeMapper.saveCdbase */
+        DELETE FROM CDBASE
+         WHERE PATTERN_CODE = #{patternCode}
+           AND BASE_CODE    = #{baseCode}
+    </delete>
+</mapper>
