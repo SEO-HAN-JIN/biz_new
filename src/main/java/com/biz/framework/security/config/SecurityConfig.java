@@ -28,7 +28,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)  // 권장되는 CSRF 비활성화 설정 방식
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**", "/denied*", "/api/sidelayout").permitAll()  // 정적 자원 및 로그인 페이지 허용
+                        .requestMatchers("/login*", "/css/**", "/js/**", "/images/**", "/assets/**", "/config/**", "/static/**", "/denied*", "/api/sidelayout", "/error").permitAll()  // 정적 자원 및 로그인 페이지 허용
                         .requestMatchers("/").authenticated()
                         .anyRequest().access(customAuthorizationManager)
                 )

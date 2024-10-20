@@ -15,6 +15,10 @@ import java.util.List;
 public class UserService {
     private final UserMapper userMapper;
 
+    public List<CamelCaseMap> findAllUsers() {
+        return userMapper.findAllUsers();
+    }
+
     public List<CamelCaseMap> findUsers(UserDto userDto) {
         return userMapper.findUsers(userDto);
     }

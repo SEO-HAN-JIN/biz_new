@@ -4,6 +4,13 @@
 
 <mapper namespace="com.biz.framework.mapper.system.UserMapper">
 
+    <select id="findAllUsers" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.system.UserMapper.findAllUsers */
+        SELECT USER_ID
+             , USER_NM
+          FROM USER
+    </select>
+
     <select id="findByUserId" resultType="com.biz.framework.dto.system.UserDto">
         /* com.biz.framework.mapper.system.UserMapper.findByUserId */
         SELECT USER_ID

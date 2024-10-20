@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.CustomerMapper">
+
+    <select id="findCustomers" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
+        SELECT *
+          FROM TB_CUSTOMER
+    </select>
+
+    <insert id="saveCustomer">
+        /* com.biz.framework.mapper.pages.CustomerMapper.saveCustomer */
+        INSERT INTO TB_CUSTOMER
+        (
+            BIZ_NO
+            , USER_ID
+            , CUST_NAME
+            , OWNER_NAME
+            , CUST_ADDR
+            , CUST_TEL
+            , CUST_MAIL
+            , DEPOSITOR_NAME
+            , MILEAGE
+            , REG_DATE
+            , USE_IND
+        ) VALUES
+        (
+            #{bizNo}
+            , #{userId}
+            , #{custName}
+            , #{ownerName}
+            , #{custAddr}
+            , #{custTel}
+            , #{custMail}
+            , #{depositorName}
+            , #{mileage}
+            , DATE_FORMAT(NOW(), '%Y-%m-%d')
+            , #{useInd}
+        ) ON DUPLICATE KEY UPDATE
+            CUST_NAME       = #{custName}
+            , OWNER_NAME    = #{ownerName}
+            , CUST_ADDR     = #{custAddr}
+            , CUST_TEL      = #{custTel}
+            , CUST_MAIL     = #{custMail}
+            , DEPOSITOR_NAME    = #{depositorName}
+            , MILEAGE           = #{mileage}
+            , USE_IND          = #{useInd}
+    </insert>
+
+    <delete id="deleteCustomer">
+        /* com.biz.framework.mapper.pages.CustomerMapper.deleteCustomer */
+        DELETE FROM TB_CUSTOMER
+        WHERE BIZ_NO    = #{bizNo}
+          AND USER_ID   = #{userId}
+    </delete>
+</mapper>

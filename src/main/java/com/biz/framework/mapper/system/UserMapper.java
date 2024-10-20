@@ -9,6 +9,8 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
+    List<CamelCaseMap> findAllUsers();
     List<CamelCaseMap> findUsers(UserDto userDto);
     UserDto findByUserId(UserDto userDto);
+
 }
