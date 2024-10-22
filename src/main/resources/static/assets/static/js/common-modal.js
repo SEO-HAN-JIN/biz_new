@@ -13,23 +13,48 @@ const ModalManager = {
             contentElement.innerHTML = contentHtml.innerHTML;
         }
 
+        // 모달이 열렸을 때 Choices.js 초기화
+        $(modalElement).off('shown.bs.modal').on('shown.bs.modal', function () {
+            const selectElements = modalElement.querySelectorAll('select.choices');
+            selectElements.forEach(selectElement => {
+                // Choices.js 인스턴스가 이미 있는 경우 제거
+                if (selectElement.choicesInstance) {
+                    selectElement.choicesInstance.destroy();
+                }
+
+                // Choices 인스턴스 생성 및 할당
+                const instance = new Choices(selectElement);
+                selectElement.choicesInstance = instance;
+            });
+        });
+
         // 모달 타이틀 변경
         const modalTitleElement = modalElement.querySelector('#modalTitle');
         if (modalTitleElement && options.title) {
-            modalTitleElement.textContent = options.title; // options에 title 값이 있으면 타이틀 변경
+            modalTitleElement.textContent = options.title;
         }
 
-        // 입력 필드 초기화
-        this.resetFormFields('commonModal');
+        // 너비 설정 (옵션에 width가 있으면 적용)
+        const modalDialog = modalElement.querySelector('.modal-dialog');
+        if (options.width) {
+            modalDialog.style.width = options.width;
+        } else {
+            modalDialog.style.width = ''; // 기본값으로 복원
+        }
+
+        // 모달 바디의 overflow-y 제거
+        const modalBody = modalElement.querySelector('.modal-body');
+        if (modalBody) {
+            modalBody.style.overflowY = ''; // overflow-y 속성 제거
+        }
 
         // '적용' 버튼 클릭 시 콜백 함수 연결
         const applyButton = modalElement.querySelector('#modalApplyBtn');
         if (applyButton) {
             applyButton.onclick = () => {
                 if (options.onApply && typeof options.onApply === 'function') {
-                    // onApply의 반환 값에 따라 모달 유지 또는 닫기
                     const result = options.onApply();
-                    if (result !== false) { // onApply가 false가 아닌 경우에만 모달 닫기
+                    if (result !== false) {
                         this.closeModal('commonModal');
                     }
                 } else {
@@ -38,7 +63,18 @@ const ModalManager = {
             };
         }
 
-        // 모달이 화면에 올바르게 표시되도록 설정
+        // 모달 열렸을 때 onOpened 콜백 호출
+        $(modalElement).on('shown.bs.modal', function () {
+            if (options.onOpened && typeof options.onOpened === 'function') {
+                setTimeout(() => {
+                    options.onOpened();
+                }, 0);
+            }
+        });
+
+        // 모달 표시 (스크롤 없애기 위해 body에 클래스 추가)
+        $('body').addClass('modal-open');
+        // 모달 표시
         $(modalElement).modal({ backdrop: 'static', keyboard: false });
         $(modalElement).modal('show');
     },
@@ -53,9 +89,32 @@ const ModalManager = {
         $(modalElement).modal('hide');
     },
 
-    // 다른 메서드는 그대로 유지
     resetFormFields: function (modalId) {
-        // 필드 초기화 로직
+        const modalElement = document.getElementById(modalId);
+        if (!modalElement) {
+            return;
+        }
+
+        const inputs = modalElement.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            switch (input.tagName.toLowerCase()) {
+                case 'input':
+                    if (['text', 'number', 'email', 'date'].includes(input.type)) {
+                        input.value = ''; // 초기화
+                    } else if (['checkbox', 'radio'].includes(input.type)) {
+                        input.checked = false;
+                    }
+                    break;
+                case 'select':
+                    input.selectedIndex = 0; // 첫 번째 항목 선택
+                    break;
+                case 'textarea':
+                    input.value = ''; // 텍스트 영역 초기화
+                    break;
+                default:
+                    break;
+            }
+        });
     },
 
     createCommonModal: function () {
@@ -78,7 +137,6 @@ const ModalManager = {
                 </div>
             </div>
         `;
-        // 새 모달 요소를 생성하고 body에 추가
         const modalContainer = document.createElement('div');
         modalContainer.innerHTML = modalHtml.trim();
         document.body.appendChild(modalContainer.firstChild);
