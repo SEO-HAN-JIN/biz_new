@@ -67,7 +67,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-primary btn-sm" id="btnAddPaymentGrid" data-bs-toggle="modal" data-bs-target="#programModal">추가</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal">추가</button>
 
                                     <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePaymentGrid">삭제</button>
                                 </div>
@@ -75,175 +75,150 @@
                             <div id="paymentGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="programModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalCenterTitle">요청내역 작성
-                                        </h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                                aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <section id="multiple-column-form">
-                                            <div class="row match-height">
-                                                <div class="col-12">
-                                                    <div class="card-content">
-                                                        <div class="card-body">
-                                                            <form class="form">
-                                                                <div class="row">
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="first-name-column">담당자</label>
-                                                                            <input type="text" id="pUserId" class="form-control" placeholder="" name="fname-column" disabled="disabled">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>고객</label>
-                                                                            <fieldset class="form-group">
-                                                                                <select id="pCustId" class="choices form-select" size="5">
-                                                                                    <option value="square">고객1</option>
-                                                                                    <option value="rectangle">고객2</option>
-                                                                                    <option value="rombo">고객3</option>
-                                                                                    <option value="romboid">고객4</option>
-                                                                                    <option value="trapeze">고객5</option>
-                                                                                    <option value="traible">고객6</option>
-                                                                                </select>
-                                                                            </fieldset>
-                                                                        </div>
+                        <div id="programModal" style="display: none">
+                            <section id="multiple-column-form">
+                                <div class="row match-height">
+                                    <div class="col-12">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <form class="form">
+                                                    <div class="row">
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="first-name-column">담당자</label>
+                                                                <input type="text" id="pUserId" class="form-control" placeholder="" name="fname-column" disabled="disabled">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>고객</label>
+                                                                <fieldset class="form-group">
+                                                                    <select id="pCustId" class="choices form-select" size="5">
+                                                                        <option value="square">고객1</option>
+                                                                        <option value="rectangle">고객2</option>
+                                                                        <option value="rombo">고객3</option>
+                                                                        <option value="romboid">고객4</option>
+                                                                        <option value="trapeze">고객5</option>
+                                                                        <option value="traible">고객6</option>
+                                                                    </select>
+                                                                </fieldset>
+                                                            </div>
 
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>상품</label>
-                                                                                <select id="pProdId" class="choices form-select">
-                                                                                    <option value="square">타이밍</option>
-                                                                                    <option value="rectangle">타자</option>
-                                                                                    <option value="rombo">에이밍</option>
-                                                                                    <option value="romboid">산타</option>
-                                                                                </select>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="last-name-column">상품가</label>
-                                                                            <input type="number" id="pCustAmt" class="form-control" placeholder="" name="lname-column">
-                                                                        </div>
-                                                                    </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>상품</label>
+                                                                    <select id="pProdId" class="choices form-select">
+                                                                        <option value="square">타이밍</option>
+                                                                        <option value="rectangle">타자</option>
+                                                                        <option value="rombo">에이밍</option>
+                                                                        <option value="romboid">산타</option>
+                                                                    </select>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="last-name-column">상품가</label>
+                                                                <input type="number" id="pCustAmt" class="form-control" placeholder="" name="lname-column">
+                                                            </div>
+                                                        </div>
 
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="country-floating">작업시작일</label>
-                                                                            <input type="date" id="country-floating" class="form-control"
-                                                                                   name="country-floating" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="country-floating">작업종료일</label>
-                                                                            <input type="date" id="country-floating" class="form-control"
-                                                                                   name="country-floating" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="city-column">유입수</label>
-                                                                            <input type="number" id="pProdAmt" class="form-control"
-                                                                                   placeholder="" name="city-column">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="company-column">판매가</label>
-                                                                            <input type="number" id="amt" class="form-control"
-                                                                                   name="company-column" placeholder="">
-                                                                        </div>
-                                                                    </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="country-floating">작업시작일</label>
+                                                                <input type="date" id="country-floating" class="form-control"
+                                                                       name="country-floating" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="country-floating">작업종료일</label>
+                                                                <input type="date" id="country-floating" class="form-control"
+                                                                       name="country-floating" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="city-column">유입수</label>
+                                                                <input type="number" id="pProdAmt" class="form-control"
+                                                                       placeholder="" name="city-column">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="company-column">판매가</label>
+                                                                <input type="number" id="amt" class="form-control"
+                                                                       name="company-column" placeholder="">
+                                                            </div>
+                                                        </div>
 
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="email-id-column">판매총액</label>
-                                                                            <input type="email" id="email-id-column" class="form-control"
-                                                                                   name="email-id-column" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="company-column">입금총액</label>
-                                                                            <input type="text" id="company-column" class="form-control"
-                                                                                   name="company-column" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="email-id-column">요청구분</label>
-                                                                            <select id="status" class="choices form-select">
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="email-id-column">판매총액</label>
+                                                                <input type="email" id="email-id-column" class="form-control"
+                                                                       name="email-id-column" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="company-column">입금총액</label>
+                                                                <input type="text" id="company-column" class="form-control"
+                                                                       name="company-column" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="email-id-column">요청구분</label>
+                                                                <select id="status" class="choices form-select">
 
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                                                </select>
+                                                            </div>
+                                                        </div>
 
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>킵사용</label>
-                                                                            <select id="pProdId" class="form-select">
-                                                                                <option value="square">타이밍</option>
-                                                                                <option value="rectangle">타자</option>
-                                                                                <option value="rombo">에이밍</option>
-                                                                                <option value="romboid">산타</option>
-                                                                            </select>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>킵사용</label>
+                                                                <select id="pProdId" class="form-select">
+                                                                    <option value="square">타이밍</option>
+                                                                    <option value="rectangle">타자</option>
+                                                                    <option value="rombo">에이밍</option>
+                                                                    <option value="romboid">산타</option>
+                                                                </select>
+                                                                </select>
+                                                            </div>
+                                                        </div>
 
-                                                                    <div class="form-group col-12 mt-3 mb-3">
-                                                                        <div class='form-check'>
-                                                                            <div class="checkbox">
-                                                                                <input type="checkbox" id="checkbox5"
-                                                                                       class='form-check-input' checked>
-                                                                                <label for="checkbox5">킵사용</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="company-column">잔여킵금액</label>
-                                                                            <input type="text" id="company-column" class="form-control"
-                                                                                   name="company-column" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="email-id-column">킵사용금액</label>
-                                                                            <input type="email" id="email-id-column" class="form-control"
-                                                                                   name="email-id-column" placeholder="">
-                                                                        </div>
-                                                                    </div>
+                                                        <div class="form-group col-12 mt-3 mb-3">
+                                                            <div class='form-check'>
+                                                                <div class="checkbox">
+                                                                    <input type="checkbox" id="checkbox5"
+                                                                           class='form-check-input' checked>
+                                                                    <label for="checkbox5">킵사용</label>
                                                                 </div>
-                                                            </form>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="company-column">잔여킵금액</label>
+                                                                <input type="text" id="company-column" class="form-control"
+                                                                       name="company-column" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label for="email-id-column">킵사용금액</label>
+                                                                <input type="email" id="email-id-column" class="form-control"
+                                                                       name="email-id-column" placeholder="">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </form>
                                             </div>
-                                        </section>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-secondary"
-                                                data-bs-dismiss="modal">
-                                            <i class="bx bx-x d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">닫기</span>
-                                        </button>
-                                        <button type="button" class="btn btn-primary ms-1" data-bs-dismiss="modal" id="modalAcceptBtn">
-                                            <i class="bx bx-check d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">적용</span>
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 </div>
@@ -261,19 +236,40 @@
             initEvent();
             initPaymentGrid();
 
+
         });
 
         const initEvent = () => {
-            $("#btnAddPaymentGrid").on('click', fn_appendPaymentGrid);
-            $("#btnSavePaymentGrid").on('click', fn_savePaymentGrid);
-            $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
+            // $("#modalAddBtn").on('click', fn_appendPaymentGrid);
+            // $("#btnSavePaymentGrid").on('click', fn_savePaymentGrid);
+            // $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
 
-            $('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
-            $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
-            $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
-            $("#modalAcceptBtn").on('click', modalAcceptBtn);
+            //$('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+            // $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
+            // $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
+            // $("#modalAcceptBtn").on('click', modalAcceptBtn);
 
             $("#searchBtn").on('click', searchPaymentGrid);
+        }
+
+        $("#modalAddBtn").on('click', function ()
+        {
+            const modalContent = document.getElementById("programModal").cloneNode(true);
+            modalContent.style.display = 'block'; // 숨겨진 상태를 해제
+
+            ModalManager.openModal(modalContent, {
+                title: "정산내역작성",
+                onApply: function() {
+                    console.log('적용 버튼 클릭 시 실행되는 함수입니다.');
+                    performAction();
+                    return false; // 모달 닫기
+                }
+            });
+        })
+
+        function performAction()
+        {
+            alert("!23123");
         }
 
         const initPaymentGrid = () => {
