@@ -11,4 +11,6 @@ public interface CustomerMapper {
 
     List<CamelCaseMap> findCustomers(CustomerDto customerDto);
     int saveCustomer(CustomerDto customerDto);
+
+    int deleteCustomer(CustomerDto customerDto);
 }

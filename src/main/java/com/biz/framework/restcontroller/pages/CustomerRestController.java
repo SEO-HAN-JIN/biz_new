@@ -33,4 +33,9 @@ public class CustomerRestController {
     public int saveCustomer(@RequestBody CustomerDto customerDto) {
         return customerService.saveCustomer(customerDto);
     }
+
+    @DeleteMapping
+    public int deleteCustomer(@RequestBody CustomerDto customerDto) {
+        return customerService.deleteCustomer(customerDto);
+    }
 }

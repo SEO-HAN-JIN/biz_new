@@ -23,4 +23,8 @@ public class CustomerService {
     public int saveCustomer(CustomerDto customerDto) {
         return customerMapper.saveCustomer(customerDto);
     }
+
+    public int deleteCustomer(CustomerDto customerDto) {
+        return customerMapper.deleteCustomer(customerDto);
+    }
 }

@@ -19,4 +19,6 @@ public class CustomerDto extends BaseDto {
     private String mileage;
     private String regDate;
     private String useInd;
+
+    private String userNm;
 }

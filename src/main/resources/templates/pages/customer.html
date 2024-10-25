@@ -153,7 +153,7 @@
                                                                     <div class="col-md-3 col-12">
                                                                         <div class="form-group">
                                                                             <label for="regDate">등록일자</label>
-                                                                            <input type="text" id="regDate" class="form-control" name="regDate" placeholder="등록일자" readonly="readonly">
+                                                                            <input type="text" id="regDate" class="form-control" name="regDate" placeholder="등록일자" disabled>
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-3 col-12 d-flex align-items-center">
@@ -222,8 +222,10 @@
                 type: 'GET',
                 success: (result) => {
                     let userId = document.getElementById('userId');
-                    userIdChoiceObj = new Choices(userId);
-                    userIdChoiceObj.setChoices(result.map(item => ({ value: item.userId, label: item.userNm })), 'value', 'label', false);
+                    userIdChoiceObj = new Choices(userId, {
+                        sorter: () => 0 // 정렬을 하지 않도록 설정
+                    });
+                    userIdChoiceObj.setChoices([{value: '', label: '선택'}, ...result.map(item => ({ value: item.userId, label: item.userNm }))], 'value', 'label', false);
 
                 },error: (xhr, status, error) => {
                     alert(xhr.responseText);
@@ -246,36 +248,78 @@
 
         const initCustomerGrid = () => {
 
-            const columns = new CustomTuiGrid()
-                .add('userId', '직원ID', 120, {hidden: true})
-                .add('custAddr', '주소', 120, {hidden: true})
-                .add('custTel', '연락처', 250, {hidden: true})
-                .add('custMail', '이메일', 120, {hidden: true})
-                .add('depositorName', '입금자명', 120, {hidden: true})
-                .add('mileage', '마일리지', 120, {hidden: true})
-                .add('regDate', '등록일자', 120, {hidden: true})
+            const Grid = tui.Grid;
 
-                .add('bizNo', '사업자번호', 150, {
-                    width: 200
-                })
-                .add('userNm', '직원명', 250, {
-                    width: 900
-                })
-                .add('custName', '고객명', 200, {
-                    width: 200
-                })
-                .add('ownerName', '대표자성명', 150, {
-                    width: 200
-                })
-                .add('useInd', '사용여부', 120, {
-                    width: 200
-                })
-            ;
-
-            customerGrid = columns.init('customerGrid', []);
+            customerGrid = new Grid({
+                el: document.getElementById('customerGrid'),
+                columns: [
+                    {header: '직원ID', name: 'userId', hidden: true},
+                    {header: '주소', name: 'custAddr', hidden: true},
+                    {header: '연락처', name: 'custTel', hidden: true},
+                    {header: '이메일', name: 'custMail', hidden: true},
+                    {header: '입금자명', name: 'depositorName', hidden: true},
+                    {header: '마일리지', name: 'mileage', hidden: true},
+                    {header: '등록일자', name: 'regDate', hidden: true},
+                    {
+                        header: '사업자번호',
+                        name: 'bizNo',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                    },
+                    {
+                        header: '직원명',
+                        name: 'userNm',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                    },
+                    {
+                        header: '고객명',
+                        name: 'custName',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        // hidden: true
+                    },
+                    {
+                        header: '대표자성명',
+                        name: 'ownerName',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        }
+                    },
+                    {
+                        header: '사용여부',
+                        name: 'useInd',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        }
+                    },
+                ],
+                bodyHeight: 500,
+                rowHeaders: ['rowNum']
+            });
 
             // 더블 클릭 이벤트 설정
-            customerGrid.grid.on('dblclick', function(ev) {
+            customerGrid.on('dblclick', function(ev) {
                 openPgmModal('2');
             });
 
@@ -301,7 +345,7 @@
                 data: param,
                 type: 'GET',
                 success: (result) => {
-                    customerGrid.bind(result);
+                    customerGrid.resetData(result);
                 }
             });
         }
@@ -318,6 +362,16 @@
                     param[item.id] = item.value; // input 값 설정
                 }
             });
+
+            if (isNull(param.bizNo)) {
+                alert("사업자번호는 필수 값 입니다.");
+                return false;
+            }
+
+            if (isNull(param.userId)) {
+                alert("직원은 필수 값 입니다.");
+                return false;
+            }
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 $.ajax({
@@ -354,10 +408,11 @@
             if (confirmResult) {
                 const focusRow = customerGrid.getRow(focusedCell.rowKey);
                 let params = {
-                    menuId : focusRow.menuId
+                    bizNo : focusRow.bizNo,
+                    userId: focusRow.userId,
                 }
                 $.ajax({
-                    url: apiUrl + "/up/list",
+                    url: apiUrl,
                     data: JSON.stringify(params),
                     contentType:'application/json',
                     type: 'DELETE',
@@ -379,8 +434,8 @@
 
             // 추가 버튼 클릭 시
             if (param === '2') {
-                const focusedCell = customerGrid.grid.getFocusedCell();
-                const focusedData = customerGrid.grid.getRow(focusedCell.rowKey);
+                const focusedCell = customerGrid.getFocusedCell();
+                const focusedData = customerGrid.getRow(focusedCell.rowKey);
 
                 $('#customerModal').find('input, select, textarea').each(function() {
                     const fieldId = $(this).attr('id');
@@ -433,9 +488,6 @@
                     $(this).val('');
                 }
             });
-            const userIdElement = document.getElementById('userId');
-            userIdElement.value = '';
-            userIdChoiceObj.clearInput();
         }
 
         const bindForm = (id) => {

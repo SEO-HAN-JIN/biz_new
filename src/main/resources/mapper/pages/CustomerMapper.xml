@@ -6,8 +6,21 @@
 
     <select id="findCustomers" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
-        SELECT *
-          FROM TB_CUSTOMER
+        SELECT T.*
+             , U.USER_NM
+          FROM TB_CUSTOMER  T
+          JOIN USER         U
+            ON U.USER_ID    = T.USER_ID
+        WHERE 1=1
+        <if test='bizNo != null  and bizNo != "" '>
+            AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
+        </if>
+        <if test='userNm != null  and userNm != "" '>
+            AND T.USER_NM   LIKE CONCAT('%',#{userNm} ,'%')
+        </if>
+        <if test='custName != null  and custName != "" '>
+            AND T.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
+        </if>
     </select>
 
     <insert id="saveCustomer">
