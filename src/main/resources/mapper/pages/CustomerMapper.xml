@@ -7,16 +7,16 @@
     <select id="findCustomers" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
         SELECT T.*
-             , U.USER_NM
+             , U.EMP_NAME
           FROM TB_CUSTOMER  T
-          JOIN USER         U
-            ON U.USER_ID    = T.USER_ID
+          JOIN TB_EMP       U
+            ON U.EMP_ID    = T.EMP_ID
         WHERE 1=1
         <if test='bizNo != null  and bizNo != "" '>
             AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
         </if>
-        <if test='userNm != null  and userNm != "" '>
-            AND T.USER_NM   LIKE CONCAT('%',#{userNm} ,'%')
+        <if test='empName != null  and empName != "" '>
+            AND U.EMP_NAME   LIKE CONCAT('%',#{empName} ,'%')
         </if>
         <if test='custName != null  and custName != "" '>
             AND T.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
@@ -28,7 +28,7 @@
         INSERT INTO TB_CUSTOMER
         (
             BIZ_NO
-            , USER_ID
+            , EMP_ID
             , CUST_NAME
             , OWNER_NAME
             , CUST_ADDR
@@ -41,7 +41,7 @@
         ) VALUES
         (
             #{bizNo}
-            , #{userId}
+            , #{empId}
             , #{custName}
             , #{ownerName}
             , #{custAddr}
@@ -66,6 +66,6 @@
         /* com.biz.framework.mapper.pages.CustomerMapper.deleteCustomer */
         DELETE FROM TB_CUSTOMER
         WHERE BIZ_NO    = #{bizNo}
-          AND USER_ID   = #{userId}
+          AND EMP_ID   = #{empId}
     </delete>
 </mapper>

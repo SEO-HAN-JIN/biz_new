@@ -57,4 +57,25 @@
          WHERE ROLE_ID     = #{roleId}
     </delete>
 
+    <insert id="saveUser">
+        /* com.biz.framework.mapper.system.RoleMapper.deleteRoles */
+        INSERT INTO USER
+        (
+            USER_ID
+            , USER_PW
+            , USER_NM
+        )
+        VALUES
+        (
+            #{userId}
+            , #{userPw}
+            , #{userNm}
+        )
+    </insert>
+
+    <delete id="deleteUser">
+        /* com.biz.framework.mapper.system.UserMapper.deleteUser */
+        DELETE FROM USER
+        WHERE USER_ID = #{userId}
+    </delete>
 </mapper>

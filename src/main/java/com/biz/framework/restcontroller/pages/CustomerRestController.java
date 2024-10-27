@@ -3,6 +3,7 @@ package com.biz.framework.restcontroller.pages;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.service.pages.CustomerService;
+import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.system.UserService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,12 @@ import java.util.List;
 public class CustomerRestController {
 
     private final UserService userService;
+    private final EmpService empService;
     private final CustomerService customerService;
 
-    @GetMapping("/users")
-    public List<CamelCaseMap> findUsers() {
-        return userService.findAllUsers();
+    @GetMapping("/emps")
+    public List<CamelCaseMap> findEmps() {
+        return empService.findAllEmps();
     }
 
     @GetMapping

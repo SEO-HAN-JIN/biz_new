@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.EmpMapper">
+
+    <select id="findAllEmps">
+        /* com.biz.framework.mapper.pages.EmpMapper.findAllEmps */
+        SELECT EMP_ID
+            , EMP_NAME
+            FROM TB_EMP
+    </select>
+
+    <select id="findEmps" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.EmpMapper.findEmps */
+        SELECT T.*
+          FROM TB_EMP  T
+        WHERE 1=1
+        <if test='empId != null  and empId != "" '>
+            AND T.EMP_ID  LIKE CONCAT('%',#{empId} ,'%')
+        </if>
+        <if test='empName != null  and empName != "" '>
+            AND T.EMP_NAME  LIKE CONCAT('%',#{empName} ,'%')
+        </if>
+    </select>
+
+    <insert id="saveEmp">
+        /* com.biz.framework.mapper.pages.EmpMapper.saveCustomer */
+        INSERT INTO TB_EMP
+        (
+            EMP_ID
+            , EMP_NAME
+            , ENTRANCE_DATE
+            , RETIRE_DATE
+            , GRADE_CODE
+            , EMP_TEL
+            , EMP_MAIL
+            , INCENTIVE_RATE
+        ) VALUES
+        (
+            #{empId}
+            , #{empName}
+            , STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
+            , STR_TO_DATE(#{retireDate}, '%Y-%m-%d')
+            , #{gradeCode}
+            , #{empTel}
+            , #{empMail}
+            , #{incentiveRate}
+        ) ON DUPLICATE KEY UPDATE
+            EMP_NAME            = #{empName}
+            , ENTRANCE_DATE     = STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
+            , RETIRE_DATE       = STR_TO_DATE(#{retireDate}, '%Y-%m-%d')
+            , GRADE_CODE        = #{gradeCode}
+            , EMP_TEL           = #{empTel}
+            , EMP_MAIL          = #{empMail}
+            , INCENTIVE_RATE    = #{incentiveRate}
+    </insert>
+
+    <delete id="deleteEmp">
+        /* com.biz.framework.mapper.pages.EmpMapper.deleteEmp */
+        DELETE FROM TB_EMP
+        WHERE EMP_ID    = #{empId}
+    </delete>
+
+    <select id="checkDuplEmpId">
+        /* com.biz.framework.mapper.pages.EmpMapper.checkDuplEmpId */
+        SELECT COUNT(1)
+         FROM TB_EMP
+        WHERE EMP_ID = #{empId}
+    </select>
+</mapper>

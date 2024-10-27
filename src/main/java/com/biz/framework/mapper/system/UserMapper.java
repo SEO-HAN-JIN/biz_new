@@ -13,4 +13,6 @@ public interface UserMapper {
     List<CamelCaseMap> findUsers(UserDto userDto);
     UserDto findByUserId(UserDto userDto);
 
+    int saveUser(UserDto userDto);
+    int deleteUser(UserDto userDto);
 }

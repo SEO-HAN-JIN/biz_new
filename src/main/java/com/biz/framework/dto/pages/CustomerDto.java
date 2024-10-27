@@ -9,16 +9,16 @@ import lombok.Setter;
 public class CustomerDto extends BaseDto {
 
     private String bizNo;
-    private String userId;
+    private String empId;
     private String custName;
     private String ownerName;
     private String custAddr;
     private String custTel;
     private String custMail;
     private String depositorName;
-    private String mileage;
+    private int mileage;
     private String regDate;
     private String useInd;
 
-    private String userNm;
+    private String empName;
 }
