@@ -24606,7 +24606,7 @@ exports.presetDefault = {
     area: {
         header: {
             border: '#ccc',
-            background: '#fff',
+            background: '#435EBE',
         },
         body: {
             background: '#fff',
@@ -24618,16 +24618,16 @@ exports.presetDefault = {
     },
     cell: {
         normal: {
-            background: '#f4f4f4',
+            background: '#fff',
             border: '#eee',
             text: '#333',
             showVerticalBorder: false,
             showHorizontalBorder: true,
         },
         header: {
-            background: '#fff',
+            background: '#435EBE',
             border: '#eee',
-            text: '#222',
+            text: '#fff',
             showVerticalBorder: true,
             showHorizontalBorder: true,
         },
@@ -24645,7 +24645,7 @@ exports.presetDefault = {
             showVerticalBorder: false,
         },
         selectedHeader: {
-            background: '#e5f6ff',
+            background: '#6c757d',
         },
         selectedRowHeader: {
             background: '#e5f6ff',

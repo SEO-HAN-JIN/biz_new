@@ -69,8 +69,9 @@ if (typeof CustomTuiGrid === "undefined") {
                     header: header,
                     name: id,
                     width: width || "auto",
-                    ...options
+                    align: options.align || "center",
                 };
+
                 this.columns.push(column);
                 return this;
             },
@@ -78,6 +79,7 @@ if (typeof CustomTuiGrid === "undefined") {
             // 날짜 컬럼 추가 메소드
             addDate: function(id, header, width, options = {}) {
                 const defaultOptions = {
+                    align: options.align || "center",
                     editor: {
                         type: 'datePicker',
                         options: {
@@ -91,7 +93,8 @@ if (typeof CustomTuiGrid === "undefined") {
                         }
                     }
                 };
-                return this.add(id, header, width, {defaultOptions, options });
+                //return this.add(id, header, width, {defaultOptions, options });
+                return this.add(id, header, width, { ...options, defaultOptions });
             },
 
             // 셀렉트 박스 컬럼 추가 메소드
@@ -110,7 +113,8 @@ if (typeof CustomTuiGrid === "undefined") {
                         }
                     }
                 };
-                return this.add(id, header, width, {defaultOptions, options });
+                //return this.add(id, header, width, {defaultOptions, options });
+                return this.add(id, header, width, { ...options, defaultOptions });
             },
 
             // 숫자 컬럼 추가 메소드
@@ -120,9 +124,10 @@ if (typeof CustomTuiGrid === "undefined") {
                     editor: {
                         type: 'number'
                     },
-                    align: 'right'
                 };
-                return this.add(id, header, width, {defaultOptions, options });
+
+                //return this.add(id, header, width, {defaultOptions, options });
+                return this.add(id, header, width, { ...options, defaultOptions });
             },
 
             // 그리드 렌더링 메소드

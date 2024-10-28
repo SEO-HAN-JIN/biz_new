@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.ApplypaymentMapper">
+
+    <select id="findApplypayment" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findApplypayment */
+        SELECT
+            SETTLEMENT_SEQ,
+            PROD_ID,
+            USER_ID,
+            CUST_ID,
+            REQ_DATE,
+            PROD_AMT,
+            SALE_AMT,
+            INFLOW_CNT,
+            SALE_TOTAL_AMT,
+            REQ_GUBUN,
+            DEPOSIT_AMT,
+            DEPOSIT_REAL_AMT,
+            DATE_FORMAT(DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
+            DATE_FORMAT(DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
+            WORK_DAY,
+            INCENTIVE_RATE,
+            EMP_PAYMENT,
+            REFUND_IND,
+            ATCH_ID,
+            STATUS,
+            TAX_IND,
+            PAY_YM
+        FROM SETTLEMENT
+        WHERE 1=1
+        AND USER_ID = #{loginUserId}
+    </select>
+
+    <insert id="saveApplypayment">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.saveApplypayment */
+        <selectKey keyColumn="SETTLEMENT_SEQ" keyProperty="settlementSeq" resultType="string" order="BEFORE">
+            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
+            FROM SETTLEMENT
+            WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+        </selectKey>
+        INSERT INTO SETTLEMENT
+        (
+            SETTLEMENT_SEQ,
+            PROD_ID,
+            USER_ID,
+            CUST_ID,
+            REQ_DATE,
+            PROD_AMT,
+            SALE_AMT,
+            INFLOW_CNT,
+            SALE_TOTAL_AMT,
+            REQ_GUBUN,
+            DEPOSIT_AMT,
+            DEPOSIT_REAL_AMT,
+            DATE_WORK_FROM,
+            DATE_WORK_TO,
+            WORK_DAY,
+            INCENTIVE_RATE,
+            EMP_PAYMENT,
+            REFUND_IND,
+            ATCH_ID,
+            STATUS,
+            TAX_IND,
+            PAY_YM
+        ) VALUES
+        (
+            #{settlementSeq},
+            #{prodId},
+            #{loginUserId},
+            #{custId},
+            DATE_FORMAT(NOW(), '%Y-%m-%d'),
+            #{prodAmt},
+            #{saleAmt},
+            #{inflowCnt},
+            #{saleTotalAmt},
+            #{reqGubun},
+            #{depositAmt},
+            #{depositRealAmt},
+            #{dateWorkFrom},
+            #{dateWorkTo},
+            #{workDay},
+            #{incentiveRate},
+            #{empPayment},
+            #{refundInd},
+            #{atchId},
+            #{status},
+            #{taxInd},
+            #{payYm}
+        )
+    </insert>
+
+    <delete id="deleteCustomer">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteCustomer */
+        DELETE FROM TB_CUSTOMER
+        WHERE BIZ_NO    = #{bizNo}
+          AND EMP_ID   = #{empId}
+    </delete>
+</mapper>

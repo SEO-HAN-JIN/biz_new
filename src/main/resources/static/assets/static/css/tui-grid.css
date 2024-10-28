@@ -365,6 +365,7 @@
   text-align: center;
   /* @TODO: box-sizing standardize required */
   box-sizing: border-box;
+  /*background-color: #435ebe;*/
 }
 .tui-grid-cell-summary {
   padding: 0 12px;

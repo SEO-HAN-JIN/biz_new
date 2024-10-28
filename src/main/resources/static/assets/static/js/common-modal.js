@@ -34,25 +34,12 @@ const ModalManager = {
             modalTitleElement.textContent = options.title;
         }
 
-        // 너비 설정 (옵션에 width가 있으면 적용)
-        const modalDialog = modalElement.querySelector('.modal-dialog');
-        if (options.width) {
-            modalDialog.style.width = options.width;
-        } else {
-            modalDialog.style.width = ''; // 기본값으로 복원
-        }
-
-        // 모달 바디의 overflow-y 제거
-        const modalBody = modalElement.querySelector('.modal-body');
-        if (modalBody) {
-            modalBody.style.overflowY = ''; // overflow-y 속성 제거
-        }
-
         // '적용' 버튼 클릭 시 콜백 함수 연결
         const applyButton = modalElement.querySelector('#modalApplyBtn');
         if (applyButton) {
             applyButton.onclick = () => {
                 if (options.onApply && typeof options.onApply === 'function') {
+                    debugger;
                     const result = options.onApply();
                     if (result !== false) {
                         this.closeModal('commonModal');
