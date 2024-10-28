@@ -6,12 +6,23 @@ if (typeof CustomTuiGrid === "undefined") {
         function CustomTuiGrid() {
             this.grid = null;
             this.columns = [];
+            this.fitStyle = 'none';  // 기본적으로 fitStyle은 'none'
             return this;
         }
 
         CustomTuiGrid.prototype = {
+
+            // fitStyle 설정 메소드
+            setFitStyle: function(style) {
+                this.fitStyle = style;
+                return this;
+            },
+
             // 그리드 초기화 메소드
             init: function(el, data) {
+
+                const self = this;
+
                 this.grid = new tui.Grid({
                     el: document.getElementById(el),
                     data: data,
@@ -22,8 +33,33 @@ if (typeof CustomTuiGrid === "undefined") {
                     rowHeight: 35,
                     bodyHeight: 600,
                     scrollX: true,
-                    scrollY: true
+                    scrollY: true,
+                    columnOptions: {
+                        resizable: true,         // 컬럼 크기 조정 가능
+                        frozenCount: 0           // 고정 컬럼 없음
+                    }
                 });
+
+                // fitStyle 옵션에 따른 비율 조정
+                if (this.fitStyle === 'fill') {
+                    setTimeout(function() {
+                        const containerWidth = self.grid.el.offsetWidth - 20;
+
+                        // 모든 컬럼의 초기 width 합계 계산
+                        const totalInitialWidth = self.columns.reduce((sum, column) => sum + (column.width || 100), 0);
+
+                        // 각 컬럼의 비율에 맞춰 너비 조정
+                        self.columns.forEach(column => {
+                            const widthRatio = (column.width || 100) / totalInitialWidth;
+                            column.width = Math.floor(containerWidth * widthRatio);  // 비율에 맞게 너비 설정
+                        });
+
+                        self.grid.setColumns(self.columns);  // 업데이트된 컬럼 설정 반영
+                        self.grid.refreshLayout();  // 레이아웃 갱신
+                    }, 100);
+                }
+
+
                 return this;
             },
 
@@ -32,7 +68,7 @@ if (typeof CustomTuiGrid === "undefined") {
                 const column = {
                     header: header,
                     name: id,
-                    width: width || 100,
+                    width: width || "auto",
                     ...options
                 };
                 this.columns.push(column);
