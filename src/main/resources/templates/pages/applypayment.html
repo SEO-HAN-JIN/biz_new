@@ -447,12 +447,21 @@
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
                 .addDate('workDay', '작업일수', 150, {})
-                .addNumber('saleTotalAmt', '판매총액', 200, { align: 'right' })
+                .addNumber('saleTotalAmt', '판매총액', 200, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }})
+                .addNumber('depositRealAmt', '실제입금액', 200, { align: 'right', textColor: 'red' })
+                .addNumber('statusName', '진행상태', 100, {})
 
 
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
+
 
             searchPaymentGrid();
         }
@@ -472,9 +481,9 @@
 
                     if(result.length > 0) {
 
-                        result.forEach((item) => {
-                            item.saleTotalAmt = item.saleTotalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                        });
+                        // result.forEach((item) => {
+                        //     item.saleTotalAmt = item.saleTotalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        // });
 
                         paymentGrid.bind(result);
                     }

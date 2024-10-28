@@ -7,6 +7,8 @@ if (typeof CustomTuiGrid === "undefined") {
             this.grid = null;
             this.columns = [];
             this.fitStyle = 'none';  // 기본적으로 fitStyle은 'none'
+            this.summaryOptions = {}; // 전체 summary 설정 저장
+            this.data = []; // 현재 그리드 데이터 저장
             return this;
         }
 
@@ -37,6 +39,11 @@ if (typeof CustomTuiGrid === "undefined") {
                     columnOptions: {
                         resizable: true,         // 컬럼 크기 조정 가능
                         frozenCount: 0           // 고정 컬럼 없음
+                    },
+                    summary: {  // 전체 summary 옵션 설정
+                        height: 40,
+                        position: 'bottom',
+                        columnContent: this.summaryOptions  // 컬럼별 summary 내용
                     }
                 });
 
@@ -58,9 +65,15 @@ if (typeof CustomTuiGrid === "undefined") {
                         self.grid.refreshLayout();  // 레이아웃 갱신
                     }, 100);
                 }
-
-
                 return this;
+            },
+
+            // AJAX 데이터 바인딩 메소드
+            bind: function(data) {
+                if (this.grid) {
+                    this.data = data;  // 데이터 저장
+                    this.grid.resetData(this.data);  // 데이터 리셋 및 요약 갱신
+                }
             },
 
             // 일반 컬럼 추가 메소드
@@ -70,9 +83,25 @@ if (typeof CustomTuiGrid === "undefined") {
                     name: id,
                     width: width || "auto",
                     align: options.align || "center",
+                    formatter: function({ value }) {  // 텍스트 포맷을 통해 색상 설정
+                        if (options.textColor) {
+                            return `<span style="color: ${options.textColor}">${value || ''}</span>`;
+                        }
+                        if (options.comma) {
+                            return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                        return value || '';
+                    },
+                    ...options
                 };
 
                 this.columns.push(column);
+
+                // summary 설정이 있으면 summaryOptions에 추가
+                if (options.summary) {
+                    this.summaryOptions[id] = options.summary;
+                }
+
                 return this;
             },
 
@@ -148,17 +177,6 @@ if (typeof CustomTuiGrid === "undefined") {
                 } else {
                     console.error('그리드가 초기화되지 않았습니다. appendRow 호출 불가');
                 }
-            },
-
-            // 데이터 바인딩 메소드
-            bind: function(data) {
-                if (this.grid) {
-                    this.grid.resetData(data);  // 그리드에 데이터를 바인딩
-                    console.log('데이터 바인딩 완료');
-                } else {
-                    console.error('그리드가 초기화되지 않아서 데이터를 바인딩할 수 없음');
-                }
-                return this;
             },
 
             clear:function() {
