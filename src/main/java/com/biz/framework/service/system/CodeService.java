@@ -6,11 +6,14 @@ import com.biz.framework.dto.system.CodeDto;
 import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.mapper.system.CodeMapper;
 import com.biz.framework.mapper.system.ProgramMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -79,5 +82,17 @@ public class CodeService {
             }
         }
         return result;
+    }
+
+    public HashMap<String, List<CodeDto>> findCodesByPage(List<CodeDto> codeDtoList) {
+        HashMap<String, List<CodeDto>> map = new HashMap<>();
+
+        if (!CollectionUtils.isEmpty(codeDtoList)) {
+            for (CodeDto dto : codeDtoList) {
+                map.put(dto.getPatternCode(), codeMapper.findCodesByPage(dto));
+            }
+        }
+
+        return map;
     }
 }

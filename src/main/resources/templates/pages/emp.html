@@ -183,9 +183,30 @@
         let $isNew = 'N';
 
         $(document).ready(function() {
+            findInitCodes();
             initEvent();
             initEmpGrid();
         });
+
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "CD01"}
+                ];
+
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
+
+        const findCodeCallback = (result) => {
+            const options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.CD01,
+                placeholder: '선택'
+            };
+            $("#gradeCode").addOptions(options);
+        }
 
         const initEvent = () => {
 
@@ -398,8 +419,8 @@
                             // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
                             $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
                         } else if ($(this).is('select')) {
-                            userIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
-                            userIdChoiceObj.disable();
+                            // userIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
+                            // userIdChoiceObj.disable();
                         } else {
                             // 그 외 input, textarea는 값 바인딩
                             $(this).val(focusedData[fieldId]);

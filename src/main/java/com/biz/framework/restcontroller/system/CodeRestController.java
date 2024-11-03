@@ -4,9 +4,11 @@ import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.system.CodeDto;
 import com.biz.framework.dto.system.ProgramDto;
 import com.biz.framework.service.system.CodeService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -44,5 +46,13 @@ public class CodeRestController {
     @DeleteMapping("/detail")
     public int deleteDetail(@RequestBody List<CodeDto> codeDtoList) {
         return codeService.deleteDetail(codeDtoList);
+    }
+
+    /*
+    화면에서 공통코드 조회시
+     */
+    @PostMapping("/pages")
+    public HashMap<String, List<CodeDto>> findCodesByPage(@RequestBody List<CodeDto> codeDtoList) throws JsonProcessingException {
+        return codeService.findCodesByPage(codeDtoList);
     }
 }

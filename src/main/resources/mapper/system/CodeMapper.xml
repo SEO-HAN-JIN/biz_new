@@ -93,4 +93,14 @@
          WHERE PATTERN_CODE = #{patternCode}
            AND BASE_CODE    = #{baseCode}
     </delete>
+
+    <select id="findCodesByPage" resultType="com.biz.framework.dto.system.CodeDto">
+        /* com.biz.framework.mapper.system.CodeMapper.findCodesByPage */
+        SELECT PATTERN_CODE
+             , BASE_CODE
+             , CODE_NAME
+             , DISPLAY_ORDER
+          FROM CDBASE
+        WHERE PATTERN_CODE   = #{patternCode}
+    </select>
 </mapper>

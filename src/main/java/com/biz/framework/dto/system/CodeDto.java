@@ -4,6 +4,8 @@ import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class CodeDto extends BaseDto {
@@ -17,4 +19,5 @@ public class CodeDto extends BaseDto {
     private String codeName;
     private String displayOrder;
 
+    private List<CodeDto> cdbaseList;
 }

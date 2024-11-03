@@ -22,4 +22,6 @@ public interface CodeMapper {
     int deleteCdbase(CodeDto codeDto);
 
     int checkCdbase(CodeDto codeDto);
+
+    List<CodeDto> findCodesByPage(CodeDto codeDto);
 }
