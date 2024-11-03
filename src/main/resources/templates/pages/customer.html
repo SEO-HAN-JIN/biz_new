@@ -503,6 +503,7 @@
                             // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
                             $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
                         } else if ($(this).is('select')) {
+                            $(this).val(focusedData[fieldId]);
                             empIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
                             empIdChoiceObj.disable();
                         } else if (fieldId === 'mileage') {
