@@ -9,12 +9,17 @@
         SELECT EMP_ID
             , EMP_NAME
             FROM TB_EMP
+          WHERE EMP_ID != 'admin'
     </select>
 
     <select id="findEmps" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.EmpMapper.findEmps */
         SELECT T.*
-          FROM TB_EMP  T
+             , C.CODE_NAME      AS GRADE_NAME
+          FROM TB_EMP           T
+          LEFT JOIN CDBASE      C
+            ON C.PATTERN_CODE   = 'CD01'
+           AND C.BASE_CODE      = T.GRADE_CODE
         WHERE 1=1
           AND EMP_ID != 'admin'
         <if test='empId != null  and empId != "" '>

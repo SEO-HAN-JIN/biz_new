@@ -232,6 +232,17 @@
                 el: document.getElementById('empGrid'),
                 columns: [
                     {
+                        header: '직급코드',
+                        name: 'gradeCode',
+                        align: 'center',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        hidden: true
+                    },
+                    {
                         header: '직원ID',
                         name: 'empId',
                         align: 'center',
@@ -255,7 +266,7 @@
                     },
                     {
                         header: '직급',
-                        name: 'gradeCode',
+                        name: 'gradeName',
                         align: 'center',
                         whiteSpace: 'normal',
                         editor: null,  // 수정 불가능하도록 설정
@@ -303,7 +314,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        // width: 100
+                        align: 'right'
                     },
                     {
                         header: '퇴사일자',
