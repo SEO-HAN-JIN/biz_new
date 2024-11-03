@@ -148,6 +148,7 @@
                                                                         <div class="form-group">
                                                                             <label for="mileage">마일리지 누적금액</label>
                                                                             <input type="text" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
+                                                                            <input type="hidden" id="mileagePrev" class="form-control" name="mileagePrev">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-3 col-12">
@@ -207,6 +208,7 @@
 
         let customerGrid;
         let empIdChoiceObj;
+        let $isNew = 'N';
 
         $(document).ready(function() {
             findAllUsers();
@@ -257,12 +259,6 @@
                 el: document.getElementById('customerGrid'),
                 columns: [
                     {header: '직원ID', name: 'empId', hidden: true},
-                    {header: '주소', name: 'custAddr', hidden: true},
-                    {header: '연락처', name: 'custTel', hidden: true},
-                    {header: '이메일', name: 'custMail', hidden: true},
-                    {header: '입금자명', name: 'depositorName', hidden: true},
-                    {header: '마일리지', name: 'mileage', hidden: true},
-                    {header: '등록일자', name: 'regDate', hidden: true},
                     {
                         header: '사업자번호',
                         name: 'bizNo',
@@ -272,7 +268,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                        width: 100
                     },
                     {
                         header: '직원명',
@@ -283,7 +279,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                        width: 100
                     },
                     {
                         header: '고객명',
@@ -294,7 +290,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        // hidden: true
+                        width: 100
                     },
                     {
                         header: '대표자성명',
@@ -304,7 +300,46 @@
                         editor: null,  // 수정 불가능하도록 설정
                         formatter: function(e) {
                             return e.value
-                        }
+                        },
+                        width: 100
+                    },
+                    {
+                        header: '주소',
+                        name: 'custAddr',
+                        width: 300
+                    },
+                    {
+                        header: '연락처',
+                        name: 'custTel',
+                        width: 120,
+                        align: 'center'
+                    },
+                    {
+                        header: '이메일',
+                        name: 'custMail',
+                        width: 170
+                    },
+                    {
+                        header: '입금자명',
+                        name: 'depositorName',
+                        width: 100,
+                        align: 'center'
+                    },
+                    {
+                        header: '마일리지',
+                        name: 'mileage',
+                        width: 100,
+                        align: 'right',
+                        formatter: function (value) {
+                            // 값이 객체 형태로 전달됨
+                            const cellValue = value.value;  // value 객체에서 실제 값 가져오기
+                            // 값이 null 또는 undefined일 경우 0 반환
+                            if (cellValue === null || cellValue === undefined) {
+                                return '0';
+                            }
+                            // 천 단위로 콤마 추가
+                            return Number(cellValue).toLocaleString();
+                        },
                     },
                     {
                         header: '사용여부',
@@ -314,7 +349,14 @@
                         editor: null,  // 수정 불가능하도록 설정
                         formatter: function(e) {
                             return e.value
-                        }
+                        },
+                        width: 100
+                    },
+                    {
+                        header: '등록일자',
+                        name: 'regDate',
+                        width: 100,
+                        align: 'center'
                     },
                 ],
                 bodyHeight: 500,
@@ -367,6 +409,8 @@
                     param[item.id] = item.value; // input 값 설정
                 }
             });
+
+            param.isNew = $isNew;
 
             if (isNull(param.bizNo)) {
                 alert("사업자번호는 필수 값 입니다.");
@@ -440,6 +484,11 @@
         }
 
         const openPgmModal = (param) => {
+            if (param === '1') {
+                $isNew = true;
+            } else {
+                $isNew = false;
+            }
             clearForm('customerModal');
 
             // 추가 버튼 클릭 시
@@ -457,6 +506,7 @@
                             empIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
                             empIdChoiceObj.disable();
                         } else if (fieldId === 'mileage') {
+                            $("#mileagePrev").val(focusedData[fieldId]);
                             const replaceNumber = formatToCurrency(focusedData[fieldId]);
                             $(this).val(replaceNumber);
                         } else {
@@ -469,6 +519,7 @@
                 $('#bizNo').attr('disabled', true);
             } else {
                 $('#bizNo').attr('disabled', false);
+                empIdChoiceObj.setChoiceByValue('');
                 empIdChoiceObj.enable();
             }
 
