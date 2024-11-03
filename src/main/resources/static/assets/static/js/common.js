@@ -14,6 +14,12 @@ function formatNumber($input) {
     $input.val(value);
 }
 
+const isValidEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+}
+
+
 $.fn.addOptions = function(options) {
     const $select = this;
     $select.empty(); // 기존 옵션을 지웁니다.

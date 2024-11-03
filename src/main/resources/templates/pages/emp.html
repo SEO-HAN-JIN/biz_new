@@ -8,12 +8,12 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last p-3">
-                    <h3>고객관리</h3>
+                    <h3>직원관리</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item">고객관리</li>
+                            <li class="breadcrumb-item">업무관리</li>
                             <li class="breadcrumb-item active" aria-current="page">직원관리</li>
                         </ol>
                     </nav>
@@ -62,7 +62,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">고객관리목록</h4>
+                            <h4 class="card-title">직원관리목록</h4>
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
@@ -79,7 +79,7 @@
                             <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalCenterTitle">고객 정보
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">직원 정보
                                         </h5>
                                         <button type="button" class="close" data-bs-dismiss="modal"
                                                 aria-label="Close">
@@ -143,7 +143,7 @@
                                                                     <div class="col-md-3 col-12">
                                                                         <div class="form-group">
                                                                             <label for="incentiveRate">인센티브율</label>
-                                                                            <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율">
+                                                                            <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -179,8 +179,8 @@
         const apiUrl = '/api/pages/emp';
 
         let empGrid;
-        let userIdChoiceObj;
         let $isNew = 'N';
+        let previousValue = '';
 
         $(document).ready(function() {
             findInitCodes();
@@ -219,6 +219,9 @@
             $("#modalSaveBtn").on('click', fn_saveEmpGrid);
 
             $("#searchBtn").on('click', searchEmpGrid);
+
+            $("#empTel").on('input', formatPhoneNumber);
+            $("#incentiveRate").on('input', invalidIncentive);
         }
 
         const initEmpGrid = () => {
@@ -228,9 +231,6 @@
             empGrid = new Grid({
                 el: document.getElementById('empGrid'),
                 columns: [
-                    {header: '전화번호', name: 'empTel', hidden: true},
-                    {header: '이메일', name: 'empMail', hidden: true},
-                    {header: '인센티브율', name: 'incentiveRate', hidden: true},
                     {
                         header: '직원ID',
                         name: 'empId',
@@ -240,7 +240,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                        width: 220,
                     },
                     {
                         header: '직원명',
@@ -251,7 +251,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        className: 'no-edit' // 추가적인 클래스를 통해 색상 조정
+                        width: 220
                     },
                     {
                         header: '직급',
@@ -262,7 +262,7 @@
                         formatter: function(e) {
                             return e.value
                         },
-                        // hidden: true
+                        width: 100
                     },
                     {
                         header: '입사일자',
@@ -272,7 +272,38 @@
                         editor: null,  // 수정 불가능하도록 설정
                         formatter: function(e) {
                             return e.value
-                        }
+                        },
+                        width: 150
+                    },
+                    {
+                        header: '전화번호',
+                        name: 'empTel',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        width: 200
+                    },
+                    {
+                        header: '이메일',
+                        name: 'empMail',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        width: 250
+                    },
+                    {
+                        header: '인센티브율',
+                        name: 'incentiveRate',
+                        whiteSpace: 'normal',
+                        editor: null,  // 수정 불가능하도록 설정
+                        formatter: function(e) {
+                            return e.value
+                        },
+                        // width: 100
                     },
                     {
                         header: '퇴사일자',
@@ -282,7 +313,8 @@
                         editor: null,  // 수정 불가능하도록 설정
                         formatter: function(e) {
                             return e.value
-                        }
+                        },
+                        width: 150
                     },
                 ],
                 bodyHeight: 500,
@@ -334,13 +366,23 @@
 
             param.isNew = $isNew;
 
+            if (isNull(param.empId)) {
+                alert("직원ID는 필수 값 입니다.");
+                return false;
+            }
+
             if (isNull(param.empName)) {
                 alert("직원명은 필수 값 입니다.");
                 return false;
             }
 
-            if (isNull(param.entranceDate)) {
-                alert("입사일자는 필수 값 입니다.");
+            if (!isNull(param.empMail) && !isValidEmail(param.empMail)) {
+                alert("유효하지 않은 이메일 형식입니다.");
+                return false;
+            }
+
+            if (!validEmpId(param.empId)) {
+                alert("직원ID는 영어+숫자 조합으로만 가능합니다.");
                 return false;
             }
 
@@ -418,9 +460,6 @@
                         if ($(this).is(':checkbox')) {
                             // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
                             $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
-                        } else if ($(this).is('select')) {
-                            // userIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
-                            // userIdChoiceObj.disable();
                         } else {
                             // 그 외 input, textarea는 값 바인딩
                             $(this).val(focusedData[fieldId]);
@@ -428,10 +467,9 @@
                     }
                 });
 
-                $('#bizNo').attr('disabled', true);
+                $('#empId').attr('disabled', true);
             } else {
-                $('#bizNo').attr('disabled', false);
-                userIdChoiceObj.enable();
+                $('#empId').attr('disabled', false);
             }
 
             $('#empModal').modal('show');
@@ -481,6 +519,41 @@
                     }
                 }
             });
+        }
+
+        const validEmpId = () => {
+            let empId = $("#empId").val();
+            let valid = /^[a-zA-Z0-9]*$/.test(empId);
+
+            return valid;
+        }
+
+        function invalidIncentive() {
+            const value = $(this).val();
+
+            // 빈 값이거나 0.0 ~ 99.9 범위와 소수점 첫째 자리 유효성 검사
+            const isValid = value === "" || (/^\d{1,2}(\.\d)?$/.test(value) && parseFloat(value) <= 99.9);
+
+            if (isValid) {
+                // 값이 유효하면 현재 값을 previousValue에 저장
+                previousValue = value;
+            } else {
+                // 값이 유효하지 않으면 이전 값으로 되돌림
+                alert("값은 0.0에서 99.9 사이여야 하며, 소수점 첫째 자리까지만 입력 가능합니다.");
+                $(this).val(previousValue);  // 이전 값으로 되돌림
+            }
+        }
+
+        function formatPhoneNumber() {
+            let value = $(this).val().replace(/[^0-9]/g, ''); // 숫자 이외의 문자는 제거
+
+            if (value.length < 4) {
+                $(this).val(value);
+            } else if (value.length < 8) {
+                $(this).val(value.slice(0, 3) + '-' + value.slice(3));
+            } else {
+                $(this).val(value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11));
+            }
         }
     </script>
 </div>

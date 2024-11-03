@@ -38,17 +38,16 @@ public class EmpService {
             }
         }
 
-        if (StringUtils.isEmpty(empDto.getRetireDate())) {
-            empDto.setRetireDate("2999-12-31");
-        }
         result += empMapper.saveEmp(empDto);
 
-        UserDto userDto = new UserDto();
-        userDto.setUserId(empDto.getEmpId());
-        userDto.setUserNm(empDto.getEmpName());
-        userDto.setUserPw(empDto.getEntranceDate().replaceAll("-", ""));
+        if (empDto.isNew()) {
+            UserDto userDto = new UserDto();
+            userDto.setUserId(empDto.getEmpId());
+            userDto.setUserNm(empDto.getEmpName());
+            userDto.setUserPw(empDto.getEntranceDate().replaceAll("-", ""));
 
-        result += userMapper.saveUser(userDto);
+            result += userMapper.saveUser(userDto);
+        }
 
         return result;
     }

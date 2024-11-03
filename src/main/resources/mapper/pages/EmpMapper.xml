@@ -16,6 +16,7 @@
         SELECT T.*
           FROM TB_EMP  T
         WHERE 1=1
+          AND EMP_ID != 'admin'
         <if test='empId != null  and empId != "" '>
             AND T.EMP_ID  LIKE CONCAT('%',#{empId} ,'%')
         </if>
