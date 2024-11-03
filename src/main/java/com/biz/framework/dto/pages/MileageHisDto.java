@@ -10,6 +10,7 @@ import lombok.Setter;
 public class MileageHisDto extends BaseDto {
 
     private String bizNo;
+    private String empId;
     private int mileagePrev;
     private int mileageAft;
     private String createdDate;

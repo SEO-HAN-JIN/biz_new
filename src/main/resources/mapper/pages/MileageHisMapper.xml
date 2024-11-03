@@ -9,6 +9,7 @@
         INSERT INTO TB_MILEAGE_HIS
         (
             BIZ_NO
+            , EMP_ID
             , MILEAGE_PREV
             , MILEAGE_AFT
             , CREATED_DATE
@@ -17,6 +18,7 @@
         ) VALUES
         (
             #{bizNo}
+            , #{empId}
             , #{mileagePrev}
             , #{mileageAft}
             , NOW()
@@ -24,4 +26,11 @@
             , #{createdId}
         )
     </insert>
+
+    <delete id="deleteMileageHisByBizNoEmpId">
+        /* com.biz.framework.mapper.pages.MileageHisMapper.deleteMileageHisByBizNoEmpId */
+        DELETE FROM TB_MILEAGE_HIS
+        WHERE BIZ_NO     = #{bizNo}
+          AND EMP_ID     = #{empId}
+    </delete>
 </mapper>

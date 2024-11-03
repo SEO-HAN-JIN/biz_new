@@ -12,4 +12,5 @@ public interface MileageHisMapper {
 
     int saveMileageHis(MileageHisDto mileageHisDto);
 
+    int deleteMileageHisByBizNoEmpId(MileageHisDto mileageHisDto);
 }

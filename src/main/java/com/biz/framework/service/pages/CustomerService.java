@@ -27,6 +27,7 @@ public class CustomerService {
         if (customerDto.isNew() || customerDto.getMileagePrev() != customerDto.getMileage()) {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(customerDto.getBizNo());
+            mileageHisDto.setEmpId(customerDto.getEmpId());
             mileageHisDto.setMileagePrev(customerDto.getMileagePrev());
             mileageHisDto.setMileageAft(customerDto.getMileage());
             mileageHisDto.setCreatedPage("CU");
@@ -38,6 +39,13 @@ public class CustomerService {
     }
 
     public int deleteCustomer(CustomerDto customerDto) {
-        return customerMapper.deleteCustomer(customerDto);
+        int result = 0;
+        result += customerMapper.deleteCustomer(customerDto);
+
+        MileageHisDto mileageHisDto = new MileageHisDto();
+        mileageHisDto.setBizNo(customerDto.getBizNo());
+        mileageHisDto.setEmpId(customerDto.getEmpId());
+        result += mileageHisService.deleteMileageHisByBizNoEmpId(mileageHisDto);
+        return result;
     }
 }
