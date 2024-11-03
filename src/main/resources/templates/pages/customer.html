@@ -147,7 +147,7 @@
                                                                     <div class="col-md-3 col-12">
                                                                         <div class="form-group">
                                                                             <label for="mileage">마일리지 누적금액</label>
-                                                                            <input type="number" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
+                                                                            <input type="text" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
                                                                         </div>
                                                                     </div>
                                                                     <div class="col-md-3 col-12">
@@ -212,6 +212,9 @@
             findAllUsers();
             initEvent();
             initCustomerGrid();
+
+            $("#custTel").on('input', formatPhoneNumber);
+            $("#mileage").on('input', formatCurrency);
         });
 
         const findAllUsers = () => {
@@ -357,7 +360,9 @@
                 // checkbox일 때
                 if ($(item).is(':checkbox')) {
                     param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
-                } else {
+                } else if (item.id === 'mileage') {
+                    param[item.id] = item.value.replace(',', ''); // input 값 설정
+                } else{
                     // input일 때의 처리
                     param[item.id] = item.value; // input 값 설정
                 }
@@ -370,6 +375,11 @@
 
             if (isNull(param.empId)) {
                 alert("직원은 필수 값 입니다.");
+                return false;
+            }
+
+            if (!isNull(param.custMail) && !isValidEmail(param.custMail)) {
+                alert("유효하지 않은 이메일 형식입니다.");
                 return false;
             }
 
@@ -446,6 +456,9 @@
                         } else if ($(this).is('select')) {
                             empIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
                             empIdChoiceObj.disable();
+                        } else if (fieldId === 'mileage') {
+                            const replaceNumber = formatToCurrency(focusedData[fieldId]);
+                            $(this).val(replaceNumber);
                         } else {
                             // 그 외 input, textarea는 값 바인딩
                             $(this).val(focusedData[fieldId]);
@@ -506,6 +519,34 @@
                     }
                 }
             });
+        }
+
+        function formatPhoneNumber() {
+            let value = $(this).val().replace(/[^0-9]/g, ''); // 숫자 이외의 문자는 제거
+
+            if (value.length < 4) {
+                $(this).val(value);
+            } else if (value.length < 8) {
+                $(this).val(value.slice(0, 3) + '-' + value.slice(3));
+            } else {
+                $(this).val(value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11));
+            }
+        }
+
+        function formatCurrency() {
+            // 현재 입력 값 가져오기
+            let value = $(this).val();
+
+            // 숫자 이외의 문자 제거
+            value = value.replace(/[^0-9]/g, '');
+
+            // 천 단위로 콤마 추가
+            if (value) {
+                value = Number(value).toLocaleString();  // 콤마 추가
+            }
+
+            // 포맷팅된 값을 입력 필드에 설정
+            $(this).val(value);
         }
     </script>
 </div>

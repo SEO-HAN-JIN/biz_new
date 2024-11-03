@@ -14,6 +14,19 @@ function formatNumber($input) {
     $input.val(value);
 }
 
+function formatToCurrency(value) {
+    // 숫자가 아닌 문자를 제거
+    value = value.replace(/[^0-9]/g, '');
+
+    // 값이 비어있으면 빈 문자열 반환
+    if (value === '') {
+        return '';
+    }
+
+    // 천 단위로 콤마 추가
+    return Number(value).toLocaleString();  // 콤마 추가
+}
+
 const isValidEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
