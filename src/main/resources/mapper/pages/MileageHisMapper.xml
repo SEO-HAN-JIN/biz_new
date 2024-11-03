@@ -12,6 +12,7 @@
             , MILEAGE_PREV
             , MILEAGE_AFT
             , CREATED_DATE
+            , CREATED_PAGE
             , CREATED_ID
         ) VALUES
         (
@@ -19,6 +20,7 @@
             , #{mileagePrev}
             , #{mileageAft}
             , NOW()
+            , #{createdPage}
             , #{createdId}
         )
     </insert>

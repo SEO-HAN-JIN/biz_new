@@ -29,7 +29,8 @@ public class CustomerService {
             mileageHisDto.setBizNo(customerDto.getBizNo());
             mileageHisDto.setMileagePrev(customerDto.getMileagePrev());
             mileageHisDto.setMileageAft(customerDto.getMileage());
-            mileageHisDto.setCreatedId("CU");
+            mileageHisDto.setCreatedPage("CU");
+            mileageHisDto.setCreatedId(customerDto.getLoginUserId());
             result += mileageHisService.saveMileageHis(mileageHisDto);
         }
         result+= customerMapper.saveCustomer(customerDto);
