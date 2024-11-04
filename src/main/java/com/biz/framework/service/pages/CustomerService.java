@@ -49,10 +49,10 @@ public class CustomerService {
         int result = 0;
         result += customerMapper.deleteCustomer(customerDto);
 
-        MileageHisDto mileageHisDto = new MileageHisDto();
-        mileageHisDto.setBizNo(customerDto.getBizNo());
-        mileageHisDto.setEmpId(customerDto.getEmpId());
-        result += mileageHisService.deleteMileageHisByBizNoEmpId(mileageHisDto);
+//        MileageHisDto mileageHisDto = new MileageHisDto();
+//        mileageHisDto.setBizNo(customerDto.getBizNo());
+//        mileageHisDto.setEmpId(customerDto.getEmpId());
+//        result += mileageHisService.deleteMileageHisByBizNoEmpId(mileageHisDto);
         return result;
     }
 }
