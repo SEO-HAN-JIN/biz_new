@@ -1,5 +1,6 @@
 package com.biz.framework.service.pages;
 
+import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
@@ -24,6 +25,12 @@ public class CustomerService {
 
     public int saveCustomer(CustomerDto customerDto) {
         int result = 0;
+
+        if (customerDto.isNew()) {
+            if (0 < customerMapper.checkDupl(customerDto)) {
+                throw new ServiceException("동일한 사업번호와 직원의 데이터가 존재합니다.");
+            };
+        }
         if (customerDto.isNew() || customerDto.getMileagePrev() != customerDto.getMileage()) {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(customerDto.getBizNo());

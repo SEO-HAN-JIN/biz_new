@@ -13,4 +13,6 @@ public interface CustomerMapper {
     int saveCustomer(CustomerDto customerDto);
 
     int deleteCustomer(CustomerDto customerDto);
+
+    int checkDupl(CustomerDto customerDto);
 }

@@ -440,11 +440,9 @@
                             searchCustomerGrid();
                         } else {
                             alert("저장에 실패하였습니다.");
-                            $('#customerModal').modal('hide');
                             searchCustomerGrid();
                         }
                     },error: (xhr, status, error) => {
-                        $('#customerModal').modal('hide');
                         alert(xhr.responseText);
                     }
                 })

@@ -410,11 +410,9 @@
                             searchEmpGrid();
                         } else {
                             alert("저장에 실패하였습니다.");
-                            $('#empModal').modal('hide');
                             searchEmpGrid();
                         }
                     },error: (xhr, status, error) => {
-                        $('#empModal').modal('hide');
                         alert(xhr.responseText);
                     }
                 })
