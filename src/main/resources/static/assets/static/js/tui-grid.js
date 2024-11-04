@@ -24450,6 +24450,7 @@ var presetOptions = {
     default: preset_1.presetDefault,
     striped: preset_1.striped,
     clean: preset_1.clean,
+    darkMode: preset_1.darkMode,
 };
 var styleGenMethodMap = {
     outline: styleGen.outline,
@@ -24576,110 +24577,217 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.striped = exports.clean = exports.presetDefault = void 0;
 var common_1 = __webpack_require__(0);
+// exports.presetDefault = {
+//     selection: {
+//         background: '#00A9ff',
+//         border: '#00a9ff',
+//     },
+//     heightResizeHandle: {
+//         border: '#fff',
+//         background: '#fff',
+//     },
+//     pagination: {
+//         border: 'transparent',
+//         background: 'transparent',
+//     },
+//     scrollbar: {
+//         border: '#eee',
+//         background: '#fff',
+//         emptySpace: '#f9f9f9',
+//         thumb: '#ddd',
+//         active: '#ddd',
+//     },
+//     outline: {
+//         border: '#aaa',
+//         showVerticalBorder: false,
+//     },
+//     frozenBorder: {
+//         border: '#aaa',
+//     },
+//     area: {
+//         header: {
+//             border: '#ccc',
+//             background: '#435EBE',
+//         },
+//         body: {
+//             background: '#fff',
+//         },
+//         summary: {
+//             border: '#eee',
+//             background: '#fff',
+//         },
+//     },
+//     cell: {
+//         normal: {
+//             background: '#fff',
+//             border: '#eee',
+//             text: '#333',
+//             showVerticalBorder: false,
+//             showHorizontalBorder: true,
+//         },
+//         header: {
+//             background: '#435EBE',
+//             border: '#eee',
+//             text: '#fff',
+//             showVerticalBorder: true,
+//             showHorizontalBorder: true,
+//         },
+//         rowHeader: {
+//             background: '#fff',
+//             border: '#eee',
+//             text: '#333',
+//             showVerticalBorder: false,
+//             showHorizontalBorder: true,
+//         },
+//         summary: {
+//             background: '#fff',
+//             border: '#eee',
+//             text: '#333',
+//             showVerticalBorder: false,
+//         },
+//         selectedHeader: {
+//             background: '#6c757d',
+//         },
+//         selectedRowHeader: {
+//             background: '#e5f6ff',
+//         },
+//         focused: {
+//             border: '#00a9ff',
+//         },
+//         focusedInactive: {
+//             border: '#aaa',
+//         },
+//         required: {
+//             background: '#fffdeb',
+//         },
+//         editable: {
+//             background: '#fff',
+//         },
+//         disabled: {
+//             background: '#f9f9f9',
+//             text: '#c1c1c1',
+//         },
+//         dummy: {
+//             background: '#fff',
+//         },
+//         invalid: {
+//             background: '#ffe5e5',
+//         },
+//         evenRow: {},
+//         oddRow: {},
+//         currentRow: {},
+//     },
+//     rowHover: {
+//         background: 'none',
+//     },
+// };
+// 기본 light 모드 설정
 exports.presetDefault = {
-    selection: {
-        background: '#00A9ff',
-        border: '#00a9ff',
+selection: {
+    background: '#3A7AFE',
+    border: '#3A7AFE',
+},
+heightResizeHandle: {
+    border: '#e0e0e0',
+    background: '#e0e0e0',
+},
+pagination: {
+    border: 'transparent',
+    background: 'transparent',
+},
+scrollbar: {
+    border: '#d0d0d0',
+    background: '#f7f7f7',
+    emptySpace: '#f3f3f3',
+    thumb: '#b0b0b0',
+    active: '#a0a0a0',
+},
+outline: {
+    border: '#b0b0b0',
+    showVerticalBorder: false,
+},
+frozenBorder: {
+    border: '#b0b0b0',
+},
+area: {
+    header: {
+        border: '#d0d0d0',
+        background: '#435EBE',
     },
-    heightResizeHandle: {
-        border: '#fff',
-        background: '#fff',
+    body: {
+        background: '#FFFFFF',
     },
-    pagination: {
-        border: 'transparent',
-        background: 'transparent',
+    summary: {
+        border: '#d0d0d0',
+        background: '#FFFFFF',
     },
-    scrollbar: {
-        border: '#eee',
-        background: '#fff',
-        emptySpace: '#f9f9f9',
-        thumb: '#ddd',
-        active: '#ddd',
+},
+cell: {
+    normal: {
+        background: '#FFFFFF',
+        border: '#e0e0e0',
+        text: '#333333',
+        showVerticalBorder: false,
+        showHorizontalBorder: true,
     },
-    outline: {
-        border: '#aaa',
+    header: {
+        background: '#435EBE',
+        border: '#d0d0d0',
+        text: '#FFFFFF',
+        showVerticalBorder: true,
+        showHorizontalBorder: true,
+    },
+    rowHeader: {
+        background: '#435EBE',
+        border: '#d0d0d0',
+        text: '#FFFFFF',
+        showVerticalBorder: false,
+        showHorizontalBorder: true,
+    },
+    summary: {
+        background: '#FFFFFF',
+        border: '#e0e0e0',
+        text: '#333333',
         showVerticalBorder: false,
     },
-    frozenBorder: {
-        border: '#aaa',
+    selectedHeader: {
+        background: '#6c757d',
     },
-    area: {
-        header: {
-            border: '#ccc',
-            background: '#435EBE',
-        },
-        body: {
-            background: '#fff',
-        },
-        summary: {
-            border: '#eee',
-            background: '#fff',
-        },
+    selectedRowHeader: {
+        background: '#e5f6ff',
     },
-    cell: {
-        normal: {
-            background: '#fff',
-            border: '#eee',
-            text: '#333',
-            showVerticalBorder: false,
-            showHorizontalBorder: true,
-        },
-        header: {
-            background: '#435EBE',
-            border: '#eee',
-            text: '#fff',
-            showVerticalBorder: true,
-            showHorizontalBorder: true,
-        },
-        rowHeader: {
-            background: '#fff',
-            border: '#eee',
-            text: '#333',
-            showVerticalBorder: false,
-            showHorizontalBorder: true,
-        },
-        summary: {
-            background: '#fff',
-            border: '#eee',
-            text: '#333',
-            showVerticalBorder: false,
-        },
-        selectedHeader: {
-            background: '#6c757d',
-        },
-        selectedRowHeader: {
-            background: '#e5f6ff',
-        },
-        focused: {
-            border: '#00a9ff',
-        },
-        focusedInactive: {
-            border: '#aaa',
-        },
-        required: {
-            background: '#fffdeb',
-        },
-        editable: {
-            background: '#fff',
-        },
-        disabled: {
-            background: '#f9f9f9',
-            text: '#c1c1c1',
-        },
-        dummy: {
-            background: '#fff',
-        },
-        invalid: {
-            background: '#ffe5e5',
-        },
-        evenRow: {},
-        oddRow: {},
-        currentRow: {},
+    focused: {
+        border: '#3A7AFE',
     },
-    rowHover: {
-        background: 'none',
+    focusedInactive: {
+        border: '#b0b0b0',
     },
+    required: {
+        background: '#fffdeb',
+    },
+    editable: {
+        background: '#FFFFFF',
+    },
+    disabled: {
+        background: '#f9f9f9',
+        text: '#c1c1c1',
+    },
+    invalid: {
+        background: '#ffe5e5',
+    },
+    evenRow: {
+        background: '#f7faff',
+    },
+    oddRow: {
+        background: '#ffffff',
+    },
+},
+rowHover: {
+    background: '#e9f3ff',
+},
 };
+
+
 exports.clean = common_1.deepMergedCopy(exports.presetDefault, {
     outline: {
         border: '#eee',
@@ -24719,6 +24827,72 @@ exports.clean = common_1.deepMergedCopy(exports.presetDefault, {
             showVerticalBorder: false,
             showHorizontalBorder: false,
         },
+    },
+});
+// Dark 모드 설정
+exports.darkMode = common_1.deepMergedCopy(exports.presetDefault, {
+    area: {
+        header: {
+            background: '#333A56',
+            border: '#e0e0e0',
+        },
+        body: {
+            background: '#333333',
+        },
+        summary: {
+            background: '#3A3A3A',
+            border: '#444',
+        },
+    },
+    cell: {
+        normal: {
+            background: '#333333',
+            border: '#555',
+            text: '#e0e0e0',
+        },
+        header: {
+            background: '#333A56',
+            border: '#555',
+            text: '#e0e0e0',
+        },
+        rowHeader: {
+            background: '#3A3A3A',
+            border: '#555',
+            text: '#CCCCCC',
+        },
+        selectedHeader: {
+            background: '#555E7B',
+        },
+        selectedRowHeader: {
+            background: '#4A4A4A',
+        },
+        focused: {
+            border: '#CCCCCC',
+        },
+        required: {
+            background: '#3A3A3A',
+        },
+        editable: {
+            background: '#3A3A3A',
+        },
+        disabled: {
+            background: '#3F3F3F',
+            text: '#6F6F6F',
+        },
+        evenRow: {
+            background: '#2F2F2F',
+        },
+        oddRow: {
+            background: '#3A3A3A',
+        },
+        summary: {
+            background: '#333A56',
+            border: '#555',
+            text: '#e0e0e0',
+        },
+    },
+    rowHover: {
+        background: '#333333',
     },
 });
 exports.striped = common_1.deepMergedCopy(exports.presetDefault, {
@@ -24768,6 +24942,7 @@ exports.striped = common_1.deepMergedCopy(exports.presetDefault, {
         },
     },
 });
+
 
 
 /***/ }),

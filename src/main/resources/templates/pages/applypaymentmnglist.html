@@ -8,7 +8,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last p-3">
-                    <h3>정산관리</h3>
+                    <h3>정산승인관리</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -27,30 +27,51 @@
                     <div class="card">
                         <div class="card-body pt-3 pb-3" id="searchForm">
 <!--                            <div class="row align-items-center p-2" style="">-->
-                            <div class="row align-items-center p-2 search-area custom-bg">
+                            <div class="row align-items-center p-3 custom-bg">
                                 <div class="col-md-11">
-                                    <div class="form-group row mb-0 align-items-center text-center">
-                                        <label class="col-form-label col-lg-1 col-3">날짜</label>
-                                        <div class="col-lg-3 col-9">
-                                            <div class="d-flex">
+                                    <div class="row align-items-center text-center">
+                                        <!-- 정산신청일 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">정산신청일</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex justify-content-between">
                                                 <input type="date" class="form-control form-control-sm me-2" id="startDate" value="2024-10-15">
                                                 <input type="date" class="form-control form-control-sm" id="endDate" value="2024-10-15">
                                             </div>
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">고객명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="custName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                        <!-- 담당자명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">담당자명</label>
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">상품명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="prodName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                        <div class="col-md-4">
+                                            <input type="text" id="emplName" class="form-control form-control-sm" placeholder="담당자명">
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center text-center mt-2">
+                                        <!-- 고객명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">고객명</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="custName" class="form-control form-control-sm" placeholder="고객명">
+                                        </div>
+                                        <!-- 상품명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">상품명</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="prodName" class="form-control form-control-sm" placeholder="상품명">
                                         </div>
                                     </div>
                                 </div>
+                                <!-- 조회 버튼 -->
                                 <div class="col-md-1 text-end">
                                     <a href="#" class="btn btn-primary" id="searchBtn3">조회</a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
