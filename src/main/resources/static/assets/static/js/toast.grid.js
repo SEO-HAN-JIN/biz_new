@@ -50,7 +50,7 @@ if (typeof CustomTuiGrid === "undefined") {
                 // fitStyle 옵션에 따른 비율 조정
                 if (this.fitStyle === 'fill') {
                     setTimeout(function() {
-                        const containerWidth = self.grid.el.offsetWidth - 20;
+                        const containerWidth = self.grid.el.offsetWidth - 10;
 
                         // 모든 컬럼의 초기 width 합계 계산
                         const totalInitialWidth = self.columns.reduce((sum, column) => sum + (column.width || 100), 0);
@@ -83,15 +83,6 @@ if (typeof CustomTuiGrid === "undefined") {
                     name: id,
                     width: width || "auto",
                     align: options.align || "center",
-                    formatter: function({ value }) {  // 텍스트 포맷을 통해 색상 설정
-                        if (options.textColor) {
-                            return `<span style="color: ${options.textColor}">${value || ''}</span>`;
-                        }
-                        if (options.comma) {
-                            return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        }
-                        return value || '';
-                    },
                     ...options
                 };
 
@@ -150,13 +141,20 @@ if (typeof CustomTuiGrid === "undefined") {
             addNumber: function(id, header, width, options = {}) {
                 const defaultOptions = {
                     dataType: 'number',
-                    editor: {
-                        type: 'number'
-                    },
+                    formatter: function({ value }) {
+                        value = value || '0';
+                        if (value != null) {
+                            let formattedValue = options.comma ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : value.toString(); // 콤마 적용
+                            if (options.textColor) {
+                                return `<span style="color: ${options.textColor}">${formattedValue}</span>`; // 텍스트 색상 적용
+                            }
+                            return formattedValue;
+                        }
+                        return '';
+                    }
                 };
 
-                //return this.add(id, header, width, {defaultOptions, options });
-                return this.add(id, header, width, { ...options, defaultOptions });
+                return this.add(id, header, width, { ...options, ...defaultOptions });
             },
 
             // 그리드 렌더링 메소드

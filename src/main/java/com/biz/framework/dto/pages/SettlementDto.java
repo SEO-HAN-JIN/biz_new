@@ -24,7 +24,7 @@ public class SettlementDto extends BaseDto {
     private String dateWorkTo;      //작업종료일
     private String workDay;         //작업일
     private String incentiveRate;   //직원인센티브율
-    private String empPayment;      //직원수수료
+    private String acctAmt;         //직원정산수수료
     private String refundInd;       //환불여부
     private String atchId;          //첨부ID
     private String status;          //승인여부
