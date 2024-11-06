@@ -13,19 +13,24 @@ const ModalManager = {
             contentElement.innerHTML = contentHtml.innerHTML;
         }
 
-        // 모달이 열렸을 때 Choices.js 초기화
         $(modalElement).off('shown.bs.modal').on('shown.bs.modal', function () {
             const selectElements = modalElement.querySelectorAll('select.choices');
             selectElements.forEach(selectElement => {
-                // Choices.js 인스턴스가 이미 있는 경우 제거
+                // Choices 인스턴스가 존재하는지 확인 후 파괴
                 if (selectElement.choicesInstance) {
                     selectElement.choicesInstance.destroy();
+                    selectElement.choicesInstance = null; // 참조 제거
                 }
 
-                // Choices 인스턴스 생성 및 할당
-                const instance = new Choices(selectElement);
-                selectElement.choicesInstance = instance;
+                // 새로운 Choices 인스턴스를 생성하여 할당
+                selectElement.choicesInstance = new Choices(selectElement);
             });
+
+            if (options.onOpened && typeof options.onOpened === 'function') {
+                setTimeout(() => {
+                    options.onOpened();
+                }, 0);
+            }
         });
 
         // 모달 타이틀 변경
@@ -50,14 +55,10 @@ const ModalManager = {
             };
         }
 
-        // 모달 열렸을 때 onOpened 콜백 호출
-        $(modalElement).on('shown.bs.modal', function () {
-            if (options.onOpened && typeof options.onOpened === 'function') {
-                setTimeout(() => {
-                    options.onOpened();
-                }, 0);
-            }
-        });
+        // // 모달 열렸을 때 onOpened 콜백 호출
+        // $(modalElement).on('shown.bs.modal', function () {
+        //
+        // });
 
         // 모달 표시 (스크롤 없애기 위해 body에 클래스 추가)
         $('body').addClass('modal-open');

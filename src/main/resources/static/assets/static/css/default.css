@@ -2,3 +2,15 @@
 {
     padding-top: 8px !important;
 }
+
+/* 라이트 모드 */
+:root[data-bs-theme="light"] .custom-bg {
+    background-color: #F3F6FC;
+    color: #4A4A4A;
+}
+
+/* 다크 모드 */
+:root[data-bs-theme="dark"] .custom-bg {
+    background-color: #2E2E2E;
+    color: #CCCCCC;
+}

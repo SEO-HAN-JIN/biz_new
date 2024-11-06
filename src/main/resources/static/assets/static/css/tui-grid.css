@@ -266,6 +266,12 @@
   cursor: default;
 }
 
+/* 다크 모드에서 tui-grid-layer-state 배경색 변경 */
+.theme-dark .tui-grid-layer-state {
+  background: #333333 !important; /* 다크 모드 배경색 */
+  color: #e0e0e0 !important;      /* 다크 모드 텍스트 색상 */
+}
+
 .tui-grid-layer-state {
   position: absolute;
   background: #fff;

@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3>정산승인관리</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">정산관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">정산신청</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body pt-3 pb-3" id="searchForm">
+<!--                            <div class="row align-items-center p-2" style="">-->
+                            <div class="row align-items-center p-3 custom-bg">
+                                <div class="col-md-11">
+                                    <div class="row align-items-center text-center">
+                                        <!-- 정산신청일 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">정산신청일</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-flex justify-content-between">
+                                                <input type="date" class="form-control form-control-sm me-2" id="startDate" value="2024-10-15">
+                                                <input type="date" class="form-control form-control-sm" id="endDate" value="2024-10-15">
+                                            </div>
+                                        </div>
+                                        <!-- 담당자명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">담당자명</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="emplName" class="form-control form-control-sm" placeholder="담당자명">
+                                        </div>
+                                    </div>
+
+                                    <div class="row align-items-center text-center mt-2">
+                                        <!-- 고객명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">고객명</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="custName" class="form-control form-control-sm" placeholder="고객명">
+                                        </div>
+                                        <!-- 상품명 -->
+                                        <div class="col-md-2 text-start">
+                                            <label class="col-form-label">상품명</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="text" id="prodName" class="form-control form-control-sm" placeholder="상품명">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 조회 버튼 -->
+                                <div class="col-md-1 text-end">
+                                    <a href="#" class="btn btn-primary" id="searchBtn3">조회</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">정산신청내역</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-end" style="width: 100%;">
+                                <div class="d-flex pb-3 gap-1">
+                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal">추가</button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePaymentGrid">삭제</button>
+                                </div>
+                            </div>
+                            <div id="paymentGrid" class="tui-grid"></div>
+                        </div>
+
+                        <div id="programModal" style="display: none">
+                            <section id="multiple-column-form">
+                                <div class="row match-height">
+                                    <div class="col-12">
+                                        <div class="card-content">
+                                            <div class="card-body">
+                                                <form class="form">
+                                                    <div class="row">
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>담당자</label>
+                                                                <input type="text" id="pUserId" class="form-control" placeholder="" name="fname-column" disabled="disabled">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>고객</label>
+                                                                <fieldset class="form-group">
+                                                                    <select id="custId" class="choices form-select" size="5">
+                                                                        <option value="square">고객1</option>
+                                                                        <option value="rectangle">고객2</option>
+                                                                        <option value="rombo">고객3</option>
+                                                                        <option value="romboid">고객4</option>
+                                                                        <option value="trapeze">고객5</option>
+                                                                        <option value="traible">고객6</option>
+                                                                    </select>
+                                                                </fieldset>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>상품</label>
+                                                                    <select id="prodId" class="choices form-select">
+                                                                        <option value="square">타이밍</option>
+                                                                        <option value="rectangle">타자</option>
+                                                                        <option value="rombo">에이밍</option>
+                                                                        <option value="romboid">산타</option>
+                                                                    </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>상품가</label>
+                                                                <input type="text" id="prodAmt" class="form-control priceformat" placeholder="" name="prodAmt">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>작업시작일</label>
+                                                                <input type="date" id="dateWorkFrom" class="form-control"
+                                                                       name="country-floating" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>작업종료일</label>
+                                                                <input type="date" id="dateWorkTo" class="form-control"
+                                                                       name="country-floating" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>작업일수</label>
+                                                                <input type="number" id="workDay" class="form-control" disabled="disabled"
+                                                                       placeholder="" name="workDay">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>판매가</label>
+                                                                <input type="text" id="saleAmt" class="form-control priceformat"
+                                                                       name="saleAmt" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>유입수</label>
+                                                                <input type="text" id="inflowCnt" class="form-control"
+                                                                       placeholder="" name="inflowCnt">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>판매총액</label>
+                                                                <input type="email" id="saleTotalAmt" disabled="disabled" class="form-control priceformat"
+                                                                       name="saleTotalAmt" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>예상정산금액</label>
+                                                                <input type="text" id="acctAmt" disabled="disabled" class="form-control priceformat"
+                                                                       name="acctAmt" placeholder="">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-3 col-12">
+                                                            <div class="form-group">
+                                                                <label>요청구분</label>
+                                                                <select id="status" class="form-select">
+                                                                    <option value="1">신규</option>
+                                                                    <option value="2">연장</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-12 pt-5">
+                                                            <div class="row">
+                                                            <div class="col-md-3 col-12">
+                                                                <div class="form-group">
+                                                                    <label>킵사용</label>
+                                                                    <select id="pKeepInd" class="form-select" onchange="selectKeepInd(this)">
+                                                                        <option value="N">사용안함</option>
+                                                                        <option value="Y">사용</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 col-12">
+                                                                <div class="form-group">
+                                                                    <label>잔여킵금액</label>
+                                                                    <input type="text" id="custKeepAmt" class="form-control priceformat" disabled="disabled"
+                                                                           name="company-column" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 col-12">
+                                                                <div class="form-group">
+                                                                    <label>킵사용금액</label>
+                                                                    <input type="text" id="custKeepUseAmt" class="form-control priceformat" disabled="disabled"
+                                                                           name="email-id-column" placeholder="">
+                                                                </div>
+                                                            </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script type="text/javascript">
+
+        const apiUrl = '/api/pages/applypayment';
+
+        let paymentGrid;
+        let menuGrid;
+
+        $(document).ready(function() {
+            initEvent();
+            initPaymentGrid();
+        });
+
+        const initEvent = () => {
+            // $("#modalAddBtn").on('click', fn_appendPaymentGrid);
+            // $("#btnSavePaymentGrid").on('click', fn_savePaymentGrid);
+            // $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
+
+            //$('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+            // $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
+            // $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
+            // $("#modalAcceptBtn").on('click', modalAcceptBtn);
+
+            $("#searchBtn").on('click', searchPaymentGrid);
+        }
+
+
+        function selectKeepInd(obj) {
+
+            var keepInd = obj.value;
+
+            var inputElement = modalElement.querySelector("#custKeepUseAmt");
+
+            if (keepInd === "Y") {
+                // Enable the element
+                $(inputElement).prop("disabled", false);
+            } else {
+                // Disable the element
+                $(inputElement).prop("disabled", true);
+            }
+        }
+
+        var modalElement;
+        var workDateFrom;
+        var workDateTo;
+        var workDay;
+        $("#modalAddBtn").on('click', function ()
+        {
+            const modalContent = document.getElementById("programModal").cloneNode(true);
+            modalContent.style.display = 'block'; // 숨겨진 상태를 해제
+
+            ModalManager.openModal(modalContent, {
+                title: "정산내역작성",
+                onApply: function() {
+
+                    return performAction().then((response) => {
+                        return true;
+                    }).catch((error) => {
+                        return false;
+                    });
+                },
+                onOpened: function () {
+                    modalElement = document.getElementById('commonModal');
+
+                    workDateFrom = modalElement.querySelector("#dateWorkFrom");
+                    workDateTo = modalElement.querySelector("#dateWorkTo");
+                    workDay = modalElement.querySelector("#workDay");
+                    saleAmt = modalElement.querySelector("#saleAmt");       // 판매가
+                    inflowCnt = modalElement.querySelector("#inflowCnt");     // 유입수
+
+                    workDateFrom.addEventListener("change", function ()
+                    {
+                        $(workDay).val(getDateDiff($(workDateFrom).val(), $(workDateTo).val()));
+                        saleSum();
+                    });
+
+                    workDateTo.addEventListener("change", function ()
+                    {
+                        $(workDay).val(getDateDiff($(workDateFrom).val(), $(workDateTo).val()));
+                        saleSum();
+                    });
+
+                    saleAmt.addEventListener("change", function ()
+                    {
+                        saleSum();
+                    });
+
+                    inflowCnt.addEventListener("change", function ()
+                    {
+                        saleSum();
+                    });
+
+                    // .priceformat 클래스를 가진 모든 input 요소를 선택
+                    const priceformatInputs = modalElement.querySelectorAll('.priceformat');
+
+                    // 각 input 요소에 이벤트 리스너 추가
+                    priceformatInputs.forEach(function(input) {
+                        input.addEventListener('input', function() {
+                            formatNumber($(this)); // 콤마 포맷 함수 호출
+                        });
+                    });
+                }
+            });
+        })
+
+        function saleSum()
+        {
+            modalElement = document.getElementById('commonModal');
+
+            workDayElement = modalElement.querySelector("#workDay");
+            prodAmtElement = modalElement.querySelector("#prodAmt");       // 상품가
+            saleAmtElement = modalElement.querySelector("#saleAmt");       // 판매가
+            inflowCntElement = modalElement.querySelector("#inflowCnt");     // 유입수
+
+            saleTotalAmtElement = modalElement.querySelector("#saleTotalAmt");
+            acctAmtElement = modalElement.querySelector("#acctAmt");
+
+            var saleAmt = isNull($(saleAmtElement).val()) ? 0 : parseInt($(saleAmtElement).val());
+            var prodAmt = isNull($(prodAmtElement).val()) ? 0 : parseInt($(prodAmtElement).val());
+            var inflowCnt = isNull($(inflowCntElement).val()) ? 0 : parseInt($(inflowCntElement).val());
+            var workDay = isNull($(workDayElement).val()) ? 0 : parseInt($(workDayElement).val());
+
+            // 부가세율 설정 (10% 부가세)
+            var vatRate = 1.1;
+
+            // 판매총액 (판매가 * 유입수 * 작업일) - 부가세 포함
+            var saleTotalAmt = Math.floor((saleAmt * inflowCnt * workDay) * vatRate);
+
+            // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
+            var prodTotalAmt = Math.floor((prodAmt * inflowCnt * workDay) * vatRate);
+
+            // 영업이익
+            var costAmt = saleTotalAmt - prodTotalAmt;
+
+            // 데이터로 저장된 인센율을 문자열로 가져왔다고 가정
+            var incenRateStr = "0.3"; // 문자열로 저장된 0.3
+
+            // 실수형으로 변환
+            var incentiveRate = parseFloat(incenRateStr);
+
+            // 소수점 제외하고 정수만 출력
+            var rate = Math.floor(costAmt * incentiveRate);
+
+            $(acctAmtElement).val(rate);
+            $(saleTotalAmtElement).val(saleTotalAmt);
+
+            formatNumber($(saleTotalAmtElement));
+            formatNumber($(acctAmtElement));
+
+        }
+
+        const getDateDiff = (d1, d2) => {
+            const date1 = new Date(d1);
+            const date2 = new Date(d2);
+
+            const diffDate = date1.getTime() - date2.getTime();
+
+            return (Math.abs(diffDate / (1000 * 60 * 60 * 24)) + 1); // 밀리세컨 * 초 * 분 * 시 = 일
+        }
+
+        function performAction()
+        {
+            const param = {};
+            $('#commonModal').find('input, select, input[type="checkbox"]').each((index, item) => {
+                // checkbox일 때
+                if ($(item).is(':checkbox')) {
+                    param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
+                } else {
+                    // input일 때의 처리
+                    param[item.id] = item.value.replace(/,/g, ''); // input 값 설정
+                }
+            });
+
+            var dateFrom = param.dateWorkFrom;
+            var dateTo = param.dateWorkTo;
+            if(isNull(dateFrom))
+            {
+                alert("시작일을 입력해주세요.");
+                return false;
+            }
+
+            if(isNull(dateTo))
+            {
+                alert("종료일을 입력해주세요.");
+                return false;
+            }
+
+            if(new Date(dateTo) < new Date(dateFrom))
+            {
+                alert("작업기간이 잘못되었습니다.");
+                return false;
+            }
+
+            if (isNull(param.saleAmt)) {
+                alert("판매가를 입력해주세요.");
+                return false;
+            }
+
+            if (isNull(param.inflowCnt)) {
+                alert("유입수를 입력해주세요.");
+                return false;
+            }
+
+            if (isNull(param.saleTotalAmt)) {
+                alert("판매총액을 입력해주세요.");
+                return false;
+            }
+
+            // if (isNull(param.depositAmt)) {
+            //     alert("입금총액을 입력해주세요.");
+            //     return false;
+            // }
+
+            if (confirm("데이터를 저장하시겠습니까?")) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(param),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("저장이 완료되었습니다.");
+                                return true;
+                            } else {
+                                alert("저장에 실패하였습니다.");
+                                return false;
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                            return false;
+                        }
+                    })
+                });
+            }
+        }
+
+        const initPaymentGrid = () => {
+
+
+            var columns = new CustomTuiGrid()
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .add('settlementSeq', '정산번호', 150, {})
+                .add('userNm', '담당자', 150, {})
+                .add('custNm', '고객명', 250, {})
+                .add('prodName', '상품명', 200, { align: 'center' })
+                .addNumber('prodAmt', '상품가', 150, { align: 'right'})
+                .addNumber('saleAmt', '판매가', 120, { align: 'right' })
+                .addNumber('inflowCnt', '유입수', 120, {})
+                .addDate('dateWorkFrom', '작업시작일', 150, {})
+                .addDate('dateWorkTo', '작업종료일', 150, {})
+                .addDate('workDay', '작업일수', 150, {})
+                .addNumber('saleTotalAmt', '판매총액', 200, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }})
+                .addNumber('depositRealAmt', '실제입금액', 200, { align: 'right', textColor: 'red' })
+                .addNumber('statusName', '진행상태', 100, {})
+
+
+
+            paymentGrid = columns.init('paymentGrid', [])
+                .render();
+
+
+            //searchPaymentGrid();
+        }
+
+        const searchPaymentGrid = () => {
+            paymentGrid.clear();
+
+            const param = {
+                menuNm : $("#first-name").val()
+            };
+
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                type: 'GET',
+                success: (result) => {
+
+                    if(result.length > 0) {
+
+                        // result.forEach((item) => {
+                        //     item.saleTotalAmt = item.saleTotalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                        // });
+
+                        paymentGrid.bind(result);
+                    }
+                }
+            });
+        }
+
+        const fn_appendPaymentGrid = () => {
+
+        }
+
+        const fn_savePaymentGrid = () => {
+            let modifiedData = paymentGrid.getModifiedRows();
+            const createdData = modifiedData.createdRows;
+            const updatedData = modifiedData.updatedRows;
+
+            const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+            const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+
+            const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+
+            let params = [];
+            for (let i = 0; i < createdData.length; i++) {
+                createdData[i].rowStatus = 'C';
+                params.push(createdData[i]);
+            }
+
+            for (let i = 0; i < updatedData.length; i++) {
+                updatedData[i].rowStatus = 'U';
+                params.push(updatedData[i]);
+            }
+
+            if (result) {
+                $.ajax({
+                    url: apiUrl + "/up/list",
+                    data: JSON.stringify(params),
+                    contentType:'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("저장이 완료되었습니다.");
+                            searchPaymentGrid();
+                        } else {
+                            alert("저장에 실패하였습니다.");
+                            searchPaymentGrid();
+                        }
+                    }
+                })
+            }
+        }
+
+        const fn_deletePaymentGrid = () => {
+            const focusedCell = paymentGrid.getFocusedCell();
+            if (isNull(focusedCell)) {
+                alert("삭제할 행을 선택해주세요.");
+                return;
+            }
+
+            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+            if (confirmResult) {
+                const focusRow = paymentGrid.getRow(focusedCell.rowKey);
+                let params = {
+                    menuId : focusRow.menuId
+                }
+                $.ajax({
+                    url: apiUrl + "/up/list",
+                    data: JSON.stringify(params),
+                    contentType:'application/json',
+                    type: 'DELETE',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("삭제가 완료되었습니다.");
+                            searchPaymentGrid();
+                        } else {
+                            alert("삭제에 실패하였습니다.");
+                            searchPaymentGrid();
+                        }
+                    }
+                })
+            }
+        }
+
+        const openPgmModal = () => {
+            // pgmModalGrid.clear();
+            // pgmModalGrid.refreshLayout();
+            //
+            // const param = {
+            //     programNm : $("#mp_modal_pgmNm").val()
+            // };
+            //
+            // $.ajax({
+            //     url: "/api/system/program",
+            //     data: param,
+            //     type: 'GET',
+            //     success: (result) => {
+            //         pgmModalGrid.resetData(result);
+            //     }
+            // });
+        }
+
+        const closeBeforeModal = () => {
+            console.log('모달이 곧 닫힙니다!');
+        }
+
+        const closeAfterModal = () => {
+            console.log('모달이 닫혔습니다!');
+        }
+
+
+        const modalAcceptBtn = () => {
+            searchPaymentGrid();
+        }
+
+
+        function openPop(url, options) {
+            if(self != top) {
+                window.parent.openPop(url, options);
+                return;
+            }
+            var container = document.getElementById("popup-container");
+            if(container instanceof HTMLDivElement === false) {
+                container = document.createElement("div");
+                container.id = "popup-container";
+                container.className = "popup-container";
+                container.style.opacity = "0";
+                container.style.display = "none";
+                document.body.appendChild(container);
+            }
+            container.innerHTML = "";
+
+            var popId = _.camelCase(_.nth(_.split(url, "/"), -2));
+            if(!_.isEmpty(window[popId])) {
+                window[popId].open(options);
+            }
+            else {
+                fetch(url)
+                    .then(function(response) {
+                        return response.text();
+                    })
+                    .then(function(text) {
+                        container.innerHTML = text;
+                        Ustra.docReady(function() {
+                            Array.from(container.querySelectorAll("script")).forEach(function(item) {
+                                eval.apply(this, [item.textContent]);
+                            });
+                            if(!_.isEmpty(window[popId])) {
+                                window[popId].open(options);
+                            }
+                        }, container);
+                    });
+            }
+        }
+
+    </script>
+
+</div>
+
+</html>
