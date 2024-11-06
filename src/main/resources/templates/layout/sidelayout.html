@@ -51,6 +51,8 @@
     <link rel="stylesheet" href="/assets/compiled/css/app.css">
     <link rel="stylesheet" href="/assets/compiled/css/app-dark.css">
     <link rel="stylesheet" href="/assets/compiled/css/iconly.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
     <script th:inline="javascript">
         $(document).ready(function() {
@@ -137,14 +139,14 @@
                         html += `<span>${item2.name}</span>`;
                         html += '</a>';
                         if (item2.children.length > 0) {
-                            html += '<ul class="submenu ">';
+                            html += '<ul class="submenu">';
                             for (const [id3, item3] of Object.entries(item2.children)) {
                                 if (path === item3.url) {
                                     html += '<li class="submenu-item active">';
                                 } else {
                                     html += '<li class="submenu-item">';
                                 }
-                                html += `<a href="${item3.url}" class="submenu-link">${item3.name}</a>`;
+                                html += `<a href="${item3.url}" class="submenu-link"><svg width="4" height="4" viewBox="0 0 8 8" style="margin-right: 6px;"><circle cx="4" cy="4" r="4" fill="#435EBE" /></svg> ${item3.name}</a>`;
                                 html += '</li>';
                             }
                             html += '</ul>';

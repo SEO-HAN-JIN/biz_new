@@ -1,0 +1,35 @@
+<!-- templates/fragments/cust-select.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<select class="choices cust-select form-control-sm" id="cust-select"></select>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const selectElement = document.getElementById('cust-select');
+
+        if (selectElement != null) {
+            fetch("/api/pages/customer")
+                .then(response => response.json())
+                .then(data => {
+                    selectElement.innerHTML = ''; // 기존 옵션 제거
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.bizNo;
+                        option.textContent = item.custName;
+                        selectElement.appendChild(option);
+                    });
+
+                    if (!selectElement.choicesInstance) {
+                        selectElement.choicesInstance = new Choices(selectElement);
+                    }
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+    });
+</script>
+</body>
+</html>

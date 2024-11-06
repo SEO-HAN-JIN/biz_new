@@ -76,167 +76,134 @@
                         </div>
 
                         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalCenterTitle">고객 정보
-                                        </h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                                aria-label="Close">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle text-white">고객 정보</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
                                             <i data-feather="x"></i>
                                         </button>
                                     </div>
                                     <div id="programModal" class="modal-body">
-                                        <section id="multiple-column-form">
-                                            <div class="row match-height">
-                                                <div class="col-12">
-                                                    <div class="card-content">
-                                                        <div class="card-body">
-                                                            <form class="form">
-                                                                <div class="row">
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>담당자</label>
-                                                                            <input type="text" id="pUserId" class="form-control" placeholder="" name="fname-column" disabled="disabled">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>고객</label>
-                                                                            <fieldset class="form-group">
-                                                                                <select id="custId" class="choices form-select" size="5">
-                                                                                    <option value="square">고객1</option>
-                                                                                    <option value="rectangle">고객2</option>
-                                                                                    <option value="rombo">고객3</option>
-                                                                                    <option value="romboid">고객4</option>
-                                                                                    <option value="trapeze">고객5</option>
-                                                                                    <option value="traible">고객6</option>
-                                                                                </select>
-                                                                            </fieldset>
-                                                                        </div>
+                                        <form class="form">
+                                            <div class="row g-3">
+                                                <!-- Row 1 -->
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">담당자</label>
+                                                        <input type="text" id="pUserId" class="form-control" name="fname-column" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">고객</label>
+                                                        <div th:replace="components/cust-select :: body"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">상품</label>
+                                                        <div th:replace="components/prod-select :: body"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">상품가</label>
+                                                        <input type="text" id="prodAmt" class="form-control priceformat" name="prodAmt">
+                                                    </div>
+                                                </div>
 
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>상품</label>
-                                                                                <select id="prodId" class="choices form-select">
-                                                                                    <option value="square">타이밍</option>
-                                                                                    <option value="rectangle">타자</option>
-                                                                                    <option value="rombo">에이밍</option>
-                                                                                    <option value="romboid">산타</option>
-                                                                                </select>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>상품가</label>
-                                                                            <input type="text" id="prodAmt" class="form-control priceformat" placeholder="" name="prodAmt">
-                                                                        </div>
-                                                                    </div>
+                                                <!-- Row 2 -->
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">작업시작일</label>
+                                                        <input type="date" id="dateWorkFrom" class="form-control" name="dateWorkFrom">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">작업종료일</label>
+                                                        <input type="date" id="dateWorkTo" class="form-control" name="dateWorkTo">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">작업일수</label>
+                                                        <input type="number" id="workDay" class="form-control" name="workDay" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">판매가</label>
+                                                        <input type="text" id="saleAmt" class="form-control priceformat" name="saleAmt">
+                                                    </div>
+                                                </div>
 
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>작업시작일</label>
-                                                                            <input type="date" id="dateWorkFrom" class="form-control"
-                                                                                   name="country-floating" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>작업종료일</label>
-                                                                            <input type="date" id="dateWorkTo" class="form-control"
-                                                                                   name="country-floating" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>작업일수</label>
-                                                                            <input type="number" id="workDay" class="form-control" disabled="disabled"
-                                                                                   placeholder="" name="workDay">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>판매가</label>
-                                                                            <input type="text" id="saleAmt" class="form-control priceformat"
-                                                                                   name="saleAmt" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>유입수</label>
-                                                                            <input type="text" id="inflowCnt" class="form-control"
-                                                                                   placeholder="" name="inflowCnt">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>판매총액</label>
-                                                                            <input type="email" id="saleTotalAmt" disabled="disabled" class="form-control priceformat"
-                                                                                   name="saleTotalAmt" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>예상정산금액</label>
-                                                                            <input type="text" id="acctAmt" disabled="disabled" class="form-control priceformat"
-                                                                                   name="acctAmt" placeholder="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>요청구분</label>
-                                                                            <select id="status" class="form-select">
-                                                                                <option value="1">신규</option>
-                                                                                <option value="2">연장</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
+                                                <!-- Row 3 -->
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">유입수</label>
+                                                        <input type="text" id="inflowCnt" class="form-control" name="inflowCnt">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">판매총액</label>
+                                                        <input type="text" id="saleTotalAmt" class="form-control priceformat" name="saleTotalAmt" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">예상정산금액</label>
+                                                        <input type="text" id="acctAmt" class="form-control priceformat" name="acctAmt" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">요청구분</label>
+                                                        <select id="status" class="form-select form-control-sm">
+                                                            <option value="1">신규</option>
+                                                            <option value="2">연장</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
 
-                                                                    <div class="col-12 pt-5">
-                                                                        <div class="row">
-                                                                        <div class="col-md-3 col-12">
-                                                                            <div class="form-group">
-                                                                                <label>킵사용</label>
-                                                                                <select id="pKeepInd" class="form-select" onchange="selectKeepInd(this)">
-                                                                                    <option value="N">사용안함</option>
-                                                                                    <option value="Y">사용</option>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-3 col-12">
-                                                                            <div class="form-group">
-                                                                                <label>잔여킵금액</label>
-                                                                                <input type="text" id="custKeepAmt" class="form-control priceformat" disabled="disabled"
-                                                                                       name="company-column" placeholder="">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="col-md-3 col-12">
-                                                                            <div class="form-group">
-                                                                                <label>킵사용금액</label>
-                                                                                <input type="text" id="custKeepUseAmt" class="form-control priceformat" disabled="disabled"
-                                                                                       name="email-id-column" placeholder="">
-                                                                            </div>
-                                                                        </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
+                                                <!-- Additional Settings Section -->
+                                                <hr class="my-4">
+                                                <div class="row g-3">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">킵사용</label>
+                                                            <select id="pKeepInd" class="form-select form-control-sm" onchange="selectKeepInd(this)">
+                                                                <option value="N">사용안함</option>
+                                                                <option value="Y">사용</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">잔여킵금액</label>
+                                                            <input type="text" id="custKeepAmt" class="form-control priceformat" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">킵사용금액</label>
+                                                            <input type="text" id="custKeepUseAmt" class="form-control priceformat" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </section>
+                                        </form>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-secondary"
-                                                data-bs-dismiss="modal">
-                                            <i class="bx bx-x d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">닫기</span>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
                                         </button>
                                         <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">저장</span>
+                                            <i class="bx bx-check"></i> 저장
                                         </button>
                                     </div>
                                 </div>
@@ -480,7 +447,36 @@
 
         const fn_appendPaymentGrid = () => {
 
+            clearForm('paymentModal');
+
+            const selectElements = document.querySelectorAll('select.choices');
+            selectElements.forEach(selectElement => {
+                // Choices 인스턴스가 존재하는지 확인 후 파괴
+                if (selectElement.choicesInstance) {
+                    selectElement.choicesInstance.destroy();
+                    selectElement.choicesInstance = null; // 참조 제거
+                }
+
+                // 새로운 Choices 인스턴스를 생성하여 할당
+                selectElement.choicesInstance = new Choices(selectElement);
+            });
+
+            $('#customerModal').modal('show');
+
         }
+
+        const clearForm = (id) => {
+            $('#' + id).find('input, select, textarea').each(function () {
+                if ($(this).is(':checkbox')) {
+                    // 체크박스는 false로 설정
+                    $(this).prop('checked', false);
+                } else {
+                    // 그 외의 입력 필드는 빈 문자열로 설정
+                    $(this).val('');
+                }
+            });
+        };
+
 
         const fn_savePaymentGrid = () => {
             const param = {};
