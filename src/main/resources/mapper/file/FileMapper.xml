@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.file.FileMapper">
+
+    <select id="findByAtchFileIdAndUseAt">
+        /* com.biz.framework.mapper.file.FileMapper.findByAtchFileIdAndUseAt */
+        SELECT FILE_SN
+             , ATCH_FILE_ID
+             , FILE_EXTSN
+             , FILE_SIZE
+             , FILE_STRE_COURS
+             , ORIGINA_FILE_NM
+             , STRE_FILE_NM
+             , USET_AT
+          FROM TB_FILE
+         WHERE ATCH_FILE_ID     = #{atchFileId}
+           AND USE_AT           = #{useAt}
+    </select>
+
+    <select id="findByATchfileIdAndFileSnAndUseAt">
+        /* com.biz.framework.mapper.file.FileMapper.findByATchfileIdAndFileSnAndUseAt */
+        SELECT FILE_SN
+             , ATCH_FILE_ID
+             , FILE_EXTSN
+             , FILE_SIZE
+             , FILE_STRE_COURS
+             , ORIGINA_FILE_NM
+             , STRE_FILE_NM
+             , USET_AT
+        FROM TB_FILE
+        WHERE FILE_SN          = #{fileSn}
+          AND ATCH_FILE_ID     = #{atchFileId}
+          AND USE_AT           = #{useAt}
+    </select>
+
+    <insert id="save">
+        /* com.biz.framework.mapper.file.FileMapper.save */
+        INSERT INTO TB_FILE
+        (
+            FILE_SN
+            , ATCH_FILE_ID
+            , FILE_EXTSN
+            , FILE_SIZE
+            , FILE_STRE_COURS
+            , ORIGINAL_FILE_NM
+            , STRE_FILE_NM
+            , USE_AT
+            , CREATED_DATE
+        ) VALUES
+        (
+            #{fileSn}
+            , #{atchFileId}
+            , #{fileExtsn}
+            , #{fileSize}
+            , #{fileStreCours}
+            , #{originalFileNm}
+            , #{streFileNm}
+            , #{useAt}
+            , DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
+        )
+    </insert>
+</mapper>

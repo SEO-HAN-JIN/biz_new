@@ -33,3 +33,9 @@ logging:
     com.zaxxer.hikari.HikariDataSource: ERROR
     org.springframework.jdbc.core.JdbcTemplate: OFF
 #  config: classpath:log4j2.xml
+
+biz:
+  file:
+    storage:
+      allowed-extensions: hwp, doc, docx, ppt, pptx, xls, xlsx, jpg, jpeg, gif, png, txt, zip, pdf, egg, tif, tiff, bmp
+  file-size: 10485760
