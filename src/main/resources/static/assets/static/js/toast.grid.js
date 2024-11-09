@@ -180,6 +180,10 @@ if (typeof CustomTuiGrid === "undefined") {
             clear:function() {
                 this.grid.clear();
             },
+
+            getGrid: function() {
+                return this.grid;
+            }
         };
 
         return CustomTuiGrid;

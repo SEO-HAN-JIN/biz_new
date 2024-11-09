@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.ProductMapper">
+
+    <select id="findProducts" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.ProductMapper.findProducts */
+        SELECT
+            PROD_ID
+          , PROD_NAME
+          , PROD_AMT
+          , DATE_FORMAT(EFF_DATE_FROM, '%Y-%m-%d')  AS EFF_DATE_FROM
+          , DATE_FORMAT(EFF_DATE_TO, '%Y-%m-%d')    AS EFF_DATE_TO
+          , USE_IND
+        FROM TB_PRODUCTS    P
+       WHERE 1=1
+        <if test='prodId != null  and prodId != "" '>
+            AND PROD_ID     LIKE CONCAT('%', #{prodId}, '%')
+        </if>
+        <if test='prodName != null  and prodName != "" '>
+            AND PROD_NAME    LIKE CONCAT('%', #{prodName}, '%')
+        </if>
+    </select>
+
+    <insert id="saveProducts">
+        /* com.biz.framework.mapper.pages.ProductMapper.saveProducts */
+        INSERT INTO TB_PRODUCTS
+        (
+            PROD_ID
+            , PROD_NAME
+            , PROD_AMT
+            , EFF_DATE_FROM
+            , EFF_DATE_TO
+            , USE_IND
+        ) VALUES
+        (
+            #{prodId}
+            , #{prodName}
+            , #{prodAmt}
+            , STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
+            , STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
+            , #{useInd}
+        ) ON DUPLICATE KEY UPDATE
+          PROD_NAME         = #{prodName}
+        , PROD_AMT          = #{prodAmt}
+        , EFF_DATE_FROM     = STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
+        , EFF_DATE_TO       = STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
+        , USE_IND           = #{useInd}
+    </insert>
+
+    <delete id="deleteProducts">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProducts */
+        DELETE FROM TB_PRODUCTS
+        WHERE PROD_ID    = #{prodId}
+    </delete>
+</mapper>
