@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.biz.framework.mapper.file.FileMapper">
+<mapper namespace="com.biz.framework.file.FileMapper">
 
     <select id="findByAtchFileIdAndUseAt">
         /* com.biz.framework.mapper.file.FileMapper.findByAtchFileIdAndUseAt */
@@ -35,8 +35,8 @@
           AND USE_AT           = #{useAt}
     </select>
 
-    <insert id="save">
-        /* com.biz.framework.mapper.file.FileMapper.save */
+    <insert id="saveFile">
+        /* com.biz.framework.file.FileMapper.saveFile */
         INSERT INTO TB_FILE
         (
             FILE_SN

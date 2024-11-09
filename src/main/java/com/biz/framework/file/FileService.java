@@ -2,11 +2,11 @@ package com.biz.framework.file;
 
 
 import com.biz.framework.common.exception.ServiceException;
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,15 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FileService {
 
     private final FileMapper fileMapper;
-    private final Random random = new Random();
 
     @Value("${biz.file.storage.allowed-extensions}")
     private String allowedExtensions;
@@ -36,7 +35,7 @@ public class FileService {
         if (!CollectionUtils.isEmpty(multipartFiles)) {
 
             // 파일ID 생성
-            if (StringUtils.isNotEmpty(fileId)) {
+            if (fileId == null || fileId.trim().isEmpty()) {
                 fileId = UUID.randomUUID().toString().replace("-", "");
             }
 
@@ -72,7 +71,7 @@ public class FileService {
 
                     Files.copy(multipartFile.getInputStream(), path);
 
-                    fileMapper.save(fileDto);
+                    fileMapper.saveFile(fileDto);
                 } catch (Exception e) {
                     Path deleteTargetFilePath = Paths.get(fileDto.getFileStreCours(), fileDto.getStreFileNm());
                     try {

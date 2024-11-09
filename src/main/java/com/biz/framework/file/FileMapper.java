@@ -7,7 +7,7 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
 
-    void save(FileDto fileDto);
+    void saveFile(FileDto fileDto);
     List<FileDto> findByAtchFileIdAndUseAt(String fileId, String useAt);
 
     FileDto findByATchfileIdAndFileSnAndUseAt(String fileId, String fileSn, String y);
