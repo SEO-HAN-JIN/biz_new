@@ -27,7 +27,7 @@
                     <div class="card">
                         <div class="card-body pt-3 pb-3" id="searchForm">
 <!--                            <div class="row align-items-center p-2" style="">-->
-                            <div class="row align-items-center p-2" style="background-color: whitesmoke;">
+                            <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
 <!--                                        <label class="col-form-label col-lg-1 col-3">날짜</label>-->
@@ -76,94 +76,80 @@
                         </div>
 
                         <div class="modal fade" id="empModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalCenterTitle">직원 정보
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">직원 정보
                                         </h5>
-                                        <button type="button" class="close" data-bs-dismiss="modal"
-                                                aria-label="Close">
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
                                             <i data-feather="x"></i>
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <section id="multiple-column-form">
-                                            <div class="row match-height">
-                                                <div class="col-12">
-                                                    <div class="card-content">
-                                                        <div class="card-body">
-                                                            <form class="form">
-                                                                <div class="row">
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="empId">직원ID</label>
-                                                                            <input type="text" id="empId" class="form-control" placeholder="직원ID" name="empId">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="empName">직원이름</label>
-                                                                            <input type="text" id="empName" class="form-control" placeholder="직원이름" name="empName">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label>직급</label>
-                                                                            <fieldset class="form-group">
-                                                                                <select id="gradeCode" class="form-select">
-                                                                                </select>
-                                                                            </fieldset>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="entranceDate">입사일자</label>
-                                                                            <input type="date" id="entranceDate" class="form-control" placeholder="입사일자" name="entranceDate">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="retireDate">퇴사일자</label>
-                                                                            <input type="date" id="retireDate" class="form-control" name="retireDate" placeholder="retireDate">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="empTel">전화번호</label>
-                                                                            <input type="text" id="empTel" class="form-control" placeholder="전화번호" name="empTel">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="empMail">이메일</label>
-                                                                            <input type="text" id="empMail" class="form-control" name="empMail" placeholder="이메일">
-                                                                        </div>
-                                                                    </div>
+                                        <form class="form">
+                                            <div class="row g-3">
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="empId">직원ID</label>
+                                                        <input type="text" id="empId" class="form-control" placeholder="직원ID" name="empId">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="empName">직원이름</label>
+                                                        <input type="text" id="empName" class="form-control" placeholder="직원이름" name="empName">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label>직급</label>
+                                                        <fieldset class="form-group">
+                                                            <select id="gradeCode" class="form-select">
+                                                            </select>
+                                                        </fieldset>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="entranceDate">입사일자</label>
+                                                        <input type="date" id="entranceDate" class="form-control" placeholder="입사일자" name="entranceDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="retireDate">퇴사일자</label>
+                                                        <input type="date" id="retireDate" class="form-control" name="retireDate" placeholder="retireDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="empTel">전화번호</label>
+                                                        <input type="text" id="empTel" class="form-control" placeholder="전화번호" name="empTel">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="empMail">이메일</label>
+                                                        <input type="text" id="empMail" class="form-control" name="empMail" placeholder="이메일">
+                                                    </div>
+                                                </div>
 
-                                                                    <div class="col-md-3 col-12">
-                                                                        <div class="form-group">
-                                                                            <label for="incentiveRate">인센티브율</label>
-                                                                            <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="incentiveRate">인센티브율</label>
+                                                        <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
                                                     </div>
                                                 </div>
                                             </div>
-                                        </section>
+                                        </form>
                                     </div>
 
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light-secondary"
-                                                data-bs-dismiss="modal">
-                                            <i class="bx bx-x d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">닫기</span>
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
                                         </button>
                                         <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check d-block d-sm-none"></i>
-                                            <span class="d-none d-sm-block">저장</span>
+                                            <i class="bx bx-check"></i> 저장
                                         </button>
                                     </div>
                                 </div>
@@ -226,117 +212,27 @@
 
         const initEmpGrid = () => {
 
-            const Grid = tui.Grid;
+            var columns = new CustomTuiGrid()
+                .add('gradeCode', '직급코드', 150, {
+                    hidden: true
+                })
+                .add('empId', '직원ID', 200, {})
+                .add('empName', '직원명', 200, {})
+                .add('gradeName', '직급', 200, {})
+                .addDate('entranceDate', '입사일자', 'auto', { align: 'center' })
+                .add('empTel', '전화번호', 700, { align: 'center' })
+                .add('empMail', '이메일', 'auto', { align: 'center' })
+                .add('incentiveRate', '인센티브율', 'auto', { align: 'right' })
+                .add('retireDate', '퇴사일자', 'auto', { align: 'center' })
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
-            empGrid = new Grid({
-                el: document.getElementById('empGrid'),
-                columns: [
-                    {
-                        header: '직급코드',
-                        name: 'gradeCode',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        hidden: true
-                    },
-                    {
-                        header: '직원ID',
-                        name: 'empId',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 220,
-                    },
-                    {
-                        header: '직원명',
-                        name: 'empName',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 220
-                    },
-                    {
-                        header: '직급',
-                        name: 'gradeName',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 100
-                    },
-                    {
-                        header: '입사일자',
-                        name: 'entranceDate',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 150
-                    },
-                    {
-                        header: '전화번호',
-                        name: 'empTel',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 200
-                    },
-                    {
-                        header: '이메일',
-                        name: 'empMail',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 250
-                    },
-                    {
-                        header: '인센티브율',
-                        name: 'incentiveRate',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        align: 'right'
-                    },
-                    {
-                        header: '퇴사일자',
-                        name: 'retireDate',
-                        align: 'center',
-                        whiteSpace: 'normal',
-                        editor: null,  // 수정 불가능하도록 설정
-                        formatter: function(e) {
-                            return e.value
-                        },
-                        width: 150
-                    },
-                ],
-                bodyHeight: 500,
-                rowHeaders: ['rowNum']
-            });
+            empGrid = columns.init('empGrid', [])
+                .render();
 
             // 더블 클릭 이벤트 설정
-            empGrid.on('dblclick', function(ev) {
+            empGrid.getGrid().on('dblclick', function(ev) {
                 openPgmModal('2');
             });
-
 
             searchEmpGrid();
         }
@@ -357,7 +253,7 @@
                 data: param,
                 type: 'GET',
                 success: (result) => {
-                    empGrid.resetData(result);
+                    empGrid.bind(result);
                 }
             });
         }
@@ -370,8 +266,12 @@
                 if ($(item).is(':checkbox')) {
                     param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
                 } else {
+                    let value = item.value;
+                    if (item.value === '') {
+                        value = null;
+                    }
                     // input일 때의 처리
-                    param[item.id] = item.value; // input 값 설정
+                    param[item.id] = value; // input 값 설정
                 }
             });
 
@@ -384,6 +284,11 @@
 
             if (isNull(param.empName)) {
                 alert("직원명은 필수 값 입니다.");
+                return false;
+            }
+
+            if (isNull(param.entranceDate)) {
+                alert("입사일자는 필수 값 입니다.");
                 return false;
             }
 
@@ -420,7 +325,7 @@
         }
 
         const fn_deleteEmpGrid = () => {
-            const focusedCell = empGrid.getFocusedCell();
+            const focusedCell = empGrid.getGrid().getFocusedCell();
             if (isNull(focusedCell)) {
                 alert("삭제할 행을 선택해주세요.");
                 return;
@@ -428,7 +333,7 @@
 
             const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
             if (confirmResult) {
-                const focusRow = empGrid.getRow(focusedCell.rowKey);
+                const focusRow = empGrid.getGrid().getRow(focusedCell.rowKey);
                 let params = {
                     empId : focusRow.empId
                 }
@@ -460,8 +365,8 @@
 
             // 추가 버튼 클릭 시
             if (param === '2') {
-                const focusedCell = empGrid.getFocusedCell();
-                const focusedData = empGrid.getRow(focusedCell.rowKey);
+                const focusedCell = empGrid.getGrid().getFocusedCell();
+                const focusedData = empGrid.getGrid().getRow(focusedCell.rowKey);
 
                 $('#empModal').find('input, select, textarea').each(function() {
                     const fieldId = $(this).attr('id');

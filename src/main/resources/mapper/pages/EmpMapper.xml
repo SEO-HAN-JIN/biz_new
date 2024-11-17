@@ -31,7 +31,7 @@
     </select>
 
     <insert id="saveEmp">
-        /* com.biz.framework.mapper.pages.EmpMapper.saveCustomer */
+        /* com.biz.framework.mapper.pages.EmpMapper.saveEmp */
         INSERT INTO TB_EMP
         (
             EMP_ID
@@ -47,7 +47,7 @@
             #{empId}
             , #{empName}
             , STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
-            , STR_TO_DATE(#{retireDate}, '%Y-%m-%d')
+            , IFNULL(STR_TO_DATE(#{retireDate}, '%Y-%m-%d'), '2999-12-31')
             , #{gradeCode}
             , #{empTel}
             , #{empMail}
