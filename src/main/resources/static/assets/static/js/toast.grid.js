@@ -1,6 +1,90 @@
 let CustomTuiGrid;
 
+
 if (typeof CustomTuiGrid === "undefined") {
+
+    // 기존 CustomTuiGrid 정의 바로 아래에 추가
+    class CustomTuiGridButtonRenderer {
+        constructor(props) {
+
+            debugger;
+            const el = document.createElement('button');
+            el.innerText = props.value || props.columnInfo.renderer.options.buttonText || 'Button';
+            el.style.cursor = 'pointer';
+            el.style.padding = '5px 10px';
+            el.style.border = 'none';
+            el.style.borderRadius = '4px';
+            el.style.backgroundColor = '#435EBE'; // 신뢰감 있는 파란색
+            el.style.color = '#fff'; // 흰색 텍스트
+            el.style.fontWeight = 'bold'; // 굵은 텍스트
+            el.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+
+            // 버튼 상태 설정
+            if (props.disabled === false) {
+                this.disable();
+            }
+
+            // 마우스 오버 시 효과
+            el.addEventListener('mouseover', () => {
+                el.style.backgroundColor = '#3a50a6'; // 어두운 파란색
+            });
+            el.addEventListener('mouseout', () => {
+                el.style.backgroundColor = '#435EBE'; // 원래 색상
+            });
+
+            // 클릭 이벤트
+            el.addEventListener('click', () => {
+                const grid = props.grid;
+                const rowKey = props.rowKey;
+                const rowData = grid.getRow(rowKey);
+
+                const onClick = props.columnInfo.renderer.options.onClick;
+                if (typeof onClick === 'function') {
+                    onClick(rowData, rowKey); // 클릭 이벤트 핸들러 호출
+                }
+            });
+
+            this.el = el;
+        }
+
+        getElement() {
+            return this.el;
+        }
+
+        // 버튼 텍스트 업데이트 메서드
+        updateText(newText) {
+            this.el.innerText = newText || ''; // 텍스트 업데이트 또는 비우기
+        }
+
+        disable() {
+            if (this.el) {
+                this.el.disabled = true; // 비활성화 처리
+                this.el.style.opacity = '0.5'; // 시각적 효과
+                this.el.style.cursor = 'not-allowed';
+            } else {
+                console.error('Element not initialized for disable.');
+            }
+        }
+
+        enable() {
+            if (this.el) {
+                this.el.disabled = false; // 활성화 처리
+                this.el.style.opacity = '1';
+                this.el.style.cursor = 'pointer';
+            }
+        }
+
+        render(props) {
+            // 필요 시 props 기반 상태 업데이트
+            if (props.value === false) {
+                this.disable();
+            } else if (props.value) {
+                this.updateText(props.value);
+            }
+        }
+    }
+
+
     CustomTuiGrid = (function() {
 
         function CustomTuiGrid() {
@@ -65,6 +149,12 @@ if (typeof CustomTuiGrid === "undefined") {
                         self.grid.refreshLayout();  // 레이아웃 갱신
                     }, 100);
                 }
+
+                // 레이아웃 갱신
+                setTimeout(() => {
+                    this.grid.refreshLayout();
+                }, 100);
+
                 return this;
             },
 
@@ -83,6 +173,7 @@ if (typeof CustomTuiGrid === "undefined") {
                     name: id,
                     width: width || "auto",
                     align: options.align || "center",
+                    hidden: options.visible === false, // visible이 false면 hidden: true 설정
                     ...options
                 };
 
@@ -157,6 +248,27 @@ if (typeof CustomTuiGrid === "undefined") {
                 return this.add(id, header, width, { ...options, ...defaultOptions });
             },
 
+            // 버튼 컬럼 추가 메소드
+            addButton: function(id, header, width, options = {}) {
+                const column = {
+                    name: id,
+                    header: header,
+                    width: width || 150,
+                    align: options.align || 'center',
+                    renderer: {
+                        type: CustomTuiGridButtonRenderer,
+                        options: {
+                            buttonText: options.buttonText || 'Button',
+                            textColor: options.textColor || '#000', // 텍스트 색상
+                            onClick: options.onClick || function() {} // 클릭 이벤트 핸들러
+                        }
+                    }
+                };
+
+                this.columns.push(column);
+                return this;
+            },
+
             // 그리드 렌더링 메소드
             render: function() {
                 if (this.grid) {
@@ -183,6 +295,51 @@ if (typeof CustomTuiGrid === "undefined") {
 
             getGrid: function() {
                 return this.grid;
+            },
+
+            setFocus: function(rowKey) {
+                if (this.grid) {
+                    // 특정 행(rowKey)에 포커스를 설정
+                    this.grid.focus(rowKey);
+                } else {
+                    console.error('Grid is not initialized. Cannot set focus.');
+                }
+            },
+
+            load : function(url, param, callback) {
+                const self = this;
+
+                if (typeof param === 'function') {
+                    callback = param;
+                    param = undefined;
+                }
+
+                self.clear(); // 기존 데이터 초기화
+
+                if (param) {
+                    param.perPage = param.perPage || 1; // 기본 perPage 설정
+                    param.page = param.page || 1; // 기본 페이지 설정
+                }
+
+                self.grid.dispatch('setLoadingState', 'LOADING'); // 로딩 상태 설정
+
+                $.get(url, param, function(data) {
+                    self.bind(data); // 데이터 바인딩
+
+                    if (data.length > 0) {
+                        self.grid.dispatch('setLoadingState', 'DONE');
+                        self.setFocus(0); // 첫 번째 행에 포커스 설정
+                    } else {
+                        self.grid.dispatch('setLoadingState', 'EMPTY'); // 데이터가 없는 경우
+                    }
+
+                    if (callback) {
+                        callback(data); // 콜백 실행
+                    }
+                }).fail(function(error) {
+                    console.error('Error loading data:', error);
+                    self.grid.dispatch('setLoadingState', 'ERROR'); // 로딩 에러 상태
+                });
             }
         };
 

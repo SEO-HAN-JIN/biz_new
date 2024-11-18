@@ -1,15 +1,24 @@
 <!-- templates/fragments/cust-select.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
-<body>
 
-<select class="choices cust-select form-control-sm" id="cust-select"></select>
+<th:block th:fragment="cust-select (name)"
+          th:with="id=${id} ?: '',
+                   width=${width} ?: '100%',
+                   items=${items} ?: ${ { } },
+                   disabled=${disabled} ?: false,
+                   readonly=${readonly} ?: false,
+                   addClass=${addClass} ?: 'control is-select is-medium',
+                   title=${title} ?: '',
+                   addSelectClass = ${addSelectClass} ?: '',
+                   tabindex=${tabindex} ?: '-1',
+                   required=${required} ?: false">
+
+<select class="choices cust-select form-control-sm" th:id="${id}" th:name="${name}"></select>
 
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function() {
-        const selectElement = document.getElementById('cust-select');
+        const selectElement = document.getElementById(/*[[${id}]]*/ "");
 
         if (selectElement != null) {
             fetch("/api/pages/customer")
@@ -31,5 +40,5 @@
         }
     });
 </script>
-</body>
+</th:block>
 </html>

@@ -97,19 +97,23 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">고객</label>
-                                                        <div th:replace="components/cust-select :: body"></div>
+                                                        <th:block th:replace="components/cust-select :: cust-select(
+                                                            id='custId',
+                                                            name='custName')"></th:block>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품</label>
-                                                        <div th:replace="components/prod-select :: body"></div>
+                                                        <th:block th:replace="components/prod-select :: prod-select(
+                                                            id='prodId',
+                                                            name='prodName')"></th:block>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품가</label>
-                                                        <input type="text" id="prodAmt" class="form-control priceformat" name="prodAmt">
+                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt">
                                                     </div>
                                                 </div>
 
@@ -135,7 +139,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">판매가</label>
-                                                        <input type="text" id="saleAmt" class="form-control priceformat" name="saleAmt">
+                                                        <input type="text" id="saleAmt" class="form-control is-num text-end" name="saleAmt">
                                                     </div>
                                                 </div>
 
@@ -149,13 +153,13 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">판매총액</label>
-                                                        <input type="text" id="saleTotalAmt" class="form-control priceformat" name="saleTotalAmt" disabled>
+                                                        <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">예상정산금액</label>
-                                                        <input type="text" id="acctAmt" class="form-control priceformat" name="acctAmt" disabled>
+                                                        <input type="text" id="acctAmt" class="form-control is-num text-end" name="acctAmt" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -183,13 +187,13 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">잔여킵금액</label>
-                                                            <input type="text" id="custKeepAmt" class="form-control priceformat" disabled>
+                                                            <input type="text" id="custKeepAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">킵사용금액</label>
-                                                            <input type="text" id="custKeepUseAmt" class="form-control priceformat" disabled>
+                                                            <input type="text" id="custKeepUseAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -220,6 +224,7 @@
 
         let paymentGrid;
         let menuGrid;
+        let $isNew = 'N';
 
         $(document).ready(function() {
             initEvent();
@@ -227,7 +232,7 @@
         });
 
         const initEvent = () => {
-            $("#modalAddBtn").on('click', fn_appendPaymentGrid);
+            $("#modalAddBtn").on('click', openPgmModal);
             $("#modalSaveBtn").on('click', fn_savePaymentGrid);
 
             // $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
@@ -277,69 +282,6 @@
                 $(inputElement).prop("disabled", true);
             }
         }
-
-        // var modalElement;
-        // var workDateFrom;
-        // var workDateTo;
-        // var workDay;
-        // $("#modalAddBtn1").on('click', function ()
-        // {
-        //     const modalContent = document.getElementById("programModal").cloneNode(true);
-        //     modalContent.style.display = 'block'; // 숨겨진 상태를 해제
-        //
-        //     ModalManager.openModal(modalContent, {
-        //         title: "정산내역작성",
-        //         onApply: function() {
-        //
-        //             return performAction().then((response) => {
-        //                 return true;
-        //             }).catch((error) => {
-        //                 return false;
-        //             });
-        //         },
-        //         onOpened: function () {
-        //             modalElement = document.getElementById('commonModal');
-        //
-        //             workDateFrom = modalElement.querySelector("#dateWorkFrom");
-        //             workDateTo = modalElement.querySelector("#dateWorkTo");
-        //             workDay = modalElement.querySelector("#workDay");
-        //             saleAmt = modalElement.querySelector("#saleAmt");       // 판매가
-        //             inflowCnt = modalElement.querySelector("#inflowCnt");     // 유입수
-        //
-        //             workDateFrom.addEventListener("change", function ()
-        //             {
-        //                 $(workDay).val(getDateDiff($(workDateFrom).val(), $(workDateTo).val()));
-        //                 saleSum();
-        //             });
-        //
-        //             workDateTo.addEventListener("change", function ()
-        //             {
-        //                 $(workDay).val(getDateDiff($(workDateFrom).val(), $(workDateTo).val()));
-        //                 saleSum();
-        //             });
-        //
-        //             saleAmt.addEventListener("change", function ()
-        //             {
-        //                 saleSum();
-        //             });
-        //
-        //             inflowCnt.addEventListener("change", function ()
-        //             {
-        //                 saleSum();
-        //             });
-        //
-        //             // .priceformat 클래스를 가진 모든 input 요소를 선택
-        //             const priceformatInputs = modalElement.querySelectorAll('.priceformat');
-        //
-        //             // 각 input 요소에 이벤트 리스너 추가
-        //             priceformatInputs.forEach(function(input) {
-        //                 input.addEventListener('input', function() {
-        //                     formatNumber($(this)); // 콤마 포맷 함수 호출
-        //                 });
-        //             });
-        //         }
-        //     });
-        // })
 
         function saleSum()
         {
@@ -417,6 +359,11 @@
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
 
+            // 더블 클릭 이벤트 설정
+            paymentGrid.getGrid().on('dblclick', function(ev) {
+                openPgmModal('2');
+            });
+
             searchPaymentGrid();
         }
 
@@ -445,33 +392,77 @@
             });
         }
 
-        const fn_appendPaymentGrid = () => {
+        const openPgmModal = (param) => {
+
+            if (param === '1') {
+                $isNew = true;
+            } else {
+                $isNew = false;
+            }
 
             clearForm('paymentModal');
 
-            const selectElements = document.querySelectorAll('select.choices');
-            selectElements.forEach(selectElement => {
-                // Choices 인스턴스가 존재하는지 확인 후 파괴
-                if (selectElement.choicesInstance) {
-                    selectElement.choicesInstance.destroy();
-                    selectElement.choicesInstance = null; // 참조 제거
-                }
+            // 추가 버튼 클릭 시
+            if (param === '2') {
+                const focusedCell = paymentGrid.getGrid().getFocusedCell();
+                const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
 
-                // 새로운 Choices 인스턴스를 생성하여 할당
-                selectElement.choicesInstance = new Choices(selectElement);
-            });
+                $('#paymentModal').find('input, select, textarea').each(function() {
+                    const fieldId = $(this).attr('id');
+                    if (fieldId && focusedData[fieldId] !== undefined) {
+                        if ($(this).is(':checkbox')) {
+                            // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
+                            $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
+                        } else if ($(this).is('select')) {
+                            var obj = document.getElementById(fieldId);
 
-            $('#customerModal').modal('show');
+                            if (obj && obj.classList.contains('choices')) {
+                                // Choices.js를 사용하는 select
+                                if (obj.choicesInstance) {
+                                    // Choices.js 인스턴스가 있는 경우 값 설정
+                                    obj.choicesInstance.setChoiceByValue(focusedData[fieldId]);
+                                } else {
+                                    // 인스턴스가 없는 경우 새로 생성 후 값 설정
+                                    const choicesInstance = new Choices(obj);
+                                    choicesInstance.setChoiceByValue(focusedData[fieldId]);
+                                    obj.choicesInstance = choicesInstance; // 참조 저장
+                                }
+                            } else {
+                                // 일반 select 박스
+                                $(this).val(focusedData[fieldId]);
+                            }
+                        } else if (fieldId === 'mileage') {
+                            $("#mileagePrev").val(focusedData[fieldId]);
+                            const replaceNumber = formatToCurrency(focusedData[fieldId]);
+                            $(this).val(replaceNumber);
+                        } else {
+                            // 그 외 input, textarea는 값 바인딩
+                            $(this).val(focusedData[fieldId]);
+                        }
+                    }
+                });
+            }
+
+            $('#paymentModal').modal('show');
 
         }
 
         const clearForm = (id) => {
             $('#' + id).find('input, select, textarea').each(function () {
                 if ($(this).is(':checkbox')) {
-                    // 체크박스는 false로 설정
+                    // 체크박스는 체크 해제
                     $(this).prop('checked', false);
+                } else if ($(this).is('select')) {
+                    const obj = this;
+                    if (obj.classList.contains('choices') && obj.choicesInstance) {
+                        // Choices.js가 적용된 select 초기화
+                        obj.choicesInstance.setChoiceByValue(''); // 선택값 초기화
+                    } else {
+                        // 일반 select는 첫 번째 값으로 초기화
+                        $(this).val($(this).find('option:first').val());
+                    }
                 } else {
-                    // 그 외의 입력 필드는 빈 문자열로 설정
+                    // 나머지 input 및 textarea는 빈 값으로 초기화
                     $(this).val('');
                 }
             });
@@ -585,24 +576,6 @@
             }
         }
 
-        const openPgmModal = () => {
-            // pgmModalGrid.clear();
-            // pgmModalGrid.refreshLayout();
-            //
-            // const param = {
-            //     programNm : $("#mp_modal_pgmNm").val()
-            // };
-            //
-            // $.ajax({
-            //     url: "/api/system/program",
-            //     data: param,
-            //     type: 'GET',
-            //     success: (result) => {
-            //         pgmModalGrid.resetData(result);
-            //     }
-            // });
-        }
-
         const closeBeforeModal = () => {
             console.log('모달이 곧 닫힙니다!');
         }
@@ -611,50 +584,49 @@
             console.log('모달이 닫혔습니다!');
         }
 
-
         const modalAcceptBtn = () => {
             searchPaymentGrid();
         }
 
 
-        function openPop(url, options) {
-            if(self != top) {
-                window.parent.openPop(url, options);
-                return;
-            }
-            var container = document.getElementById("popup-container");
-            if(container instanceof HTMLDivElement === false) {
-                container = document.createElement("div");
-                container.id = "popup-container";
-                container.className = "popup-container";
-                container.style.opacity = "0";
-                container.style.display = "none";
-                document.body.appendChild(container);
-            }
-            container.innerHTML = "";
-
-            var popId = _.camelCase(_.nth(_.split(url, "/"), -2));
-            if(!_.isEmpty(window[popId])) {
-                window[popId].open(options);
-            }
-            else {
-                fetch(url)
-                    .then(function(response) {
-                        return response.text();
-                    })
-                    .then(function(text) {
-                        container.innerHTML = text;
-                        Ustra.docReady(function() {
-                            Array.from(container.querySelectorAll("script")).forEach(function(item) {
-                                eval.apply(this, [item.textContent]);
-                            });
-                            if(!_.isEmpty(window[popId])) {
-                                window[popId].open(options);
-                            }
-                        }, container);
-                    });
-            }
-        }
+        // function openPop(url, options) {
+        //     if(self != top) {
+        //         window.parent.openPop(url, options);
+        //         return;
+        //     }
+        //     var container = document.getElementById("popup-container");
+        //     if(container instanceof HTMLDivElement === false) {
+        //         container = document.createElement("div");
+        //         container.id = "popup-container";
+        //         container.className = "popup-container";
+        //         container.style.opacity = "0";
+        //         container.style.display = "none";
+        //         document.body.appendChild(container);
+        //     }
+        //     container.innerHTML = "";
+        //
+        //     var popId = _.camelCase(_.nth(_.split(url, "/"), -2));
+        //     if(!_.isEmpty(window[popId])) {
+        //         window[popId].open(options);
+        //     }
+        //     else {
+        //         fetch(url)
+        //             .then(function(response) {
+        //                 return response.text();
+        //             })
+        //             .then(function(text) {
+        //                 container.innerHTML = text;
+        //                 Ustra.docReady(function() {
+        //                     Array.from(container.querySelectorAll("script")).forEach(function(item) {
+        //                         eval.apply(this, [item.textContent]);
+        //                     });
+        //                     if(!_.isEmpty(window[popId])) {
+        //                         window[popId].open(options);
+        //                     }
+        //                 }, container);
+        //             });
+        //     }
+        // }
 
     </script>
 

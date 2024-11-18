@@ -1,11 +1,18 @@
 <!-- templates/fragments/cust-select.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
-<body>
-
-<select class="choices prod-select" id="prod-select"></select>
+<th:block th:fragment="prod-select (name)"
+          th:with="id=${id} ?: '',
+                   width=${width} ?: '100%',
+                   items=${items} ?: ${ { } },
+                   disabled=${disabled} ?: false,
+                   readonly=${readonly} ?: false,
+                   addClass=${addClass} ?: 'control is-select is-medium',
+                   title=${title} ?: '',
+                   addSelectClass = ${addSelectClass} ?: '',
+                   tabindex=${tabindex} ?: '-1',
+                   required=${required} ?: false">
+<select class="choices prod-select" th:id="${id}" th:name="${name}"></select>
 
 <!--<script th:src="@{/js/choices.min.js}"></script>-->
 <script th:inline="javascript">
@@ -13,17 +20,17 @@
 
     document.addEventListener("DOMContentLoaded", function() {
 
-        const selectElement = document.getElementById('prod-select');
+        const selectElement = document.getElementById(/*[[${id}]]*/ "");
 
         if(selectElement != null) {
-            fetch("/api/pages/customer")
+            fetch("/api/pages/product")
                 .then(response => response.json())
                 .then(data => {
                     selectElement.innerHTML = ''; // 기존 옵션 제거
                     data.forEach(item => {
                         const option = document.createElement('option');
-                        option.value = item.bizNo;
-                        option.textContent = item.custName;
+                        option.value = item.prodId;
+                        option.textContent = item.prodName;
                         selectElement.appendChild(option);
                     });
 
@@ -36,5 +43,5 @@
     });
 
 </script>
-</body>
+</th:block>
 </html>

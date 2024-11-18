@@ -9,11 +9,14 @@
         SELECT T.*
              , U.EMP_NAME
           FROM TB_CUSTOMER  T
-          JOIN TB_EMP       U
+          LEFT JOIN TB_EMP       U
             ON U.EMP_ID    = T.EMP_ID
         WHERE 1=1
         <if test='bizNo != null  and bizNo != "" '>
             AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
+        </if>
+        <if test='empName != null  and empName != "" '>
+            AND U.EMP_ID   = #{empId}
         </if>
         <if test='empName != null  and empName != "" '>
             AND U.EMP_NAME   LIKE CONCAT('%',#{empName} ,'%')
