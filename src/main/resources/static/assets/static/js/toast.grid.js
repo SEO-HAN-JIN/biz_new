@@ -7,7 +7,6 @@ if (typeof CustomTuiGrid === "undefined") {
     class CustomTuiGridButtonRenderer {
         constructor(props) {
 
-            debugger;
             const el = document.createElement('button');
             el.innerText = props.value || props.columnInfo.renderer.options.buttonText || 'Button';
             el.style.cursor = 'pointer';
@@ -134,14 +133,14 @@ if (typeof CustomTuiGrid === "undefined") {
                 // fitStyle 옵션에 따른 비율 조정
                 if (this.fitStyle === 'fill') {
                     setTimeout(function() {
-                        const containerWidth = self.grid.el.offsetWidth - 10;
+                        const containerWidth = self.grid.el.offsetWidth;
 
                         // 모든 컬럼의 초기 width 합계 계산
                         const totalInitialWidth = self.columns.reduce((sum, column) => sum + (column.width || 100), 0);
 
                         // 각 컬럼의 비율에 맞춰 너비 조정
                         self.columns.forEach(column => {
-                            const widthRatio = (column.width || 100) / totalInitialWidth;
+                            const widthRatio = (column.width || 80) / totalInitialWidth;
                             column.width = Math.floor(containerWidth * widthRatio);  // 비율에 맞게 너비 설정
                         });
 
@@ -173,6 +172,7 @@ if (typeof CustomTuiGrid === "undefined") {
                     name: id,
                     width: width || "auto",
                     align: options.align || "center",
+                    sortable: options.sortable || false, // 정렬 여부 설정
                     hidden: options.visible === false, // visible이 false면 hidden: true 설정
                     ...options
                 };

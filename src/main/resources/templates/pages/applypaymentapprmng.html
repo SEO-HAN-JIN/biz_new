@@ -28,41 +28,41 @@
                         <div id="searchTable" class="table">
                         <div class="card-body pt-3 pb-3" id="searchForm">
 <!--                            <div class="row align-items-center p-2" style="">-->
-                            <div class="row align-items-center p-3 custom-bg">
+                            <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
-                                    <div class="row align-items-center text-center">
+                                    <div class="form-group row mb-0 align-items-center text-center">
                                         <!-- 정산신청일 -->
-                                        <div class="col-md-2 text-start">
-                                            <label class="col-form-label">정산신청일</label>
+                                        <div class="col-md-1 text-start">
+                                            <label class="col-form-label">정산요청일</label>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <div class="d-flex justify-content-between">
                                                 <input type="date" class="form-control form-control-sm me-2" id="searchStartDate" name="searchStartDate">
                                                 <input type="date" class="form-control form-control-sm" id="searchEndDate" name="searchEndDate" >
                                             </div>
                                         </div>
                                         <!-- 담당자명 -->
-                                        <div class="col-md-2 text-start">
+                                        <div class="col-md-1 text-start">
                                             <label class="col-form-label">담당자명</label>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <input type="text" id="emplName" name="emplName" class="form-control form-control-sm" placeholder="담당자명">
                                         </div>
                                     </div>
+                                    <div class="form-group row mb-0 align-items-center text-center mt-2">
 
-                                    <div class="row align-items-center text-center mt-2">
                                         <!-- 고객명 -->
-                                        <div class="col-md-2 text-start">
+                                        <div class="col-md-1 text-start">
                                             <label class="col-form-label">고객명</label>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <input type="text" id="custName" name="custName" class="form-control form-control-sm" placeholder="고객명">
                                         </div>
                                         <!-- 상품명 -->
-                                        <div class="col-md-2 text-start">
+                                        <div class="col-md-1 text-start">
                                             <label class="col-form-label">상품명</label>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <input type="text" id="prodName" name="prodName" class="form-control form-control-sm" placeholder="상품명">
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">정산신청내역</h4>
+                            <h4 class="card-title">정산요청내역</h4>
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
@@ -100,119 +100,117 @@
                         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
+                                    <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle text-white">정산요청 상세정보</h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">정산요청 상세정보</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div id="programModal" class="modal-body">
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
                                         <form class="form">
-                                            <div class="row g-3">
-                                                <!-- Row 1 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">담당자</label>
-                                                        <input type="text" id="userId" class="form-control" name="fname-column" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">고객</label>
-                                                        <input type="text" id="custId" class="form-control" name="custId" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품</label>
-                                                        <input type="text" id="prodId" class="form-control" name="prodId" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품가</label>
-                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt" disabled>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Row 2 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업시작일</label>
-                                                        <input type="date" id="dateWorkFrom" class="form-control" name="dateWorkFrom" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업종료일</label>
-                                                        <input type="date" id="dateWorkTo" class="form-control" name="dateWorkTo" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업일수</label>
-                                                        <input type="number" id="workDay" class="form-control" name="workDay" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">판매가</label>
-                                                        <input type="text" id="saleAmt" class="form-control is-num text-end" name="saleAmt" disabled>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Row 3 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">유입수</label>
-                                                        <input type="text" id="inflowCnt" class="form-control" name="inflowCnt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">판매총액</label>
-                                                        <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">예상정산금액</label>
-                                                        <input type="text" id="expectRateAmt" class="form-control is-num text-end" name="expectRateAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">요청구분</label>
-                                                        <input type="text" id="status" class="form-control" name="status" disabled>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Additional Settings Section -->
-                                                <hr class="my-4">
+                                            <!-- 기본 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded">
+                                                <legend class="float-none w-auto px-2">기본 정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">담당자</label>
+                                                        <input type="text" id="userId" class="form-control" disabled>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">고객</label>
+                                                        <input type="text" id="custId" class="form-control" disabled>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">상품</label>
+                                                        <input type="text" id="prodId" class="form-control" disabled>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">상품가</label>
+                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" disabled>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- 작업 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4">
+                                                <legend class="float-none w-auto px-2">정산 정보</legend>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">킵사용</label>
-                                                            <select id="pKeepInd" class="form-select form-control-sm" onchange="selectKeepInd(this)">
-                                                                <option value="N">사용안함</option>
-                                                                <option value="Y">사용</option>
-                                                            </select>
+                                                            <label class="form-label">작업시작일</label>
+                                                            <input type="date" id="dateWorkFrom" class="form-control" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">잔여킵금액</label>
-                                                            <input type="text" id="custKeepAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">작업종료일</label>
+                                                            <input type="date" id="dateWorkTo" class="form-control" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">킵사용금액</label>
-                                                            <input type="text" id="custKeepUseAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">작업일수</label>
+                                                            <input type="number" id="workDay" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매가</label>
+                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">유입수</label>
+                                                            <input type="text" id="inflowCnt" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매총액</label>
+                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">예상정산금액</label>
+                                                            <input type="text" id="expectRateAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <input type="text" id="status" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </fieldset>
+
+                                            <!-- 킵사용 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4">
+                                                <legend class="float-none w-auto px-2">킵 사용 설정</legend>
+                                                <div class="row g-3 align-items-center">
+                                                    <div class="col-md-2">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                                            <label class="form-check-label" for="flexSwitchCheckDefault">킵사용</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
+                                                            <input type="text" class="form-control" id="custKeepAmt" aria-describedby="basic-addon1">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon2">킵사용금액</span>
+                                                            <input type="text" class="form-control" id="custKeepUseAmt" aria-describedby="basic-addon2">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
                                         </form>
                                     </div>
 
@@ -229,18 +227,21 @@
                             </div>
                         </div>
 
+
                         <!--입금정보 상세정보-->
                         <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-l" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="depositModalCenterTitle text-white">입금정보</h5>
+                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">입금정보</h5>
                                         <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
                                             <i data-feather="x"></i>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form class="form">
+                                            <fieldset class="border p-3 rounded">
+                                                <legend class="float-none w-auto"></legend>
                                             <div class="row g-3">
                                                 <input type="hidden" id="settlementSeq">
                                                 <input type="hidden" id="prodTotalAmt">
@@ -270,7 +271,15 @@
                                                         <input type="text" id="deposit_confirmRateAmt" class="form-control is-num text-end" name="deposit_confirmRateAmt" disabled>
                                                     </div>
                                                 </div>
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label class="form-label">비고</label>
+                                                        <textarea class="form-control" id="deposit_remark" rows="3"></textarea>
+                                                    </div>
+                                                </div>
                                             </div>
+                                            </fieldset>
+
                                         </form>
                                     </div>
 
@@ -279,8 +288,11 @@
                                         <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalDepositSaveBtn">
-                                            <i class="bx bx-check"></i> 저장
+                                        <button type="button" class="btn btn-danger ms-1" id="modalDepositRejectBtn">
+                                            <i class="bx bx-check"></i> 승인취소
+                                        </button>
+                                        <button type="button" class="btn btn-primary ms-1" id="modalDepositApprBtn">
+                                            <i class="bx bx-check"></i> 승인
                                         </button>
                                     </div>
                                 </div>
@@ -319,7 +331,8 @@
 
             $("#deposit_confirmAmt").on('input', depositSum);
 
-            $("#modalDepositSaveBtn").on('click', saveDeposit);
+            $("#modalDepositApprBtn").on('click', apprDeposit);
+            $("#modalDepositRejectBtn").on('click', rejectDeposit);
         }
 
 
@@ -338,7 +351,7 @@
             }
         }
 
-        const saveDeposit = () => {
+        const apprDeposit = () => {
 
             const param = {};
 
@@ -389,21 +402,27 @@
             }
         }
 
+        const rejectDeposit = () => {
+            if (confirm("승인취소 처리하시겠습니까?")) {
+
+            }
+        }
+
         const initPaymentGrid = () => {
 
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .add('settlementSeq', '정산번호', 150, {})
-                .add('empName', '담당자', 150, {})
-                .add('custName', '고객명', 250, {})
-                .add('prodName', '상품명', 200, { align: 'center' })
-                .addNumber('prodAmt', '상품가', 150, { align: 'right'})
-                .addNumber('saleAmt', '판매가', 120, { align: 'right' })
-                .addNumber('inflowCnt', '유입수', 120, {})
+                .add('empName', '담당자', 150, {sortable: true})
+                .add('custName', '고객명', 250, {sortable: true})
+                .add('prodName', '상품명', 200, { align: 'center', sortable: true })
+                .addNumber('prodAmt', '상품가', 100, { align: 'right'})
+                .addNumber('saleAmt', '판매가', 100, { align: 'right' })
+                .addNumber('inflowCnt', '유입수', 100, {})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
-                .addDate('workDay', '작업일수', 150, {})
+                .addDate('workDay', '작업일수', 100, {})
                 .addNumber('saleTotalAmt', '판매총액', 200, {
                     align: 'right',
                     textColor: 'red',
@@ -422,14 +441,14 @@
                     buttonText: '입금확인',
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
-                        if(parseInt(rowData.confirmAmt) <= 0)
+                        //if(parseInt(rowData.confirmAmt) <= 0)
                             openDepositModal(rowData);
-                        else
-                            alert("입금처리가 완료되었습니다.");
+                        // else
+                        //     alert("입금처리가 완료되었습니다.");
 
                     }
                 })
-                .addNumber('statusName', '진행상태', 100, {})
+                .add('statusName', '진행상태', 100, {})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
                 })
@@ -584,6 +603,14 @@
 
             var pordTotalAmt = Math.floor((rsData.prodAmt * rsData.inflowCnt * rsData.workDay) * vatRate);
             $("#prodTotalAmt").val(pordTotalAmt);
+
+            if(rsData.status == "1")
+                $("#modalDepositApprBtn").show();
+            else
+                $("#modalDepositApprBtn").hide();
+
+            $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
+            $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
 
             $('#depositModal').modal('show');
         }

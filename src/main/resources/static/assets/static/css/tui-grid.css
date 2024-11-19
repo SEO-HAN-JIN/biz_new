@@ -373,6 +373,11 @@
   box-sizing: border-box;
   /*background-color: #435ebe;*/
 }
+/* 마우스 오버 상태 */
+.tui-grid-header-area .tui-grid-cell-header:hover {
+  background-color: #5469d4; /* 살짝 밝은 파란색 */
+  color: #fff;
+}
 .tui-grid-cell-summary {
   padding: 0 12px;
 }

@@ -33,8 +33,8 @@
                                         <label class="col-form-label col-lg-1 col-3">날짜</label>
                                         <div class="col-lg-3 col-9">
                                             <div class="d-flex">
-                                                <input type="date" class="form-control form-control-sm me-2" id="startDate" value="2024-10-15">
-                                                <input type="date" class="form-control form-control-sm" id="endDate" value="2024-10-15">
+                                                <input type="date" class="form-control form-control-sm me-2" id="searchStartDate" >
+                                                <input type="date" class="form-control form-control-sm" id="searchEndDate" >
                                             </div>
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
@@ -48,7 +48,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-end">
-                                    <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                                    <a href="#" class="btn btn-primary cursor-auto" id="searchBtn">조회</a>
                                 </div>
                             </div>
                         </div>
@@ -67,9 +67,9 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#paymentModal">추가</button>
+                                    <button type="button" class="btn btn-primary btn-m" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#paymentModal">추가</button>
 
-                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePaymentGrid">삭제</button>
+                                    <button type="button" class="btn btn-secondary btn-m" id="btnDeletePaymentGrid">삭제</button>
                                 </div>
                             </div>
                             <div id="paymentGrid" class="tui-grid"></div>
@@ -78,126 +78,134 @@
                         <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
+                                    <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle text-white">고객 정보</h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
+                                        <h5 class="modal-title" id="exampleModalCenterTitle">정산요청 상세정보</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div id="programModal" class="modal-body">
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
                                         <form class="form">
-                                            <div class="row g-3">
-                                                <!-- Row 1 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">담당자</label>
-                                                        <input type="text" id="pUserId" class="form-control" name="fname-column" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">고객</label>
-                                                        <th:block th:replace="components/cust-select :: cust-select(
-                                                            id='custId',
-                                                            name='custName')"></th:block>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품</label>
-                                                        <th:block th:replace="components/prod-select :: prod-select(
-                                                            id='prodId',
-                                                            name='prodName')"></th:block>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품가</label>
-                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Row 2 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업시작일</label>
-                                                        <input type="date" id="dateWorkFrom" class="form-control" name="dateWorkFrom">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업종료일</label>
-                                                        <input type="date" id="dateWorkTo" class="form-control" name="dateWorkTo">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">작업일수</label>
-                                                        <input type="number" id="workDay" class="form-control" name="workDay" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">판매가</label>
-                                                        <input type="text" id="saleAmt" class="form-control is-num text-end" name="saleAmt">
-                                                    </div>
-                                                </div>
-
-                                                <!-- Row 3 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">유입수</label>
-                                                        <input type="text" id="inflowCnt" class="form-control" name="inflowCnt">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">판매총액</label>
-                                                        <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">예상정산금액</label>
-                                                        <input type="text" id="acctAmt" class="form-control is-num text-end" name="acctAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">요청구분</label>
-                                                        <select id="status" class="form-select form-control-sm">
-                                                            <option value="1">신규</option>
-                                                            <option value="2">연장</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-
-                                                <!-- Additional Settings Section -->
-                                                <hr class="my-4">
+                                            <!-- 기본 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded">
+                                                <legend class="float-none w-auto px-2">기본 정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">킵사용</label>
-                                                            <select id="pKeepInd" class="form-select form-control-sm" onchange="selectKeepInd(this)">
-                                                                <option value="N">사용안함</option>
-                                                                <option value="Y">사용</option>
+                                                            <label class="form-label">담당자</label>
+                                                            <input type="text" id="pUserId" class="form-control" name="fname-column" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">고객</label>
+                                                            <th:block th:replace="components/cust-select :: cust-select(
+                                                                id='custId',
+                                                                name='custName')"></th:block>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품</label>
+                                                            <th:block th:replace="components/prod-select :: prod-select(
+                                                                id='prodId',
+                                                                name='prodName')"></th:block>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품가</label>
+                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- 정산 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4">
+                                                <legend class="float-none w-auto px-2">정산 정보</legend>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">작업시작일</label>
+                                                            <input type="date" id="dateWorkFrom" class="form-control" name="dateWorkFrom">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">작업종료일</label>
+                                                            <input type="date" id="dateWorkTo" class="form-control" name="dateWorkTo">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">작업일수</label>
+                                                            <input type="number" id="workDay" class="form-control" name="workDay" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매가</label>
+                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" name="saleAmt">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">유입수</label>
+                                                            <input type="text" id="inflowCnt" class="form-control" name="inflowCnt">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매총액</label>
+                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">예상정산금액</label>
+                                                            <input type="text" id="acctAmt" class="form-control is-num text-end" name="acctAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <select id="status" class="form-select form-control-sm">
+                                                                <option value="1">신규</option>
+                                                                <option value="2">연장</option>
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">잔여킵금액</label>
-                                                            <input type="text" id="custKeepAmt" class="form-control is-num text-end" disabled>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- 킵 사용 설정 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4">
+                                                <legend class="float-none w-auto px-2">킵 사용 설정</legend>
+                                                <div class="row g-3 align-items-center">
+                                                    <div class="col-md-2">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="pKeepInd" onchange="selectKeepInd(this)">
+                                                            <label class="form-check-label" for="pKeepInd">킵사용</label>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="form-label">킵사용금액</label>
-                                                            <input type="text" id="custKeepUseAmt" class="form-control is-num text-end" disabled>
+                                                    <div class="col-md-5">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
+                                                            <input type="text" class="form-control" id="custKeepAmt" aria-describedby="basic-addon1" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" id="basic-addon2">킵사용금액</span>
+                                                            <input type="text" class="form-control" id="custKeepUseAmt" aria-describedby="basic-addon2" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </fieldset>
                                         </form>
                                     </div>
 
@@ -213,6 +221,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -227,6 +236,18 @@
         let $isNew = 'N';
 
         $(document).ready(function() {
+
+            const nowYear = new Date().getFullYear();
+            const nowMonth = new Date().getMonth();
+
+            const startDate = new Date(nowYear, nowMonth, 1); // 당월 1일
+            const endDate = new Date(nowYear, nowMonth + 1, 0); // 현재 달의 마지막 날
+
+            // 포맷팅된 날짜 값을 input에 설정
+            $("#searchStartDate").val(formatDate(startDate));
+            $("#searchEndDate").val(formatDate(endDate));
+
+
             initEvent();
             initPaymentGrid();
         });
@@ -270,11 +291,11 @@
 
         function selectKeepInd(obj) {
 
-            var keepInd = obj.value;
+            var keepInd = obj.checked;
 
-            var inputElement = modalElement.querySelector("#custKeepUseAmt");
+            var inputElement = $("#custKeepUseAmt");
 
-            if (keepInd === "Y") {
+            if (keepInd) {
                 // Enable the element
                 $(inputElement).prop("disabled", false);
             } else {

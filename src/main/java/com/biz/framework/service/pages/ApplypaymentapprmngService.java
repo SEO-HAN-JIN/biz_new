@@ -23,7 +23,17 @@ public class ApplypaymentapprmngService {
     }
 
     public int confirmApplypayment(SettlementDto settlementDto) {
-        return applypaymentapprmngMapper.confirmApplypayment(settlementDto);
+
+        int result = 0;
+
+        // 입금확인시 실제입금금액 및 상태 변경
+        result = applypaymentapprmngMapper.confirmApplypayment(settlementDto);
+
+
+
+
+        return result;
+
     }
 
     public int deleteCustomer(CustomerDto customerDto) {
