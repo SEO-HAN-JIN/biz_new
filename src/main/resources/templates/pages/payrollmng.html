@@ -84,130 +84,66 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">정산요청내역</h4>
+                            <h4 class="card-title">정산내역</h4>
                         </div>
                         <div class="card-body">
-<!--                            <div class="d-flex justify-content-end" style="width: 100%;">-->
-<!--                                <div class="d-flex pb-3 gap-1">-->
-<!--                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#paymentModal">추가</button>-->
-<!--                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePaymentGrid">삭제</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="d-flex justify-content-end" style="width: 100%;">
+                                <div class="d-flex pb-3 gap-1">
+                                    <button type="button" class="btn btn-danger btn-sm" id="payrollBtn">급여작업</button>
+                                </div>
+                            </div>
                             <div id="paymentGrid" class="tui-grid"></div>
                         </div>
 
-                        <!--정산요청 상세정보-->
-                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                        <!--급여지급처리 상세정보-->
+                        <div class="modal fade" id="payrollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">정산요청 상세정보</h5>
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">급여지급 상세정보</h5>
                                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
                                     <!-- Modal Body -->
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="height:800px">
                                         <form class="form">
                                             <!-- 기본 정보 섹션 -->
                                             <fieldset class="border p-3 rounded">
-                                                <legend class="float-none w-auto px-2">기본 정보</legend>
+                                                <legend class="float-none w-auto px-2">급여처리 기본정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">담당자</label>
-                                                        <input type="text" id="userId" class="form-control" disabled>
+                                                    <div class="col-md-6">
+                                                        <label class="form-label">정산기간</label>
+                                                        <input type="text" id="paymentDate" class="form-control" disabled>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label">고객</label>
-                                                        <input type="text" id="custId" class="form-control" disabled>
+
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label">상품</label>
-                                                        <input type="text" id="prodId" class="form-control" disabled>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">상품가</label>
-                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" disabled>
+                                                        <label class="form-label">급여지급일</label>
+                                                        <input type="date" class="form-control" id="payrollDate" name="searchStartDate">
                                                     </div>
                                                 </div>
                                             </fieldset>
 
                                             <!-- 작업 정보 섹션 -->
-                                            <fieldset class="border p-3 rounded mt-4">
+                                            <fieldset class="border p-3 rounded mt-4" style="height: 500px">
                                                 <legend class="float-none w-auto px-2">정산 정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">작업시작일</label>
-                                                            <input type="date" id="dateWorkFrom" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">작업종료일</label>
-                                                            <input type="date" id="dateWorkTo" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">작업일수</label>
-                                                            <input type="number" id="workDay" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">판매가</label>
-                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">유입수</label>
-                                                            <input type="text" id="inflowCnt" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">판매총액</label>
-                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">예상정산금액</label>
-                                                            <input type="text" id="expectRateAmt" class="form-control is-num text-end" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">요청구분</label>
-                                                            <input type="text" id="status" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
-
-                                            <!-- 킵사용 섹션 -->
-                                            <fieldset class="border p-3 rounded mt-4">
-                                                <legend class="float-none w-auto px-2">킵 사용 설정</legend>
-                                                <div class="row g-3 align-items-center">
-                                                    <div class="col-md-2">
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                                            <label class="form-check-label" for="flexSwitchCheckDefault">킵사용</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
-                                                            <input type="text" class="form-control" id="custKeepAmt" aria-describedby="basic-addon1">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon2">킵사용금액</span>
-                                                            <input type="text" class="form-control" id="custKeepUseAmt" aria-describedby="basic-addon2">
-                                                        </div>
+                                                    <div class="col-md-12">
+<!--                                                        <div id="payrollGrid" class="tui-grid" style="height:430px"></div>-->
+                                                        <table class="table table-hover table-bordered mt-3 align-middle">
+                                                            <thead class="bg-primary">
+                                                            <tr>
+                                                                <th class="text-white">직원ID</th>
+                                                                <th class="text-white">직원명</th>
+                                                                <th class="text-white">총 판매액</th>
+                                                                <th class="text-white">총 판매수수료</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody id="payrollTable">
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -220,79 +156,7 @@
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
                                         <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 저장
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!--입금정보 상세정보-->
-                        <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="depositModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-l" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">입금정보</h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form class="form">
-                                            <fieldset class="border p-3 rounded">
-                                                <legend class="float-none w-auto"></legend>
-                                            <div class="row g-3">
-                                                <input type="hidden" id="settlementSeq">
-                                                <input type="hidden" id="prodTotalAmt">
-                                                <input type="hidden" id="incentiveRate">
-                                                <input type="hidden" id="saveMileage">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">판매총액(입금예정금액)</label>
-                                                        <input type="text" id="deposit_saleTotalAmt"  class="form-control is-num text-end" name="deposit_saleTotalAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">담당자정산 예정금액</label>
-                                                        <input type="text" id="deposit_expectRateAmt" class="form-control is-num text-end" name="deposit_expectRateAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label text-danger">실제입금금액</label>
-                                                        <input type="text" id="deposit_confirmAmt" class="form-control is-num text-end" name="deposit_confirmAmt">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label text-danger">담당자정산 확정금액</label>
-                                                        <input type="text" id="deposit_confirmRateAmt" class="form-control is-num text-end" name="deposit_confirmRateAmt" disabled>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label class="form-label">비고</label>
-                                                        <textarea class="form-control" id="deposit_remark" rows="3"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            </fieldset>
-
-                                        </form>
-                                    </div>
-
-                                    <!-- Modal Footer -->
-                                    <div class="modal-footer bg-light">
-                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                            <i class="bx bx-x"></i> 닫기
-                                        </button>
-                                        <button type="button" class="btn btn-danger ms-1" id="modalDepositRejectBtn">
-                                            <i class="bx bx-check"></i> 승인취소
-                                        </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalDepositApprBtn">
-                                            <i class="bx bx-check"></i> 승인
+                                            <i class="bx bx-check"></i> 반영
                                         </button>
                                     </div>
                                 </div>
@@ -308,7 +172,7 @@
         const apiUrl = '/api/pages/payrollmng';
 
         let paymentGrid;
-        let menuGrid;
+        let payrollGrid;
 
         $(document).ready(function() {
 
@@ -329,84 +193,11 @@
         const initEvent = () => {
             $("#searchBtn").on('click', search);
 
-            $("#deposit_confirmAmt").on('input', depositSum);
+            $("#payrollBtn").on('click', openPgmModal);
 
-            $("#modalDepositApprBtn").on('click', apprDeposit);
-            $("#modalDepositRejectBtn").on('click', rejectDeposit);
+            $("#modalSaveBtn").on('click', payroll);
         }
 
-
-        function selectKeepInd(obj) {
-
-            var keepInd = obj.value;
-
-            var inputElement = modalElement.querySelector("#custKeepUseAmt");
-
-            if (keepInd === "Y") {
-                // Enable the element
-                $(inputElement).prop("disabled", false);
-            } else {
-                // Disable the element
-                $(inputElement).prop("disabled", true);
-            }
-        }
-
-        const apprDeposit = () => {
-
-            const param = {};
-
-            $('#depositModal').find('input, select, input[type="checkbox"]').each((index, item) => {
-
-                var id = item.id.replace("deposit_", "");
-
-                // checkbox일 때
-                if ($(item).is(':checkbox')) {
-                    param[id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
-                } else {
-                    // input일 때의 처리
-                    param[id] = item.value.replace(/,/g, ''); // input 값 설정
-                }
-            });
-
-            //실제입금액
-            var realAmt = param.confirmAmt;
-
-            if(isNull(realAmt))
-            {
-                alert("실제입금금액을 입력해주세요.");
-                return false;
-            }
-
-            if (confirm("입금확인 처리하시겠습니까?")) {
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url: apiUrl,
-                        data: JSON.stringify(param),
-                        contentType: 'application/json',
-                        type: 'POST',
-                        success: (result) => {
-                            if (result > 0) {
-                                alert("처리 완료되었습니다.");
-                                search();
-                                return true;
-                            } else {
-                                alert("처리 도중 실패하였습니다.");
-                                return false;
-                            }
-                        }, error: (xhr, status, error) => {
-                            alert(xhr.responseText);
-                            return false;
-                        }
-                    })
-                });
-            }
-        }
-
-        const rejectDeposit = () => {
-            if (confirm("승인취소 처리하시겠습니까?")) {
-
-            }
-        }
 
         const initPaymentGrid = () => {
 
@@ -417,27 +208,34 @@
                 .add('empName', '담당자', 150, {sortable: true})
                 .add('custName', '고객명', 250, {sortable: true})
                 .add('prodName', '상품명', 200, { align: 'center', sortable: true })
-                .addNumber('prodAmt', '상품가', 100, { align: 'right'})
+                // .addNumber('prodAmt', '상품가', 100, { align: 'right'})
                 .addNumber('saleAmt', '판매가', 100, { align: 'right' })
                 .addNumber('inflowCnt', '유입수', 100, {})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
                 .addDate('workDay', '작업일수', 100, {})
-                .addNumber('saleTotalAmt', '판매총액', 200, {
+                .addNumber('confirmAmt', '판매액', 200, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('confirmAmt', '실제입금액', 200, {
+                .addNumber('confirmCostAmt', '영업이익', 200, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('statusName', '진행상태', 100, {})
+                .addNumber('confirmRateAmt', '정산수수료', 200, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }})
+                .add('payYm', '급여지급년월', 80, {})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
                 })
@@ -450,8 +248,6 @@
                 .add('comfirmRateAmt', '확정수수료', 0, {
                     visible: false
                 })
-
-
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
@@ -481,161 +277,103 @@
             });
         }
 
-        const fn_savePaymentGrid = () => {
-            let modifiedData = paymentGrid.getModifiedRows();
-            const createdData = modifiedData.createdRows;
-            const updatedData = modifiedData.updatedRows;
-
-            const createdLength = !isNull(createdData.length) ? createdData.length : 0;
-            const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
-
-            const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
-
-            let params = [];
-            for (let i = 0; i < createdData.length; i++) {
-                createdData[i].rowStatus = 'C';
-                params.push(createdData[i]);
-            }
-
-            for (let i = 0; i < updatedData.length; i++) {
-                updatedData[i].rowStatus = 'U';
-                params.push(updatedData[i]);
-            }
-
-            if (result) {
-                $.ajax({
-                    url: apiUrl + "/up/list",
-                    data: JSON.stringify(params),
-                    contentType:'application/json',
-                    type: 'POST',
-                    success: (result) => {
-                        if (result > 0) {
-                            alert("저장이 완료되었습니다.");
-                            search();
-                        } else {
-                            alert("저장에 실패하였습니다.");
-                            search();
-                        }
-                    }
-                })
-            }
-        }
-
-        const fn_deletePaymentGrid = () => {
-            const focusedCell = paymentGrid.getFocusedCell();
-            if (isNull(focusedCell)) {
-                alert("삭제할 행을 선택해주세요.");
-                return;
-            }
-
-            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
-            if (confirmResult) {
-                const focusRow = paymentGrid.getRow(focusedCell.rowKey);
-                let params = {
-                    menuId : focusRow.menuId
-                }
-                $.ajax({
-                    url: apiUrl + "/up/list",
-                    data: JSON.stringify(params),
-                    contentType:'application/json',
-                    type: 'DELETE',
-                    success: (result) => {
-                        if (result > 0) {
-                            alert("삭제가 완료되었습니다.");
-                            search();
-                        } else {
-                            alert("삭제에 실패하였습니다.");
-                            search();
-                        }
-                    }
-                })
-            }
-        }
-
         const openPgmModal = () => {
+            var grid = paymentGrid.getGrid().getData();
 
-            const focusedCell = paymentGrid.getGrid().getFocusedCell();
-            const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+            if (grid.length <= 0) {
+                alert("데이터가 없습니다.");
+                return false;
+            }
 
-            $('#paymentModal').find('input, select, textarea').each(function() {
-                const fieldId = $(this).attr('id');
-                if (fieldId && focusedData[fieldId] !== undefined) {
-                    if ($(this).is(':checkbox')) {
-                        // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                        $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
-                    } else if ($(this).is('select')) {
-                        // 일반 select 박스
-                        $(this).val(focusedData[fieldId]);
-                    } else if (fieldId === 'mileage') {
-                        $("#mileagePrev").val(focusedData[fieldId]);
-                        const replaceNumber = formatToCurrency(focusedData[fieldId]);
-                        $(this).val(replaceNumber);
-                    } else {
-                        // 그 외 input, textarea는 값 바인딩
-                        $(this).val(focusedData[fieldId]);
-                    }
+            var paymentDate = $("#searchStartDate").val() + " ~ " + $("#searchEndDate").val();
+
+            $("#paymentDate").val(paymentDate);
+
+            // userId별 집계 결과 저장 객체
+            const groupedData = {};
+
+            // 데이터를 userId별로 그룹화 및 합산
+            grid.forEach(item => {
+                const userId = item.userId;
+                const confirmAmt = parseFloat(item.confirmAmt || 0);
+                const confirmRateAmt = parseFloat(item.confirmRateAmt || 0);
+
+                // 그룹 초기화
+                if (!groupedData[userId]) {
+                    groupedData[userId] = {
+                        userId: userId,
+                        empName: item.empName, // 대표 이름 설정
+                        totalConfirmAmt: 0,
+                        totalConfirmRateAmt: 0
+                    };
                 }
+
+                // 합산
+                groupedData[userId].totalConfirmAmt += confirmAmt;
+                groupedData[userId].totalConfirmRateAmt += confirmRateAmt;
             });
 
-            $('#paymentModal').modal('show');
-        }
+            const tableBody = document.getElementById("payrollTable");
+            tableBody.innerHTML = ""; // 기존 데이터 초기화
 
-        const openDepositModal = (rsData) => {
+            // 그룹화된 데이터를 테이블에 추가
+            for (const [userId, values] of Object.entries(groupedData)) {
+                const row = document.createElement("tr");
 
-            $("#settlementSeq").val(rsData.settlementSeq);
-            $("#deposit_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
-            $("#deposit_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
-            $("#incentiveRate").val(rsData.incentiveRate);
+                // 각 데이터 셀 추가
+                const userIdCell = document.createElement("td");
+                userIdCell.textContent = values.userId;
 
-            // 부가세율 설정 (10% 부가세)
-            var vatRate = 1.1;
+                const empNameCell = document.createElement("td");
+                empNameCell.textContent = values.empName;
 
-            var pordTotalAmt = Math.floor((rsData.prodAmt * rsData.inflowCnt * rsData.workDay) * vatRate);
-            $("#prodTotalAmt").val(pordTotalAmt);
+                const totalConfirmAmtCell = document.createElement("td");
+                totalConfirmAmtCell.classList.add("text-end");
+                totalConfirmAmtCell.textContent = setComma(values.totalConfirmAmt.toLocaleString());
 
-            if(rsData.status == "1")
-                $("#modalDepositApprBtn").show();
-            else
-                $("#modalDepositApprBtn").hide();
+                const totalConfirmRateAmtCell = document.createElement("td");
+                totalConfirmRateAmtCell.classList.add("text-end");
+                totalConfirmRateAmtCell.textContent = setComma(values.totalConfirmRateAmt.toLocaleString());
 
-            $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
-            $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
+                // 행에 셀 추가
+                row.appendChild(userIdCell);
+                row.appendChild(empNameCell);
+                row.appendChild(totalConfirmAmtCell);
+                row.appendChild(totalConfirmRateAmtCell);
 
-            $('#depositModal').modal('show');
-        }
-
-        function depositSum()
-        {
-            // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
-            var prodTotalAmt = removeComma($("#prodTotalAmt").val());
-
-            // 판매총액금액
-            var saleTotalAmt = removeComma($("#deposit_saleTotalAmt").val());
-
-            // 실제입금금액
-            var confirmAmt = removeComma($("#deposit_confirmAmt").val());
-
-            // 영업이익
-            var costAmt = (confirmAmt) - (prodTotalAmt);
-
-            // 실제입금금액이 판매총액보다 크면 차익분은 고객 마일리지로 적립
-            if(parseInt(saleTotalAmt) < parseInt(confirmAmt)) {
-                $("#saveMileage").val(confirmAmt - saleTotalAmt);
-                costAmt = saleTotalAmt - prodTotalAmt;
+                // 테이블 본문에 행 추가
+                tableBody.appendChild(row);
             }
 
-            // 데이터로 저장된 인센율을 문자열로 가져왔다고 가정
-            var incenRateStr = $("#incentiveRate").val() == "" ? 0.3 : $("#incentiveRate").val(); // 문자열로 저장된 0.3
+            // 모달 표시
+            $('#payrollModal').modal('show');
+        };
 
-            // 실수형으로 변환
-            var incentiveRate = parseFloat(incenRateStr);
+        const payroll = () => {
 
-            // 소수점 제외하고 정수만 출력
-            var rate = Math.floor(costAmt * incentiveRate);
+            var params = paymentGrid.getGrid().getData();
 
-            $("#deposit_confirmRateAmt").val(setComma(rate));
+            // settlementDtoList 형식에 맞게 객체로 변환
+            var requestData = {
+                settlementDtoList: params // 배열 그대로 전달
+            };
+
+            $.ajax({
+                url: apiUrl + "/payroll",
+                data: JSON.stringify(requestData), // JSON 문자열로 변환
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("급여처리 완료되었습니다.");
+                        search();
+                    } else {
+                        alert("급여처리에 실패하였습니다.");
+                        search();
+                    }
+                }
+            })
         }
-
 
         const closeBeforeModal = () => {
             console.log('모달이 곧 닫힙니다!');
@@ -644,7 +382,6 @@
         const closeAfterModal = () => {
             console.log('모달이 닫혔습니다!');
         }
-
 
         const modalAcceptBtn = () => {
             search();

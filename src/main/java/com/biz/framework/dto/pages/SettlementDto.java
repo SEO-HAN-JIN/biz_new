@@ -4,6 +4,8 @@ import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class SettlementDto extends BaseDto {
@@ -39,5 +41,7 @@ public class SettlementDto extends BaseDto {
     private String empName;
     private String custName;
     private String prodName;
+
+    private List<SettlementDto> settlementDtoList;
 
 }

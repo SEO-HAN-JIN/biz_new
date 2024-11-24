@@ -103,20 +103,26 @@ if (typeof CustomTuiGrid === "undefined") {
                 return this;
             },
 
+
+
             // 그리드 초기화 메소드
             init: function(el, data) {
 
                 const self = this;
 
+                // HTML에 설정된 height 값을 가져오기
+                const container = document.getElementById(el);
+                const height = parseInt(container.style.height) - 90 || 600; // style에 명시된 height 값 또는 기본값 600
+
                 this.grid = new tui.Grid({
-                    el: document.getElementById(el),
+                    el: container,
                     data: data,
                     header: {
                         height: 50
                     },
                     columns: this.columns,
                     rowHeight: 35,
-                    bodyHeight: 600,
+                    bodyHeight: height, // HTML에서 가져온 height 값 사용
                     scrollX: true,
                     scrollY: true,
                     columnOptions: {
