@@ -13,5 +13,7 @@ public interface ApplypaymentapprmngMapper {
     List<CamelCaseMap> findApplypaymentmngList(SettlementDto settlementDto);
     int confirmApplypayment(SettlementDto settlementDto);
 
-    int deleteCustomer(CustomerDto customerDto);
+    int checkPayrollInd(SettlementDto settlementDto);
+
+    int cancelApplypayment(SettlementDto settlementDto);
 }

@@ -24,13 +24,14 @@ public class ApplypaymentapprmngRestController {
         return applypaymentapprmngService.findApplypaymentmngList(settlementDto);
     }
 
+    /* 요청 승인 */
     @PostMapping
     public int confirmApplypayment(@RequestBody SettlementDto settlementDto) {
         return applypaymentapprmngService.confirmApplypayment(settlementDto);
     }
 
-    @DeleteMapping
-    public int deleteCustomer(@RequestBody CustomerDto customerDto) {
-        return applypaymentapprmngService.deleteCustomer(customerDto);
+    @PostMapping("/cancel")
+    public int cancelApplypayment(@RequestBody SettlementDto settlementDto) {
+        return applypaymentapprmngService.cancelApplypayment(settlementDto);
     }
 }

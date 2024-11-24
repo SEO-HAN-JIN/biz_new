@@ -33,4 +33,39 @@
         WHERE BIZ_NO     = #{bizNo}
           AND EMP_ID     = #{empId}
     </delete>
+
+    <insert id="addMileageHistory">
+        /* com.biz.framework.mapper.pages.MileageHisMapper.addMileageHistory */
+        -- 기존 마일리지 조회 및 누적 계산 로직을 반영
+        INSERT INTO TB_MILEAGE_HIS (
+            BIZ_NO,
+            EMP_ID,
+            MILEAGE_PREV,
+            MILEAGE_AFT,
+            CREATED_DATE,
+            CREATED_PAGE,
+            CREATED_ID
+        )
+        SELECT
+           #{bizNo},
+           #{empId},
+           -- 이전 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
+           (
+               SELECT COALESCE(MAX(MILEAGE_AFT), 0)
+               FROM TB_MILEAGE_HIS
+               WHERE BIZ_NO = #{bizNo} AND EMP_ID = #{empId}
+           ),
+           -- 누적 마일리지 : 이전 마일리지 + savemileage
+           (
+               SELECT COALESCE(MAX(MILEAGE_AFT), 0)
+               FROM TB_MILEAGE_HIS
+               WHERE BIZ_NO = #{bizNo} AND EMP_ID = #{empId}
+           ) + #{mileageAmt},
+           NOW(),
+           #{createdPage},
+           #{createdId}
+       FROM DUAL
+
+    </insert>
+
 </mapper>

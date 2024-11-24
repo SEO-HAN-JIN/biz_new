@@ -71,10 +71,22 @@
         WHERE SETTLEMENT_SEQ = #{settlementSeq}
     </insert>
 
-    <delete id="deleteCustomer">
-        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteCustomer */
-        DELETE FROM TB_CUSTOMER
-        WHERE BIZ_NO    = #{bizNo}
-          AND EMP_ID   = #{empId}
+    <delete id="checkPayrollInd">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
+        SELECT COUNT(*) FROM SETTLEMENT
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+        AND PAY_YM IS NOT NULL
+        AND PAY_YM != ''
     </delete>
+
+    <insert id="cancelApplypayment">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
+        UPDATE SETTLEMENT
+        SET CONFIRM_AMT = 0,
+            CONFIRM_RATE_AMT = 0,
+            SAVE_MILEAGE = 0,
+            STATUS = '3'
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+    </insert>
+
 </mapper>

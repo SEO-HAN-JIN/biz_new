@@ -8,13 +8,13 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last p-3">
-                    <h3>정산승인관리</h3>
+                    <h3>정산급여관리</h3>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">정산관리</li>
-                            <li class="breadcrumb-item active" aria-current="page">정산승인관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">정산급여관리</li>
                         </ol>
                     </nav>
                 </div>
@@ -247,8 +247,6 @@
                                                 <input type="hidden" id="prodTotalAmt">
                                                 <input type="hidden" id="incentiveRate">
                                                 <input type="hidden" id="saveMileage">
-                                                <input type="hidden" id="deposit_custId">
-                                                <input type="hidden" id="deposit_userId" >
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label class="form-label">판매총액(입금예정금액)</label>
@@ -307,7 +305,7 @@
     </div>
     <script type="text/javascript">
 
-        const apiUrl = '/api/pages/applypaymentapprmng';
+        const apiUrl = '/api/pages/payrollmng';
 
         let paymentGrid;
         let menuGrid;
@@ -405,44 +403,8 @@
         }
 
         const rejectDeposit = () => {
-
-            const param = {};
-
-            $('#depositModal').find('input, select, input[type="checkbox"]').each((index, item) => {
-
-                var id = item.id.replace("deposit_", "");
-
-                // checkbox일 때
-                if ($(item).is(':checkbox')) {
-                    param[id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
-                } else {
-                    // input일 때의 처리
-                    param[id] = item.value.replace(/,/g, ''); // input 값 설정
-                }
-            });
-
             if (confirm("승인취소 처리하시겠습니까?")) {
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url: apiUrl + "/cancel",
-                        data: JSON.stringify(param),
-                        contentType: 'application/json',
-                        type: 'POST',
-                        success: (result) => {
-                            if (result > 0) {
-                                alert("승인취소 되었습니다.");
-                                search();
-                                return true;
-                            } else {
-                                alert("처리 도중 실패하였습니다.");
-                                return false;
-                            }
-                        }, error: (xhr, status, error) => {
-                            alert(xhr.responseText);
-                            return false;
-                        }
-                    })
-                });
+
             }
         }
 
@@ -475,17 +437,6 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addButton('action', '입금여부', 150, {
-                    buttonText: '입금확인',
-                    textColor: 'red',
-                    onClick: (rowData, rowKey) => {
-                        //if(parseInt(rowData.confirmAmt) <= 0)
-                            openDepositModal(rowData);
-                        // else
-                        //     alert("입금처리가 완료되었습니다.");
-
-                    }
-                })
                 .add('statusName', '진행상태', 100, {})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
@@ -635,8 +586,6 @@
             $("#deposit_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
             $("#deposit_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
             $("#incentiveRate").val(rsData.incentiveRate);
-            $("#deposit_userId").val(rsData.userId);
-            $("#deposit_custId").val(rsData.custId);
 
             // 부가세율 설정 (10% 부가세)
             var vatRate = 1.1;
@@ -644,21 +593,10 @@
             var pordTotalAmt = Math.floor((rsData.prodAmt * rsData.inflowCnt * rsData.workDay) * vatRate);
             $("#prodTotalAmt").val(pordTotalAmt);
 
-            // 승인요청
-            if(rsData.status == "1") {
+            if(rsData.status == "1")
                 $("#modalDepositApprBtn").show();
-                $("#modalDepositRejectBtn").show();
-            }
-            // 승인거절 상태
-            else if(rsData.status == "3")
-            {
-                $("#modalDepositApprBtn").show();
-                $("#modalDepositRejectBtn").hide();
-            }
-            else {
+            else
                 $("#modalDepositApprBtn").hide();
-                $("#modalDepositRejectBtn").show();
-            }
 
             $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
             $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
