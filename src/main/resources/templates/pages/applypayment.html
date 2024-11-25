@@ -116,7 +116,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품가</label>
-                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt">
+                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -195,13 +195,13 @@
                                                     <div class="col-md-5">
                                                         <div class="input-group">
                                                             <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
-                                                            <input type="text" class="form-control" id="custKeepAmt" aria-describedby="basic-addon1" disabled>
+                                                            <input type="text" class="form-control text-end" id="custKeepAmt" aria-describedby="basic-addon1" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-5">
                                                         <div class="input-group">
                                                             <span class="input-group-text" id="basic-addon2">킵사용금액</span>
-                                                            <input type="text" class="form-control" id="custKeepUseAmt" aria-describedby="basic-addon2" disabled>
+                                                            <input type="text" class="form-control text-end" id="custKeepUseAmt" aria-describedby="basic-addon2" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -278,7 +278,6 @@
                 const element = document.getElementById(id);
                 if (element) {
                     element.addEventListener("change", function(){
-
                         if(id == "dateWorkFrom" || id == "dateWorkTo")
                             $("#workDay").val(getDateDiff($("#dateWorkFrom").val(), $("#dateWorkTo").val()))
 
@@ -286,6 +285,43 @@
                     });
                 }
             });
+
+            // 고객 정보 변경할 때마다 마일리지 금액 가져오기
+            $("#custId").on("change", function(){
+
+                var params = {
+                    bizNo : this.value
+                };
+
+                $.ajax({
+                    url: apiUrl+ "/custinfo",
+                    data: params,
+                    type: 'GET',
+                    success: (result) => {
+
+                        if(!isNull(result))
+                        {
+                            $("#custKeepAmt").val(setComma(result.mileage));
+                        }
+                    }
+                });
+            })
+
+            // 상품 정보 변경할 때마다 상품가 가져오기
+            $("#prodId").on("change", function(){
+
+                var params = {
+                    prodId : this.value
+                };
+
+                $.get(apiUrl + "/prodinfo", params, function (rsData){
+
+                    if(!isNull(rsData))
+                    {
+                        $("#prodAmt").val(setComma(rsData.prodAmt));
+                    }
+                })
+            })
         }
 
 
@@ -302,6 +338,19 @@
                 // Disable the element
                 $(inputElement).prop("disabled", true);
             }
+
+            $("#custKeepUseAmt").on("input", function()
+            {
+                var keepAmt = removeComma($("#custKeepAmt").val());
+                var useAmt = removeComma($("#custKeepUseAmt").val());
+
+                if(parseInt(keepAmt) < parseInt(useAmt)) {
+                    alert("킵 금액보다 많이 사용할 수 없습니다.");
+                    $("#custKeepUseAmt").val(setComma(keepAmt));
+                }
+                else
+                    $("#custKeepUseAmt").val(setComma(this.value));
+            });
         }
 
         function saleSum()
@@ -347,11 +396,6 @@
             return (Math.abs(diffDate / (1000 * 60 * 60 * 24)) + 1); // 밀리세컨 * 초 * 분 * 시 = 일
         }
 
-        function performAction()
-        {
-
-        }
-
         const initPaymentGrid = () => {
 
 
@@ -374,7 +418,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('depositRealAmt', '실제입금액', 200, { align: 'right', textColor: 'red' })
+                .addNumber('confirmAmt', '실제입금액', 200, { align: 'right', textColor: 'red' })
                 .add('statusName', '진행상태', 150, {})
 
             paymentGrid = columns.init('paymentGrid', [])
@@ -400,13 +444,7 @@
                 data: param,
                 type: 'GET',
                 success: (result) => {
-
                     if(result.length > 0) {
-
-                        // result.forEach((item) => {
-                        //     item.saleTotalAmt = item.saleTotalAmt.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                        // });
-
                         paymentGrid.bind(result);
                     }
                 }
@@ -537,10 +575,16 @@
                 return false;
             }
 
-            // if (isNull(param.depositAmt)) {
-            //     alert("입금총액을 입력해주세요.");
-            //     return false;
-            // }
+            var keepInd = $("#pKeepInd").checked;
+            if(keepInd)
+            {
+                var keepUseAmt = removeComma($("#custKeepUseAmt").val());
+
+                if(keepUseAmt <= 0) {
+                    alert("킵 사용 체크 시 금액을 입력해주세요");
+                    return false;
+                }
+            }
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 return new Promise((resolve, reject) => {

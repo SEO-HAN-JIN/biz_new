@@ -10,6 +10,8 @@ import java.util.List;
 public interface CustomerMapper {
 
     List<CamelCaseMap> findCustomers(CustomerDto customerDto);
+    CamelCaseMap findCustomerInfo(CustomerDto customerDto);
+
     int saveCustomer(CustomerDto customerDto);
 
     int deleteCustomer(CustomerDto customerDto);

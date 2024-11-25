@@ -26,6 +26,18 @@
         </if>
     </select>
 
+    <select id="findCustomerInfo" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.CustomerMapper.findCustomerInfo */
+        SELECT  T.*,
+                U.EMP_NAME
+        FROM TB_CUSTOMER  T
+        LEFT JOIN TB_EMP       U
+        ON U.EMP_ID    = T.EMP_ID
+        WHERE 1=1
+        AND T.BIZ_NO = #{bizNo}
+
+    </select>
+
     <insert id="saveCustomer">
         /* com.biz.framework.mapper.pages.CustomerMapper.saveCustomer */
         INSERT INTO TB_CUSTOMER

@@ -55,4 +55,8 @@ public class CustomerService {
 //        result += mileageHisService.deleteMileageHisByBizNoEmpId(mileageHisDto);
         return result;
     }
+
+    public CamelCaseMap findCustomerInfo(CustomerDto customerDto) {
+        return customerMapper.findCustomerInfo(customerDto);
+    }
 }

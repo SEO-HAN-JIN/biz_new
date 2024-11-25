@@ -23,6 +23,20 @@
         </if>
     </select>
 
+    <select id="findProductsInfo" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.ProductMapper.findProductsInfo */
+        SELECT
+        PROD_ID
+        , PROD_NAME
+        , PROD_AMT
+        , DATE_FORMAT(EFF_DATE_FROM, '%Y-%m-%d')  AS EFF_DATE_FROM
+        , DATE_FORMAT(EFF_DATE_TO, '%Y-%m-%d')    AS EFF_DATE_TO
+        , USE_IND
+        FROM TB_PRODUCTS    P
+        WHERE 1=1
+        AND PROD_ID = #{prodId}
+    </select>
+
     <insert id="saveProducts">
         /* com.biz.framework.mapper.pages.ProductMapper.saveProducts */
         INSERT INTO TB_PRODUCTS

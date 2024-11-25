@@ -30,4 +30,8 @@ public class ProductService {
     public int deleteProduct(ProductDto productDto) {
         return productMapper.deleteProducts(productDto);
     }
+
+    public CamelCaseMap findProductsInfo(ProductDto productDto) {
+        return productMapper.findProductsInfo(productDto);
+    }
 }

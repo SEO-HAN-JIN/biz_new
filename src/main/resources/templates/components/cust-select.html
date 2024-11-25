@@ -25,15 +25,28 @@
                 .then(response => response.json())
                 .then(data => {
                     selectElement.innerHTML = ''; // 기존 옵션 제거
+
+                    // 플레이스홀더 옵션 추가
+                    const placeholderOption = document.createElement('option');
+                    placeholderOption.value = '';
+                    placeholderOption.textContent = '';
+                    placeholderOption.disabled = true;
+                    placeholderOption.selected = true; // 기본 선택 상태
+                    selectElement.appendChild(placeholderOption);
+
                     data.forEach(item => {
                         const option = document.createElement('option');
                         option.value = item.bizNo;
                         option.textContent = item.custName;
+
                         selectElement.appendChild(option);
                     });
 
                     if (!selectElement.choicesInstance) {
-                        selectElement.choicesInstance = new Choices(selectElement);
+                        selectElement.choicesInstance = new Choices(selectElement, {
+                            placeholder: true,
+                            placeholderValue: ''
+                        });
                     }
                 })
                 .catch(error => console.error("Error fetching data:", error));

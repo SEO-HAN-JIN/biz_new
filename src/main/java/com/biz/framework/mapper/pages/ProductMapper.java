@@ -12,6 +12,8 @@ import java.util.List;
 public interface ProductMapper {
 
     List<CamelCaseMap> findProducts(ProductDto productDto);
+    CamelCaseMap findProductsInfo(ProductDto productDto);
+
     int saveProducts(ProductDto productDto);
     int deleteProducts(ProductDto productDto);
 }
