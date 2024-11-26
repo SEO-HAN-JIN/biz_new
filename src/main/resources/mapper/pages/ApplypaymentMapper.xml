@@ -108,4 +108,61 @@
         WHERE BIZ_NO    = #{bizNo}
           AND EMP_ID   = #{empId}
     </delete>
+
+    <select id="findSettlement">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findSettlement */
+        SELECT ST.SETTLEMENT_SEQ
+             , ST.PROD_ID
+             , PR.PROD_NAME
+             , ST.USER_ID
+             , EP.EMP_NAME
+             , ST.CUST_ID
+             , CU.CUST_NAME
+             , ST.REQ_DATE
+             , ST.PROD_AMT
+             , ST.SALE_AMT
+             , ST.INFLOW_CNT
+             , ST.SALE_TOTAL_AMT
+             , ST.REQ_GUBUN
+             , ST.EXPECT_AMT
+             , ST.EXPECT_RATE_AMT
+             , ST.CONFIRM_AMT
+             , ST.CONFIRM_RATE_AMT
+             , ST.USE_MILEAGE
+             , ST.SAVE_MILEAGE
+             , DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM
+             , DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO
+             , ST.WORK_DAY
+             , IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE
+             , ST.REFUND_IND
+             , ST.ATCH_ID
+             , ST.STATUS
+             , CD.CODE_NAME         AS STATUS_NAME
+             , ST.TAX_IND
+             , ST.PAY_YM
+          FROM SETTLEMENT           ST
+          LEFT JOIN TB_CUSTOMER     CU
+            ON ST.CUST_ID           = CU.BIZ_NO
+          LEFT JOIN TB_PRODUCTS     PR
+            ON ST.PROD_ID           = PR.PROD_ID
+           AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
+          LEFT JOIN TB_EMP          EP
+            ON ST.USER_ID           = EP.EMP_ID
+          LEFT JOIN CDBASE          CD
+            ON CD.PATTERN_CODE      = 'SE02'
+           AND CD.BASE_CODE         = ST.STATUS
+         WHERE 1=1
+        <if test='settlementSeq != null  and settlementSeq != "" '>
+            AND ST.SETTLEMENT_SEQ LIKE CONCAT('%', #{settlementSeq}, '%')
+        </if>
+        <if test='searchStartDate != null  and searchStartDate != "" '>
+            AND #{searchStartDate} >= ST.WORK_DATE_FROM
+        </if>
+        <if test='searchEndDate != null  and searchEndDate != "" '>
+            AND #{searchEndDate} <![CDATA[<=]]> ST.WORK_DATE_TO
+        </if>
+        <if test='status != null  and status != "" '>
+            AND ST.STATUS       = #{status}
+        </if>
+    </select>
 </mapper>

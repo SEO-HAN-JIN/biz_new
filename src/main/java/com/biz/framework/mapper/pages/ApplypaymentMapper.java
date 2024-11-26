@@ -14,4 +14,6 @@ public interface ApplypaymentMapper {
     int saveApplypayment(SettlementDto settlementDto);
 
     int deleteCustomer(CustomerDto customerDto);
+
+    List<CamelCaseMap> findSettlement(SettlementDto settlementDto);
 }

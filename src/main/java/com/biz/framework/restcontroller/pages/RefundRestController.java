@@ -7,6 +7,7 @@ import com.biz.framework.service.pages.ApplypaymentService;
 import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.system.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +17,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RefundRestController {
 
-    private final UserService userService;
     private final EmpService empService;
     private final ApplypaymentService applypaymentService;
+
+    @GetMapping("/payment/list")
+    public List<CamelCaseMap> findPayemntList(SettlementDto settlementDto) {
+        return applypaymentService.findSettlement(settlementDto);
+    }
 
     @GetMapping("/emps")
     public List<CamelCaseMap> findEmps() {

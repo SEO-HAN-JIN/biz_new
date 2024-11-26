@@ -32,4 +32,8 @@ public class ApplypaymentService {
     public int deleteCustomer(CustomerDto customerDto) {
         return applypaymentMapper.deleteCustomer(customerDto);
     }
+
+    public List<CamelCaseMap> findSettlement(SettlementDto settlementDto) {
+        return applypaymentMapper.findSettlement(settlementDto);
+    }
 }
