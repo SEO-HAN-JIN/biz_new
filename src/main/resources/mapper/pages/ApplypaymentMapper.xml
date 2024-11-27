@@ -65,16 +65,21 @@
             REQ_GUBUN,
             EXPECT_AMT,
             EXPECT_RATE_AMT,
+            CONFIRM_AMT,
+            CONFIRM_RATE_AMT,
+            USE_MILEAGE,
+            SAVE_MILEAGE,
             DATE_WORK_FROM,
             DATE_WORK_TO,
             WORK_DAY,
             INCENTIVE_RATE,
-            ACCT_AMT,
-            REFUND_IND,
             ATCH_ID,
             STATUS,
             TAX_IND,
-            PAY_YM
+            PAY_YM,
+            REFUND_IND,
+            REFUND_SETTLEMENT_SEQ,
+            REFUND_REQ_GUBUN
         ) VALUES
         (
             #{settlementSeq},
@@ -89,16 +94,21 @@
             #{reqGubun},
             #{expectAmt},
             #{expectRateAmt},
+            #{confirmAmt},
+            #{confirmRateAmt},
+            #{useMileage},
+            #{saveMileage},
             #{dateWorkFrom},
             #{dateWorkTo},
             #{workDay},
             #{incentiveRate},
-            #{acctAmt},
-            #{refundInd},
             #{atchId},
             #{status},
             #{taxInd},
-            #{payYm}
+            #{payYm},
+            #{refundInd},
+            #{refundSettlementSeq},
+            #{refundReqGubun}
         )
     </insert>
 
@@ -156,13 +166,19 @@
             AND ST.SETTLEMENT_SEQ LIKE CONCAT('%', #{settlementSeq}, '%')
         </if>
         <if test='searchStartDate != null  and searchStartDate != "" '>
-            AND #{searchStartDate} >= ST.WORK_DATE_FROM
+            AND STR_TO_DATE(#{searchStartDate}, '%Y-%m-%d') <![CDATA[<=]]> ST.DATE_WORK_TO
         </if>
         <if test='searchEndDate != null  and searchEndDate != "" '>
-            AND #{searchEndDate} <![CDATA[<=]]> ST.WORK_DATE_TO
+            AND STR_TO_DATE(#{searchEndDate}, '%Y-%m-%d') >= ST.DATE_WORK_FROM
         </if>
         <if test='status != null  and status != "" '>
             AND ST.STATUS       = #{status}
+        </if>
+        <if test='userId != null  and userId != "" '>
+            AND ST.USER_ID       = #{userId}
+        </if>
+        <if test='refundInd != null  and refundInd != "" '>
+            AND ST.REFUND_IND    != 'Y'
         </if>
     </select>
 </mapper>
