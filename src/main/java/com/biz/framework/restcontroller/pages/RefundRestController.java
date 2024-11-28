@@ -3,6 +3,7 @@ package com.biz.framework.restcontroller.pages;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.SettlementDto;
+import com.biz.framework.mapper.pages.RefundMapper;
 import com.biz.framework.service.pages.ApplypaymentService;
 import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.system.UserService;
@@ -17,8 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RefundRestController {
 
-    private final EmpService empService;
     private final ApplypaymentService applypaymentService;
+    private final RefundMapper refundMapper;
 
     @GetMapping("/payment/list")
     public List<CamelCaseMap> findPayemntList(SettlementDto settlementDto) {
@@ -28,14 +29,9 @@ public class RefundRestController {
         return applypaymentService.findSettlement(settlementDto);
     }
 
-    @GetMapping("/emps")
-    public List<CamelCaseMap> findEmps() {
-        return empService.findAllEmps();
-    }
-
     @GetMapping
-    public List<CamelCaseMap> findCustomers(SettlementDto settlementDto) {
-        return applypaymentService.findApplypayment(settlementDto);
+    public List<CamelCaseMap> findRefund(SettlementDto settlementDto) {
+        return refundMapper.findRefund(settlementDto);
     }
 
     @PostMapping

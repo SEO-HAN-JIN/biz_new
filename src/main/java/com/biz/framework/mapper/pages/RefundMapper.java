@@ -10,8 +10,7 @@ import java.util.List;
 @Mapper
 public interface RefundMapper {
 
-    List<CamelCaseMap> findApplypayment(SettlementDto settlementDto);
-    int saveApplypayment(SettlementDto settlementDto);
-
     int deleteCustomer(CustomerDto customerDto);
+
+    List<CamelCaseMap> findRefund(SettlementDto settlementDto);
 }

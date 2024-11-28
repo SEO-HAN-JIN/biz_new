@@ -52,63 +52,64 @@
             WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
         </selectKey>
         INSERT INTO SETTLEMENT
-        (
-            SETTLEMENT_SEQ,
-            PROD_ID,
-            USER_ID,
-            CUST_ID,
-            REQ_DATE,
-            PROD_AMT,
-            SALE_AMT,
-            INFLOW_CNT,
-            SALE_TOTAL_AMT,
-            REQ_GUBUN,
-            EXPECT_AMT,
-            EXPECT_RATE_AMT,
-            CONFIRM_AMT,
-            CONFIRM_RATE_AMT,
-            USE_MILEAGE,
-            SAVE_MILEAGE,
-            DATE_WORK_FROM,
-            DATE_WORK_TO,
-            WORK_DAY,
-            INCENTIVE_RATE,
-            ATCH_ID,
-            STATUS,
-            TAX_IND,
-            PAY_YM,
-            REFUND_IND,
-            REFUND_SETTLEMENT_SEQ,
-            REFUND_REQ_GUBUN
+        ( SETTLEMENT_SEQ
+        , PROD_ID
+        , USER_ID
+        , CUST_ID
+        , REQ_DATE
+        , REQ_GUBUN
+        , PROD_AMT
+        , SALE_AMT
+        , INFLOW_CNT
+        , SALE_TOTAL_AMT
+        , EXPECT_AMT
+        , EXPECT_RATE_AMT
+        , MILEAGE_USE_IND
+        , USE_MILEAGE
+        , SAVE_MILEAGE
+        , DATE_WORK_FROM
+        , DATE_WORK_TO
+        , WORK_DAY
+        , INCENTIVE_RATE
+        , REFUND_IND
+        , REFUND_SETTLEMENT_SEQ
+        , REFUND_GUBUN
+        , ATCH_ID
+        , CONFIRM_AMT
+        , CONFIRM_RATE_AMT
+        , STATUS
+        , TAX_IND
+        , PAY_YM
         ) VALUES
         (
-            #{settlementSeq},
-            #{prodId},
-            #{loginUserId},
-            #{custId},
-            DATE_FORMAT(NOW(), '%Y-%m-%d'),
-            #{prodAmt},
-            #{saleAmt},
-            #{inflowCnt},
-            #{saleTotalAmt},
-            #{reqGubun},
-            #{expectAmt},
-            #{expectRateAmt},
-            #{confirmAmt},
-            #{confirmRateAmt},
-            #{useMileage},
-            #{saveMileage},
-            #{dateWorkFrom},
-            #{dateWorkTo},
-            #{workDay},
-            #{incentiveRate},
-            #{atchId},
-            #{status},
-            #{taxInd},
-            #{payYm},
-            #{refundInd},
-            #{refundSettlementSeq},
-            #{refundReqGubun}
+          #{settlementSeq}
+        , #{prodId}
+        , #{userId}
+        , #{custId}
+        , DATE_FORMAT(NOW(), '%Y-%m-%d')
+        , #{reqGubun}
+        , #{prodAmt}
+        , #{saleAmt}
+        , #{inflowCnt}
+        , #{saleTotalAmt}
+        , #{expectAmt}
+        , #{expectRateAmt}
+        , #{mileageUseInd}
+        , #{useMileage}
+        , #{saveMileage}
+        , #{dateWorkFrom}
+        , #{dateWorkTo}
+        , #{workDay}
+        , #{incentiveRate}
+        , #{refundInd}
+        , #{refundSettlementSeq}
+        , #{refundGubun}
+        , #{atchId}
+        , #{confirmAmt}
+        , #{confirmRateAmt}
+        , #{status}
+        , #{taxInd}
+        , #{payYm}
         )
     </insert>
 
@@ -178,7 +179,7 @@
             AND ST.USER_ID       = #{userId}
         </if>
         <if test='refundInd != null  and refundInd != "" '>
-            AND ST.REFUND_IND    != 'Y'
+            AND IFNULL(ST.REFUND_IND, 'N')    != 'Y'
         </if>
     </select>
 </mapper>
