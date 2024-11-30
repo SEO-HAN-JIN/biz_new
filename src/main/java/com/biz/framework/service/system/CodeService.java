@@ -60,13 +60,19 @@ public class CodeService {
         int result = 0;
         if (!CollectionUtils.isEmpty(codeDtoList)) {
             for (CodeDto codeDto : codeDtoList) {
-                int checkResult = codeMapper.checkCdbase(codeDto);
-                if (checkResult > 0) {
-                    throw new ServiceException("중복된 데이터가 존재합니다.");
-                }
                 switch (codeDto.getRowStatus()) {
-                    case C -> result += codeMapper.saveCdbase(codeDto);
-                    case U -> result += codeMapper.updateCdbase(codeDto);
+                    case C:
+                        int checkResult = codeMapper.checkCdbase(codeDto);
+                        if (checkResult > 0) {
+                            throw new ServiceException("중복된 데이터가 존재합니다.");
+                        }
+                        result += codeMapper.saveCdbase(codeDto);
+                        break;
+                    case U :
+                        result += codeMapper.updateCdbase(codeDto);
+                        break;
+                    default:
+                        break;
                 }
             }
         }

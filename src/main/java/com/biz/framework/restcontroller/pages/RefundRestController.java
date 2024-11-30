@@ -6,6 +6,7 @@ import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.mapper.pages.RefundMapper;
 import com.biz.framework.service.pages.ApplypaymentService;
 import com.biz.framework.service.pages.EmpService;
+import com.biz.framework.service.pages.RefundService;
 import com.biz.framework.service.system.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -19,23 +20,22 @@ import java.util.List;
 public class RefundRestController {
 
     private final ApplypaymentService applypaymentService;
-    private final RefundMapper refundMapper;
+    private final RefundService refundService;
 
     @GetMapping("/payment/list")
     public List<CamelCaseMap> findPayemntList(SettlementDto settlementDto) {
-//        settlementDto.setStatus("2");
-        settlementDto.setUserId(settlementDto.getLoginUserId());
-        settlementDto.setRefundInd("Y");
-        return applypaymentService.findSettlement(settlementDto);
+        return refundService.findSettlement(settlementDto);
     }
 
     @GetMapping
     public List<CamelCaseMap> findRefund(SettlementDto settlementDto) {
-        return refundMapper.findRefund(settlementDto);
+        return refundService.findRefund(settlementDto);
     }
 
     @PostMapping
-    public int saveCustomer(@RequestBody SettlementDto settlementDto) {
+    public int saveApplypayment(@RequestBody SettlementDto settlementDto) {
+        settlementDto.setReqGubun("RQ");        // 요청구분(SE01) : AQ(환불요청)
+        settlementDto.setApplyStatus("01");     // 승인여부(SE04) : 01(승인요청)
         return applypaymentService.saveApplypayment(settlementDto);
     }
 

@@ -39,11 +39,11 @@
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="custName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchCustName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">상품명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="prodName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchProdName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
                                         </div>
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업일수</label>
-                                                            <input type="number" id="workDay" class="form-control" name="workDay" disabled>
+                                                            <input type="text" id="workDay" class="form-control text-end" name="workDay" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -404,8 +404,6 @@
             var workDay = isNull($("#workDay").val()) ? 0 : parseInt($("#workDay").val());
             var incentiveRate = parseFloat($("#incentiveRate").val());
 
-            console.log("## inflowCnt ##", inflowCnt);
-            console.log("## saleAmt ##", saleAmt);
 
             // 부가세율 설정 (10% 부가세)
             var vatRate = 1.1;
@@ -437,8 +435,11 @@
             const date2 = new Date(d2);
 
             const diffDate = date1.getTime() - date2.getTime();
-
-            return (Math.abs(diffDate / (1000 * 60 * 60 * 24)) + 1); // 밀리세컨 * 초 * 분 * 시 = 일
+            let diffDay = Math.abs(diffDate / (1000 * 60 * 60 * 24)) + 1; // 밀리세컨 * 초 * 분 * 시 = 일
+            if (Number.isNaN(diffDay)) {
+                diffDay = 0;
+            }
+            return diffDay;
         }
 
         const initPaymentGrid = () => {
@@ -478,10 +479,22 @@
         }
 
         const searchPaymentGrid = () => {
+            let startDate = $("#searchStartDate").val();
+            let endDate = $("#searchEndDate").val();
+
+            if (isNull(startDate) || isNull(endDate)) {
+                alert("날짜를 입력해주세요");
+                return;
+            }
+
+
             paymentGrid.clear();
 
             const param = {
-                menuNm : $("#first-name").val()
+                searchStartDate : $("#searchStartDate").val(),
+                searchEndDate: $("#searchEndDate").val(),
+                custName: $("#searchCustName").val(),
+                prodName: $("#searchProdName").val()
             };
 
             $.ajax({

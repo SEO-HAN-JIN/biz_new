@@ -103,4 +103,13 @@
           FROM CDBASE
         WHERE PATTERN_CODE   = #{patternCode}
     </select>
+
+    <update id="updateCdbase">
+        /* com.biz.framework.mapper.system.CodeMapper.updateCdbase */
+        UPDATE CDBASE
+          SET CODE_NAME         = #{codeName}
+            , DISPLAY_ORDER     = #{displayOrder}
+        WHERE PATTERN_CODE      = #{patternCode}
+          AND BASE_CODE         = #{baseCode}
+    </update>
 </mapper>

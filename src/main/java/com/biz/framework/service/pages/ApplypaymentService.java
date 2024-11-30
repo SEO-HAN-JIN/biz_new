@@ -22,9 +22,10 @@ public class ApplypaymentService {
         return applypaymentMapper.findApplypayment(settlementDto);
     }
 
+    /*
+        환불요청인 경우에도 해당 메서드 사용 중 (컨트롤러에서 요청구분, 승인여부 세팅)
+     */
     public int saveApplypayment(SettlementDto settlementDto) {
-        settlementDto.setReqGubun("AQ");        // 요청구분(SE01) : AQ(정산요청)
-        settlementDto.setApplyStatus("01");     // 승인여부(SE04) : 01(승인요청)
         return applypaymentMapper.saveApplypayment(settlementDto);
     }
 

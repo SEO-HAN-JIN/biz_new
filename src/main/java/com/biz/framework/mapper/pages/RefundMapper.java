@@ -13,4 +13,6 @@ public interface RefundMapper {
     int deleteCustomer(CustomerDto customerDto);
 
     List<CamelCaseMap> findRefund(SettlementDto settlementDto);
+
+    List<CamelCaseMap> findSettlement(SettlementDto settlementDto);
 }

@@ -30,7 +30,7 @@
                             <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
-                                        <label class="col-form-label col-lg-1 col-3">날짜</label>
+                                        <label class="col-form-label col-lg-1 col-3">환불요청일</label>
                                         <div class="col-lg-3 col-9">
                                             <div class="d-flex">
                                                 <input type="date" class="form-control form-control-sm me-2" id="searchStartDate" >
@@ -39,11 +39,11 @@
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="custName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchCustName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">상품명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="prodName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchProdName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
                                         </div>
                                     </div>
                                 </div>
@@ -69,13 +69,13 @@
                                 <div class="d-flex pb-3 gap-1">
                                     <button type="button" class="btn btn-primary btn-m" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#refundModal">추가</button>
 
-                                    <button type="button" class="btn btn-secondary btn-m" id="btnDeletePaymentGrid">삭제</button>
+                                    <button type="button" class="btn btn-secondary btn-m" id="btnDeleteRefundGrid">삭제</button>
                                 </div>
                             </div>
-                            <div id="paymentGrid" class="tui-grid"></div>
+                            <div id="refundGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-bs-backdrop="static">
+                        <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-bs-backdrop="static" data-bs-keyboard="false">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
@@ -131,13 +131,13 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업일수</label>
-                                                            <input type="number" id="_refundModal_workDay" class="form-control" name="workDay" disabled>
+                                                            <input type="text" id="_refundModal_workDay" class="form-control is-num text-end" name="workDay" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">유입수</label>
-                                                            <input type="text" id="_refundModal_inflowCnt" class="form-control" name="inflowCnt" disabled>
+                                                            <input type="text" id="_refundModal_inflowCnt" class="form-control is-num text-end" name="inflowCnt" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -187,7 +187,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">환불일수</label>
-                                                        <input type="number" id="_refundModal_refundWorkDay" class="form-control" name="refundWorkDay" disabled>
+                                                        <input type="text" id="_refundModal_refundWorkDay" class="form-control is-num text-end" name="refundWorkDay" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -229,7 +229,7 @@
                             </div>
                         </div>
 
-                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-bs-backdrop="static">
+                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" data-bs-backdrop="static" data-bs-keyboard="false">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
@@ -295,17 +295,68 @@
             </div>
         </section>
     </div>
+    <style>
+        .modal-backdrop {
+            z-index: 1040; /* 배경 */
+        }
+        .modal.show {
+            z-index: 1050; /* 첫 번째 모달 */
+        }
+        .modal.show + .modal {
+            z-index: 1060; /* 두 번째 모달 */
+        }
+    </style>
     <script type="text/javascript">
 
         const apiUrl = '/api/pages/refund';
 
-        let paymentGrid;
+        let refundGrid;
         let paymentModalGrid;
         let $isNew = 'N';
         let paymentModalPrefix = '_paymentModal_';
         let refundModalPrefix = '_refundModal_';
 
         $(document).ready(function() {
+
+            console.log($(".modal.show"));
+
+            $(document).on("keydown", function (e) {
+                if (e.key === "Escape") {
+                    const $activeModals = $(".modal.show");
+                    let activeModals = $activeModals.map(function () {
+                        return $(this).attr("id");
+                    }).get();
+
+                    if (activeModals.length >= 2) {
+                        $("#paymentModal").modal('hide');
+                    } else {
+                        $("#refundModal").modal('hide');
+                    }
+                    e.preventDefault(); // Bootstrap 기본 동작 방지
+                    e.stopPropagation(); // 이벤트 전파 차단
+                }
+            });
+
+            $(".modal").on("shown.bs.modal", function () {
+                const $activeModals = $(".modal.show");
+                console.log("현재 활성화된 모달:", $activeModals);
+            });
+
+            // 모달 상태 확인
+            $("#paymentModal").on("shown.bs.modal", function () {
+                console.log($(this).attr("id") + " is shown");
+            });
+            $("#paymentModal").on("hidden.bs.modal", function () {
+                console.log($(this).attr("id") + " is closed");
+            });
+
+            // 모달 상태 확인
+            $("#refundModal").on("shown.bs.modal", function () {
+                console.log($(this).attr("id") + " is shown");
+            });
+            $("#refundModal").on("hidden.bs.modal", function () {
+                console.log($(this).attr("id") + " is closed");
+            });
 
             findInitCodes();
 
@@ -324,7 +375,7 @@
             $("#_paymentModal_searchEndDate").val(formatDate(endDate));
 
             initEvent();
-            initPaymentGrid();
+            initRefundGrid();
             initPaymentModalGrid();
         });
 
@@ -353,7 +404,7 @@
                 openPgmModal('1')
             });
 
-            $("#searchBtn").on('click', searchPaymentGrid);
+            $("#searchBtn").on('click', searchRefundGrid);
 
             $("#" + refundModalPrefix + "applyPaymentBtn").on('click', openPaymentModal);
 
@@ -417,14 +468,11 @@
         }
 
         function saleSum() {
-            var saleAmt = isNull($("#" + refundModalPrefix + "saleAmt").val()) ? 0 : parseInt($("#" + refundModalPrefix + "saleAmt").val());          // 판매가
-            var prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseInt($("#" + refundModalPrefix + "prodAmt").val());          // 상품가(공급가)
-            var inflowCnt = isNull($("#" + refundModalPrefix + "inflowCnt").val()) ? 0 : parseInt($("#" + refundModalPrefix + "inflowCnt").val());    // 유입수
+            var saleTotalAmt = removeComma($("#" + refundModalPrefix + "saleTotalAmt").val());
+            var prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "prodAmt").val()));          // 상품가(공급가)
+            var inflowCnt = isNull($("#" + refundModalPrefix + "inflowCnt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "inflowCnt").val()));    // 유입수
             var workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());          // 환불일수
             var incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());    // 직원인센티브율
-
-            // 판매총액 (판매가 * 유입수 * 작업일)
-            const saleTotalAmt = Math.floor(saleAmt * inflowCnt * workDay);
 
             // 환불금액 (상품가 * 유입수 * 환불일수)
             const expectAmt = Math.floor(prodAmt * inflowCnt * workDay);
@@ -434,9 +482,6 @@
 
             // 환불수수료 : 소수점 제외하고 정수만 출력
             var expectRateAmt = Math.floor(costAmt * incentiveRate);
-            console.log("## saleTotalAmt ##", saleTotalAmt);
-            console.log("## expectAmt ##", expectAmt);
-            console.log("## expectRateAmt ##", expectRateAmt);
 
             $("#" + refundModalPrefix + "refundSaleTotalAmt").val(saleTotalAmt);                    // 판매총액
             $("#" + refundModalPrefix + "refundExpectAmt").val(formatNumber(expectAmt));            // 환불금액
@@ -444,7 +489,7 @@
         }
 
 
-        const initPaymentGrid = () => {
+        const initRefundGrid = () => {
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
@@ -453,13 +498,13 @@
                 .add('empName', '담당자', 150, {})
                 .add('custName', '고객명', 150, {})
                 .add('prodName', '상품명', 200, { align: 'center' })
-                .add('prodAmt', '상품가', 150, { align: 'right'})
-                .add('saleAmt', '판매가', 120, { align: 'right' })
-                .add('inflowCnt', '유입수', 120, {})
+                .addNumber('prodAmt', '상품가', 150, { align: 'right', comma: true,})
+                .addNumber('saleAmt', '판매가', 120, { align: 'right', comma: true,})
+                .add('inflowCnt', '유입수', 120, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
                 .addDate('refundDateWorkTo', '환불요청일', 150, {})
-                .add('refundWorkDay', '환불일수', 120, {})
+                .add('refundWorkDay', '환불일수', 120, {align: 'right'})
                 .addNumber('refundSaleTotalAmt', '판매총액', 200, {
                     align: 'right',
                     textColor: 'red',
@@ -482,20 +527,20 @@
                         template: valueMap => `${valueMap.sum.toLocaleString()}`
                     }})
                 .add('refundGubunName', '환불구분', 150, {})
-                .add('statusName', '진행상태', 150, {})
+                .add('applyStatusName', '진행상태', 150, {})
                 .add('workDay', '작업일수', 'auto', {visible: false})
                 .add('saleTotalAmt', '판매총액', 'auto', {visible: false})
                 .add('refundGubun', '환불구분', 'auto', {visible: false})
 
-            paymentGrid = columns.init('paymentGrid', [])
+            refundGrid = columns.init('refundGrid', [])
                 .render();
 
             // 더블 클릭 이벤트 설정
-            paymentGrid.getGrid().on('dblclick', function(ev) {
+            refundGrid.getGrid().on('dblclick', function(ev) {
                 openPgmModal('2');
             });
 
-            searchPaymentGrid();
+            searchRefundGrid();
         }
 
         const initPaymentModalGrid = () => {
@@ -525,11 +570,23 @@
             });
         }
 
-        const searchPaymentGrid = () => {
-            paymentGrid.clear();
+        const searchRefundGrid = () => {
+
+            let startDate = $("#searchStartDate").val();
+            let endDate = $("#searchEndDate").val();
+
+            if (isNull(startDate) || isNull(endDate)) {
+                alert("환불요청일을 입력해주세요");
+                return;
+            }
+
+            refundGrid.clear();
 
             const param = {
-                menuNm : $("#first-name").val()
+                searchStartDate : $("#searchStartDate").val(),
+                searchEndDate: $("#searchEndDate").val(),
+                custName: $("#searchCustName").val(),
+                prodName: $("#searchProdName").val()
             };
 
             $.ajax({
@@ -539,7 +596,7 @@
                 success: (result) => {
 
                     if(result.length > 0) {
-                        paymentGrid.bind(result);
+                        refundGrid.bind(result);
                     }
                 }
             });
@@ -557,11 +614,10 @@
 
             clearForm('refundModal');
 
-            // 추가 버튼 클릭 시
+            // 행 더블 클릭 시
             if (param === '2') {
-                const focusedCell = paymentGrid.getGrid().getFocusedCell();
-                const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
-                console.log("## focusedData ##", focusedData);
+                const focusedCell = refundGrid.getGrid().getFocusedCell();
+                const focusedData = refundGrid.getGrid().getRow(focusedCell.rowKey);
 
                 $("#_refundModal_settlementSeq").val(focusedData.settlementSeq);
                 $("#_refundModal_empName").val(focusedData.empName);
@@ -569,17 +625,21 @@
                 $("#_refundModal_dateWorkFrom").val(focusedData.dateWorkFrom);
                 $("#_refundModal_dateWorkTo").val(focusedData.dateWorkTo);
                 $("#_refundModal_workDay").val(focusedData.workDay);
-                $("#_refundModal_inflowCnt").val(focusedData.inflowCnt);
+                $("#_refundModal_inflowCnt").val(setComma(focusedData.inflowCnt));
                 $("#_refundModal_prodName").val(focusedData.prodName);
-                $("#_refundModal_prodAmt").val(focusedData.prodAmt);
-                $("#_refundModal_saleAmt").val(focusedData.saleAmt);
-                $("#_refundModal_saleTotalAmt").val(focusedData.saleTotalAmt);
-                $("#_refundModal_refundDateWorkTo").val(focusedData.refundDateWorkTo);
+                $("#_refundModal_prodAmt").val(setComma(focusedData.prodAmt));
+                $("#_refundModal_saleAmt").val(setComma(focusedData.saleAmt));
+                $("#_refundModal_saleTotalAmt").val(setComma(focusedData.saleTotalAmt));
+                $("#_refundModal_refundDateWorkTo").val(focusedData.refundDateWorkTo).attr('disabled', true);
                 $("#_refundModal_refundWorkDay").val(focusedData.refundWorkDay);
-                $("#_refundModal_refundExpectAmt").val(focusedData.expectAmt);
-                $("#_refundModal_refundExpectRateAmt").val(focusedData.expectRateAmt);
-                $("#_refundModal_refundGubun").val(focusedData.refundGubun);
+                $("#_refundModal_refundExpectAmt").val(setComma(focusedData.expectAmt));
+                $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.expectRateAmt));
+                $("#_refundModal_refundGubun").val(focusedData.refundGubun).attr('disabled', true);
+            } else {
+                $("#_refundModal_refundDateWorkTo").attr('disabled', false);
+                $("#_refundModal_refundGubun").attr('disabled', false);
             }
+
 
             $('#refundModal').modal('show');
 
@@ -619,7 +679,6 @@
                 }
             });
 
-            console.log("## param ##", param);
             if(isNull(param.refundDateWorkTo))
             {
                 alert("환불요청일을 입력해주세요.");
@@ -668,7 +727,7 @@
                             if (result > 0) {
                                 alert("저장이 완료되었습니다.");
                                 $('#refundModal').modal('hide');
-                                searchPaymentGrid();
+                                searchRefundGrid();
                             } else {
                                 alert("저장에 실패하였습니다.");
                             }
@@ -690,7 +749,7 @@
         }
 
         const modalAcceptBtn = () => {
-            searchPaymentGrid();
+            searchRefundGrid();
         }
 
         const openPaymentModal = () => {
