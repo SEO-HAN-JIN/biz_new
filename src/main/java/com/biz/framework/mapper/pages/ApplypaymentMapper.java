@@ -10,7 +10,10 @@ import java.util.List;
 @Mapper
 public interface ApplypaymentMapper {
 
+    double findIncentiveRate(SettlementDto settlementDto);
+
     List<CamelCaseMap> findApplypayment(SettlementDto settlementDto);
+
     int saveApplypayment(SettlementDto settlementDto);
 
     int deleteCustomer(CustomerDto customerDto);

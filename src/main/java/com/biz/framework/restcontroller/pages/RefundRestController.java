@@ -23,7 +23,7 @@ public class RefundRestController {
 
     @GetMapping("/payment/list")
     public List<CamelCaseMap> findPayemntList(SettlementDto settlementDto) {
-        settlementDto.setStatus("2"); // 승인완료
+//        settlementDto.setStatus("2");
         settlementDto.setUserId(settlementDto.getLoginUserId());
         settlementDto.setRefundInd("Y");
         return applypaymentService.findSettlement(settlementDto);

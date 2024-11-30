@@ -23,9 +23,8 @@ public class ApplypaymentService {
     }
 
     public int saveApplypayment(SettlementDto settlementDto) {
-
-        String ddd = settlementDto.getLoginUserId();
-
+        settlementDto.setReqGubun("AQ");        // 요청구분(SE01) : AQ(정산요청)
+        settlementDto.setApplyStatus("01");     // 승인여부(SE04) : 01(승인요청)
         return applypaymentMapper.saveApplypayment(settlementDto);
     }
 
@@ -35,5 +34,9 @@ public class ApplypaymentService {
 
     public List<CamelCaseMap> findSettlement(SettlementDto settlementDto) {
         return applypaymentMapper.findSettlement(settlementDto);
+    }
+
+    public double findIncentiveRate(SettlementDto settlementDto) {
+        return applypaymentMapper.findIncentiveRate(settlementDto);
     }
 }

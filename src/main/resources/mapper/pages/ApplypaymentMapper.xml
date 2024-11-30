@@ -4,6 +4,13 @@
 
 <mapper namespace="com.biz.framework.mapper.pages.ApplypaymentMapper">
 
+    <select id="findIncentiveRate" resultType="double">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findIncentiveRate */
+        SELECT IFNULL(INCENTIVE_RATE, 0) AS INCENTIVE_RATE
+          FROM TB_EMP
+         WHERE EMP_ID   = #{loginUserId}
+    </select>
+
     <select id="findApplypayment" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.findApplypayment */
         SELECT
@@ -19,28 +26,29 @@
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.SALE_TOTAL_AMT,
-            ST.REQ_GUBUN,
-            ST.CONFIRM_AMT,
-            ST.CONFIRM_RATE_AMT,
+            ST.EXPECT_AMT,
+            ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
-            ST.ACCT_AMT,
-            ST.REFUND_IND,
-            ST.ATCH_ID,
-            ST.STATUS,
-            ST.TAX_IND,
-            ST.PAY_YM
-        FROM SETTLEMENT ST
-        LEFT JOIN TB_CUSTOMER CU
-            ON ST.CUST_ID = CU.BIZ_NO
-        LEFT JOIN TB_PRODUCTS PR
-            ON ST.PROD_ID = PR.PROD_ID
-            AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
-        LEFT JOIN TB_EMP EP
-            ON ST.USER_ID = EP.EMP_ID
-        WHERE 1=1
+            ST.APPLY_GUBUN,
+            ST.MILEAGE_USE_IND,
+            ST.USE_MILEAGE,
+            ST.SAVE_MILEAGE,
+            C.CODE_NAME         AS APPLY_STATUS_NAME
+        FROM SETTLEMENT         ST
+        LEFT JOIN TB_CUSTOMER   CU
+          ON ST.CUST_ID         = CU.BIZ_NO
+        LEFT JOIN TB_PRODUCTS   PR
+          ON ST.PROD_ID         = PR.PROD_ID
+         AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
+        LEFT JOIN TB_EMP        EP
+          ON ST.USER_ID         = EP.EMP_ID
+        LEFT JOIN CDBASE        C
+          ON C.PATTERN_CODE     = 'SE04'
+         AND C.BASE_CODE        = ST.APPLY_STATUS
+       WHERE 1=1
         AND ST.USER_ID = #{loginUserId}
     </select>
 
@@ -57,29 +65,30 @@
         , USER_ID
         , CUST_ID
         , REQ_DATE
-        , REQ_GUBUN
         , PROD_AMT
         , SALE_AMT
         , INFLOW_CNT
         , SALE_TOTAL_AMT
         , EXPECT_AMT
         , EXPECT_RATE_AMT
-        , MILEAGE_USE_IND
-        , USE_MILEAGE
-        , SAVE_MILEAGE
         , DATE_WORK_FROM
         , DATE_WORK_TO
         , WORK_DAY
         , INCENTIVE_RATE
+        , APPLY_GUBUN
+        , MILEAGE_USE_IND
+        , USE_MILEAGE
+        , SAVE_MILEAGE
         , REFUND_IND
         , REFUND_SETTLEMENT_SEQ
         , REFUND_GUBUN
-        , ATCH_ID
         , CONFIRM_AMT
         , CONFIRM_RATE_AMT
-        , STATUS
+        , APPLY_STATUS
         , TAX_IND
         , PAY_YM
+        , REQ_GUBUN
+        , ATCH_ID
         ) VALUES
         (
           #{settlementSeq}
@@ -87,29 +96,30 @@
         , #{userId}
         , #{custId}
         , DATE_FORMAT(NOW(), '%Y-%m-%d')
-        , #{reqGubun}
         , #{prodAmt}
         , #{saleAmt}
         , #{inflowCnt}
         , #{saleTotalAmt}
         , #{expectAmt}
         , #{expectRateAmt}
-        , #{mileageUseInd}
-        , #{useMileage}
-        , #{saveMileage}
         , #{dateWorkFrom}
         , #{dateWorkTo}
         , #{workDay}
         , #{incentiveRate}
+        , #{applyGubun}
+        , #{mileageUseInd}
+        , #{useMileage}
+        , #{saveMileage}
         , #{refundInd}
         , #{refundSettlementSeq}
         , #{refundGubun}
-        , #{atchId}
         , #{confirmAmt}
         , #{confirmRateAmt}
-        , #{status}
+        , #{applyStatus}
         , #{taxInd}
         , #{payYm}
+        , #{reqGubun}
+        , #{atchId}
         )
     </insert>
 

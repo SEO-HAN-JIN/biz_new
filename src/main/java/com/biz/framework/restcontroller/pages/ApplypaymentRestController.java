@@ -24,9 +24,9 @@ public class ApplypaymentRestController {
     private final CustomerService customerService;
     private final ProductService productService;
 
-    @GetMapping("/emps")
-    public List<CamelCaseMap> findEmps() {
-        return empService.findAllEmps();
+    @GetMapping("/find/incentiveRate")
+    public double findIncentiveRate(SettlementDto settlementDto) {
+        return applypaymentService.findIncentiveRate(settlementDto);
     }
 
     @GetMapping
