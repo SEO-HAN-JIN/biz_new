@@ -48,6 +48,18 @@
                                         <div class="col-md-3">
                                             <input type="text" id="emplName" name="emplName" class="form-control form-control-sm" placeholder="담당자명">
                                         </div>
+                                        <!-- 결재상태 -->
+                                        <div class="col-md-1 text-start">
+                                            <label class="col-form-label">결재상태</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" id="applyStatus" name="applyStatus">
+                                                <option value="" >전체</option>
+                                                <option value="01" selected>승인요청</option>
+                                                <option value="02">승인완료</option>
+                                                <option value="03">승인거절</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="form-group row mb-0 align-items-center text-center mt-2">
 
@@ -64,6 +76,17 @@
                                         </div>
                                         <div class="col-md-3">
                                             <input type="text" id="prodName" name="prodName" class="form-control form-control-sm" placeholder="상품명">
+                                        </div>
+                                        <!-- 요청구분 -->
+                                        <div class="col-md-1 text-start">
+                                            <label class="col-form-label">요청구분</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <select class="form-select" id="reqGubun" name="reqGubun">
+                                                <option value="" selected>전체</option>
+                                                <option value="AQ">정산요청</option>
+                                                <option value="RQ">환불요청</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -233,7 +256,7 @@
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-l" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">입금정보</h5>
+                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">요청정보</h5>
                                         <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
                                             <i data-feather="x"></i>
                                         </button>
@@ -539,9 +562,9 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('reqGubun', '요청구분', 100, {})
+                .add('reqGubunName', '요청구분', 100, {})
                 .addButton('action', '입금여부', 150, {
-                    buttonText: '입금확인',
+                    buttonText: '확인',
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
                         //if(parseInt(rowData.confirmAmt) <= 0)
@@ -565,6 +588,9 @@
                     visible: false
                 })
                 .add('refundInd', '환불여부', 0, {
+                    visible: false
+                })
+                .add('reqGubun', '요청구분', 0, {
                     visible: false
                 })
 

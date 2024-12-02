@@ -31,12 +31,10 @@
             ST.CONFIRM_RATE_AMT,
             ST.REFUND_IND,
             ST.ATCH_ID,
-            CASE
-            	WHEN ST.REFUND_IND IS NOT NULL THEN '환불요청'
-            	ELSE '정산요청'
-            END AS REQ_GUBUN,
+            ST.REQ_GUBUN,
+            CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
-            CD.CODE_NAME AS STATUS_NAME,
+            CD2.CODE_NAME AS STATUS_NAME,
             ST.TAX_IND,
             ST.PAY_YM
         FROM SETTLEMENT ST
@@ -47,9 +45,12 @@
             AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
         LEFT JOIN TB_EMP EP
             ON ST.USER_ID = EP.EMP_ID
-        LEFT JOIN CDBASE CD
-            ON CD.PATTERN_CODE = 'SE02'
-        	AND ST.APPLY_STATUS = CD.BASE_CODE
+        LEFT JOIN CDBASE CD1
+            ON CD1.PATTERN_CODE = 'SE01'
+        	AND ST.REQ_GUBUN = CD1.BASE_CODE
+        LEFT JOIN CDBASE CD2
+            ON CD2.PATTERN_CODE = 'SE04'
+        	AND ST.APPLY_STATUS = CD2.BASE_CODE
         WHERE 1=1
         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
@@ -63,6 +64,13 @@
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
         </if>
+        <if test='applyStatus != null  and applyStatus != "" '>
+            AND ST.APPLY_STATUS  = #{applyStatus}
+        </if>
+        <if test='reqGubun != null  and reqGubun != "" '>
+            AND ST.REQ_GUBUN  = #{reqGubun}
+        </if>
+
     </select>
 
     <insert id="confirmApplypayment">
