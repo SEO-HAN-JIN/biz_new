@@ -138,8 +138,9 @@
   position: relative;
   border-width: 0;
   clear: both;
-  font-size: 13px;
-  font-family: Arial, '\B3CB\C6C0', Dotum, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Nanum Gothic', sans-serif;
 }
 .tui-grid-container ::-webkit-scrollbar {
   -webkit-appearance: none;
