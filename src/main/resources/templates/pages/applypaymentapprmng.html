@@ -243,7 +243,7 @@
                                             <fieldset class="border p-3 rounded">
                                                 <legend class="float-none w-auto"></legend>
                                             <div class="row g-3">
-                                                <input type="hidden" id="settlementSeq">
+                                                <input type="hidden" id="deposit_settlementSeq">
                                                 <input type="hidden" id="prodTotalAmt">
                                                 <input type="hidden" id="incentiveRate">
                                                 <input type="hidden" id="saveMileage">
@@ -294,6 +294,70 @@
                                             <i class="bx bx-check"></i> 승인취소
                                         </button>
                                         <button type="button" class="btn btn-primary ms-1" id="modalDepositApprBtn">
+                                            <i class="bx bx-check"></i> 승인
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--환불정보 상세정보-->
+                        <div class="modal fade" id="refundModal" tabindex="-1" role="dialog" aria-labelledby="refundModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="refundModalCenterTitle">환불정보</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form">
+                                            <fieldset class="border p-3 rounded">
+                                                <legend class="float-none w-auto"></legend>
+                                                <div class="row g-3">
+                                                    <input type="hidden" id="refund_settlementSeq">
+                                                    <input type="hidden" id="refund_custId">
+                                                    <input type="hidden" id="refund_userId" >
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">환불총액</label>
+                                                            <input type="text" id="refund_saleTotalAmt"  class="form-control is-num text-end" name="refund_saleTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">환불구분</label>
+                                                            <input type="text" id="refund_refundName"  class="form-control is-num text-end" name="refund_refundName" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자 환불액</label>
+                                                            <input type="text" id="refund_expectRateAmt" class="form-control is-num text-end" name="refund_expectRateAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label">비고</label>
+                                                            <textarea class="form-control" id="refund_remark" rows="3"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                        <button type="button" class="btn btn-danger ms-1" id="modalrefundRejectBtn">
+                                            <i class="bx bx-check"></i> 승인취소
+                                        </button>
+                                        <button type="button" class="btn btn-primary ms-1" id="modalrefundApprBtn">
                                             <i class="bx bx-check"></i> 승인
                                         </button>
                                     </div>
@@ -475,6 +539,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
+                .add('reqGubun', '요청구분', 100, {})
                 .addButton('action', '입금여부', 150, {
                     buttonText: '입금확인',
                     textColor: 'red',
@@ -497,6 +562,9 @@
                     visible: false
                 })
                 .add('comfirmRateAmt', '확정수수료', 0, {
+                    visible: false
+                })
+                .add('refundInd', '환불여부', 0, {
                     visible: false
                 })
 
@@ -631,12 +699,15 @@
 
         const openDepositModal = (rsData) => {
 
+            var modalName = rsData.refundInd == "Y" ? "refund" : "deposit";
+
+
             $("#settlementSeq").val(rsData.settlementSeq);
-            $("#deposit_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
-            $("#deposit_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
+            $("#" + modalName + "_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
+            $("#" + modalName + "_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
             $("#incentiveRate").val(rsData.incentiveRate);
-            $("#deposit_userId").val(rsData.userId);
-            $("#deposit_custId").val(rsData.custId);
+            $("#" + modalName + "_userId").val(rsData.userId);
+            $("#" + modalName + "_custId").val(rsData.custId);
 
             // 부가세율 설정 (10% 부가세)
             var vatRate = 1.1;
@@ -644,26 +715,40 @@
             var pordTotalAmt = Math.floor((rsData.prodAmt * rsData.inflowCnt * rsData.workDay) * vatRate);
             $("#prodTotalAmt").val(pordTotalAmt);
 
-            // 승인요청
-            if(rsData.status == "1") {
-                $("#modalDepositApprBtn").show();
-                $("#modalDepositRejectBtn").show();
-            }
-            // 승인거절 상태
-            else if(rsData.status == "3")
+            // // 승인요청
+            // if(rsData.status == "1") {
+            //     $("#modalDepositApprBtn").show();
+            //     $("#modalDepositRejectBtn").show();
+            // }
+            // // 승인거절 상태
+            // else if(rsData.status == "3")
+            // {
+            //     $("#modalDepositApprBtn").show();
+            //     $("#modalDepositRejectBtn").hide();
+            // }
+            // else {
+            //     $("#modalDepositApprBtn").hide();
+            //     $("#modalDepositRejectBtn").show();
+            // }
+
+
+
+            //환불
+            if(rsData.refundInd == "Y")
             {
-                $("#modalDepositApprBtn").show();
-                $("#modalDepositRejectBtn").hide();
+                $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
+                $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
+
+
+                $('#refundModal').modal('show');
             }
             else {
-                $("#modalDepositApprBtn").hide();
-                $("#modalDepositRejectBtn").show();
+
+                $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
+                $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
+
+                $('#depositModal').modal('show');
             }
-
-            $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
-            $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
-
-            $('#depositModal').modal('show');
         }
 
         function depositSum()

@@ -20,7 +20,7 @@
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.SALE_TOTAL_AMT,
-            ST.REQ_GUBUN,
+            -- ST.REQ_GUBUN,
             ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
@@ -31,7 +31,11 @@
             ST.CONFIRM_RATE_AMT,
             ST.REFUND_IND,
             ST.ATCH_ID,
-            ST.STATUS,
+            CASE
+            	WHEN ST.REFUND_IND IS NOT NULL THEN '환불요청'
+            	ELSE '정산요청'
+            END AS REQ_GUBUN,
+            ST.APPLY_STATUS,
             CD.CODE_NAME AS STATUS_NAME,
             ST.TAX_IND,
             ST.PAY_YM
@@ -45,7 +49,7 @@
             ON ST.USER_ID = EP.EMP_ID
         LEFT JOIN CDBASE CD
             ON CD.PATTERN_CODE = 'SE02'
-        	AND ST.STATUS = CD.BASE_CODE
+        	AND ST.APPLY_STATUS = CD.BASE_CODE
         WHERE 1=1
         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
