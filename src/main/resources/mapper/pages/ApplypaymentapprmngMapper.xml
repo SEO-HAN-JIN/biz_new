@@ -27,14 +27,18 @@
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
+            ST.USE_MILEAGE,
             ST.CONFIRM_AMT,
             ST.CONFIRM_RATE_AMT,
-            ST.REFUND_IND,
+            DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
             ST.ATCH_ID,
             ST.REQ_GUBUN,
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
             CD2.CODE_NAME AS STATUS_NAME,
+            ST.REFUND_IND,
+            ST.REFUND_GUBUN,
+            CD3.CODE_NAME AS REFUND_GUBUN_NAME,
             ST.TAX_IND,
             ST.PAY_YM
         FROM SETTLEMENT ST
@@ -51,6 +55,9 @@
         LEFT JOIN CDBASE CD2
             ON CD2.PATTERN_CODE = 'SE04'
         	AND ST.APPLY_STATUS = CD2.BASE_CODE
+        LEFT JOIN CDBASE CD3
+            ON CD3.PATTERN_CODE = 'SE03'
+        	AND ST.REFUND_GUBUN = CD3.BASE_CODE
         WHERE 1=1
         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)

@@ -125,7 +125,7 @@
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">상세정보</h5>
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">요청정보</h5>
                                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
@@ -134,31 +134,29 @@
                                         <form class="form">
                                             <!-- 기본 정보 섹션 -->
                                             <fieldset class="border p-3 rounded">
-                                                <legend class="float-none w-auto px-2">기본 정보</legend>
+                                                <legend class="float-none w-auto px-2">정산요청정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">담당자</label>
-                                                        <input type="text" id="userId" class="form-control" disabled>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">정산번호</label>
+                                                            <div class="d-flex align-items-center">
+                                                                <input type="text" class="form-control me-2" name="settlementSeq" disabled>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label">고객</label>
-                                                        <input type="text" id="custId" class="form-control" disabled>
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자</label>
+                                                            <input type="text" id="userId" class="form-control" disabled>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label class="form-label">상품</label>
-                                                        <input type="text" id="prodId" class="form-control" disabled>
+                                                        <div class="form-group">
+                                                            <label class="form-label">고객</label>
+                                                            <input type="text" id="custId" class="form-control" disabled>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">상품가</label>
-                                                        <input type="text" id="prodAmt" class="form-control is-num text-end" disabled>
-                                                    </div>
-                                                </div>
-                                            </fieldset>
 
-                                            <!-- 작업 정보 섹션 -->
-                                            <fieldset class="border p-3 rounded mt-4">
-                                                <legend class="float-none w-auto px-2">정산 정보</legend>
-                                                <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업시작일</label>
@@ -179,14 +177,27 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">판매가</label>
-                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">유입수</label>
+                                                            <input type="text" id="inflowCnt" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품</label>
+                                                            <input type="text" id="prodId" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">유입수</label>
-                                                            <input type="text" id="inflowCnt" class="form-control" disabled>
+                                                            <label class="form-label">상품가</label>
+                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매가</label>
+                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -195,41 +206,77 @@
                                                             <input type="text" id="saleTotalAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
+
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- 정산요청 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="applyView">
+                                                <legend class="float-none w-auto px-2">정산금액정보</legend>
+                                                <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">예상정산금액</label>
-                                                            <input type="text" id="expectRateAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">요청구분</label>
+                                                            <input type="text" name="reqGubunName" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">킵사용금액</label>
+                                                            <input type="text" id="useMileage" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">요청구분</label>
-                                                            <input type="text" id="status" class="form-control" disabled>
+                                                            <label class="form-label">영업이익</label>
+                                                            <input type="text" id="costAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자정산예정금액</label>
+                                                            <input type="text" name="expectRateAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </fieldset>
 
-                                            <!-- 킵사용 섹션 -->
-                                            <fieldset class="border p-3 rounded mt-4">
-                                                <legend class="float-none w-auto px-2">킵 사용 설정</legend>
-                                                <div class="row g-3 align-items-center">
-                                                    <div class="col-md-2">
-                                                        <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                                                            <label class="form-check-label" for="flexSwitchCheckDefault">킵사용</label>
+                                            <!-- 환불요청 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="refundView">
+                                                <legend class="float-none w-auto px-2">환불요청정보</legend>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <input type="text" name="refundGubunName" class="form-control" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
-                                                            <input type="text" class="form-control" id="custKeepAmt" aria-describedby="basic-addon1">
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">환불요청일</label>
+                                                            <input type="text" id="refundDate" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-5">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon2">킵사용금액</span>
-                                                            <input type="text" class="form-control" id="custKeepUseAmt" aria-describedby="basic-addon2">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">환불일수</label>
+                                                            <input type="text" id="refundDay" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">환불금액</label>
+                                                            <input type="text" id="expectAmt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자환불수수료</label>
+                                                            <input type="text" name="expectRateAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -293,13 +340,25 @@
                                             <fieldset class="border p-3 rounded" id="applySet">
                                                 <legend class="float-none w-auto">입금정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">입금금액</label>
                                                             <input type="text" id="deposit_confirmAmt" class="form-control is-num text-end" name="deposit_confirmAmt">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label text-danger">판매총액</label>
+                                                            <input type="text" id="deposit_prodTotalAmt" class="form-control is-num text-end" name="deposit_prodTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label text-danger">킵금액</label>
+                                                            <input type="text" id="deposit_saveMileage" class="form-control is-num text-end" name="deposit_saveMileage" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">담당자정산 확정금액</label>
                                                             <input type="text" id="deposit_confirmRateAmt" class="form-control is-num text-end" name="deposit_confirmRateAmt" disabled>
@@ -566,6 +625,16 @@
                 .add('reqGubun', '요청구분', 0, {
                     visible: false
                 })
+                .add('refundGubunName', '환불구분', 0, {
+                    visible: false
+                })
+                .add('expectAmt', '환불금액', 0, {
+                    visible: false
+                })
+                .add('expectRateAmt', '환불금액', 0, {
+                    visible: false
+                })
+
 
 
 
@@ -673,22 +742,49 @@
             const focusedCell = paymentGrid.getGrid().getFocusedCell();
             const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
 
+            $("#applyView").hide();
+            $("#refundView").hide();
+
+            if(focusedData["refundInd"] == "Y") {
+
+                $("#refundDay").val(focusedData.workDay);
+
+                $("#refundView").show();
+            }
+            else {
+
+                // 영업이익 = 상품가 * 유입수 * 작업일수
+                var pordTotalAmt = Math.floor((focusedData.prodAmt * focusedData.inflowCnt * focusedData.workDay) * 1.1);
+                var costAmt = parseInt(focusedData.saleTotalAmt) - pordTotalAmt;
+
+                $("#costAmt").val(setComma(costAmt));
+
+                $("#applyView").show();
+            }
+
             $('#paymentModal').find('input, select, textarea').each(function() {
                 const fieldId = $(this).attr('id');
-                if (fieldId && focusedData[fieldId] !== undefined) {
+                const fieldName = $(this).attr('name');
+
+                // fieldId와 fieldName 중 사용 가능한 키 선택
+                const key = fieldId && focusedData[fieldId] !== undefined
+                    ? fieldId
+                    : (fieldName && focusedData[fieldName] !== undefined
+                        ? fieldName
+                        : null);
+
+                if (key !== null) {
+                    const value = focusedData[key];
+
                     if ($(this).is(':checkbox')) {
                         // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                        $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
+                        $(this).prop('checked', value === 'Y' || value === true);
                     } else if ($(this).is('select')) {
-                        // 일반 select 박스
-                        $(this).val(focusedData[fieldId]);
-                    } else if (fieldId === 'mileage') {
-                        $("#mileagePrev").val(focusedData[fieldId]);
-                        const replaceNumber = formatToCurrency(focusedData[fieldId]);
-                        $(this).val(replaceNumber);
+                        // select 박스
+                        $(this).val(value);
                     } else {
-                        // 그 외 input, textarea는 값 바인딩
-                        $(this).val(focusedData[fieldId]);
+                        // 일반 input, textarea
+                        $(this).val(isNumeric(value) ? setComma(value) : value);
                     }
                 }
             });
@@ -757,8 +853,19 @@
 
             // 실제입금금액이 판매총액보다 크면 차익분은 고객 마일리지로 적립
             if(parseInt(saleTotalAmt) < parseInt(confirmAmt)) {
-                $("#saveMileage").val(confirmAmt - saleTotalAmt);
+                const saveMileage = confirmAmt - saleTotalAmt;
+
+                $("#saveMileage").val(saveMileage);
+
+                $("#deposit_prodTotalAmt").val(setComma(saleTotalAmt));
+                $("#deposit_saveMileage").val(setComma(saveMileage));
+
                 costAmt = saleTotalAmt - prodTotalAmt;
+            }
+            else
+            {
+                $("#deposit_prodTotalAmt").val(setComma(confirmAmt));
+                $("#deposit_saveMileage").val(0);
             }
 
             // 데이터로 저장된 인센율을 문자열로 가져왔다고 가정
