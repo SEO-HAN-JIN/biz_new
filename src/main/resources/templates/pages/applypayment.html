@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/framelayout}">
 
 
 <div layout:fragment="content">
@@ -26,24 +27,28 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body pt-3 pb-3" id="searchForm">
-<!--                            <div class="row align-items-center p-2" style="">-->
+                            <!--                            <div class="row align-items-center p-2" style="">-->
                             <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
                                         <label class="col-form-label col-lg-1 col-3">날짜</label>
                                         <div class="col-lg-3 col-9">
                                             <div class="d-flex">
-                                                <input type="date" class="form-control form-control-sm me-2" id="searchStartDate" >
-                                                <input type="date" class="form-control form-control-sm" id="searchEndDate" >
+                                                <input type="date" class="form-control form-control-sm me-2"
+                                                       id="searchStartDate">
+                                                <input type="date" class="form-control form-control-sm"
+                                                       id="searchEndDate">
                                             </div>
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchCustName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchCustName" class="form-control form-control-sm"
+                                                   name="fname" placeholder="메뉴명">
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">상품명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchProdName" class="form-control form-control-sm" name="fname" placeholder="메뉴명">
+                                            <input type="text" id="searchProdName" class="form-control form-control-sm"
+                                                   name="fname" placeholder="메뉴명">
                                         </div>
                                     </div>
                                 </div>
@@ -67,21 +72,27 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-primary btn-m" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#paymentModal">추가</button>
+                                    <button type="button" class="btn btn-primary btn-m" id="modalAddBtn"
+                                            data-bs-toggle="modal" data-bs-target="#paymentModal">추가
+                                    </button>
 
-                                    <button type="button" class="btn btn-secondary btn-m" id="btnDeletePaymentGrid">삭제</button>
+                                    <button type="button" class="btn btn-secondary btn-m" id="btnDeletePaymentGrid">삭제
+                                    </button>
                                 </div>
                             </div>
                             <div id="paymentGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal fade" id="paymentModal" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                                 role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title text-white" id="exampleModalCenterTitle">정산요청 상세정보</h5>
-                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
 
                                     <!-- Modal Body -->
@@ -94,8 +105,10 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="pUserNm" class="form-control" name="fname-column" disabled>
-                                                            <input type="hidden" id="pUserId" class="form-control" name="fname-column" disabled>
+                                                            <input type="text" id="pUserNm" class="form-control"
+                                                                   name="fname-column" disabled>
+                                                            <input type="hidden" id="pUserId" class="form-control"
+                                                                   name="fname-column" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -117,7 +130,9 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품가</label>
-                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" name="prodAmt" disabled>
+                                                            <input type="text" id="prodAmt"
+                                                                   class="form-control is-num text-end" name="prodAmt"
+                                                                   disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -130,25 +145,30 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업시작일</label>
-                                                            <input type="date" id="dateWorkFrom" class="form-control" name="dateWorkFrom">
+                                                            <input type="date" id="dateWorkFrom" class="form-control"
+                                                                   name="dateWorkFrom">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업종료일</label>
-                                                            <input type="date" id="dateWorkTo" class="form-control" name="dateWorkTo">
+                                                            <input type="date" id="dateWorkTo" class="form-control"
+                                                                   name="dateWorkTo">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업일수</label>
-                                                            <input type="text" id="workDay" class="form-control text-end" name="workDay" disabled>
+                                                            <input type="text" id="workDay"
+                                                                   class="form-control text-end" name="workDay"
+                                                                   disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">판매가</label>
-                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" name="saleAmt">
+                                                            <input type="text" id="saleAmt"
+                                                                   class="form-control is-num text-end" name="saleAmt">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -156,19 +176,25 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">유입수</label>
-                                                            <input type="text" id="inflowCnt" class="form-control is-num text-end" name="inflowCnt">
+                                                            <input type="text" id="inflowCnt"
+                                                                   class="form-control is-num text-end"
+                                                                   name="inflowCnt">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">판매총액</label>
-                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
+                                                            <input type="text" id="saleTotalAmt"
+                                                                   class="form-control is-num text-end"
+                                                                   name="saleTotalAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">예상정산금액</label>
-                                                            <input type="text" id="expectRateAmt" class="form-control is-num text-end" name="expectRateAmt" disabled>
+                                                            <input type="text" id="expectRateAmt"
+                                                                   class="form-control is-num text-end"
+                                                                   name="expectRateAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -189,20 +215,28 @@
                                                 <div class="row g-3 align-items-center">
                                                     <div class="col-md-2">
                                                         <div class="form-check form-switch">
-                                                            <input class="form-check-input" type="checkbox" id="mileageUseInd" onchange="selectKeepInd(this)">
-                                                            <label class="form-check-label" for="mileageUseInd">킵사용</label>
+                                                            <input class="form-check-input" type="checkbox"
+                                                                   id="mileageUseInd" onchange="selectKeepInd(this)">
+                                                            <label class="form-check-label"
+                                                                   for="mileageUseInd">킵사용</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-5">
                                                         <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon1">잔여킵금액</span>
-                                                            <input type="text" class="form-control text-end" id="custKeepAmt" aria-describedby="basic-addon1" disabled>
+                                                            <span class="input-group-text"
+                                                                  id="basic-addon1">잔여킵금액</span>
+                                                            <input type="text" class="form-control text-end"
+                                                                   id="custKeepAmt" aria-describedby="basic-addon1"
+                                                                   disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-5">
                                                         <div class="input-group">
-                                                            <span class="input-group-text" id="basic-addon2">킵사용금액</span>
-                                                            <input type="text" class="form-control text-end" id="useMileage" aria-describedby="basic-addon2" disabled>
+                                                            <span class="input-group-text"
+                                                                  id="basic-addon2">킵사용금액</span>
+                                                            <input type="text" class="form-control text-end"
+                                                                   id="useMileage" aria-describedby="basic-addon2"
+                                                                   disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -238,7 +272,7 @@
         let $isNew = 'N';
         let _incentiveRate;
 
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             // 정산요청자(담당자, 로그인 사용자) 정보
             const userId = /*[[${userId}]]*/'';
@@ -281,10 +315,10 @@
             };
             $("#applyGubun").addOptions(options);
         }
-        
+
         const findIncentiveRate = () => {
-            $.get(apiUrl + "/find/incentiveRate", null, function (rsData){
-                if(!isNull(rsData)) {
+            $.get(apiUrl + "/find/incentiveRate", null, function (rsData) {
+                if (!isNull(rsData)) {
                     _incentiveRate = rsData;
                 }
             })
@@ -294,7 +328,7 @@
             $("#modalAddBtn").on('click', openPgmModal);
             $("#modalSaveBtn").on('click', fn_savePaymentGrid);
 
-            // $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
+            $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
 
             //$('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
             // $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
@@ -304,7 +338,7 @@
             $("#searchBtn").on('click', searchPaymentGrid);
 
             // 숫자 input 콤마 형식
-            $(".priceformat").on('input', function(){
+            $(".priceformat").on('input', function () {
                 var obj = $(this);
                 obj.val(formatNumber(obj.val()));
             });
@@ -315,8 +349,8 @@
             elements.forEach(id => {
                 const element = document.getElementById(id);
                 if (element) {
-                    element.addEventListener("change", function(){
-                        if(id == "dateWorkFrom" || id == "dateWorkTo")
+                    element.addEventListener("change", function () {
+                        if (id == "dateWorkFrom" || id == "dateWorkTo")
                             $("#workDay").val(getDateDiff($("#dateWorkFrom").val(), $("#dateWorkTo").val()))
 
                         saleSum();
@@ -325,14 +359,14 @@
             });
 
             // 고객 정보 변경할 때마다 마일리지 금액 가져오기
-            $("#custId").on("change", function(){
+            $("#custId").on("change", function () {
 
                 var params = {
-                    bizNo : this.value
+                    bizNo: this.value
                 };
 
                 $.ajax({
-                    url: apiUrl+ "/custinfo",
+                    url: apiUrl + "/custinfo",
                     data: params,
                     type: 'GET',
                     success: (result) => {
@@ -346,16 +380,15 @@
             })
 
             // 상품 정보 변경할 때마다 상품가 가져오기
-            $("#prodId").on("change", function(){
+            $("#prodId").on("change", function () {
 
                 var params = {
-                    prodId : this.value
+                    prodId: this.value
                 };
 
-                $.get(apiUrl + "/prodinfo", params, function (rsData){
+                $.get(apiUrl + "/prodinfo", params, function (rsData) {
 
-                    if(!isNull(rsData))
-                    {
+                    if (!isNull(rsData)) {
                         $("#prodAmt").val(setComma(rsData.prodAmt));
                     }
                 })
@@ -377,18 +410,16 @@
                 $(inputElement).prop("disabled", true);
             }
 
-            $("#useMileage").on("input", function()
-            {
+            $("#useMileage").on("input", function () {
                 var keepAmt = removeComma($("#custKeepAmt").val());
                 var useAmt = removeComma($("#useMileage").val());
                 var saleTotalAmt = removeComma($("#saleTotalAmt").val());
 
-                if(parseInt(keepAmt) < parseInt(useAmt)) {
+                if (parseInt(keepAmt) < parseInt(useAmt)) {
                     alert("킵 금액보다 많이 사용할 수 없습니다.");
                     $("#useMileage").val(setComma(keepAmt));
                     $("#expectAmt").val(saleTotalAmt - keepAmt);
-                }
-                else {
+                } else {
                     $("#useMileage").val(setComma(this.value));
                     $("#expectAmt").val(saleTotalAmt - useAmt);
                 }
@@ -443,17 +474,15 @@
         }
 
         const initPaymentGrid = () => {
-
-
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .add('settlementSeq', '정산번호', 150, {})
                 .add('empName', '담당자', 150, {})
                 .add('custName', '고객명', 250, {})
-                .add('prodName', '상품명', 200, { align: 'center' })
-                .add('prodAmt', '상품가', 150, { align: 'right'})
-                .add('saleAmt', '판매가', 120, { align: 'right' })
-                .add('inflowCnt', '유입수', 120, {})
+                .add('prodName', '상품명', 200, {align: 'center'})
+                .addNumber('prodAmt', '상품가', 150, {align: 'right', comma: true})
+                .addNumber('saleAmt', '판매가', 120, {align: 'right', comma: true})
+                .add('inflowCnt', '유입수', 120, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
                 .addDate('workDay', '작업일수', 150, {})
@@ -463,15 +492,21 @@
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
-                    }})
-                .addNumber('confirmAmt', '실제입금액', 200, { align: 'right', textColor: 'red' })
+                    }
+                })
+                .addNumber('confirmAmt', '실제입금액', 200, {align: 'right', textColor: 'red', comma: true})
                 .add('applyStatusName', '진행상태', 150, {})
+                .add('mileageUseInd', '킵사용', '', {visible: false})
+                .add('custKeepAmt', '잔여킵금액', '', {visible: false})
+                .add('useMileage', '킵사용금액', '', {visible: false})
+                .add('applyStatus', '승인상태', '', {visible: false})
+            ;
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
 
             // 더블 클릭 이벤트 설정
-            paymentGrid.getGrid().on('dblclick', function(ev) {
+            paymentGrid.getGrid().on('dblclick', function (ev) {
                 openPgmModal('2');
             });
 
@@ -491,7 +526,7 @@
             paymentGrid.clear();
 
             const param = {
-                searchStartDate : $("#searchStartDate").val(),
+                searchStartDate: $("#searchStartDate").val(),
                 searchEndDate: $("#searchEndDate").val(),
                 custName: $("#searchCustName").val(),
                 prodName: $("#searchProdName").val()
@@ -502,7 +537,7 @@
                 data: param,
                 type: 'GET',
                 success: (result) => {
-                    if(result.length > 0) {
+                    if (result.length > 0) {
                         paymentGrid.bind(result);
                     }
                 }
@@ -521,48 +556,59 @@
 
             if (param === '2') {    // 그리드 더블클릭
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
-                const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+                const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
 
-                $('#paymentModal').find('input, select, textarea').each(function() {
-                    const fieldId = $(this).attr('id');
-                    if (fieldId && focusedData[fieldId] !== undefined) {
-                        if ($(this).is(':checkbox')) {
-                            // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                            $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
-                        } else if ($(this).is('select')) {
-                            var obj = document.getElementById(fieldId);
+                console.log("## data ##", data);
 
-                            if (obj && obj.classList.contains('choices')) {
-                                // Choices.js를 사용하는 select
-                                if (obj.choicesInstance) {
-                                    // Choices.js 인스턴스가 있는 경우 값 설정
-                                    obj.choicesInstance.setChoiceByValue(focusedData[fieldId]);
-                                } else {
-                                    // 인스턴스가 없는 경우 새로 생성 후 값 설정
-                                    const choicesInstance = new Choices(obj);
-                                    choicesInstance.setChoiceByValue(focusedData[fieldId]);
-                                    obj.choicesInstance = choicesInstance; // 참조 저장
-                                }
-                            } else {
-                                // 일반 select 박스
-                                $(this).val(focusedData[fieldId]);
-                            }
-                        } else if (fieldId === 'mileage') {
-                            $("#mileagePrev").val(focusedData[fieldId]);
-                            const replaceNumber = formatToCurrency(focusedData[fieldId]);
-                            $(this).val(replaceNumber);
-                        } else {
-                            // 그 외 input, textarea는 값 바인딩
-                            $(this).val(focusedData[fieldId]);
-                        }
+                $("#pUserNm").val(data.empName).attr('disabled', true);
+                document.getElementById("custId").choicesInstance.setChoiceByValue(data.custId).disable();
+                document.getElementById("prodId").choicesInstance.setChoiceByValue(data.prodId).disable();
+                $("#prodAmt").val(setComma(data.prodAmt)).attr('disabled', true);
+                $("#dateWorkFrom").val(data.dateWorkFrom).attr('disabled', true);
+                $("#dateWorkTo").val(data.dateWorkTo).attr('disabled', true);
+                $("#workDay").val(data.workDay).attr('disabled', true);
+                $("#saleAmt").val(setComma(data.saleAmt)).attr('disabled', true);
+                $("#inflowCnt").val(data.inflowCnt).attr('disabled', true);
+                $("#saleTotalAmt").val(setComma(data.saleTotalAmt)).attr('disabled', true);
+                $("#expectRateAmt").val(setComma(data.expectRateAmt)).attr('disabled', true);
+                $("#applyGubun").val(data.applyGubun).attr('disabled', true);
+                $("#mileageUseInd").val(data.mileageUseInd).attr('disabled', true);
+                $("#useMileage").val(setComma(data.useMileage)).attr('disabled', true);
+                $("#custKeepAmt").val(setComma(data.custKeepAmt)).attr('disabled', true);
+                $("#incentiveRate").val(_incentiveRate);
+                $("#expectAmt").val(data.expectAmt);
+
+                // 승인요청인 경우 수정 가능
+                if (data.applyStatus === '01') {
+                    $("#dateWorkFrom").attr('disabled', false);
+                    $("#dateWorkTo").attr('disabled', false);
+                    $("#saleAmt").attr('disabled', false);
+                    $("#inflowCnt").attr('disabled', false);
+                    $("#applyGubun").attr('disabled', false);
+                    $("#mileageUseInd").attr('disabled', false);
+                    $("#useMileage").attr('disabled', true);
+
+                    const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
+                    if (isChecked) {
+                        $("#useMileage").attr('disabled', false);
                     }
-                });
+                }
             } else {    // 추가 버튼
                 let userId = $("#userId").val();
                 let userNm = $("#userNm").val();
                 $("#pUserId").val(userId);
                 $("#pUserNm").val(userNm);
                 $("#incentiveRate").val(_incentiveRate);
+
+                document.getElementById("custId").choicesInstance.enable();
+                document.getElementById("prodId").choicesInstance.enable();
+                $("#dateWorkFrom").attr('disabled', false);
+                $("#dateWorkTo").attr('disabled', false);
+                $("#saleAmt").attr('disabled', false);
+                $("#inflowCnt").attr('disabled', false);
+                $("#applyGubun").attr('disabled', false);
+                $("#mileageUseInd").attr('disabled', false);
+                // $("#useMileage").attr('disabled', false);
             }
 
             $('#paymentModal').modal('show');
@@ -605,20 +651,17 @@
 
             var dateFrom = param.dateWorkFrom;
             var dateTo = param.dateWorkTo;
-            if(isNull(dateFrom))
-            {
+            if (isNull(dateFrom)) {
                 alert("시작일을 입력해주세요.");
                 return false;
             }
 
-            if(isNull(dateTo))
-            {
+            if (isNull(dateTo)) {
                 alert("종료일을 입력해주세요.");
                 return false;
             }
 
-            if(new Date(dateTo) < new Date(dateFrom))
-            {
+            if (new Date(dateTo) < new Date(dateFrom)) {
                 alert("작업기간이 잘못되었습니다.");
                 return false;
             }
@@ -644,11 +687,10 @@
             }
 
             var keepInd = $("#mileageUseInd").checked;
-            if(keepInd)
-            {
+            if (keepInd) {
                 var keepUseAmt = removeComma($("#useMileage").val());
 
-                if(keepUseAmt <= 0) {
+                if (keepUseAmt <= 0) {
                     alert("킵 사용 체크 시 금액을 입력해주세요");
                     return false;
                 }
@@ -691,22 +733,31 @@
         }
 
         const fn_deletePaymentGrid = () => {
-            const focusedCell = paymentGrid.getFocusedCell();
+            const focusedCell = paymentGrid.getGrid().getFocusedCell();
             if (isNull(focusedCell)) {
                 alert("삭제할 행을 선택해주세요.");
                 return;
             }
 
+            const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+            if (data.applyStatus !== '01') {
+                alert("승인요청건만 삭제가 가능합니다.");
+                return;
+            }
+
             const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
             if (confirmResult) {
-                const focusRow = paymentGrid.getRow(focusedCell.rowKey);
+                const focusRow = paymentGrid.getGrid().getRow(focusedCell.rowKey);
                 let params = {
-                    menuId : focusRow.menuId
+                    settlementSeq: focusRow.settlementSeq,
+                    prodId: focusRow.prodId,
+                    userId: focusRow.userId,
+                    custId: focusRow.custId
                 }
                 $.ajax({
-                    url: apiUrl + "/up/list",
+                    url: apiUrl,
                     data: JSON.stringify(params),
-                    contentType:'application/json',
+                    contentType: 'application/json',
                     type: 'DELETE',
                     success: (result) => {
                         if (result > 0) {
@@ -716,6 +767,9 @@
                             alert("삭제에 실패하였습니다.");
                             searchPaymentGrid();
                         }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+
                     }
                 })
             }
@@ -732,46 +786,6 @@
         const modalAcceptBtn = () => {
             searchPaymentGrid();
         }
-
-
-        // function openPop(url, options) {
-        //     if(self != top) {
-        //         window.parent.openPop(url, options);
-        //         return;
-        //     }
-        //     var container = document.getElementById("popup-container");
-        //     if(container instanceof HTMLDivElement === false) {
-        //         container = document.createElement("div");
-        //         container.id = "popup-container";
-        //         container.className = "popup-container";
-        //         container.style.opacity = "0";
-        //         container.style.display = "none";
-        //         document.body.appendChild(container);
-        //     }
-        //     container.innerHTML = "";
-        //
-        //     var popId = _.camelCase(_.nth(_.split(url, "/"), -2));
-        //     if(!_.isEmpty(window[popId])) {
-        //         window[popId].open(options);
-        //     }
-        //     else {
-        //         fetch(url)
-        //             .then(function(response) {
-        //                 return response.text();
-        //             })
-        //             .then(function(text) {
-        //                 container.innerHTML = text;
-        //                 Ustra.docReady(function() {
-        //                     Array.from(container.querySelectorAll("script")).forEach(function(item) {
-        //                         eval.apply(this, [item.textContent]);
-        //                     });
-        //                     if(!_.isEmpty(window[popId])) {
-        //                         window[popId].open(options);
-        //                     }
-        //                 }, container);
-        //             });
-        //     }
-        // }
 
     </script>
 

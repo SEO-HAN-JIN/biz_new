@@ -1,5 +1,6 @@
 package com.biz.framework.service.pages;
 
+import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.SettlementDto;
@@ -29,8 +30,11 @@ public class ApplypaymentService {
         return applypaymentMapper.saveApplypayment(settlementDto);
     }
 
-    public int deleteCustomer(CustomerDto customerDto) {
-        return applypaymentMapper.deleteCustomer(customerDto);
+    public int deleteSettlement(SettlementDto settlementDto) {
+        if (!"01".equals(applypaymentMapper.checkApplyStatus(settlementDto))) {
+            throw new ServiceException("승인요청건만 삭제 가능합니다.");
+        }
+        return applypaymentMapper.deleteSettlement(settlementDto);
     }
 
     public List<CamelCaseMap> findSettlement(SettlementDto settlementDto) {

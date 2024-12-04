@@ -42,8 +42,8 @@ public class ApplypaymentRestController {
     }
 
     @DeleteMapping
-    public int deleteCustomer(@RequestBody CustomerDto customerDto) {
-        return applypaymentService.deleteCustomer(customerDto);
+    public int deleteSettlement(@RequestBody SettlementDto settlementDto) {
+        return applypaymentService.deleteSettlement(settlementDto);
     }
 
     @GetMapping("/custinfo")

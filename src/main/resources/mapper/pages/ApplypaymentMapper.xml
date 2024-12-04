@@ -36,7 +36,11 @@
             ST.MILEAGE_USE_IND,
             ST.USE_MILEAGE,
             ST.SAVE_MILEAGE,
-            C.CODE_NAME         AS APPLY_STATUS_NAME
+            ST.APPLY_STATUS,
+            C.CODE_NAME         AS APPLY_STATUS_NAME,
+            ST.MILEAGE_USE_IND,
+            IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
+            IFNULL(CU.MILEAGE, 0)       AS CUST_KEEP_AMT
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CUST_ID         = CU.BIZ_NO
@@ -132,11 +136,23 @@
         )
     </insert>
 
-    <delete id="deleteCustomer">
-        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteCustomer */
-        DELETE FROM TB_CUSTOMER
-        WHERE BIZ_NO    = #{bizNo}
-          AND EMP_ID   = #{empId}
+    <delete id="deleteSettlement">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteSettlement */
+        DELETE FROM SETTLEMENT
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+          AND PROD_ID = #{prodId}
+          AND USER_ID = #{userId}
+          AND CUST_ID = #{custId}
     </delete>
+
+    <select id="checkApplyStatus">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkApplyStatus */
+        SELECT APPLY_STATUS
+          FROM SETTLEMENT
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+          AND PROD_ID = #{prodId}
+          AND USER_ID = #{userId}
+          AND CUST_ID = #{custId}
+    </select>
 
 </mapper>

@@ -27,9 +27,9 @@ public class RefundService {
         return applypaymentMapper.saveApplypayment(settlementDto);
     }
 
-    public int deleteCustomer(CustomerDto customerDto) {
-        return applypaymentMapper.deleteCustomer(customerDto);
-    }
+//    public int deleteCustomer(CustomerDto customerDto) {
+//        return applypaymentMapper.deleteCustomer(customerDto);
+//    }
 
     public List<CamelCaseMap> findRefund(SettlementDto settlementDto) {
         return refundMapper.findRefund(settlementDto);
