@@ -337,7 +337,7 @@
                                                     </div>
                                                 </div>
                                             </fieldset>
-                                            <fieldset class="border p-3 rounded" id="applySet">
+                                            <fieldset class="border p-3 rounded mt-4" id="applySet">
                                                 <legend class="float-none w-auto">입금정보</legend>
                                                 <div class="row g-3">
                                                     <div class="col-md-3">
@@ -372,7 +372,7 @@
                                                     </div>
                                                 </div>
                                             </fieldset>
-                                            <fieldset class="border p-3 rounded" id="refundSet">
+                                            <fieldset class="border p-3 rounded mt-4" id="refundSet">
                                                 <legend class="float-none w-auto">환불정보</legend>
                                                 <div class="row g-3">
                                                     <div class="col-md-4">
@@ -571,31 +571,31 @@
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .add('settlementSeq', '정산번호', 150, {})
-                .add('empName', '담당자', 150, {sortable: true})
-                .add('custName', '고객명', 250, {sortable: true})
-                .add('prodName', '상품명', 200, { align: 'center', sortable: true })
-                .addNumber('prodAmt', '상품가', 100, { align: 'right'})
-                .addNumber('saleAmt', '판매가', 100, { align: 'right' })
-                .addNumber('inflowCnt', '유입수', 100, {})
-                .addDate('dateWorkFrom', '작업시작일', 150, {})
-                .addDate('dateWorkTo', '작업종료일', 150, {})
-                .addDate('workDay', '작업일수', 100, {})
-                .addNumber('saleTotalAmt', '판매총액', 200, {
+                .add('empName', '담당자', 120, {sortable: true})
+                .add('custName', '고객명', 120, {sortable: true})
+                .add('prodName', '상품명', 120, { align: 'center', sortable: true })
+                .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
+                .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
+                .addNumber('inflowCnt', '유입수', 100, {visible: false})
+                .addDate('dateWorkFrom', '작업시작일', 120, {})
+                .addDate('dateWorkTo', '작업종료일', 120, {})
+                .addDate('workDay', '작업일수', 80, {visible: false})
+                .addNumber('saleTotalAmt', '판매총액', 150, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('confirmAmt', '실제입금액', 200, {
+                .addNumber('confirmAmt', '실제입금액', 150, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('reqGubunName', '요청구분', 100, {})
-                .addButton('action', '입금여부', 150, {
+                .add('reqGubunName', '요청구분', 80, {})
+                .addButton('action', '입금여부', 80, {
                     buttonText: '확인',
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
@@ -606,7 +606,7 @@
 
                     }
                 })
-                .add('statusName', '진행상태', 100, {})
+                .add('statusName', '진행상태', 80, {})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
                 })

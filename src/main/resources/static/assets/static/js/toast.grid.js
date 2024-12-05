@@ -141,13 +141,24 @@ if (typeof CustomTuiGrid === "undefined") {
                     setTimeout(function() {
                         const containerWidth = self.grid.el.offsetWidth;
 
-                        // 모든 컬럼의 초기 width 합계 계산
-                        const totalInitialWidth = self.columns.reduce((sum, column) => sum + (column.width || 100), 0);
+                        // 모든 컬럼의 초기 width 합계 계산 (width가 0 또는 undefined인 컬럼 제외)
+                        const totalInitialWidth = self.columns.reduce((sum, column) => {
+                            return column.width > 0 ? sum + column.width : sum;
+                        }, 0);
 
-                        // 각 컬럼의 비율에 맞춰 너비 조정
+                        if (totalInitialWidth === 0) {
+                            console.error('컬럼 너비 합계가 0입니다. 컬럼 너비를 확인하세요.');
+                            return;
+                        }
+
+                        // 각 컬럼의 비율에 맞춰 너비 조정 (width가 0인 경우 기본값 설정)
                         self.columns.forEach(column => {
-                            const widthRatio = (column.width || 80) / totalInitialWidth;
-                            column.width = Math.floor(containerWidth * widthRatio);  // 비율에 맞게 너비 설정
+                            if (column.width > 0) {
+                                const widthRatio = column.width / totalInitialWidth;
+                                column.width = Math.floor(containerWidth * widthRatio); // 비율에 맞게 너비 설정
+                            } else {
+                                column.width = 80; // 기본값으로 설정 (예: 80px)
+                            }
                         });
 
                         self.grid.setColumns(self.columns);  // 업데이트된 컬럼 설정 반영
