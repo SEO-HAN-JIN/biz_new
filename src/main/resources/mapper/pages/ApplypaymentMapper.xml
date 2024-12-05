@@ -18,7 +18,7 @@
             ST.PROD_ID,
             PR.PROD_NAME,
             ST.USER_ID,
-            EP.EMP_NAME,
+            EP.EMP_NAME     AS USER_NAME,
             ST.CUST_ID,
             CU.CUST_NAME,
             ST.REQ_DATE,
@@ -34,12 +34,10 @@
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.APPLY_GUBUN,
             ST.MILEAGE_USE_IND,
-            ST.USE_MILEAGE,
+            IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
             ST.SAVE_MILEAGE,
             ST.APPLY_STATUS,
-            C.CODE_NAME         AS APPLY_STATUS_NAME,
-            ST.MILEAGE_USE_IND,
-            IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
+            C.CODE_NAME                 AS APPLY_STATUS_NAME,
             IFNULL(CU.MILEAGE, 0)       AS CUST_KEEP_AMT
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU

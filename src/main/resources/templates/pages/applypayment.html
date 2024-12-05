@@ -105,7 +105,8 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="empName" class="form-control" name="fname-column" disabled>
+                                                            <input type="text" id="userName" name="userName" class="form-control" disabled>
+                                                            <input type="hidden" id="userId" name="userId" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -113,7 +114,7 @@
                                                             <label class="form-label">고객</label>
                                                             <th:block th:replace="components/cust-select :: cust-select(
                                                                 id='custId',
-                                                                name='custName')"></th:block>
+                                                                name='custId')"></th:block>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -121,7 +122,7 @@
                                                             <label class="form-label">상품</label>
                                                             <th:block th:replace="components/prod-select :: prod-select(
                                                                 id='prodId',
-                                                                name='prodName')"></th:block>
+                                                                name='prodId')"></th:block>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -197,10 +198,11 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">요청구분</label>
-                                                            <select id="applyGubun" class="form-select form-control-sm">
+                                                            <select id="applyGubun" name="applyGubun" class="form-select form-control-sm">
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <input type="hidden" id="settlementSeq" name="settlementSeq">
                                                     <input type="hidden" id="expectAmt" name="expectAmt">
                                                     <input type="hidden" id="incentiveRate" name="incentiveRate">
                                                 </div>
@@ -213,7 +215,7 @@
                                                     <div class="col-md-2">
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox"
-                                                                   id="mileageUseInd" onchange="selectKeepInd(this)">
+                                                                   id="mileageUseInd" name="mileageUseInd" onchange="selectKeepInd(this)">
                                                             <label class="form-check-label"
                                                                    for="mileageUseInd">킵사용</label>
                                                         </div>
@@ -222,8 +224,8 @@
                                                         <div class="input-group">
                                                             <span class="input-group-text"
                                                                   id="basic-addon1">잔여킵금액</span>
-                                                            <input type="text" class="form-control text-end"
-                                                                   id="custKeepAmt" aria-describedby="basic-addon1"
+                                                            <input type="text" class="form-control is-num text-end"
+                                                                   id="custKeepAmt" name="custKeepAmt" aria-describedby="basic-addon1"
                                                                    disabled>
                                                         </div>
                                                     </div>
@@ -231,8 +233,8 @@
                                                         <div class="input-group">
                                                             <span class="input-group-text"
                                                                   id="basic-addon2">킵사용금액</span>
-                                                            <input type="text" class="form-control text-end"
-                                                                   id="useMileage" aria-describedby="basic-addon2"
+                                                            <input type="text" class="form-control is-num text-end"
+                                                                   id="useMileage" name="useMileage" aria-describedby="basic-addon2"
                                                                    disabled>
                                                         </div>
                                                     </div>
@@ -254,8 +256,6 @@
                             </div>
                         </div>
 
-                        <input type="hidden" id="userId" name="userId">
-                        <input type="hidden" id="userNm" name="userNm">
                     </div>
                 </div>
             </div>
@@ -269,13 +269,14 @@
         let $isNew = 'N';
         let _incentiveRate;
 
+        let _userId;
+        let _userNm;
+
         $(document).ready(function () {
 
             // 정산요청자(담당자, 로그인 사용자) 정보
-            const userId = /*[[${userId}]]*/'';
-            const userNm = /*[[${userNm}]]*/'';
-            $("#userId").val(userId);
-            $("#userNm").val(userNm);
+            _userId = /*[[${userId}]]*/'';
+            _userNm = /*[[${userNm}]]*/'';
 
             const nowYear = new Date().getFullYear();
             const nowMonth = new Date().getMonth();
@@ -472,9 +473,9 @@
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .add('settlementSeq', '정산번호', 150, {})
-                .add('empName', '담당자', 150, {})
+                .add('userName', '담당자', 150, {})
                 .add('custName', '고객명', 250, {})
-                .add('prodName', '상품명', 200, {align: 'center'})
+                .add('prodName', '상품명', 200, {})
                 .addNumber('prodAmt', '상품가', 150, {align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 120, {align: 'right', comma: true})
                 .add('inflowCnt', '유입수', 120, {align: 'right'})
@@ -491,10 +492,15 @@
                 })
                 .addNumber('confirmAmt', '실제입금액', 200, {align: 'right', textColor: 'red', comma: true})
                 .add('applyStatusName', '진행상태', 150, {})
-                .add('mileageUseInd', '킵사용', '', {visible: false})
-                .add('custKeepAmt', '잔여킵금액', '', {visible: false})
-                .add('useMileage', '킵사용금액', '', {visible: false})
-                .add('applyStatus', '승인상태', '', {visible: false})
+
+                .add('prodId', '상품ID', 'auto', {visible: false})
+                .add('custId', '고객ID', 'auto', {visible: false})
+                .add('expectAmt', '예상정산금액', 'auto', {visible: false})
+                .add('expectRateAmt', '예정수수료', 'auto', {visible: false})
+                .add('mileageUseInd', '킵사용', 'auto', {visible: false})
+                .add('custKeepAmt', '잔여킵금액', 'auto', {visible: false})
+                .add('useMileage', '킵사용금액', 'auto', {visible: false})
+                .add('applyStatus', '승인상태', 'auto', {visible: false})
             ;
 
             paymentGrid = columns.init('paymentGrid', [])
@@ -545,8 +551,8 @@
             if (param === '1') {
                 $isNew = true;
 
-                let userNm = $("#userNm").val();
-                $("#empName").val(userNm);
+                $("#userId").val(_userId);
+                $("#userName").val(_userNm);
                 $("#incentiveRate").val(_incentiveRate);
 
                 ableBtn(false);
@@ -556,36 +562,20 @@
 
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
                 const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
                 $('#paymentModal').bindForm(data);
-
-                // console.log("## data ##", data);
-                // $("#empName").val(data.empName).attr('disabled', true);
-                // document.getElementById("custId").choicesInstance.setChoiceByValue(data.custId).disable();
-                // document.getElementById("prodId").choicesInstance.setChoiceByValue(data.prodId).disable();
-                // $("#prodAmt").val(setComma(data.prodAmt)).attr('disabled', true);
-                // $("#dateWorkFrom").val(data.dateWorkFrom).attr('disabled', true);
-                // $("#dateWorkTo").val(data.dateWorkTo).attr('disabled', true);
-                // $("#workDay").val(data.workDay).attr('disabled', true);
-                // $("#saleAmt").val(setComma(data.saleAmt)).attr('disabled', true);
-                // $("#inflowCnt").val(data.inflowCnt).attr('disabled', true);
-                // $("#saleTotalAmt").val(setComma(data.saleTotalAmt)).attr('disabled', true);
-                // $("#expectRateAmt").val(setComma(data.expectRateAmt)).attr('disabled', true);
-                // $("#applyGubun").val(data.applyGubun).attr('disabled', true);
-                // $("#mileageUseInd").val(data.mileageUseInd).attr('disabled', true);
-                // $("#useMileage").val(setComma(data.useMileage)).attr('disabled', true);
-                // $("#custKeepAmt").val(setComma(data.custKeepAmt)).attr('disabled', true);
-                // $("#incentiveRate").val(_incentiveRate);
-                // $("#expectAmt").val(data.expectAmt);
-
 
                 // 승인요청인 경우 수정 가능
                 if (data.applyStatus === '01') {
-                    ableBtn(true);
+                    ableBtn(false);
                     const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
                     if (isChecked) {
                         $("#useMileage").attr('disabled', false);
                     }
+                } else {
+                    ableBtn(true);
                 }
+
             }
 
             $('#paymentModal').modal('show');
@@ -599,7 +589,6 @@
             $("#inflowCnt").attr('disabled', flag);
             $("#applyGubun").attr('disabled', flag);
             $("#mileageUseInd").attr('disabled', flag);
-            $("#useMileage").attr('disabled', flag);
 
             if (flag) {
                 document.getElementById("custId").choicesInstance.disable();
@@ -681,7 +670,7 @@
                 return false;
             }
 
-            var keepInd = $("#mileageUseInd").checked;
+            var keepInd = $("#mileageUseInd").prop('checked');
             if (keepInd) {
                 var keepUseAmt = removeComma($("#useMileage").val());
 
@@ -691,11 +680,10 @@
                 }
             }
 
-            param.userId = $("#userId").val();
             if (keepInd) {
                 param.mileageUseInd = 'Y';
             } else {
-                param.mileageUseINd = 'N';
+                param.mileageUseInd = 'N';
                 param.useMileage = '0';     // 킵사용 안하면 0으로 세팅
                 param.expectAmt = param.saleTotalAmt;
             }

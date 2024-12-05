@@ -365,8 +365,12 @@
     };
 
     function elementBind(element, value) {
-        if (element.attr('type') == 'checkbox' || element.attr('type') == 'radio') {
-            if (element.val() == value) {
+        const domElement = element[0];
+
+        if (domElement && domElement.tagName === 'SELECT' && domElement.classList.contains('choices')) {
+            domElement.choicesInstance.setChoiceByValue(value);
+        } else if (element.attr('type') == 'checkbox' || element.attr('type') == 'radio') {
+            if (value === 'Y') {
                 element.prop('checked', true);
             } else {
                 element.prop('checked', false);
