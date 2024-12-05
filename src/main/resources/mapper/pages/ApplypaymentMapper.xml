@@ -37,8 +37,7 @@
             IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
             ST.SAVE_MILEAGE,
             ST.APPLY_STATUS,
-            C.CODE_NAME                 AS APPLY_STATUS_NAME,
-            IFNULL(CU.MILEAGE, 0)       AS CUST_KEEP_AMT
+            C.CODE_NAME                 AS APPLY_STATUS_NAME
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CUST_ID         = CU.BIZ_NO

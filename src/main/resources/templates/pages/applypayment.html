@@ -268,6 +268,7 @@
         let paymentGrid;
         let $isNew = 'N';
         let _incentiveRate;
+        let _custKeepAmt;
 
         let _userId;
         let _userNm;
@@ -356,23 +357,7 @@
 
             // 고객 정보 변경할 때마다 마일리지 금액 가져오기
             $("#custId").on("change", function () {
-
-                var params = {
-                    bizNo: this.value
-                };
-
-                $.ajax({
-                    url: apiUrl + "/custinfo",
-                    data: params,
-                    type: 'GET',
-                    success: (result) => {
-
-                        if(!isNull(result))
-                        {
-                            $("#custKeepAmt").val(setComma(result.mileage));
-                        }
-                    }
-                });
+                findCustKeepAmt(this.value);
             })
 
             // 상품 정보 변경할 때마다 상품가 가져오기
@@ -389,6 +374,24 @@
                     }
                 })
             })
+        }
+
+        const findCustKeepAmt = (param) => {
+            var params = {
+                bizNo: param
+            };
+
+            $.ajax({
+                url: apiUrl + "/custinfo",
+                data: params,
+                type: 'GET',
+                success: (result) => {
+                    if(!isNull(result))
+                    {
+                        $("#custKeepAmt").val(setComma(result.mileage));
+                    }
+                }
+            });
         }
 
 
@@ -498,7 +501,6 @@
                 .add('expectAmt', '예상정산금액', 'auto', {visible: false})
                 .add('expectRateAmt', '예정수수료', 'auto', {visible: false})
                 .add('mileageUseInd', '킵사용', 'auto', {visible: false})
-                .add('custKeepAmt', '잔여킵금액', 'auto', {visible: false})
                 .add('useMileage', '킵사용금액', 'auto', {visible: false})
                 .add('applyStatus', '승인상태', 'auto', {visible: false})
             ;
@@ -562,6 +564,8 @@
 
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
                 const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
+                findCustKeepAmt(data.custId);
 
                 $('#paymentModal').bindForm(data);
 
