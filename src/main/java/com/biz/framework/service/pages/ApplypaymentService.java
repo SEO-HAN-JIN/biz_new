@@ -27,7 +27,12 @@ public class ApplypaymentService {
         환불요청인 경우에도 해당 메서드 사용 중 (컨트롤러에서 요청구분, 승인여부 세팅)
      */
     public int saveApplypayment(SettlementDto settlementDto) {
-        return applypaymentMapper.saveApplypayment(settlementDto);
+        int result = 0;
+        switch (settlementDto.getRowStatus()) {
+            case C -> result += applypaymentMapper.saveApplypayment(settlementDto);
+            case U -> result += applypaymentMapper.updateApplypayment(settlementDto);
+        }
+        return result;
     }
 
     public int deleteSettlement(SettlementDto settlementDto) {

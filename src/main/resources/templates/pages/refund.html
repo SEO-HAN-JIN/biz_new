@@ -318,48 +318,6 @@
 
         $(document).ready(function() {
 
-            console.log($(".modal.show"));
-
-            $(document).on("keydown", function (e) {
-                if (e.key === "Escape") {
-                    const $activeModals = $(".modal.show");
-                    let activeModals = $activeModals.map(function () {
-                        return $(this).attr("id");
-                    }).get();
-
-                    if (activeModals.length >= 2) {
-                        $("#paymentModal").modal('hide');
-                    } else {
-                        $("#refundModal").modal('hide');
-                    }
-                    e.preventDefault(); // Bootstrap 기본 동작 방지
-                    e.stopPropagation(); // 이벤트 전파 차단
-                }
-            });
-
-            $(".modal").on("shown.bs.modal", function () {
-                const $activeModals = $(".modal.show");
-                console.log("현재 활성화된 모달:", $activeModals);
-            });
-
-            // 모달 상태 확인
-            $("#paymentModal").on("shown.bs.modal", function () {
-                console.log($(this).attr("id") + " is shown");
-            });
-            $("#paymentModal").on("hidden.bs.modal", function () {
-                console.log($(this).attr("id") + " is closed");
-            });
-
-            // 모달 상태 확인
-            $("#refundModal").on("shown.bs.modal", function () {
-                console.log($(this).attr("id") + " is shown");
-            });
-            $("#refundModal").on("hidden.bs.modal", function () {
-                console.log($(this).attr("id") + " is closed");
-            });
-
-            findInitCodes();
-
             const nowYear = new Date().getFullYear();
             const nowMonth = new Date().getMonth();
 
@@ -374,6 +332,9 @@
             $("#_paymentModal_searchStartDate").val(formatDate(startDate));
             $("#_paymentModal_searchEndDate").val(formatDate(endDate));
 
+            $("#btnDeleteRefundGrid").on('click', fn_deleteRefundGrid);
+
+            findInitCodes();
             initEvent();
             initRefundGrid();
             initPaymentModalGrid();
@@ -400,6 +361,24 @@
         }
 
         const initEvent = () => {
+
+            $(document).on("keydown", function (e) {
+                if (e.key === "Escape") {
+                    const $activeModals = $(".modal.show");
+                    let activeModals = $activeModals.map(function () {
+                        return $(this).attr("id");
+                    }).get();
+
+                    if (activeModals.length >= 2) {
+                        $("#paymentModal").modal('hide');
+                    } else {
+                        $("#refundModal").modal('hide');
+                    }
+                    e.preventDefault(); // Bootstrap 기본 동작 방지
+                    e.stopPropagation(); // 이벤트 전파 차단
+                }
+            });
+
             $("#modalAddBtn").on('click', function() {
                 openPgmModal('1')
             });
@@ -802,6 +781,49 @@
 
                 // 환불요청 모달 > 정산요청 정보 바인딩
                 $('.paymentDetail').bindForm(focusedRow);
+            }
+        }
+
+        const fn_deleteRefundGrid = () => {
+            const focusedCell = refundGrid.getGrid().getFocusedCell();
+            if (isNull(focusedCell)) {
+                alert("삭제할 행을 선택해주세요.");
+                return;
+            }
+
+            const data = refundGrid.getGrid().getRow(focusedCell.rowKey);
+            if (data.applyStatus !== '01') {
+                alert("환불요청건만 삭제가 가능합니다.");
+                return;
+            }
+
+            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+            if (confirmResult) {
+                const focusRow = refundGrid.getGrid().getRow(focusedCell.rowKey);
+                let params = {
+                    settlementSeq: focusRow.settlementSeq,
+                    prodId: focusRow.prodId,
+                    userId: focusRow.userId,
+                    custId: focusRow.custId
+                }
+                $.ajax({
+                    url: apiUrl,
+                    data: JSON.stringify(params),
+                    contentType: 'application/json',
+                    type: 'DELETE',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("삭제가 완료되었습니다.");
+                            searchRefundGrid();
+                        } else {
+                            alert("삭제에 실패하였습니다.");
+                            searchRefundGrid();
+                        }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+
+                    }
+                })
             }
         }
 

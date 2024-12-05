@@ -155,4 +155,29 @@
           AND CUST_ID = #{custId}
     </select>
 
+    <update id="updateApplypayment">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateApplypayment */
+        UPDATE SETTLEMENT
+           SET REQ_DATE         = DATE_FORMAT(NOW(), '%Y-%m-%d')
+             , PROD_AMT         = #{prodAmt}
+             , SALE_AMT         = #{saleAmt}
+             , INFLOW_CNT       = #{inflowCnt}
+             , SALE_TOTAL_AMT   = #{saleTotalAmt}
+             , EXPECT_AMT       = #{expectAmt}
+             , EXPECT_RATE_AMT  = #{expectRateAmt}
+             , DATE_WORK_FROM   = #{dateWorkFrom}
+             , DATE_WORK_TO     = #{dateWorkTo}
+             , WORK_DAY         = #{workDay}
+             , INCENTIVE_RATE   = #{incentiveRate}
+             , APPLY_GUBUN      = #{applyGubun}
+             , MILEAGE_USE_IND  = #{mileageUseInd}
+             , USE_MILEAGE      = #{useMileage}
+             , SAVE_MILEAGE     = #{saveMileage}
+             , REFUND_GUBUN     = #{refundGubun}
+        WHERE SETTLEMENT_SEQ   = #{settlementSeq}
+          AND PROD_ID          = #{prodId}
+          AND USER_ID          = #{userId}
+          AND CUST_ID          = #{custId}
+    </update>
+
 </mapper>

@@ -21,4 +21,6 @@ public interface ApplypaymentMapper {
     List<CamelCaseMap> findSettlement(SettlementDto settlementDto);
 
     String checkApplyStatus(SettlementDto settlementDto);
+
+    int updateApplypayment(SettlementDto settlementDto);
 }

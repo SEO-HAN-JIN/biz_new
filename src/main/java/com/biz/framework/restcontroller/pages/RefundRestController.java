@@ -39,8 +39,8 @@ public class RefundRestController {
         return applypaymentService.saveApplypayment(settlementDto);
     }
 
-//    @DeleteMapping
-//    public int deleteCustomer(@RequestBody CustomerDto customerDto) {
-//        return applypaymentService.deleteCustomer(customerDto);
-//    }
+    @DeleteMapping
+    public int deleteRefund(@RequestBody SettlementDto settlementDto) {
+        return applypaymentService.deleteSettlement(settlementDto);
+    }
 }

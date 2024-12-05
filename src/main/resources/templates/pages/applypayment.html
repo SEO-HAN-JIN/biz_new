@@ -105,10 +105,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="pUserNm" class="form-control"
-                                                                   name="fname-column" disabled>
-                                                            <input type="hidden" id="pUserId" class="form-control"
-                                                                   name="fname-column" disabled>
+                                                            <input type="text" id="empName" class="form-control" name="fname-column" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -325,15 +322,13 @@
         }
 
         const initEvent = () => {
-            $("#modalAddBtn").on('click', openPgmModal);
+            $("#modalAddBtn").on('click', function() {
+                openPgmModal('1');
+            });
+
             $("#modalSaveBtn").on('click', fn_savePaymentGrid);
 
             $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
-
-            //$('#programModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
-            // $('#programModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
-            // $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
-            // $("#modalAcceptBtn").on('click', modalAcceptBtn);
 
             $("#searchBtn").on('click', searchPaymentGrid);
 
@@ -545,74 +540,74 @@
         }
 
         const openPgmModal = (param) => {
+            clearForm('paymentModal');
 
             if (param === '1') {
                 $isNew = true;
+
+                let userNm = $("#userNm").val();
+                $("#empName").val(userNm);
+                $("#incentiveRate").val(_incentiveRate);
+
+                ableBtn(false);
+
             } else {
                 $isNew = false;
-            }
 
-            clearForm('paymentModal');
-
-            if (param === '2') {    // 그리드 더블클릭
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
                 const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+                $('#paymentModal').bindForm(data);
 
-                console.log("## data ##", data);
+                // console.log("## data ##", data);
+                // $("#empName").val(data.empName).attr('disabled', true);
+                // document.getElementById("custId").choicesInstance.setChoiceByValue(data.custId).disable();
+                // document.getElementById("prodId").choicesInstance.setChoiceByValue(data.prodId).disable();
+                // $("#prodAmt").val(setComma(data.prodAmt)).attr('disabled', true);
+                // $("#dateWorkFrom").val(data.dateWorkFrom).attr('disabled', true);
+                // $("#dateWorkTo").val(data.dateWorkTo).attr('disabled', true);
+                // $("#workDay").val(data.workDay).attr('disabled', true);
+                // $("#saleAmt").val(setComma(data.saleAmt)).attr('disabled', true);
+                // $("#inflowCnt").val(data.inflowCnt).attr('disabled', true);
+                // $("#saleTotalAmt").val(setComma(data.saleTotalAmt)).attr('disabled', true);
+                // $("#expectRateAmt").val(setComma(data.expectRateAmt)).attr('disabled', true);
+                // $("#applyGubun").val(data.applyGubun).attr('disabled', true);
+                // $("#mileageUseInd").val(data.mileageUseInd).attr('disabled', true);
+                // $("#useMileage").val(setComma(data.useMileage)).attr('disabled', true);
+                // $("#custKeepAmt").val(setComma(data.custKeepAmt)).attr('disabled', true);
+                // $("#incentiveRate").val(_incentiveRate);
+                // $("#expectAmt").val(data.expectAmt);
 
-                $("#pUserNm").val(data.empName).attr('disabled', true);
-                document.getElementById("custId").choicesInstance.setChoiceByValue(data.custId).disable();
-                document.getElementById("prodId").choicesInstance.setChoiceByValue(data.prodId).disable();
-                $("#prodAmt").val(setComma(data.prodAmt)).attr('disabled', true);
-                $("#dateWorkFrom").val(data.dateWorkFrom).attr('disabled', true);
-                $("#dateWorkTo").val(data.dateWorkTo).attr('disabled', true);
-                $("#workDay").val(data.workDay).attr('disabled', true);
-                $("#saleAmt").val(setComma(data.saleAmt)).attr('disabled', true);
-                $("#inflowCnt").val(data.inflowCnt).attr('disabled', true);
-                $("#saleTotalAmt").val(setComma(data.saleTotalAmt)).attr('disabled', true);
-                $("#expectRateAmt").val(setComma(data.expectRateAmt)).attr('disabled', true);
-                $("#applyGubun").val(data.applyGubun).attr('disabled', true);
-                $("#mileageUseInd").val(data.mileageUseInd).attr('disabled', true);
-                $("#useMileage").val(setComma(data.useMileage)).attr('disabled', true);
-                $("#custKeepAmt").val(setComma(data.custKeepAmt)).attr('disabled', true);
-                $("#incentiveRate").val(_incentiveRate);
-                $("#expectAmt").val(data.expectAmt);
 
                 // 승인요청인 경우 수정 가능
                 if (data.applyStatus === '01') {
-                    $("#dateWorkFrom").attr('disabled', false);
-                    $("#dateWorkTo").attr('disabled', false);
-                    $("#saleAmt").attr('disabled', false);
-                    $("#inflowCnt").attr('disabled', false);
-                    $("#applyGubun").attr('disabled', false);
-                    $("#mileageUseInd").attr('disabled', false);
-                    $("#useMileage").attr('disabled', true);
-
+                    ableBtn(true);
                     const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
                     if (isChecked) {
                         $("#useMileage").attr('disabled', false);
                     }
                 }
-            } else {    // 추가 버튼
-                let userId = $("#userId").val();
-                let userNm = $("#userNm").val();
-                $("#pUserId").val(userId);
-                $("#pUserNm").val(userNm);
-                $("#incentiveRate").val(_incentiveRate);
-
-                document.getElementById("custId").choicesInstance.enable();
-                document.getElementById("prodId").choicesInstance.enable();
-                $("#dateWorkFrom").attr('disabled', false);
-                $("#dateWorkTo").attr('disabled', false);
-                $("#saleAmt").attr('disabled', false);
-                $("#inflowCnt").attr('disabled', false);
-                $("#applyGubun").attr('disabled', false);
-                $("#mileageUseInd").attr('disabled', false);
-                // $("#useMileage").attr('disabled', false);
             }
 
             $('#paymentModal').modal('show');
 
+        }
+
+        const ableBtn = (flag) => {
+            $("#dateWorkFrom").attr('disabled', flag);
+            $("#dateWorkTo").attr('disabled', flag);
+            $("#saleAmt").attr('disabled', flag);
+            $("#inflowCnt").attr('disabled', flag);
+            $("#applyGubun").attr('disabled', flag);
+            $("#mileageUseInd").attr('disabled', flag);
+            $("#useMileage").attr('disabled', flag);
+
+            if (flag) {
+                document.getElementById("custId").choicesInstance.disable();
+                document.getElementById("prodId").choicesInstance.disable();
+            } else {
+                document.getElementById("custId").choicesInstance.enable();
+                document.getElementById("prodId").choicesInstance.enable();
+            }
         }
 
         const clearForm = (id) => {
@@ -696,14 +691,19 @@
                 }
             }
 
-            // 파라미터 세팅
-            param.userId = param.pUserId;
+            param.userId = $("#userId").val();
             if (keepInd) {
                 param.mileageUseInd = 'Y';
             } else {
                 param.mileageUseINd = 'N';
                 param.useMileage = '0';     // 킵사용 안하면 0으로 세팅
                 param.expectAmt = param.saleTotalAmt;
+            }
+
+            if ($isNew) {
+                param.rowStatus = 'C'
+            } else {
+                param.rowStatus = 'U'
             }
 
 
