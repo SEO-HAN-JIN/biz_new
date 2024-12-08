@@ -824,7 +824,7 @@
             if (confirmResult) {
                 const focusRow = refundGrid.getGrid().getRow(focusedCell.rowKey);
                 let params = {
-                    settlementSeq: focusRow.settlementSeq,
+                    settlementSeq: focusRow.refundSettlementSeq,
                     prodId: focusRow.prodId,
                     userId: focusRow.userId,
                     custId: focusRow.custId
