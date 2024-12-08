@@ -3,6 +3,7 @@ package com.biz.framework.mapper.pages;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface CustomerMapper {
     int checkDupl(CustomerDto customerDto);
 
     int findMileageByBizNo(String bizNo);
+
+    void updateMileage(@Param("bizNo") String bizNo, @Param("mileage") int mileage);
 }

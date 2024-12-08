@@ -181,7 +181,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">환불요청일</label>
-                                                        <input type="date" id="_refundModal_refundDateWorkTo" class="form-control" name="refundDateWorkTo">
+                                                        <input type="date" id="_refundModal_refundDate" class="form-control" name="refundDate">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -390,7 +390,7 @@
             $("#" + paymentModalPrefix + "applyBtn").on('click', applyPaymentModal);
             $("#" + paymentModalPrefix + "searchBtn").on('click', searchPaymentModalGrid);
 
-            $("#" + refundModalPrefix + "refundDateWorkTo").on('change', validRefundDateWorkTo);
+            $("#" + refundModalPrefix + "refundDate").on('change', validRefundDate);
             $("#" + refundModalPrefix + "btnSave").on('click', saveRefund);
         }
 
@@ -410,9 +410,9 @@
             }
         }
 
-        const validRefundDateWorkTo = () => {
+        const validRefundDate = () => {
             const d1 = $("#" + refundModalPrefix + "dateWorkTo").val();
-            const d2 = $("#" + refundModalPrefix + "refundDateWorkTo").val();
+            const d2 = $("#" + refundModalPrefix + "refundDate").val();
             const d3 = $("#" + refundModalPrefix + "dateWorkFrom").val();
 
             const date1 = new Date(d1); // 정산-작업종료일
@@ -421,7 +421,7 @@
 
             if (date1.getTime() < date2.getTime() || date3.getTime() > date2.getTime() ) {
                 alert("환불요청일은 정산요청의 작업시작일과 작업종료일 사이어야 합니다.");
-                $("#" + refundModalPrefix + "refundDateWorkTo").val('');
+                $("#" + refundModalPrefix + "refundDate").val('');
                 $("#" + refundModalPrefix + "refundWorkDay").val('');
                 $("#" + refundModalPrefix + "refundExpectAmt").val('');
                 $("#" + refundModalPrefix + "refundExpectRateAmt").val('');
@@ -434,7 +434,7 @@
         const setRefundWorkDay = () => {
 
             const d1 = $("#" + refundModalPrefix + "dateWorkTo").val();
-            const d2 = $("#" + refundModalPrefix + "refundDateWorkTo").val();
+            const d2 = $("#" + refundModalPrefix + "refundDate").val();
 
             const date1 = new Date(d1);
             const date2 = new Date(d2);
@@ -447,20 +447,27 @@
         }
 
         function saleSum() {
+            // 입금총액1
             var saleTotalAmt = removeComma($("#" + refundModalPrefix + "saleTotalAmt").val());
-            var prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "prodAmt").val()));          // 상품가(공급가)
-            var inflowCnt = isNull($("#" + refundModalPrefix + "inflowCnt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "inflowCnt").val()));    // 유입수
-            var workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());          // 환불일수
-            var incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());    // 직원인센티브율
 
-            // 환불금액 (상품가 * 유입수 * 환불일수)
+            var setWorkDay = isNull($("#" + refundModalPrefix + "workDay").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "workDay").val()));       // 판매기간
+            var prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "prodAmt").val()));          // 상품가(공급가)
+            var saleAmt = isNull($("#" + refundModalPrefix + "saleAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "saleAmt").val()));          // 판매가
+            var inflowCnt = isNull($("#" + refundModalPrefix + "inflowCnt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "inflowCnt").val()));    // 유입수
+            var workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());           // 환불일수
+            var incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());   // 직원인센티브율
+
+            // 입금총액2 (유입수 * 판매기간 * 판매가)
+            saleTotalAmt = Math.floor(inflowCnt *  setWorkDay * saleAmt);
+
+            // 환불금액 (유입수 * 환불일수 * 상품가)
             const expectAmt = Math.floor(prodAmt * inflowCnt * workDay);
 
-            // 영업이익
+            // 영업이익 (입금총액 - 환불금액)
             var costAmt = saleTotalAmt - expectAmt;
 
-            // 환불수수료 : 소수점 제외하고 정수만 출력
-            var expectRateAmt = Math.floor(costAmt * incentiveRate);
+            // 환불수수료 (환불금액 - 영업이익)
+            var expectRateAmt = Math.floor((expectAmt - costAmt) * incentiveRate);
 
             $("#" + refundModalPrefix + "refundSaleTotalAmt").val(saleTotalAmt);                    // 판매총액
             $("#" + refundModalPrefix + "refundExpectAmt").val(formatNumber(expectAmt));            // 환불금액
@@ -482,7 +489,7 @@
                 .add('inflowCnt', '유입수', 120, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
-                .addDate('refundDateWorkTo', '환불요청일', 150, {})
+                .addDate('refundDate', '환불요청일', 150, {})
                 .add('refundWorkDay', '환불일수', 120, {align: 'right'})
                 .addNumber('refundSaleTotalAmt', '판매총액', 200, {
                     align: 'right',
@@ -609,14 +616,23 @@
                 $("#_refundModal_prodAmt").val(setComma(focusedData.prodAmt));
                 $("#_refundModal_saleAmt").val(setComma(focusedData.saleAmt));
                 $("#_refundModal_saleTotalAmt").val(setComma(focusedData.saleTotalAmt));
-                $("#_refundModal_refundDateWorkTo").val(focusedData.refundDateWorkTo).attr('disabled', true);
+                $("#_refundModal_refundDate").val(focusedData.refundDate).attr('disabled', true);
                 $("#_refundModal_refundWorkDay").val(focusedData.refundWorkDay);
                 $("#_refundModal_refundExpectAmt").val(setComma(focusedData.expectAmt));
                 $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.expectRateAmt));
                 $("#_refundModal_refundGubun").val(focusedData.refundGubun).attr('disabled', true);
+
+                // 수정기능 우선 없앰
+                $("#_refundModal_refundDate").attr('disabled', true);
+                $("#_refundModal_refundGubun").attr('disabled', true);
+                $("#_refundModal_btnSave").attr('disabled', true);
+                $("#_refundModal_applyPaymentBtn").attr('disabled', true);
             } else {
-                $("#_refundModal_refundDateWorkTo").attr('disabled', false);
+                $("#_refundModal_refundDate").attr('disabled', false);
                 $("#_refundModal_refundGubun").attr('disabled', false);
+
+                $("#_refundModal_btnSave").attr('disabled', false);
+                $("#_refundModal_applyPaymentBtn").attr('disabled', false);
             }
 
 
@@ -658,7 +674,7 @@
                 }
             });
 
-            if(isNull(param.refundDateWorkTo))
+            if(isNull(param.refundDate))
             {
                 alert("환불요청일을 입력해주세요.");
                 return false;
@@ -687,12 +703,19 @@
                 refundSettlementSeq : param.settlementSeq,
                 refundGubun : param.refundGubun,
                 expectAmt : param.refundExpectAmt,
-                expectRateAmt : param.refundExpectRateAmt
+                expectRateAmt : param.refundExpectRateAmt,
+                refundDate : param.refundDate
             }
 
             // 환불구분이 킵사용시
             if (param.refundGubun === '02') {
                 params.saveMileage = param.refundExpectAmt;
+            }
+
+            if ($isNew) {
+                params.rowStatus = 'C'
+            } else {
+                params.rowStatus = 'U'
             }
 
             if (confirm("데이터를 저장하시겠습니까?")) {

@@ -37,7 +37,8 @@
             IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
             ST.SAVE_MILEAGE,
             ST.APPLY_STATUS,
-            C.CODE_NAME                 AS APPLY_STATUS_NAME
+            C.CODE_NAME                 AS APPLY_STATUS_NAME,
+            IFNULL(ST.USE_MILEAGE,0)    AS CUR_USE_MILEAGE
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CUST_ID         = CU.BIZ_NO
@@ -62,13 +63,15 @@
         </if>
     </select>
 
+    <select id="createSettlementSeq">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
+          FROM SETTLEMENT
+         WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
+
     <insert id="saveApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.saveApplypayment */
-        <selectKey keyColumn="SETTLEMENT_SEQ" keyProperty="settlementSeq" resultType="string" order="BEFORE">
-            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
-            FROM SETTLEMENT
-            WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
-        </selectKey>
         INSERT INTO SETTLEMENT
         ( SETTLEMENT_SEQ
         , PROD_ID
@@ -90,6 +93,7 @@
         , USE_MILEAGE
         , SAVE_MILEAGE
         , REFUND_IND
+        , REFUND_DATE
         , REFUND_SETTLEMENT_SEQ
         , REFUND_GUBUN
         , CONFIRM_AMT
@@ -121,6 +125,7 @@
         , #{useMileage}
         , #{saveMileage}
         , #{refundInd}
+        , #{refundDate}
         , #{refundSettlementSeq}
         , #{refundGubun}
         , #{confirmAmt}

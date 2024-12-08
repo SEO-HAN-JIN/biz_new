@@ -23,4 +23,6 @@ public interface ApplypaymentMapper {
     String checkApplyStatus(SettlementDto settlementDto);
 
     int updateApplypayment(SettlementDto settlementDto);
+
+    String createSettlementSeq(SettlementDto settlementDto);
 }

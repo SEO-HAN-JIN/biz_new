@@ -26,7 +26,7 @@
             ST.REQ_GUBUN,
             DATE_FORMAT(ST2.DATE_WORK_FROM, '%Y-%m-%d')     AS DATE_WORK_FROM,
             DATE_FORMAT(ST2.DATE_WORK_TO, '%Y-%m-%d')       AS DATE_WORK_TO,
-            DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d')        AS REFUND_DATE_WORK_TO,
+            DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d')         AS REFUND_DATE,
             ST2.WORK_DAY,
             ST.WORK_DAY     AS REFUND_WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
@@ -59,7 +59,7 @@
        WHERE 1=1
          AND ST.USER_ID         = #{loginUserId}
          AND ST.REFUND_IND      = 'Y'
-         AND ST.DATE_WORK_TO BETWEEN #{searchStartDate} AND #{searchEndDate}
+         AND ST.REFUND_DATE BETWEEN #{searchStartDate} AND #{searchEndDate}
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME LIKE CONCAT('%', #{custName}, '%')
         </if>

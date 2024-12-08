@@ -39,6 +39,8 @@ public class SettlementDto extends BaseDto {
     private String payYm;           // (승인)급여년월
     private String reqGubun;        // 요청구분
     private String atchId;          // 첨부ID
+    private String curUseMileage;
+    private String refundDate;
 
     private String searchStartDate;
     private String searchEndDate;

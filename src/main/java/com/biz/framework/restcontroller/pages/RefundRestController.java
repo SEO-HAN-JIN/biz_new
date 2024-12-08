@@ -36,11 +36,11 @@ public class RefundRestController {
     public int saveApplypayment(@RequestBody SettlementDto settlementDto) {
         settlementDto.setReqGubun("RQ");        // 요청구분(SE01) : AQ(환불요청)
         settlementDto.setApplyStatus("01");     // 승인여부(SE04) : 01(승인요청)
-        return applypaymentService.saveApplypayment(settlementDto);
+        return refundService.saveRefund(settlementDto);
     }
 
     @DeleteMapping
     public int deleteRefund(@RequestBody SettlementDto settlementDto) {
-        return applypaymentService.deleteSettlement(settlementDto);
+        return refundService.deleteRefund(settlementDto);
     }
 }

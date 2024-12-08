@@ -205,6 +205,7 @@
                                                     <input type="hidden" id="settlementSeq" name="settlementSeq">
                                                     <input type="hidden" id="expectAmt" name="expectAmt">
                                                     <input type="hidden" id="incentiveRate" name="incentiveRate">
+                                                    <input type="hidden" id="curUseMileage" name="curUseMileage">
                                                 </div>
                                             </fieldset>
 
@@ -407,6 +408,7 @@
             } else {
                 // Disable the element
                 $(inputElement).prop("disabled", true);
+                $("#useMileage").val('0');
             }
 
             $("#useMileage").on("input", function () {
@@ -503,6 +505,7 @@
                 .add('mileageUseInd', '킵사용', 'auto', {visible: false})
                 .add('useMileage', '킵사용금액', 'auto', {visible: false})
                 .add('applyStatus', '승인상태', 'auto', {visible: false})
+                .add('curUseMileage', '현재사용중인마일리지', 'auto', {visible: false})
             ;
 
             paymentGrid = columns.init('paymentGrid', [])
@@ -559,6 +562,8 @@
 
                 ableBtn(false);
 
+                $("#useMileage").attr('disabled', true);
+
             } else {
                 $isNew = false;
 
@@ -580,6 +585,10 @@
                     ableBtn(true);
                 }
 
+                // 수정기능 우선 없앰
+                ableBtn(true);
+                $("#useMileage").attr('disabled', true);
+
             }
 
             $('#paymentModal').modal('show');
@@ -593,6 +602,7 @@
             $("#inflowCnt").attr('disabled', flag);
             $("#applyGubun").attr('disabled', flag);
             $("#mileageUseInd").attr('disabled', flag);
+            $("#useMileage").attr('disabled', flag);
 
             if (flag) {
                 document.getElementById("custId").choicesInstance.disable();
@@ -601,6 +611,9 @@
                 document.getElementById("custId").choicesInstance.enable();
                 document.getElementById("prodId").choicesInstance.enable();
             }
+
+            $("#modalSaveBtn").attr('disabled', flag);
+
         }
 
         const clearForm = (id) => {
@@ -740,15 +753,9 @@
             const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
             if (confirmResult) {
                 const focusRow = paymentGrid.getGrid().getRow(focusedCell.rowKey);
-                let params = {
-                    settlementSeq: focusRow.settlementSeq,
-                    prodId: focusRow.prodId,
-                    userId: focusRow.userId,
-                    custId: focusRow.custId
-                }
                 $.ajax({
                     url: apiUrl,
-                    data: JSON.stringify(params),
+                    data: JSON.stringify(focusRow),
                     contentType: 'application/json',
                     type: 'DELETE',
                     success: (result) => {

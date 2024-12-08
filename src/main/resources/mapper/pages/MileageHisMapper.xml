@@ -15,6 +15,7 @@
             , CREATED_DATE
             , CREATED_PAGE
             , CREATED_ID
+            , SETTLEMENT_SEQ
         ) VALUES
         (
             #{bizNo}
@@ -24,6 +25,7 @@
             , NOW()
             , #{createdPage}
             , #{createdId}
+            , #{settlementSeq}
         )
     </insert>
 

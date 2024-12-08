@@ -100,4 +100,11 @@
          WHERE 1=1
            AND BIZ_NO   = #{bizNo}
     </select>
+
+    <update id="updateMileage">
+        /* com.biz.framework.mapper.pages.CustomerMapper.updateMileage */
+        UPDATE TB_CUSTOMER
+          SET MILEAGE   = #{mileage}
+        WHERE BIZ_NO    = #{bizNo}
+    </update>
 </mapper>
