@@ -30,6 +30,12 @@
                             <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">기준일자</label>
+                                        <div class="col-lg-3 col-9">
+                                            <div class="d-flex">
+                                                <input type="date" class="form-control form-control-sm me-2" id="baseDate">
+                                            </div>
+                                        </div>
                                         <label class="col-form-label col-lg-1 col-3">상품코드</label>
                                         <div class="col-lg-2 col-9">
                                             <input type="text" id="_search_prodId" class="form-control form-control-sm" name="prodId" placeholder="상품코드">
@@ -146,7 +152,15 @@
 
         let productGrid;
 
+        let $isNew;
+
         $(document).ready(function() {
+            let date = new Date();
+            let year = date.getFullYear();
+            let month = String(date.getMonth() + 1).padStart(2, '0');
+            let day = String(date.getDate()).padStart(2, '0');
+
+            $("#baseDate").val(`${year}-${month}-${day}`);
             initEvent();
             initProductGrid();
         });
@@ -222,6 +236,7 @@
             productGrid.clear();
 
             const param = {
+                baseDate: $("#baseDate").val(),
                 prodId : $("#_search_prodId").val(),
                 prodName : $("#_search_prodName").val()
             };
@@ -245,7 +260,10 @@
 
             // 셀 더블 버튼 클릭 시
             if (param === '2') {
+                $isNew = false;
+
                 $("#" + _popPrefix_ + "prodId").attr('disabled', true);
+                $("#" + _popPrefix_ + "effDateFrom").attr('disabled', true);
 
                 const focusedCell = productGrid.getGrid().getFocusedCell();
                 const focusedData = productGrid.getGrid().getRow(focusedCell.rowKey);
@@ -266,7 +284,14 @@
                         }
                     }
                 });
+            } else {
+                $isNew = true;
+                $("#_productPop_effDateTo").val('2999-12-31');
+
+                $("#" + _popPrefix_ + "prodId").attr('disabled', false);
+                $("#" + _popPrefix_ + "effDateFrom").attr('disabled', false);
             }
+
             $('#productModal').modal('show');
         }
 
@@ -327,6 +352,11 @@
                 return false;
             }
 
+            if ($isNew) {
+                param.rowStatus = "C";
+            } else {
+                param.rowStatus = "U";
+            }
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 return new Promise((resolve, reject) => {
@@ -365,7 +395,8 @@
             if (confirmResult) {
                 const focusRow = productGrid.getGrid().getRow(focusedCell.rowKey);
                 let params = {
-                    prodId : focusRow.prodId
+                    prodId : focusRow.prodId,
+                    effDateFrom : focusRow.effDateFrom,
                 }
                 $.ajax({
                     url: apiUrl,

@@ -15,6 +15,7 @@
           , USE_IND
         FROM TB_PRODUCTS    P
        WHERE 1=1
+        AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
         <if test='prodId != null  and prodId != "" '>
             AND PROD_ID     LIKE CONCAT('%', #{prodId}, '%')
         </if>
@@ -42,30 +43,48 @@
         INSERT INTO TB_PRODUCTS
         (
             PROD_ID
-            , PROD_NAME
-            , PROD_AMT
             , EFF_DATE_FROM
             , EFF_DATE_TO
+            , PROD_NAME
+            , PROD_AMT
             , USE_IND
         ) VALUES
         (
             #{prodId}
-            , #{prodName}
-            , #{prodAmt}
             , STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
             , STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
+            , #{prodName}
+            , #{prodAmt}
             , #{useInd}
         ) ON DUPLICATE KEY UPDATE
-          PROD_NAME         = #{prodName}
+          EFF_DATE_TO       = STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
+        , PROD_NAME         = #{prodName}
         , PROD_AMT          = #{prodAmt}
-        , EFF_DATE_FROM     = STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
-        , EFF_DATE_TO       = STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
         , USE_IND           = #{useInd}
     </insert>
 
     <delete id="deleteProducts">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProducts */
         DELETE FROM TB_PRODUCTS
-        WHERE PROD_ID    = #{prodId}
+        WHERE PROD_ID       = #{prodId}
+        AND EFF_DATE_FROM   = #{effDateFrom}
     </delete>
+
+    <select id="checkDuplProduct">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkDuplProduct */
+        SELECT COUNT(1)
+          FROM TB_PRODUCTS
+         WHERE PROD_ID = #{prodId}
+           AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
+           AND #{effDateTo} >= EFF_DATE_FROM
+    </select>
+
+    <update id="updateProductEffDate">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateProductEffDate */
+        UPDATE TB_PRODUCTS
+           SET EFF_DATE_TO  = DATE_ADD(STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d'), INTERVAL -1 DAY)
+         WHERE PROD_ID  = #{prodId}
+           AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
+           AND #{effDateTo} >= EFF_DATE_FROM
+    </update>
 </mapper>

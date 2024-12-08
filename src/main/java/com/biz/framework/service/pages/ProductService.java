@@ -24,7 +24,18 @@ public class ProductService {
     }
 
     public int saveProduct(ProductDto productDto) {
-        return productMapper.saveProducts(productDto);
+        int result = 0;
+        switch (productDto.getRowStatus()) {
+            case C -> {
+                if (productMapper.checkDuplProduct(productDto) > 0) {
+                    productMapper.updateProductEffDate(productDto);
+                }
+                result += productMapper.saveProducts(productDto);
+            }
+            case U -> result += productMapper.saveProducts(productDto);
+        }
+
+        return result;
     }
 
     public int deleteProduct(ProductDto productDto) {

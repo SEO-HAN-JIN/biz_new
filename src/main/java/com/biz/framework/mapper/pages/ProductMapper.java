@@ -16,4 +16,8 @@ public interface ProductMapper {
 
     int saveProducts(ProductDto productDto);
     int deleteProducts(ProductDto productDto);
+
+    int checkDuplProduct(ProductDto productDto);
+
+    void updateProductEffDate(ProductDto productDto);
 }
