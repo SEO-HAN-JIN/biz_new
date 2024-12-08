@@ -96,8 +96,8 @@
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
-                                                        <label for="empName">직원이름</label>
-                                                        <input type="text" id="empName" class="form-control" placeholder="직원이름" name="empName">
+                                                        <label for="empName">직원명</label>
+                                                        <input type="text" id="empName" class="form-control" placeholder="직원명" name="empName">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
@@ -213,17 +213,17 @@
         const initEmpGrid = () => {
 
             var columns = new CustomTuiGrid()
-                .add('gradeCode', '직급코드', 150, {
+                .add('empId', '직원ID', 150, {})
+                .add('empName', '직원명', 120, {})
+                .add('gradeName', '직급', 120, {})
+                .addDate('entranceDate', '입사일자', 150, { align: 'center' })
+                .add('empTel', '전화번호', 400, { align: 'center' })
+                .add('empMail', '이메일', 200, { align: 'center' })
+                .add('incentiveRate', '인센티브율', 100, { align: 'right' })
+                .add('retireDate', '퇴사일자', 150, { align: 'center' })
+                .add('gradeCode', '직급코드', 'auto', {
                     hidden: true
                 })
-                .add('empId', '직원ID', 200, {})
-                .add('empName', '직원명', 200, {})
-                .add('gradeName', '직급', 200, {})
-                .addDate('entranceDate', '입사일자', 'auto', { align: 'center' })
-                .add('empTel', '전화번호', 700, { align: 'center' })
-                .add('empMail', '이메일', 'auto', { align: 'center' })
-                .add('incentiveRate', '인센티브율', 'auto', { align: 'right' })
-                .add('retireDate', '퇴사일자', 'auto', { align: 'center' })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             empGrid = columns.init('empGrid', [])
