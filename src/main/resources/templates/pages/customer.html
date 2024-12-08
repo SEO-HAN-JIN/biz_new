@@ -93,17 +93,17 @@
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
+                                                        <label for="custName">고객명</label>
+                                                        <input type="text" id="custName" class="form-control" placeholder="고객명" name="custName">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
                                                         <label>직원</label>
                                                         <fieldset class="form-group">
                                                             <select id="empId" class="form-select">
                                                             </select>
                                                         </fieldset>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="custName">고객명</label>
-                                                        <input type="text" id="custName" class="form-control" placeholder="고객명" name="custName">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
@@ -230,20 +230,20 @@
 
             var columns = new CustomTuiGrid()
                 .add('bizNo', '사업자번호', 200, {})
-                .add('custName', '고객명', 200, {})
+                .add('custName', '고객명', 100, {})
                 .add('empId', '직원ID', 150, {})
-                .add('empName', '직원명', 200, {})
-                .add('ownerName', '대표자성명', 'auto', { align: 'center' })
-                .add('custAddr', '주소', 700, { align: 'center' })
-                .add('custTel', '연락처', 'auto', { align: 'center' })
-                .add('custMail', '이메일', 'auto', { align: 'center' })
-                .add('depositorName', '입금자명', 'auto', { align: 'center' })
-                .addNumber('mileage', '마일리지', 'auto', {
+                .add('empName', '직원명', 100, {})
+                .add('ownerName', '대표자성명', 100, { align: 'center' })
+                .add('custAddr', '주소', 300, { align: 'center' })
+                .add('custTel', '연락처', 150, { align: 'center' })
+                .add('custMail', '이메일', 150, { align: 'center' })
+                .add('depositorName', '입금자명', 100, { align: 'center' })
+                .addNumber('mileage', '마일리지', 100, {
                     align: 'right',
                     comma: true,
                 })
-                .add('useInd', '사용여부', 'auto', { align: 'center' })
-                .addDate('regDate', '등록일자', 'auto', { align: 'center' })
+                .add('useInd', '사용여부', 70, { align: 'center' })
+                .addDate('regDate', '등록일자', 100, { align: 'center' })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             customerGrid = columns.init('customerGrid', [])
@@ -388,7 +388,6 @@
                         } else if ($(this).is('select')) {
                             $(this).val(focusedData[fieldId]);
                             empIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
-                            empIdChoiceObj.disable();
                         } else if (fieldId === 'mileage') {
                             $("#mileagePrev").val(focusedData[fieldId]);
                             const replaceNumber = formatToCurrency(focusedData[fieldId]);
@@ -404,7 +403,6 @@
             } else {
                 $('#bizNo').attr('disabled', false);
                 empIdChoiceObj.setChoiceByValue('');
-                empIdChoiceObj.enable();
             }
 
             $('#customerModal').modal('show');

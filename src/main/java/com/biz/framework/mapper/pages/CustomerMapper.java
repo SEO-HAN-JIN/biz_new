@@ -17,4 +17,6 @@ public interface CustomerMapper {
     int deleteCustomer(CustomerDto customerDto);
 
     int checkDupl(CustomerDto customerDto);
+
+    int findMileageByBizNo(String bizNo);
 }

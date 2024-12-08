@@ -68,6 +68,7 @@
             , #{useInd}
         ) ON DUPLICATE KEY UPDATE
             CUST_NAME       = #{custName}
+            , EMP_ID        = #{empId}
             , OWNER_NAME    = #{ownerName}
             , CUST_ADDR     = #{custAddr}
             , CUST_TEL      = #{custTel}
@@ -81,7 +82,6 @@
         /* com.biz.framework.mapper.pages.CustomerMapper.deleteCustomer */
         DELETE FROM TB_CUSTOMER
         WHERE BIZ_NO    = #{bizNo}
-          AND EMP_ID   = #{empId}
     </delete>
 
     <select id="checkDupl">
@@ -91,5 +91,13 @@
          WHERE 1=1
            AND BIZ_NO   = #{bizNo}
            AND EMP_ID   = #{empId}
+    </select>
+
+    <select id="findMileageByBizNo">
+        /* com.biz.framework.mapper.pages.CustomerMapper.findMileageByBizNo */
+        SELECT MILEAGE
+          FROM TB_CUSTOMER
+         WHERE 1=1
+           AND BIZ_NO   = #{bizNo}
     </select>
 </mapper>
