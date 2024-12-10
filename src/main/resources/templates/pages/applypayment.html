@@ -364,8 +364,11 @@
             // 상품 정보 변경할 때마다 상품가 가져오기
             $("#prodId").on("change", function () {
 
+                const nowDate = new Date(); // 당월 1일
+
                 var params = {
-                    prodId: this.value
+                    baseDate : formatDate(nowDate),
+                    prodId : this.value
                 };
 
                 $.get(apiUrl + "/prodinfo", params, function (rsData) {

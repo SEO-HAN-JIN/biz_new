@@ -22,8 +22,16 @@
 
         const selectElement = document.getElementById(/*[[${id}]]*/ "");
 
-        if(selectElement != null) {
-            fetch("/api/pages/product")
+        // 현재 날짜를 가져옵니다.
+        var nowDate = new Date();
+
+        // 날짜를 'YYYY-MM-DD' 형식으로 포맷
+        var formattedDate = nowDate.getFullYear() + '-' +
+            String(nowDate.getMonth() + 1).padStart(2, '0') + '-' +
+            String(nowDate.getDate()).padStart(2, '0');
+
+        if (selectElement != null) {
+            fetch(`/api/pages/product?baseDate=${encodeURIComponent(formattedDate)}`)
                 .then(response => response.json())
                 .then(data => {
                     selectElement.innerHTML = ''; // 기존 옵션 제거

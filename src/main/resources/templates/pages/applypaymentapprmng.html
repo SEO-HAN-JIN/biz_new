@@ -54,8 +54,8 @@
                                         </div>
                                         <div class="col-md-3">
                                             <select class="form-select" id="applyStatus" name="applyStatus">
-                                                <option value="" >전체</option>
-                                                <option value="01" selected>승인요청</option>
+                                                <option value="" selected>전체</option>
+                                                <option value="01" >승인요청</option>
                                                 <option value="02">승인완료</option>
                                                 <option value="03">승인거절</option>
                                             </select>
@@ -354,7 +354,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label text-danger">킵금액</label>
+                                                            <label class="form-label text-danger">마일리지적립금액</label>
                                                             <input type="text" id="deposit_saveMileage" class="form-control is-num text-end" name="deposit_saveMileage" disabled>
                                                         </div>
                                                     </div>
@@ -494,7 +494,7 @@
 
             if(isNull(realAmt))
             {
-                alert("실제입금금액을 입력해주세요.");
+                alert("입금금액을 입력해주세요.");
                 return false;
             }
 
@@ -595,7 +595,7 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
                 .add('reqGubunName', '요청구분', 80, {})
-                .addButton('action', '입금여부', 80, {
+                .addButton('action', '입금여부', 100, {
                     buttonText: '확인',
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
@@ -635,9 +635,6 @@
                     visible: false
                 })
 
-
-
-
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
 
@@ -650,20 +647,85 @@
         }
 
         const search = () => {
-            paymentGrid.clear();
+            //paymentGrid.clear();
 
             const param = $("#searchTable").getData();
 
-            paymentGrid.load(apiUrl, param, function(data){
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                contentType:'application/json',
+                type: 'GET',
+                success: (data) => {
 
-                // // 초기 상태 설정
-                // data.forEach(row => {
-                //     row.action = parseInt(row.confirmAmt) > 0 ? false : true; // 금액 여부로 상태 설정
-                // });
-                //
-                // paymentGrid.bind(data);
+                    if (data.length > 0) {
 
-            });
+                        data.forEach(row => {
+                            if(row.applyStatus == "02") {
+                                row.hideButton = true;
+                                row.action = "승인완료";
+                            }
+                            else {
+                                row.hideButton = false;
+                                row.action = "승인대기";
+                            }
+                        });
+
+                        // 데이터 리셋 및 렌더링 강제 갱신
+                        const gridInstance = paymentGrid.getGrid();
+                        gridInstance.resetData(data); // 데이터 새로 고침
+
+
+                        // const columns = gridInstance.getColumns();
+                        // gridInstance.setColumns(columns); // 컬럼 재설정
+
+                        // setTimeout(function () {
+                        // data.forEach((row, index) => {
+                        //     gridInstance.setValue(index, 'action', row.action); // 특정 셀 데이터 업데이트
+                        // })}, 100);
+
+                        // 버튼 숨김처리
+                        // gridInstance.on('onGridUpdated', () => {
+                        //     data.forEach((row, index) => {
+                        //         const cellEl = gridInstance.getElement(index, 'action'); // 셀 DOM 요소 가져오기
+                        //         if (cellEl) {
+                        //             const button = cellEl.querySelector('button'); // 버튼 요소 검색
+                        //             if (row.hideButton) {
+                        //                 button.style.display = 'none';
+                        //             } else {
+                        //                 button.style.display = 'inline-block';
+                        //             }
+                        //         }
+                        //     });
+                        // });
+                    }
+                }
+            })
+
+            //
+            // paymentGrid.load(apiUrl, param, function(data){
+            //     // 초기 상태 설정
+            //     data.forEach(row => {
+            //         if(row.applyStatus == "02") {
+            //             row.hideButton = true;
+            //             row.action = "확인";
+            //         }
+            //         else {
+            //             row.hideButton = false;
+            //             row.action = "승인대기";
+            //         }
+            //
+            //         // row.action = parseInt(row.confirmAmt) > 0 ? false : true; // 금액 여부로 상태 설정
+            //     });
+            //
+            //     paymentGrid.bind(data);
+            //     //columns.init('paymentGrid', data);
+            //
+            //     // 강제 렌더링 호출
+            //     const gridInstance = paymentGrid.getGrid();
+            //     gridInstance.refreshLayout(); // 전체 레이아웃 갱신
+            //     gridInstance.refresh(); // 셀 렌더러 갱신
+            // });
         }
 
         const fn_savePaymentGrid = () => {

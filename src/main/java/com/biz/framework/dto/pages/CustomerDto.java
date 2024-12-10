@@ -24,6 +24,8 @@ public class CustomerDto extends BaseDto {
 
     private String empName;
 
+    private String baseDate;
+
     @JsonProperty("isNew")
     private boolean isNew;
 }

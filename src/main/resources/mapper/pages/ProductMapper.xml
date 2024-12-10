@@ -35,6 +35,7 @@
         , USE_IND
         FROM TB_PRODUCTS    P
         WHERE 1=1
+        AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
         AND PROD_ID = #{prodId}
     </select>
 

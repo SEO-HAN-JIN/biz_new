@@ -6,7 +6,6 @@ if (typeof CustomTuiGrid === "undefined") {
     // 기존 CustomTuiGrid 정의 바로 아래에 추가
     class CustomTuiGridButtonRenderer {
         constructor(props) {
-
             const el = document.createElement('button');
             el.innerText = props.value || props.columnInfo.renderer.options.buttonText || 'Button';
             el.style.cursor = 'pointer';
@@ -18,30 +17,38 @@ if (typeof CustomTuiGrid === "undefined") {
             el.style.fontWeight = 'bold'; // 굵은 텍스트
             el.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
 
-            // 버튼 상태 설정
-            if (props.disabled === false) {
-                this.disable();
+            var rowData = props.grid.getRow(props.rowKey);
+
+            // 초기 렌더링 시 숨김 처리
+            const shouldHideButton = rowData.hideButton;
+
+            if(shouldHideButton)
+            {
+                el.style.fontWeight = ''; // 굵은 텍스트
+                el.style.color = '#333333'; // 흰색 텍스트
+                el.style.backgroundColor = '#fff'; // 신뢰감 있는 파란색
             }
+            else {
+                // 마우스 오버 시 효과
+                el.addEventListener('mouseover', () => {
+                    el.style.backgroundColor = '#3a50a6'; // 어두운 파란색
+                });
+                el.addEventListener('mouseout', () => {
+                    el.style.backgroundColor = '#435EBE'; // 원래 색상
+                });
 
-            // 마우스 오버 시 효과
-            el.addEventListener('mouseover', () => {
-                el.style.backgroundColor = '#3a50a6'; // 어두운 파란색
-            });
-            el.addEventListener('mouseout', () => {
-                el.style.backgroundColor = '#435EBE'; // 원래 색상
-            });
+                // 클릭 이벤트
+                el.addEventListener('click', () => {
+                    const grid = props.grid;
+                    const rowKey = props.rowKey;
+                    const rowData = grid.getRow(rowKey);
 
-            // 클릭 이벤트
-            el.addEventListener('click', () => {
-                const grid = props.grid;
-                const rowKey = props.rowKey;
-                const rowData = grid.getRow(rowKey);
-
-                const onClick = props.columnInfo.renderer.options.onClick;
-                if (typeof onClick === 'function') {
-                    onClick(rowData, rowKey); // 클릭 이벤트 핸들러 호출
-                }
-            });
+                    const onClick = props.columnInfo.renderer.options.onClick;
+                    if (typeof onClick === 'function') {
+                        onClick(rowData, rowKey); // 클릭 이벤트 핸들러 호출
+                    }
+                });
+            }
 
             this.el = el;
         }
@@ -74,12 +81,22 @@ if (typeof CustomTuiGrid === "undefined") {
         }
 
         render(props) {
-            // 필요 시 props 기반 상태 업데이트
-            if (props.value === false) {
-                this.disable();
-            } else if (props.value) {
+
+            console.log("Render triggered:", props);
+            console.log("Row Data:", props.rowData); // rowData 확인
+            console.log("Grid Row:", props.grid.getRow(props.rowKey)); // 강제로 가져온 데이터 확인
+
+            const { grid, rowKey } = props;
+            const rowData = grid.getRow(rowKey); // 강제로 데이터 가져오기
+            const shouldHideButton = rowData?.hideButton || false;
+
+            this.el.style.display = shouldHideButton ? 'none' : 'inline-block';
+
+            // 텍스트 업데이트
+            if (props.value) {
                 this.updateText(props.value);
             }
+
         }
     }
 
@@ -139,30 +156,27 @@ if (typeof CustomTuiGrid === "undefined") {
                 // fitStyle 옵션에 따른 비율 조정
                 if (this.fitStyle === 'fill') {
                     setTimeout(function() {
-                        const containerWidth = self.grid.el.offsetWidth;
+                        const containerWidth = self.grid.el.offsetWidth - 10;
 
-                        // 모든 컬럼의 초기 width 합계 계산 (width가 0 또는 undefined인 컬럼 제외)
-                        const totalInitialWidth = self.columns.reduce((sum, column) => {
-                            return column.width > 0 ? sum + column.width : sum;
-                        }, 0);
+                        // visible이 true이고 width가 0보다 큰 컬럼만 포함
+                        const validColumns = self.columns.filter(column => column.visible !== false && column.width > 0);
+
+                        // 유효한 컬럼들의 너비 합계 계산
+                        const totalInitialWidth = validColumns.reduce((sum, column) => sum + column.width, 0);
 
                         if (totalInitialWidth === 0) {
-                            console.error('컬럼 너비 합계가 0입니다. 컬럼 너비를 확인하세요.');
+                            console.error('유효한 컬럼 너비 합계가 0입니다. 컬럼 설정을 확인하세요.');
                             return;
                         }
 
-                        // 각 컬럼의 비율에 맞춰 너비 조정 (width가 0인 경우 기본값 설정)
-                        self.columns.forEach(column => {
-                            if (column.width > 0) {
-                                const widthRatio = column.width / totalInitialWidth;
-                                column.width = Math.floor(containerWidth * widthRatio); // 비율에 맞게 너비 설정
-                            } else {
-                                column.width = 80; // 기본값으로 설정 (예: 80px)
-                            }
+                        // 각 컬럼의 비율에 맞춰 너비 조정
+                        validColumns.forEach(column => {
+                            const widthRatio = column.width / totalInitialWidth;
+                            column.width = Math.floor(containerWidth * widthRatio); // 비율에 따라 너비 설정
                         });
 
-                        self.grid.setColumns(self.columns);  // 업데이트된 컬럼 설정 반영
-                        self.grid.refreshLayout();  // 레이아웃 갱신
+                        self.grid.setColumns(self.columns); // 업데이트된 컬럼 설정 반영
+                        self.grid.refreshLayout(); // 레이아웃 갱신
                     }, 100);
                 }
 
