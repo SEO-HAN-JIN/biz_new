@@ -80,19 +80,50 @@
 
     </select>
 
+    <select id="createSettlementSeq">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
+        FROM SETTLEMENTMST
+        WHERE CONFIRM_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
+
     <insert id="confirmApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        UPDATE SETTLEMENT
-            SET CONFIRM_AMT = #{confirmAmt},
-                CONFIRM_RATE_AMT = #{confirmRateAmt},
-                SAVE_MILEAGE = #{saveMileage},
-                STATUS = '2'
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+        INSERT SETTLEMENTMST
+        (
+            CONFIRM_SEQ,
+            SETTLEMENT_SEQ,
+            USER_ID,
+            CONFIRM_AMT,
+            CONFIRM_MILEAGE,
+            CONFIRM_RATE_AMT,
+            CONFIRM_DATE,
+            CONFIRM_IND,
+            TAX_IND,
+            PAY_YM,
+            ATCH_ID,
+            REMARK
+        )
+        VALUES
+        (
+            #{confirmSeq},
+            #{settlementSeq},
+            #{userId},
+            #{confirmAmt},
+            #{confirmMileage},
+            #{confirmRateAmt},
+            #{confirmDate},
+            #{confirmInd},
+            #{taxInd},
+            #{payYm},
+            #{atchId},
+            #{remark}
+        )
     </insert>
 
     <delete id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
-        SELECT COUNT(*) FROM SETTLEMENT
+        SELECT COUNT(*) FROM SETTLEMENTMST
         WHERE SETTLEMENT_SEQ = #{settlementSeq}
         AND PAY_YM IS NOT NULL
         AND PAY_YM != ''
@@ -100,7 +131,7 @@
 
     <insert id="cancelApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        UPDATE SETTLEMENT
+        UPDATE SETTLEMENTMST
         SET CONFIRM_AMT = 0,
             CONFIRM_RATE_AMT = 0,
             SAVE_MILEAGE = 0,
