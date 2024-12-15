@@ -314,7 +314,6 @@
                                                 <legend class="float-none w-auto">판매정보</legend>
                                                 <div class="row g-3">
                                                     <input type="hidden" id="settlementSeq">
-                                                    <input type="hidden" id="prodTotalAmt">
                                                     <input type="hidden" id="incentiveRate">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
@@ -583,6 +582,7 @@
                 .addDate('dateWorkFrom', '작업시작일', 120, {})
                 .addDate('dateWorkTo', '작업종료일', 120, {})
                 .addDate('workDay', '작업일수', 80, {visible: false})
+                .addNumber('prodTotalAmt', '상품총액', 150, {visible: false})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
                     align: 'right',
                     textColor: 'red',
@@ -637,9 +637,6 @@
                 .add('expectRateAmt', '환불금액', 0, {
                     visible: false
                 })
-                .add('confirmAmt', '확정금액', 0, {
-                    visible: false
-                })
                 .add('confirmMileage', '적립마일리지', 0, {
                     visible: false
                 })
@@ -680,12 +677,12 @@
 
                         data.forEach(row => {
                             if(row.applyStatus == "02") {
-                                //row.hideButton = true;
-                                row.action = "승인완료";
+                                row.hideButton = true;
+                                row.action = "완료";
                             }
                             else {
-                                //row.hideButton = false;
-                                row.action = "승인대기";
+                                row.hideButton = false;
+                                row.action = "대기";
                             }
                         });
 
@@ -833,9 +830,8 @@
             }
             else {
 
-                // 영업이익 = 상품가 * 유입수 * 작업일수
-                var pordTotalAmt = Math.floor((focusedData.prodAmt * focusedData.inflowCnt * focusedData.workDay) * 1.1);
-                var costAmt = parseInt(focusedData.saleTotalAmt) - pordTotalAmt;
+                // 영업이익 = 판매총액 - 상품총액
+                var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
 
                 $("#costAmt").val(setComma(costAmt));
 
@@ -876,44 +872,22 @@
 
             var confirmInd = rsData.confirmInd;
 
+            // 승인여부
             if(confirmInd == "Y")
             {
                 $("#deposit_confirmAmt").attr('disabled', true);
                 $("#deposit_remark").attr('disabled', true);
+
+                $("#modalDepositRejectBtn").hide();
+                $("#modalDepositApprBtn").hide();
             }
             else {
                 $("#deposit_confirmAmt").attr('disabled', false);
                 $("#deposit_remark").attr('disabled', false);
+
+                $("#modalDepositRejectBtn").show();
+                $("#modalDepositApprBtn").show();
             }
-
-            $("#settlementSeq").val(rsData.settlementSeq);
-            $("#incentiveRate").val(rsData.incentiveRate);
-            $("#deposit_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
-            $("#deposit_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
-
-            // 부가세율 설정 (10% 부가세)
-            var vatRate = 1.1;
-
-            // 판매원가
-            var pordTotalAmt = Math.floor((rsData.prodAmt * rsData.inflowCnt * rsData.workDay) * vatRate);
-
-            $("#prodTotalAmt").val(pordTotalAmt);
-
-            var costAmt = parseInt(rsData.saleTotalAmt) - pordTotalAmt;
-
-            // 판매총액 (입금총액 - 적립마일리지)
-            var prodTotalAmt = rsData.confirmAmt - rsData.confirmMileage;
-
-            // 입금총액
-            $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
-            // 영업이익
-            $("#deposit_costAmt").val(formatNumber(costAmt));
-            // 확정수수료
-            $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
-            // 적립마일리지
-            $("#deposit_confirmMileage").val(formatNumber(rsData.confirmMileage));
-            // 판매총액 (입금총액 - 적립마일리지)
-            $("#deposit_confirmMaxAmt").val(formatNumber(prodTotalAmt));
 
             //환불
             if(rsData.refundInd == "Y")
@@ -927,13 +901,50 @@
                 $('#refundSet').hide();
             }
 
+
+            var settlementSeq = rsData.settlementSeq;   //정산요청ID
+            var incentiveRate = isNull(rsData.incentiveRate) ? 0.3 : rsData.incentiveRate;  //적용인센률
+            var prodTotalAmt = isNull(rsData.prodTotalAmt) ? 0 : rsData.prodTotalAmt;       //상품총액
+            var saleTotalAmt = isNull(rsData.saleTotalAmt) ? 0 : rsData.saleTotalAmt;       //판매총액
+            var expectRateAmt = isNull(rsData.expectRateAmt) ? 0 : rsData.expectRateAmt     //담당자수수료(예정)
+
+
+            $("#settlementSeq").val(settlementSeq);
+            $("#incentiveRate").val(incentiveRate);
+            $("#deposit_prodTotalAmt").val(formatNumber(prodTotalAmt));
+            $("#deposit_saleTotalAmt").val(formatNumber(saleTotalAmt));
+            $("#deposit_expectRateAmt").val(formatNumber(expectRateAmt));
+
+
+            var confirmAmt = isNull(rsData.confirmAmt) ? 0 : rsData.confirmAmt;                 //입금총액
+            var confirmMileage = isNull(rsData.confirmMileage) ? 0 : rsData.confirmMileage;     //적립수수료
+            var confirmRateAmt = isNull(rsData.confirmRateAmt) ? 0 : rsData.confirmRateAmt;     //확정수수료
+
+            // 부가세율 설정 (10% 부가세)
+            var vatRate = 1.1;
+
+            var costAmt = parseInt(saleTotalAmt) - parseInt(prodTotalAmt);
+
+            // 입금총액
+            $("#deposit_confirmAmt").val(formatNumber(confirmAmt));
+            // 영업이익
+            $("#deposit_costAmt").val(formatNumber(costAmt));
+            // 확정수수료
+            $("#deposit_confirmRateAmt").val(formatNumber(confirmRateAmt));
+            // 적립마일리지
+            $("#deposit_confirmMileage").val(formatNumber(confirmMileage));
+            // 판매총액 (입금총액 - 적립마일리지)
+            $("#deposit_confirmMaxAmt").val(formatNumber(confirmAmt - confirmMileage));
+
+
+
             $('#depositModal').modal('show');
         }
 
         function depositSum()
         {
             // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
-            var prodTotalAmt = removeComma($("#prodTotalAmt").val());
+            var prodTotalAmt = removeComma($("#deposit_prodTotalAmt").val());
 
             // 판매총액금액
             var saleTotalAmt = removeComma($("#deposit_saleTotalAmt").val());
@@ -962,7 +973,7 @@
             }
 
             // 데이터로 저장된 인센율을 문자열로 가져왔다고 가정
-            var incenRateStr = $("#incentiveRate").val() == "" ? 0.3 : $("#incentiveRate").val(); // 문자열로 저장된 0.3
+            var incenRateStr = $("#incentiveRate").val(); // 문자열로 저장된 0.3
 
             // 실수형으로 변환
             var incentiveRate = parseFloat(incenRateStr);

@@ -26,22 +26,19 @@
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
-            CAST(CASE
-                WHEN ST.CONFIRM_AMT > ST.SALE_TOTAL_AMT THEN ST.SALE_TOTAL_AMT
-                ELSE ST.CONFIRM_AMT
-            END AS UNSIGNED) AS CONFIRM_AMT,
-            CAST(CASE
-                WHEN ST.CONFIRM_AMT > ST.SALE_TOTAL_AMT THEN ST.SALE_TOTAL_AMT - (ST.PROD_AMT * ST.INFLOW_CNT * ST.WORK_DAY) * 1.1
-                ELSE ST.CONFIRM_AMT - (ST.PROD_AMT * ST.INFLOW_CNT * ST.WORK_DAY) * 1.1
-            END AS UNSIGNED) AS CONFIRM_COST_AMT,
-            ST.CONFIRM_RATE_AMT,
+            ST.SALE_TOTAL_AMT,
+            CAST(SM.CONFIRM_AMT - SM.CONFIRM_MILEAGE AS UNSIGNED) AS CONFIRM_AMT,
+            CAST((ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) * 1.1 AS UNSIGNED) AS CONFIRM_COST_AMT,
+            SM.CONFIRM_RATE_AMT,
             ST.REFUND_IND,
-            ST.ATCH_ID,
-            ST.STATUS,
+            SM.ATCH_ID,
+            ST.APPLY_STATUS,
             CD.CODE_NAME AS STATUS_NAME,
-            ST.TAX_IND,
-            ST.PAY_YM
+            SM.TAX_IND,
+            SM.PAY_YM
         FROM SETTLEMENT ST
+        JOIN SETTLEMENTMST SM
+            ON ST.SETTLEMENT_SEQ = SM.SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER CU
             ON ST.CUST_ID = CU.BIZ_NO
         LEFT JOIN TB_PRODUCTS PR
@@ -51,12 +48,11 @@
             ON ST.USER_ID = EP.EMP_ID
         LEFT JOIN CDBASE CD
             ON CD.PATTERN_CODE = 'SE02'
-        	AND ST.STATUS = CD.BASE_CODE
+        	AND ST.APPLY_STATUS = CD.BASE_CODE
         WHERE 1=1
         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
-        AND (ST.PAY_YM IS NULL OR ST.PAY_YM = '')
-        AND ST.STATUS = '2'
+        AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')

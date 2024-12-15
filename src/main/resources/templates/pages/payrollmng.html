@@ -121,7 +121,7 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label class="form-label">급여지급일</label>
-                                                        <input type="date" class="form-control" id="payrollDate" name="searchStartDate">
+                                                        <input type="month" class="form-control" id="payrollDate" name="searchStartDate">
                                                     </div>
                                                 </div>
                                             </fieldset>
@@ -135,10 +135,10 @@
                                                         <table class="table table-hover table-bordered mt-3 align-middle">
                                                             <thead class="bg-primary">
                                                             <tr>
-                                                                <th class="text-white">직원ID</th>
-                                                                <th class="text-white">직원명</th>
-                                                                <th class="text-white">총 판매액</th>
-                                                                <th class="text-white">총 판매수수료</th>
+                                                                <th class="text-white text-center">직원ID</th>
+                                                                <th class="text-white text-center">직원명</th>
+                                                                <th class="text-white text-center">정산금액</th>
+                                                                <th class="text-white text-center">정산수수료</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody id="payrollTable">
@@ -155,8 +155,8 @@
                                         <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 반영
+                                        <button type="button" class="btn btn-danger ms-1" id="modalSaveBtn">
+                                            <i class="bx bx-check"></i> 급여반영
                                         </button>
                                     </div>
                                 </div>
@@ -204,50 +204,41 @@
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('settlementSeq', '정산번호', 150, {})
-                .add('empName', '담당자', 150, {sortable: true})
-                .add('custName', '고객명', 250, {sortable: true})
-                .add('prodName', '상품명', 200, { align: 'center', sortable: true })
-                // .addNumber('prodAmt', '상품가', 100, { align: 'right'})
-                .addNumber('saleAmt', '판매가', 100, { align: 'right' })
+                .enableCheckbox(true) // 체크박스 활성화
+                .add('settlementSeq', '정산번호', 180, {})
+                .add('reqDate', '요청일', 120, {})
+                .add('empName', '담당자', 120, {sortable: true})
+                .add('custName', '고객명', 150, {sortable: true})
+                .add('prodName', '상품명', 150, { align: 'center', sortable: true })
+                .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
+                .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
                 .addNumber('inflowCnt', '유입수', 100, {})
-                .addDate('dateWorkFrom', '작업시작일', 150, {})
-                .addDate('dateWorkTo', '작업종료일', 150, {})
+                .addDate('dateWorkFrom', '작업시작일', 120, {})
+                .addDate('dateWorkTo', '작업종료일', 120, {})
                 .addDate('workDay', '작업일수', 100, {})
-                .addNumber('confirmAmt', '판매액', 200, {
+                .addNumber('saleTotalAmt', '판매금액', 180, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('confirmCostAmt', '영업이익', 200, {
+                .addNumber('confirmAmt', '승인금액', 180, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('confirmRateAmt', '정산수수료', 200, {
+                .addNumber('confirmRateAmt', '정산수수료', 150, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('payYm', '급여지급년월', 80, {})
-                .add('useMileage', '사용마일리지', 0, {
-                    visible: false
-                })
-                .add('saveMileage', '적립마일리지', 0, {
-                    visible: false
-                })
-                .add('incentiveRate', '직원 인센율', 0, {
-                    visible: false
-                })
-                .add('comfirmRateAmt', '확정수수료', 0, {
-                    visible: false
-                })
+                .add('payYm', '급여지급년월', 150, {})
+
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
@@ -278,7 +269,8 @@
         }
 
         const openPgmModal = () => {
-            var grid = paymentGrid.getGrid().getData();
+
+            var grid = paymentGrid.getCheckedRows();
 
             if (grid.length <= 0) {
                 alert("데이터가 없습니다.");
@@ -322,9 +314,11 @@
 
                 // 각 데이터 셀 추가
                 const userIdCell = document.createElement("td");
+                userIdCell.classList.add("text-center");
                 userIdCell.textContent = values.userId;
 
                 const empNameCell = document.createElement("td");
+                empNameCell.classList.add("text-center");
                 empNameCell.textContent = values.empName;
 
                 const totalConfirmAmtCell = document.createElement("td");
@@ -351,7 +345,7 @@
 
         const payroll = () => {
 
-            var params = paymentGrid.getGrid().getData();
+            var params = paymentGrid.getCheckedRows();
 
             // settlementDtoList 형식에 맞게 객체로 변환
             var requestData = {

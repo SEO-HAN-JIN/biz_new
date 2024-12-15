@@ -36,19 +36,19 @@ if (typeof CustomTuiGrid === "undefined") {
                 el.addEventListener('mouseout', () => {
                     el.style.backgroundColor = '#435EBE'; // 원래 색상
                 });
-
-                // 클릭 이벤트
-                el.addEventListener('click', () => {
-                    const grid = props.grid;
-                    const rowKey = props.rowKey;
-                    const rowData = grid.getRow(rowKey);
-
-                    const onClick = props.columnInfo.renderer.options.onClick;
-                    if (typeof onClick === 'function') {
-                        onClick(rowData, rowKey); // 클릭 이벤트 핸들러 호출
-                    }
-                });
             }
+
+            // 클릭 이벤트
+            el.addEventListener('click', () => {
+                const grid = props.grid;
+                const rowKey = props.rowKey;
+                const rowData = grid.getRow(rowKey);
+
+                const onClick = props.columnInfo.renderer.options.onClick;
+                if (typeof onClick === 'function') {
+                    onClick(rowData, rowKey); // 클릭 이벤트 핸들러 호출
+                }
+            });
 
             this.el = el;
         }
@@ -109,6 +109,7 @@ if (typeof CustomTuiGrid === "undefined") {
             this.fitStyle = 'none';  // 기본적으로 fitStyle은 'none'
             this.summaryOptions = {}; // 전체 summary 설정 저장
             this.data = []; // 현재 그리드 데이터 저장
+            this.rowHeaders = []; // 체크박스 관련 옵션 저장
             return this;
         }
 
@@ -120,7 +121,11 @@ if (typeof CustomTuiGrid === "undefined") {
                 return this;
             },
 
-
+            // 체크박스 활성화/비활성화 설정
+            enableCheckbox(enable = true) {
+                this.rowHeaders = enable ? ['checkbox'] : [];
+                return this;
+            },
 
             // 그리드 초기화 메소드
             init: function(el, data) {
@@ -137,6 +142,7 @@ if (typeof CustomTuiGrid === "undefined") {
                     header: {
                         height: 50
                     },
+                    rowHeaders: this.rowHeaders, // 체크박스 추가 여부
                     columns: this.columns,
                     rowHeight: 35,
                     bodyHeight: height, // HTML에서 가져온 height 값 사용
@@ -193,6 +199,33 @@ if (typeof CustomTuiGrid === "undefined") {
                 if (this.grid) {
                     this.data = data;  // 데이터 저장
                     this.grid.resetData(this.data);  // 데이터 리셋 및 요약 갱신
+                }
+            },
+
+            // 체크된 행 가져오기 메소드
+            getCheckedRows() {
+                if (this.grid) {
+                    return this.grid.getCheckedRows(); // 체크된 행 반환
+                }
+                return [];
+            },
+
+            // 체크된 행 모두 가져오기 메소드
+            checkAllRows() {
+                if (this.grid) {
+                    const rowCount = this.grid.getRowCount();
+                    for (let i = 0; i < rowCount; i++) {
+                        this.grid.check(i); // 모든 행 체크
+                    }
+                }
+            },
+
+            uncheckAllRows() {
+                if (this.grid) {
+                    const rowCount = this.grid.getRowCount();
+                    for (let i = 0; i < rowCount; i++) {
+                        this.grid.uncheck(i); // 모든 행 체크 해제
+                    }
                 }
             },
 
