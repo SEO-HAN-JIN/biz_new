@@ -37,7 +37,7 @@ public class ApplypaymentRestController {
     @PostMapping
     public int saveCustomer(@RequestBody SettlementDto settlementDto) {
         settlementDto.setReqGubun("AQ");        // 요청구분(SE01) : AQ(정산요청)
-        settlementDto.setApplyStatus("01");     // 승인여부(SE04) : 01(승인요청)
+        settlementDto.setApplyStatus("01");     // 승인상태(SE04) : 01(승인요청)
         return applypaymentService.saveApplypayment(settlementDto);
     }
 

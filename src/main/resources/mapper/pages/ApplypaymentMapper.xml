@@ -26,19 +26,19 @@
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.SALE_TOTAL_AMT,
+            ST.PROD_TOTAL_AMT,
             ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
-            ST.APPLY_GUBUN,
+            ST.GUBUN,
             ST.MILEAGE_USE_IND,
             IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
-            ST.SAVE_MILEAGE,
+            IFNULL(ST.EXIST_MILEAGE, 0)  AS CUR_EXIST_MILEAGE,
             ST.APPLY_STATUS,
-            C.CODE_NAME                 AS APPLY_STATUS_NAME,
-            IFNULL(ST.USE_MILEAGE,0)    AS CUR_USE_MILEAGE
+            C.CODE_NAME                 AS APPLY_STATUS_NAME
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CUST_ID         = CU.BIZ_NO
@@ -54,7 +54,8 @@
          AND ST.USER_ID = #{loginUserId}
          AND ST.REFUND_IND IS NULL
          AND ST.DATE_WORK_FROM <![CDATA[<=]]> #{searchEndDate}
-         AND ST.DATE_WORK_TO >= #{searchStartDate}
+         AND ST.DATE_WORK_TO    >= #{searchStartDate}
+         AND ST.REQ_GUBUN       = 'AQ'
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME LIKE CONCAT('%', #{custName}, '%')
         </if>
@@ -82,27 +83,26 @@
         , SALE_AMT
         , INFLOW_CNT
         , SALE_TOTAL_AMT
+        , PROD_TOTAL_AMT
         , EXPECT_AMT
         , EXPECT_RATE_AMT
         , DATE_WORK_FROM
         , DATE_WORK_TO
         , WORK_DAY
         , INCENTIVE_RATE
-        , APPLY_GUBUN
         , MILEAGE_USE_IND
         , USE_MILEAGE
-        , SAVE_MILEAGE
+        , EXIST_MILEAGE
         , REFUND_IND
         , REFUND_DATE
+        , REFUND_SALE_TOTAL_AMT
+        , REFUND_PROD_TOTAL_AMT
         , REFUND_SETTLEMENT_SEQ
-        , REFUND_GUBUN
-        , CONFIRM_AMT
-        , CONFIRM_RATE_AMT
+        , REFUND_EXPECT_AMT
+        , REFUND_EXPECT_RATE_AMT
+        , GUBUN
         , APPLY_STATUS
-        , TAX_IND
-        , PAY_YM
         , REQ_GUBUN
-        , ATCH_ID
         ) VALUES
         (
           #{settlementSeq}
@@ -114,27 +114,26 @@
         , #{saleAmt}
         , #{inflowCnt}
         , #{saleTotalAmt}
+        , #{prodTotalAmt}
         , #{expectAmt}
         , #{expectRateAmt}
         , #{dateWorkFrom}
         , #{dateWorkTo}
         , #{workDay}
         , #{incentiveRate}
-        , #{applyGubun}
         , #{mileageUseInd}
         , #{useMileage}
-        , #{saveMileage}
+        , #{existMileage}
         , #{refundInd}
         , #{refundDate}
+        , #{refundSaleTotalAmt}
+        , #{refundProdTotalAmt}
         , #{refundSettlementSeq}
-        , #{refundGubun}
-        , #{confirmAmt}
-        , #{confirmRateAmt}
+        , #{refundExpectAmt}
+        , #{refundExpectRateAmt}
+        , #{gubun}
         , #{applyStatus}
-        , #{taxInd}
-        , #{payYm}
         , #{reqGubun}
-        , #{atchId}
         )
     </insert>
 
@@ -171,10 +170,10 @@
              , DATE_WORK_TO     = #{dateWorkTo}
              , WORK_DAY         = #{workDay}
              , INCENTIVE_RATE   = #{incentiveRate}
-             , APPLY_GUBUN      = #{applyGubun}
+             , GUBUN             = #{gubun}
              , MILEAGE_USE_IND  = #{mileageUseInd}
              , USE_MILEAGE      = #{useMileage}
-             , SAVE_MILEAGE     = #{saveMileage}
+             , EXIST_MILEAGE     = #{existMileage}
              , REFUND_GUBUN     = #{refundGubun}
         WHERE SETTLEMENT_SEQ   = #{settlementSeq}
           AND PROD_ID          = #{prodId}
