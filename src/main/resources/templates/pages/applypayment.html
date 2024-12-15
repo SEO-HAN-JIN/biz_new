@@ -454,7 +454,7 @@
             var costAmt = saleTotalAmt - prodTotalAmt;
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor((costAmt * incentiveRate) / 1.1);
+            var rate = Math.floor((costAmt * incentiveRate) / vatRate);
 
             $("#expectRateAmt").val(formatNumber(rate));
             $("#saleTotalAmt").val(formatNumber(saleTotalAmt));

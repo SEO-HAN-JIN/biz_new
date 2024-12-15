@@ -95,6 +95,8 @@
         , EXIST_MILEAGE
         , REFUND_IND
         , REFUND_DATE
+        , REFUND_WORK_DAY
+        , REFUND_INFLOW_CNT
         , REFUND_SALE_TOTAL_AMT
         , REFUND_PROD_TOTAL_AMT
         , REFUND_SETTLEMENT_SEQ
@@ -126,6 +128,8 @@
         , #{existMileage}
         , #{refundInd}
         , #{refundDate}
+        , #{refundWorkDay}
+        , #{refundInflowCnt}
         , #{refundSaleTotalAmt}
         , #{refundProdTotalAmt}
         , #{refundSettlementSeq}
