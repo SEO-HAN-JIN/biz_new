@@ -105,6 +105,9 @@
              , DISPLAY_ORDER
           FROM CDBASE
         WHERE PATTERN_CODE   = #{patternCode}
+    <if test='groupCode != null  and groupCode != "" '>
+        AND GROUP_CODE = #{groupCode}
+    </if>
     </select>
 
     <update id="updateCdbase">

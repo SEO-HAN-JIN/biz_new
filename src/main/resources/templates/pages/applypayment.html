@@ -198,14 +198,15 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">요청구분</label>
-                                                            <select id="applyGubun" name="applyGubun" class="form-select form-control-sm">
+                                                            <select id="gubun" name="gubun" class="form-select form-control-sm">
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <input type="hidden" id="settlementSeq" name="settlementSeq">
                                                     <input type="hidden" id="expectAmt" name="expectAmt">
+                                                    <input type="hidden" id="prodTotalAmt" name="prodTotalAmt">
                                                     <input type="hidden" id="incentiveRate" name="incentiveRate">
-                                                    <input type="hidden" id="curUseMileage" name="curUseMileage">
+                                                    <input type="hidden" id="existMileage" name="existMileage">
                                                 </div>
                                             </fieldset>
 
@@ -226,7 +227,7 @@
                                                             <span class="input-group-text"
                                                                   id="basic-addon1">잔여킵금액</span>
                                                             <input type="text" class="form-control is-num text-end"
-                                                                   id="custKeepAmt" name="custKeepAmt" aria-describedby="basic-addon1"
+                                                                   id="curExistMileage" name="curExistMileage" aria-describedby="basic-addon1"
                                                                    disabled>
                                                         </div>
                                                     </div>
@@ -269,7 +270,6 @@
         let paymentGrid;
         let $isNew = 'N';
         let _incentiveRate;
-        let _custKeepAmt;
 
         let _userId;
         let _userNm;
@@ -299,7 +299,7 @@
         const findInitCodes = async () => {
             const param =
                 [
-                    {"patternCode": "SE02"}
+                    {"patternCode": "SE02", "groupCode": "A"}
                 ];
 
             const result = await CommonJs.initFindCodes(param);
@@ -313,7 +313,7 @@
                 items: result.SE02,
                 placeholder: '선택'
             };
-            $("#applyGubun").addOptions(options);
+            $("#gubun").addOptions(options);
         }
 
         const findIncentiveRate = () => {
@@ -358,7 +358,7 @@
 
             // 고객 정보 변경할 때마다 마일리지 금액 가져오기
             $("#custId").on("change", function () {
-                findCustKeepAmt(this.value);
+                findExistMileage(this.value);
             })
 
             // 상품 정보 변경할 때마다 상품가 가져오기
@@ -380,7 +380,7 @@
             })
         }
 
-        const findCustKeepAmt = (param) => {
+        const findExistMileage = (param) => {
             var params = {
                 bizNo: param
             };
@@ -392,7 +392,8 @@
                 success: (result) => {
                     if(!isNull(result))
                     {
-                        $("#custKeepAmt").val(setComma(result.mileage));
+                        $("#curExistMileage").val(setComma(result.mileage));
+                        $("#existMileage").val(setComma(result.mileage));
                     }
                 }
             });
@@ -415,7 +416,7 @@
             }
 
             $("#useMileage").on("input", function () {
-                var keepAmt = removeComma($("#custKeepAmt").val());
+                var keepAmt = removeComma($("#curExistMileage").val());
                 var useAmt = removeComma($("#useMileage").val());
                 var saleTotalAmt = removeComma($("#saleTotalAmt").val());
 
@@ -453,10 +454,11 @@
             var costAmt = saleTotalAmt - prodTotalAmt;
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor(costAmt * incentiveRate);
+            var rate = Math.floor((costAmt * incentiveRate) / 1.1);
 
             $("#expectRateAmt").val(formatNumber(rate));
             $("#saleTotalAmt").val(formatNumber(saleTotalAmt));
+            $("#prodTotalAmt").val(formatNumber(prodTotalAmt));
 
             // expectAmt 재계산
             let useMileage = removeComma($("#useMileage").val());
@@ -498,17 +500,22 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }
                 })
-                .addNumber('confirmAmt', '실제입금액', 200, {align: 'right', textColor: 'red', comma: true})
+                .addNumber('expectRateAmt', '예상정산금액', 200, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }
+                })
                 .add('applyStatusName', '진행상태', 150, {})
-
                 .add('prodId', '상품ID', 'auto', {visible: false})
                 .add('custId', '고객ID', 'auto', {visible: false})
                 .add('expectAmt', '예상정산금액', 'auto', {visible: false})
-                .add('expectRateAmt', '예정수수료', 'auto', {visible: false})
                 .add('mileageUseInd', '킵사용', 'auto', {visible: false})
                 .add('useMileage', '킵사용금액', 'auto', {visible: false})
                 .add('applyStatus', '승인상태', 'auto', {visible: false})
-                .add('curUseMileage', '현재사용중인마일리지', 'auto', {visible: false})
+                .add('existMileage', '기존마일리지', 'auto', {visible: false})
             ;
 
             paymentGrid = columns.init('paymentGrid', [])
@@ -573,8 +580,6 @@
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
                 const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
 
-                findCustKeepAmt(data.custId);
-
                 $('#paymentModal').bindForm(data);
 
                 // 승인요청인 경우 수정 가능
@@ -603,7 +608,7 @@
             $("#dateWorkTo").attr('disabled', flag);
             $("#saleAmt").attr('disabled', flag);
             $("#inflowCnt").attr('disabled', flag);
-            $("#applyGubun").attr('disabled', flag);
+            $("#gubun").attr('disabled', flag);
             $("#mileageUseInd").attr('disabled', flag);
             $("#useMileage").attr('disabled', flag);
 
@@ -685,7 +690,7 @@
                 return false;
             }
 
-            if (isNull(param.applyGubun)) {
+            if (isNull(param.gubun)) {
                 alert("요청구분을 선택해주세요");
                 return false;
             }

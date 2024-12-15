@@ -117,14 +117,7 @@ public class ApplypaymentService {
         int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
         int useMileage = Integer.parseInt(settlementDto.getUseMileage());       // 새로 기입한 마일리지
         int restMileage;
-        int newMileage; // 기존 값 변경시만 적용됨
-        if ("C".equals(rowStatus)) {
-           restMileage = existMileage - useMileage;
-        } else {
-            int curUseMileage = Integer.parseInt(settlementDto.getCurUseMileage()); // 기존 사용 마일리지
-            newMileage = curUseMileage - useMileage ; // 새로기입한마일리지 - 기존사용마일리지
-            restMileage = existMileage + newMileage;
-        }
+        restMileage = existMileage - useMileage;
 
         if (restMileage < 0) {
             NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.KOREA);

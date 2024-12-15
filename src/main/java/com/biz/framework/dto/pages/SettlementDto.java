@@ -19,28 +19,26 @@ public class SettlementDto extends BaseDto {
     private String saleAmt;         // 판매가
     private String inflowCnt;       // 유입수
     private String saleTotalAmt;    // 판매총액
+    private String prodTotalAmt;    // 상품가액
     private String expectAmt;       // 입금예정금액(환불금액)
     private String expectRateAmt;   // 예정수수료(환불수수료)
     private String dateWorkFrom;    // 작업시작일
     private String dateWorkTo;      // 작업종료일
     private String workDay;         // 작업일
     private String incentiveRate;   // 직원인센티브율
-    private String applyGubun;      // (정산)요청구분(신규,연장)
     private String mileageUseInd;   // (정산)마일리지 사용여부
     private String useMileage;      // (정산)마일리지 사용 금액
-    private String saveMileage;     // (정산,환불)마일리지 적립 금액
+    private String existMileage;     // 정산_기존마일리지
     private String refundInd;       // (환불)여부
+    private String refundDate;      // 환불_요청일
+    private String refundSaleTotalAmt;
+    private String refundProdTotalAmt;
     private String refundSettlementSeq; //(환불)요청시 정산내역ID
-    private String refundGubun;     // (환불)요청구분(전액환불,환불킵)
-    private String confirmAmt;      // (승인)실제 확정 입금액
-    private String confirmRateAmt;  // (승인)정산확정수수료
-    private String applyStatus;     // (승인)승인여부
-    private String taxInd;          // (승인)세금계산서발행여부
-    private String payYm;           // (승인)급여년월
+    private String refundExpectAmt;
+    private String refundExpectRateAmt;
+    private String gubun;
+    private String applyStatus;
     private String reqGubun;        // 요청구분
-    private String atchId;          // 첨부ID
-    private String curUseMileage;
-    private String refundDate;
 
     private String searchStartDate;
     private String searchEndDate;
