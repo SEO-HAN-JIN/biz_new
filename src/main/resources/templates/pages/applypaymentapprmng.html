@@ -498,7 +498,7 @@
                 return false;
             }
 
-            if (confirm("입금확인 처리하시겠습니까?")) {
+            if (confirm("승인 처리하시겠습니까?")) {
                 return new Promise((resolve, reject) => {
                     $.ajax({
                         url: apiUrl,
@@ -768,36 +768,36 @@
             }
         }
 
-        const fn_deletePaymentGrid = () => {
-            const focusedCell = paymentGrid.getFocusedCell();
-            if (isNull(focusedCell)) {
-                alert("삭제할 행을 선택해주세요.");
-                return;
-            }
-
-            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
-            if (confirmResult) {
-                const focusRow = paymentGrid.getRow(focusedCell.rowKey);
-                let params = {
-                    menuId : focusRow.menuId
-                }
-                $.ajax({
-                    url: apiUrl + "/up/list",
-                    data: JSON.stringify(params),
-                    contentType:'application/json',
-                    type: 'DELETE',
-                    success: (result) => {
-                        if (result > 0) {
-                            alert("삭제가 완료되었습니다.");
-                            search();
-                        } else {
-                            alert("삭제에 실패하였습니다.");
-                            search();
-                        }
-                    }
-                })
-            }
-        }
+        // const fn_deletePaymentGrid = () => {
+        //     const focusedCell = paymentGrid.getFocusedCell();
+        //     if (isNull(focusedCell)) {
+        //         alert("삭제할 행을 선택해주세요.");
+        //         return;
+        //     }
+        //
+        //     const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        //     if (confirmResult) {
+        //         const focusRow = paymentGrid.getRow(focusedCell.rowKey);
+        //         let params = {
+        //             menuId : focusRow.menuId
+        //         }
+        //         $.ajax({
+        //             url: apiUrl + "/up/list",
+        //             data: JSON.stringify(params),
+        //             contentType:'application/json',
+        //             type: 'DELETE',
+        //             success: (result) => {
+        //                 if (result > 0) {
+        //                     alert("삭제가 완료되었습니다.");
+        //                     search();
+        //                 } else {
+        //                     alert("삭제에 실패하였습니다.");
+        //                     search();
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
 
         const openPgmModal = () => {
 
@@ -863,9 +863,6 @@
             $("#incentiveRate").val(rsData.incentiveRate);
             $("#deposit_saleTotalAmt").val(formatNumber(rsData.saleTotalAmt));
             $("#deposit_expectRateAmt").val(formatNumber(rsData.expectRateAmt));
-
-            // $("#deposit_userId").val(rsData.userId);
-            // $("#deposit_custId").val(rsData.custId);
 
             // 부가세율 설정 (10% 부가세)
             var vatRate = 1.1;
@@ -937,7 +934,7 @@
             var incentiveRate = parseFloat(incenRateStr);
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor(costAmt * incentiveRate);
+            var rate = Math.floor(costAmt * incentiveRate) / 1.1;
 
             $("#deposit_confirmRateAmt").val(setComma(rate));
         }

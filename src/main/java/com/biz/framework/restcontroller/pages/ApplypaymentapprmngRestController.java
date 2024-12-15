@@ -3,6 +3,7 @@ package com.biz.framework.restcontroller.pages;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.SettlementDto;
+import com.biz.framework.dto.pages.SettlementmstDto;
 import com.biz.framework.service.pages.ApplypaymentService;
 import com.biz.framework.service.pages.ApplypaymentapprmngService;
 import com.biz.framework.service.pages.EmpService;
@@ -26,12 +27,12 @@ public class ApplypaymentapprmngRestController {
 
     /* 요청 승인 */
     @PostMapping
-    public int confirmApplypayment(@RequestBody SettlementDto settlementDto) {
-        return applypaymentapprmngService.confirmApplypayment(settlementDto);
+    public int confirmApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
+        return applypaymentapprmngService.confirmApplypayment(settlementmstDto);
     }
 
     @PostMapping("/cancel")
-    public int cancelApplypayment(@RequestBody SettlementDto settlementDto) {
-        return applypaymentapprmngService.cancelApplypayment(settlementDto);
+    public int cancelApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
+        return applypaymentapprmngService.cancelApplypayment(settlementmstDto);
     }
 }

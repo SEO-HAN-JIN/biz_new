@@ -52,11 +52,7 @@
            #{bizNo},
            #{empId},
            -- 이전 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
-           (
-               SELECT COALESCE(MAX(MILEAGE_AFT), 0)
-               FROM TB_MILEAGE_HIS
-               WHERE BIZ_NO = #{bizNo} AND EMP_ID = #{empId}
-           ),
+           #{mileageAmt},
            -- 누적 마일리지 : 이전 마일리지 + savemileage
            (
                SELECT COALESCE(MAX(MILEAGE_AFT), 0)
