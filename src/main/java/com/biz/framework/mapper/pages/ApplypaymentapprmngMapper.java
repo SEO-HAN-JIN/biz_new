@@ -15,9 +15,15 @@ public interface ApplypaymentapprmngMapper {
 
     String createConfirmSeq(SettlementmstDto settlementmstDto);
 
-    int confirmApplypayment(SettlementmstDto settlementmstDto);
+    int confirmApplypaymentmst(SettlementmstDto settlementmstDto);
+
+    int updateSettlement(SettlementDto settlementDto);
 
     int checkPayrollInd(SettlementmstDto settlementmstDto);
 
+    int checkSettlementmst(SettlementmstDto settlementmstDto);
+
     int cancelApplypayment(SettlementmstDto settlementmstDto);
+
+    SettlementDto findSettlement(SettlementmstDto settlementmstDto);
 }

@@ -20,7 +20,6 @@
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.SALE_TOTAL_AMT,
-            -- ST.REQ_GUBUN,
             ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
@@ -28,10 +27,7 @@
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.USE_MILEAGE,
-            ST.CONFIRM_AMT,
-            ST.CONFIRM_RATE_AMT,
             DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
-            ST.ATCH_ID,
             ST.REQ_GUBUN,
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
@@ -39,9 +35,18 @@
             ST.REFUND_IND,
             ST.REFUND_GUBUN,
             CD3.CODE_NAME AS REFUND_GUBUN_NAME,
-            ST.TAX_IND,
-            ST.PAY_YM
+            SM.CONFIRM_AMT,
+            SM.CONFIRM_MILEAGE,
+            SM.CONFIRM_RATE_AMT,
+            SM.CONFIRM_DATE,
+            SM.CONFIRM_IND,
+            SM.TAX_IND,
+            SM.PAY_YM,
+            SM.ATCH_ID,
+            SM.REMARK
         FROM SETTLEMENT ST
+        LEFT JOIN SETTLEMENTMST SM
+            ON ST.SETTLEMENT_SEQ = SM.SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER CU
             ON ST.CUST_ID = CU.BIZ_NO
         LEFT JOIN TB_PRODUCTS PR
@@ -80,14 +85,14 @@
 
     </select>
 
-    <select id="createSettlementSeq">
+    <select id="createConfirmSeq">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
         SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
         FROM SETTLEMENTMST
         WHERE CONFIRM_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
     </select>
 
-    <insert id="confirmApplypayment">
+    <insert id="confirmApplypaymentmst">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
         INSERT SETTLEMENTMST
         (
@@ -112,8 +117,8 @@
             #{confirmAmt},
             #{confirmMileage},
             #{confirmRateAmt},
-            #{confirmDate},
-            #{confirmInd},
+            DATE_FORMAT(NOW(), '%Y-%m-%d'),
+            'Y',
             #{taxInd},
             #{payYm},
             #{atchId},
@@ -121,22 +126,42 @@
         )
     </insert>
 
-    <delete id="checkPayrollInd">
+    <select id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
         SELECT COUNT(*) FROM SETTLEMENTMST
         WHERE SETTLEMENT_SEQ = #{settlementSeq}
         AND PAY_YM IS NOT NULL
         AND PAY_YM != ''
-    </delete>
+    </select>
+
+    <select id="checkSettlementmst" resultType="int">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
+        SELECT COUNT(*) FROM SETTLEMENTMST
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+    </select>
 
     <insert id="cancelApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        UPDATE SETTLEMENTMST
-        SET CONFIRM_AMT = 0,
-            CONFIRM_RATE_AMT = 0,
-            SAVE_MILEAGE = 0,
-            STATUS = '3'
+        DELETE FROM SETTLEMENTMST
         WHERE SETTLEMENT_SEQ = #{settlementSeq}
     </insert>
+
+    <select id="findSettlement" resultType="com.biz.framework.dto.pages.SettlementDto">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findSettlement */
+        SELECT
+            SETTLEMENT_SEQ,
+            USER_ID,
+            CUST_ID,
+            PROD_ID,
+            INCENTIVE_RATE
+        FROM SETTLEMENT
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+    </select>
+
+    <update id="updateSettlement">
+        UPDATE SETTLEMENT
+        SET APPLY_STATUS = #{applyStatus}
+        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+    </update>
 
 </mapper>

@@ -22,6 +22,7 @@ public class SettlementmstDto extends BaseDto {
     private String taxInd;          // 세금계산서발행여부
     private String payYm;           // 급여년월
     private String reqGubun;        // 요청구분
+    private String atchId;          // 첨부ID
     private String remark;
 
     

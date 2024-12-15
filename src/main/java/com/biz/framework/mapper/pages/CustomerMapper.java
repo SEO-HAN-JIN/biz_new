@@ -22,4 +22,6 @@ public interface CustomerMapper {
     int findMileageByBizNo(String bizNo);
 
     void updateMileage(@Param("bizNo") String bizNo, @Param("mileage") int mileage);
+
+    void updateFinalMileage(@Param("bizNo") String bizNo, @Param("mileage") int mileage);
 }

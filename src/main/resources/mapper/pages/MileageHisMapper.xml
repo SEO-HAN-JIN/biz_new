@@ -51,7 +51,7 @@
         SELECT
            #{bizNo},
            #{empId},
-           -- 이전 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
+           -- 사용 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
            #{mileageAmt},
            -- 누적 마일리지 : 이전 마일리지 + savemileage
            (
@@ -65,5 +65,6 @@
        FROM DUAL
 
     </insert>
+
 
 </mapper>

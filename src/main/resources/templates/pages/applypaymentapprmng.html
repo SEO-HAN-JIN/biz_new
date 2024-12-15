@@ -316,20 +316,25 @@
                                                     <input type="hidden" id="settlementSeq">
                                                     <input type="hidden" id="prodTotalAmt">
                                                     <input type="hidden" id="incentiveRate">
-                                                    <input type="hidden" id="saveMileage">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품총액</label>
+                                                            <input type="text" id="deposit_prodTotalAmt"  class="form-control is-num text-end" name="deposit_prodTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">판매총액</label>
                                                             <input type="text" id="deposit_saleTotalAmt"  class="form-control is-num text-end" name="deposit_saleTotalAmt" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">영업이익</label>
                                                             <input type="text" id="deposit_costAmt"  class="form-control is-num text-end" name="deposit_costAmt" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자정산금액</label>
                                                             <input type="text" id="deposit_expectRateAmt" class="form-control is-num text-end" name="deposit_expectRateAmt" disabled>
@@ -349,25 +354,19 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">판매총액</label>
-                                                            <input type="text" id="deposit_prodTotalAmt" class="form-control is-num text-end" name="deposit_prodTotalAmt" disabled>
+                                                            <input type="text" id="deposit_confirmMaxAmt" class="form-control is-num text-end" name="deposit_confirmMaxAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">마일리지적립금액</label>
-                                                            <input type="text" id="deposit_saveMileage" class="form-control is-num text-end" name="deposit_saveMileage" disabled>
+                                                            <input type="text" id="deposit_confirmMileage" class="form-control is-num text-end" name="deposit_confirmMileage" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">담당자정산 확정금액</label>
                                                             <input type="text" id="deposit_confirmRateAmt" class="form-control is-num text-end" name="deposit_confirmRateAmt" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            <label class="form-label">비고</label>
-                                                            <textarea class="form-control" name="deposit_remark" rows="3"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -393,10 +392,14 @@
                                                             <input type="text" id="deposit_expectAmt" class="form-control is-num text-end" name="deposit_expectAmt" disabled>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="border p-3 rounded mt-4">
+                                                <legend class="float-none w-auto">비고</legend>
+                                                <div class="row g-3">
                                                     <div class="col-md-12">
                                                         <div class="form-group">
-                                                            <label class="form-label">비고</label>
-                                                            <textarea class="form-control" name="deposit_remark" rows="3"></textarea>
+                                                            <textarea class="form-control" id="deposit_remark" name="deposit_remark" rows="3"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -457,20 +460,20 @@
         }
 
 
-        function selectKeepInd(obj) {
-
-            var keepInd = obj.value;
-
-            var inputElement = modalElement.querySelector("#custKeepUseAmt");
-
-            if (keepInd === "Y") {
-                // Enable the element
-                $(inputElement).prop("disabled", false);
-            } else {
-                // Disable the element
-                $(inputElement).prop("disabled", true);
-            }
-        }
+        // function selectKeepInd(obj) {
+        //
+        //     var keepInd = obj.value;
+        //
+        //     var inputElement = modalElement.querySelector("#custKeepUseAmt");
+        //
+        //     if (keepInd === "Y") {
+        //         // Enable the element
+        //         $(inputElement).prop("disabled", false);
+        //     } else {
+        //         // Disable the element
+        //         $(inputElement).prop("disabled", true);
+        //     }
+        // }
 
         const apprDeposit = () => {
 
@@ -634,6 +637,21 @@
                 .add('expectRateAmt', '환불금액', 0, {
                     visible: false
                 })
+                .add('confirmAmt', '확정금액', 0, {
+                    visible: false
+                })
+                .add('confirmMileage', '적립마일리지', 0, {
+                    visible: false
+                })
+                .add('confirmrRateAmt', '확정수수료', 0, {
+                    visible: false
+                })
+                .add('confirmDate', '승인일자', 0, {
+                    visible: false
+                })
+                .add('remark', '환불금액', 0, {
+                    visible: false
+                })
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
@@ -662,11 +680,11 @@
 
                         data.forEach(row => {
                             if(row.applyStatus == "02") {
-                                row.hideButton = true;
+                                //row.hideButton = true;
                                 row.action = "승인완료";
                             }
                             else {
-                                row.hideButton = false;
+                                //row.hideButton = false;
                                 row.action = "승인대기";
                             }
                         });
@@ -856,8 +874,17 @@
 
         const openDepositModal = (rsData) => {
 
-            //var modalName = rsData.refundInd == "Y" ? "refund" : "deposit";
+            var confirmInd = rsData.confirmInd;
 
+            if(confirmInd == "Y")
+            {
+                $("#deposit_confirmAmt").attr('disabled', true);
+                $("#deposit_remark").attr('disabled', true);
+            }
+            else {
+                $("#deposit_confirmAmt").attr('disabled', false);
+                $("#deposit_remark").attr('disabled', false);
+            }
 
             $("#settlementSeq").val(rsData.settlementSeq);
             $("#incentiveRate").val(rsData.incentiveRate);
@@ -874,12 +901,19 @@
 
             var costAmt = parseInt(rsData.saleTotalAmt) - pordTotalAmt;
 
-            // 판매총액
+            // 판매총액 (입금총액 - 적립마일리지)
+            var prodTotalAmt = rsData.confirmAmt - rsData.confirmMileage;
+
+            // 입금총액
             $("#deposit_confirmAmt").val(formatNumber(rsData.confirmAmt));
             // 영업이익
             $("#deposit_costAmt").val(formatNumber(costAmt));
-            // 담당자수수료
+            // 확정수수료
             $("#deposit_confirmRateAmt").val(formatNumber(rsData.confirmRateAmt));
+            // 적립마일리지
+            $("#deposit_confirmMileage").val(formatNumber(rsData.confirmMileage));
+            // 판매총액 (입금총액 - 적립마일리지)
+            $("#deposit_confirmMaxAmt").val(formatNumber(prodTotalAmt));
 
             //환불
             if(rsData.refundInd == "Y")
@@ -912,19 +946,19 @@
 
             // 실제입금금액이 판매총액보다 크면 차익분은 고객 마일리지로 적립
             if(parseInt(saleTotalAmt) < parseInt(confirmAmt)) {
-                const saveMileage = confirmAmt - saleTotalAmt;
+                const confirmMileage = confirmAmt - saleTotalAmt;
 
-                $("#saveMileage").val(saveMileage);
+                //$("#saveMileage").val(confirmMileage);
 
-                $("#deposit_prodTotalAmt").val(setComma(saleTotalAmt));
-                $("#deposit_saveMileage").val(setComma(saveMileage));
+                $("#deposit_confirmMaxAmt").val(setComma(saleTotalAmt));
+                $("#deposit_confirmMileage").val(setComma(confirmMileage));
 
                 costAmt = saleTotalAmt - prodTotalAmt;
             }
             else
             {
-                $("#deposit_prodTotalAmt").val(setComma(confirmAmt));
-                $("#deposit_saveMileage").val(0);
+                $("#deposit_confirmMaxAmt").val(setComma(confirmAmt));
+                $("#deposit_confirmMileage").val(0);
             }
 
             // 데이터로 저장된 인센율을 문자열로 가져왔다고 가정
@@ -934,7 +968,7 @@
             var incentiveRate = parseFloat(incenRateStr);
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor(costAmt * incentiveRate) / 1.1;
+            var rate = Math.floor((costAmt * incentiveRate) / 1.1) ;
 
             $("#deposit_confirmRateAmt").val(setComma(rate));
         }
