@@ -58,6 +58,7 @@
         SELECT CD.PATTERN_CODE
              , CD.BASE_CODE
              , CD.CODE_NAME
+             , CD.GROUP_CODE
              , CD.DISPLAY_ORDER
           FROM CDBASE               CD
          WHERE CD.PATTERN_CODE      = #{patternCode}
@@ -78,11 +79,13 @@
             PATTERN_CODE
             , BASE_CODE
             , CODE_NAME
+            , GROUP_CODE
             , DISPLAY_ORDER
         ) VALUES (
             #{patternCode}
             , #{baseCode}
             , #{codeName}
+            , #{groupCode}
             , #{displayOrder}
         )
     </insert>
@@ -108,6 +111,7 @@
         /* com.biz.framework.mapper.system.CodeMapper.updateCdbase */
         UPDATE CDBASE
           SET CODE_NAME         = #{codeName}
+            , GROUP_CODE        = #{groupCode}
             , DISPLAY_ORDER     = #{displayOrder}
         WHERE PATTERN_CODE      = #{patternCode}
           AND BASE_CODE         = #{baseCode}

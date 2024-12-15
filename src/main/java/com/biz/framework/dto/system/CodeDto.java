@@ -18,6 +18,7 @@ public class CodeDto extends BaseDto {
     private String baseCode;
     private String codeName;
     private String displayOrder;
+    private String groupCode;
 
     private List<CodeDto> cdbaseList;
 }
