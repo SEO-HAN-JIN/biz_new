@@ -15,10 +15,16 @@
             EP.EMP_NAME,
             ST.CUST_ID,
             CU.CUST_NAME,
+            ST.REFUND_WORK_DAY,
             ST.REQ_DATE,
-            ST.PROD_AMT,
-            ST.SALE_AMT,
-            ST.INFLOW_CNT,
+            ST2.PROD_AMT,
+            ST2.SALE_AMT,
+            ST.REFUND_INFLOW_CNT,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_EXPECT_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
+            ST2.INFLOW_CNT,
             ST2.SALE_TOTAL_AMT,
             ST.SALE_TOTAL_AMT   AS REFUND_SALE_TOTAL_AMT,
             ST.EXPECT_AMT,
@@ -31,14 +37,11 @@
             ST.WORK_DAY     AS REFUND_WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.REFUND_IND,
-            ST.ATCH_ID,
             ST.APPLY_STATUS,
-            ST.TAX_IND,
-            ST.PAY_YM,
             ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
-            CD.CODE_NAME    AS REFUND_GUBUN_NAME,
-            ST.REFUND_GUBUN,
+            CD.CODE_NAME    AS GUBUN_NAME,
+            ST.GUBUN,
             SE04.CODE_NAME      AS APPLY_STATUS_NAME
         FROM SETTLEMENT         ST      -- 환불요청
         LEFT JOIN SETTLEMENT    ST2     -- 전산요청
@@ -51,8 +54,8 @@
         LEFT JOIN TB_EMP        EP
           ON ST.USER_ID         = EP.EMP_ID
         LEFT JOIN CDBASE 	    CD
-          ON CD.PATTERN_CODE    = 'SE03'
-         AND CD.BASE_CODE	    = ST.REFUND_GUBUN
+          ON CD.PATTERN_CODE    = 'SE02'
+         AND CD.BASE_CODE	    = ST.GUBUN
         LEFT JOIN CDBASE        SE04
           ON SE04.PATTERN_CODE  = 'SE04'
          AND SE04.BASE_CODE     = ST.APPLY_STATUS
@@ -69,7 +72,7 @@
     </select>
 
     <select id="findSettlement">
-        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findSettlement */
+        /* com.biz.framework.mapper.pages.RefundMapper.findSettlement */
         SELECT ST.SETTLEMENT_SEQ
              , ST.PROD_ID
              , PR.PROD_NAME
@@ -85,16 +88,12 @@
              , ST.REQ_GUBUN
              , ST.EXPECT_AMT
              , ST.EXPECT_RATE_AMT
-             , ST.CONFIRM_AMT
-             , ST.CONFIRM_RATE_AMT
              , ST.USE_MILEAGE
-             , ST.SAVE_MILEAGE
              , DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM
              , DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO
              , ST.WORK_DAY
              , IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE
              , ST.REFUND_IND
-             , ST.ATCH_ID
              , CD.CODE_NAME         AS STATUS_NAME
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU

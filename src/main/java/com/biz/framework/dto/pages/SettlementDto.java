@@ -31,6 +31,8 @@ public class SettlementDto extends BaseDto {
     private String existMileage;     // 정산_기존마일리지
     private String refundInd;       // (환불)여부
     private String refundDate;      // 환불_요청일
+    private String refundWorkDay;
+    private String refundInflowCnt;
     private String refundSaleTotalAmt;
     private String refundProdTotalAmt;
     private String refundSettlementSeq; //(환불)요청시 정산내역ID
