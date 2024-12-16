@@ -100,7 +100,6 @@
         , REFUND_SALE_TOTAL_AMT
         , REFUND_PROD_TOTAL_AMT
         , REFUND_SETTLEMENT_SEQ
-        , REFUND_EXPECT_AMT
         , REFUND_EXPECT_RATE_AMT
         , GUBUN
         , APPLY_STATUS
@@ -133,7 +132,6 @@
         , #{refundSaleTotalAmt}
         , #{refundProdTotalAmt}
         , #{refundSettlementSeq}
-        , #{refundExpectAmt}
         , #{refundExpectRateAmt}
         , #{gubun}
         , #{applyStatus}

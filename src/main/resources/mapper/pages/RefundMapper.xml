@@ -22,7 +22,6 @@
             ST.REFUND_INFLOW_CNT,
             ST.REFUND_SALE_TOTAL_AMT,
             ST.REFUND_PROD_TOTAL_AMT,
-            ST.REFUND_EXPECT_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
             ST2.INFLOW_CNT,
             ST2.SALE_TOTAL_AMT,

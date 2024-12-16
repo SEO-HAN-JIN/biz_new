@@ -199,7 +199,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">환불금액</label>
-                                                        <input type="text" id="_refundModal_refundExpectAmt" class="form-control is-num text-end" name="refundExpectAmt" disabled>
+                                                        <input type="text" id="_refundModal_refundSaleTotalAmt" class="form-control is-num text-end" name="refundSaleTotalAmt" disabled>
                                                     </div>
                                                 </div>
                                             </div>
@@ -218,7 +218,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <input type="hidden" id="_refundModal_refundSaleTotalAmt" name="refundSaleTotalAmt">
                                             <input type="hidden" id="_refundModal_refundProdTotalAmt" name="refundProdTotalAmt">
                                         </fieldset>
                                     </div>
@@ -431,7 +430,7 @@
                 alert("환불요청일은 정산요청의 작업시작일과 작업종료일 사이어야 합니다.");
                 $("#" + refundModalPrefix + "refundDate").val('');
                 $("#" + refundModalPrefix + "refundWorkDay").val('');
-                $("#" + refundModalPrefix + "refundExpectAmt").val('');
+                $("#" + refundModalPrefix + "refundSaleTotalAmt").val('');
                 $("#" + refundModalPrefix + "refundExpectRateAmt").val('');
                 return;
             }
@@ -465,10 +464,10 @@
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
 
-            // 환불판매총액(상품가 * 유입수 * 환불일수) * 부가세
+            // 환불상품총액(상품가 * 유입수 * 환불일수) * 부가세
             const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay) * vatRate);
 
-            // 환불상품총액 (판매가 * 유입수 * 환불일수) * 부가세
+            // 환불판매총액 (판매가 * 유입수 * 환불일수) * 부가세
             const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay) * vatRate);
 
             // 영업이익 (환불판매총액 - 환불상품총액)
@@ -477,17 +476,8 @@
             // 환불수수료 (영업이익 * 인센티브 / 1.1)
             var expectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
 
-            console.log("#saleTotalAmt#", saleTotalAmt);
-            console.log("#prodTotalAmt#", prodTotalAmt);
-            console.log("#costAmt#", costAmt);
-            console.log("#incentiveRate#", incentiveRate);
-            console.log("## costAmt * incentiveRate ##", costAmt * incentiveRate);
-            console.log("#expectRateAmt#", expectRateAmt);
-
-
-            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(saleTotalAmt);                    // 환불판매총액
+            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(saleTotalAmt));                    // 환불판매총액
             $("#" + refundModalPrefix + "refundProdTotalAmt").val(formatNumber(prodTotalAmt));      // 환불상품총액
-            $("#" + refundModalPrefix + "refundExpectAmt").val(formatNumber(saleTotalAmt));         // 환불금액
             $("#" + refundModalPrefix + "refundExpectRateAmt").val(formatNumber(expectRateAmt));    // 환불수수료
         }
 
@@ -510,7 +500,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('refundExpectAmt', '환불금액', 200, {
+                .addNumber('refundSaleTotalAmt', '환불금액', 200, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
@@ -638,14 +628,14 @@
                 $("#_refundModal_saleTotalAmt").val(setComma(focusedData.saleTotalAmt));
                 $("#_refundModal_refundDate").val(focusedData.refundDate).attr('disabled', true);
                 $("#_refundModal_refundWorkDay").val(focusedData.refundWorkDay);
-                $("#_refundModal_refundExpectAmt").val(setComma(focusedData.expectAmt));
+                $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.saleTotalAmt));
                 $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.expectRateAmt));
                 $("#_refundModal_gubun").val(focusedData.gubun).attr('disabled', true);
                 $("#_refundModal_refundInflowCnt").val(setComma(focusedData.refundInflowCnt));
                 $("#_refundModal_refundInflowCnt").attr('disabled', true);
                 $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.refundSaleTotalAmt));
                 $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.refundExpectRateAmt));
-                $("#_refundModal_refundExpectAmt").val(setComma(focusedData.refundExpectAmt));
+                $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.refundSaleTotalAmt));
 
 
                 // 수정기능 우선 없앰
@@ -724,7 +714,6 @@
                 refundInflowCnt: param.refundInflowCnt,
                 refundSaleTotalAmt: param.refundSaleTotalAmt,
                 refundProdTotalAmt: param.refundProdTotalAmt,
-                refundExpectAmt: param.refundExpectAmt,
                 refundExpectRateAmt: param.refundExpectRateAmt,
                 refundSettlementSeq : param.settlementSeq,
                 gubun : param.gubun,
