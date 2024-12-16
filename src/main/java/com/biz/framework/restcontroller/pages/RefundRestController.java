@@ -34,8 +34,10 @@ public class RefundRestController {
 
     @PostMapping
     public int saveApplypayment(@RequestBody SettlementDto settlementDto) {
+        settlementDto.setRefundInd("Y");
         settlementDto.setReqGubun("RQ");        // 요청구분(SE01) : RQ(환불요청)
         settlementDto.setApplyStatus("01");     // 승인상태(SE04) : 01(승인요청)
+        settlementDto.setRefundSettlementSeq(settlementDto.getSettlementSeq());
         return refundService.saveRefund(settlementDto);
     }
 

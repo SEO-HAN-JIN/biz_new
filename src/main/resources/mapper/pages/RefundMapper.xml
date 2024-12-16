@@ -94,6 +94,9 @@
              , IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE
              , ST.REFUND_IND
              , CD.CODE_NAME         AS STATUS_NAME
+             , ST.PROD_TOTAL_AMT
+             , ST.MILEAGE_USE_IND
+             , ST.EXIST_MILEAGE
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU
             ON ST.CUST_ID           = CU.BIZ_NO

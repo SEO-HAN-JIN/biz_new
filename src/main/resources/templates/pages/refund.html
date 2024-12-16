@@ -170,6 +170,12 @@
                                                     <input type="hidden" id="_refundModal_custId" name="custId">
                                                     <input type="hidden" id="_refundModal_prodId" name="prodId">
                                                     <input type="hidden" id="_refundModal_userId" name="userId">
+                                                    <input type="hidden" id="_refundModal_prodTotalAmt" name="prodTotalAmt">
+                                                    <input type="hidden" id="_refundModal_expectAmt" name="expectAmt">
+                                                    <input type="hidden" id="_refundModal_expectRateAmt" name="expectRateAmt">
+                                                    <input type="hidden" id="_refundModal_mileageUseInd" name="mileageUseInd">
+                                                    <input type="hidden" id="_refundModal_useMileage" name="useMileage">
+                                                    <input type="hidden" id="_refundModal_existMileage" name="existMileage">
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -525,6 +531,12 @@
                 .add('inflowCnt', '유입수', 120, {visible: false})
                 .addDate('dateWorkFrom', '작업시작일', 150, {visible: false})
                 .addDate('dateWorkTo', '작업종료일', 150, {visible: false})
+                .add('prodTotalAmt', '상품가액', 120, {visible: false})
+                .add('expectAmt', '예상정산금액', 120, {visible: false})
+                .add('expectRateAmt', '예정수수료', 120, {visible: false})
+                .add('mileageUseInd', '마일리지사용여부', 120, {visible: false})
+                .add('useMileage', '마일리지사용금액', 120, {visible: false})
+                .add('existMileage', '기존마일리지', 120, {visible: false})
             ;
 
             refundGrid = columns.init('refundGrid', [])
@@ -613,32 +625,10 @@
             // 행 더블 클릭 시
             if (param === '2') {
                 const focusedCell = refundGrid.getGrid().getFocusedCell();
-                const focusedData = refundGrid.getGrid().getRow(focusedCell.rowKey);
+                const data = refundGrid.getGrid().getRow(focusedCell.rowKey);
 
-                $("#_refundModal_settlementSeq").val(focusedData.settlementSeq);
-                $("#_refundModal_empName").val(focusedData.empName);
-                $("#_refundModal_custName").val(focusedData.custName);
-                $("#_refundModal_dateWorkFrom").val(focusedData.dateWorkFrom);
-                $("#_refundModal_dateWorkTo").val(focusedData.dateWorkTo);
-                $("#_refundModal_workDay").val(focusedData.workDay);
-                $("#_refundModal_inflowCnt").val(setComma(focusedData.inflowCnt));
-                $("#_refundModal_prodName").val(focusedData.prodName);
-                $("#_refundModal_prodAmt").val(setComma(focusedData.prodAmt));
-                $("#_refundModal_saleAmt").val(setComma(focusedData.saleAmt));
-                $("#_refundModal_saleTotalAmt").val(setComma(focusedData.saleTotalAmt));
-                $("#_refundModal_refundDate").val(focusedData.refundDate).attr('disabled', true);
-                $("#_refundModal_refundWorkDay").val(focusedData.refundWorkDay);
-                $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.saleTotalAmt));
-                $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.expectRateAmt));
-                $("#_refundModal_gubun").val(focusedData.gubun).attr('disabled', true);
-                $("#_refundModal_refundInflowCnt").val(setComma(focusedData.refundInflowCnt));
-                $("#_refundModal_refundInflowCnt").attr('disabled', true);
-                $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.refundSaleTotalAmt));
-                $("#_refundModal_refundExpectRateAmt").val(setComma(focusedData.refundExpectRateAmt));
-                $("#_refundModal_refundSaleTotalAmt").val(setComma(focusedData.refundSaleTotalAmt));
+                $('#refundModal').bindForm(data);
 
-
-                // 수정기능 우선 없앰
                 $("#_refundModal_refundDate").attr('disabled', true);
                 $("#_refundModal_gubun").attr('disabled', true);
                 $("#_refundModal_btnSave").attr('disabled', true);
@@ -704,32 +694,11 @@
                 return false;
             }
 
-            let params = {
-                prodId : param.prodId,
-                userId : param.userId,
-                custId: param.custId,
-                refundInd : 'Y',
-                refundDate : param.refundDate,
-                refundWorkDay: param.refundWorkDay,
-                refundInflowCnt: param.refundInflowCnt,
-                refundSaleTotalAmt: param.refundSaleTotalAmt,
-                refundProdTotalAmt: param.refundProdTotalAmt,
-                refundExpectRateAmt: param.refundExpectRateAmt,
-                refundSettlementSeq : param.settlementSeq,
-                gubun : param.gubun,
-            }
-
-            if ($isNew) {
-                params.rowStatus = 'C'
-            } else {
-                params.rowStatus = 'U'
-            }
-
             if (confirm("데이터를 저장하시겠습니까?")) {
                 return new Promise((resolve, reject) => {
                     $.ajax({
                         url: apiUrl,
-                        data: JSON.stringify(params),
+                        data: JSON.stringify(param),
                         contentType: 'application/json',
                         type: 'POST',
                         success: (result) => {
