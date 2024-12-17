@@ -17,6 +17,7 @@ public class MileageHisDto extends BaseDto {
     private String createdPage;
     private String createdId;
     private String settlementSeq;
+    private String reason;
 
     private int mileageAmt;
 }

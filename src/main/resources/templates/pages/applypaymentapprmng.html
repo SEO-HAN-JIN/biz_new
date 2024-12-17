@@ -107,7 +107,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4 class="card-title">정산요청내역</h4>
+                            <h4 class="card-title">정산요청목록</h4>
                         </div>
                         <div class="card-body">
 <!--                            <div class="d-flex justify-content-end" style="width: 100%;">-->
@@ -140,7 +140,7 @@
                                                         <div class="form-group">
                                                             <label class="form-label">정산번호</label>
                                                             <div class="d-flex align-items-center">
-                                                                <input type="text" class="form-control me-2" name="settlementSeq" disabled>
+                                                                <input type="text" class="form-control me-2" id="settlementSeqView" disabled>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -217,11 +217,9 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">요청구분</label>
-                                                            <input type="text" name="reqGubunName" class="form-control" disabled>
+                                                            <input type="text" name="gubunName" class="form-control" disabled>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">킵사용금액</label>
@@ -250,11 +248,15 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">요청구분</label>
-                                                            <input type="text" name="refundGubunName" class="form-control" disabled>
+                                                            <input type="text" name="gubunName" class="form-control" disabled>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div class="row g-3">
+<!--                                                    <div class="col-md-3">-->
+<!--                                                        <div class="form-group">-->
+<!--                                                            <label class="form-label">정산요청번호</label>-->
+<!--                                                            <input type="text" id="refundSettlementSeq" class="form-control is-num text-end" disabled>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불요청일</label>
@@ -264,19 +266,29 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불일수</label>
-                                                            <input type="text" id="refundDay" class="form-control is-num text-end" disabled>
+                                                            <input type="text" id="refundWorkDay" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
+                                                            <label class="form-label">환불유입수</label>
+                                                            <input type="text" id="refundInflowCnt" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
                                                             <label class="form-label">환불금액</label>
-                                                            <input type="text" id="expectAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" id="refundProdTotalAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자환불수수료</label>
-                                                            <input type="text" name="expectRateAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="refundExpectRateAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -315,6 +327,7 @@
                                                 <div class="row g-3">
                                                     <input type="hidden" id="settlementSeq">
                                                     <input type="hidden" id="incentiveRate">
+                                                    <input type="hidden" id="saveMileage">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품총액</label>
@@ -373,22 +386,35 @@
                                             <fieldset class="border p-3 rounded mt-4" id="refundSet">
                                                 <legend class="float-none w-auto">환불정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">환불구분</label>
-                                                            <input type="text" id="deposit_refundGubun" class="form-control is-num text-end" name="deposit_refundGubun" disabled>
+                                                            <input type="text" id="deposit_gubunName" class="form-control is-num text-center" name="deposit_gubunName" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">환불일수</label>
                                                             <input type="text" id="deposit_refundWorkDay" class="form-control is-num text-end" name="deposit_refundWorkDay" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label text-danger">환불금액</label>
-                                                            <input type="text" id="deposit_expectAmt" class="form-control is-num text-end" name="deposit_expectAmt" disabled>
+                                                            <input type="text" id="deposit_refundProdTotalAmt" class="form-control is-num text-end" name="deposit_refundProdTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label text-danger">환불수수료</label>
+                                                            <input type="text" id="deposit_refundExpectRateAmt" class="form-control is-num text-end" name="deposit_refundExpectRateAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label class="form-label text-danger" id="guide1"></label>
+                                                            <label class="form-label text-danger" id="guide2"></label>
+                                                            <label class="form-label text-danger" id="guide3"></label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -457,22 +483,6 @@
             $("#modalDepositApprBtn").on('click', apprDeposit);
             $("#modalDepositRejectBtn").on('click', rejectDeposit);
         }
-
-
-        // function selectKeepInd(obj) {
-        //
-        //     var keepInd = obj.value;
-        //
-        //     var inputElement = modalElement.querySelector("#custKeepUseAmt");
-        //
-        //     if (keepInd === "Y") {
-        //         // Enable the element
-        //         $(inputElement).prop("disabled", false);
-        //     } else {
-        //         // Disable the element
-        //         $(inputElement).prop("disabled", true);
-        //     }
-        // }
 
         const apprDeposit = () => {
 
@@ -590,7 +600,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('confirmAmt', '실제입금액', 150, {
+                .addNumber('confirmAmt', '입금액', 150, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
@@ -602,18 +612,14 @@
                     buttonText: '확인',
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
-                        //if(parseInt(rowData.confirmAmt) <= 0)
-                            openDepositModal(rowData);
-                        // else
-                        //     alert("입금처리가 완료되었습니다.");
-
+                        openDepositModal(rowData);
                     }
                 })
                 .add('statusName', '진행상태', 80, {})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
                 })
-                .add('saveMileage', '적립마일리지', 0, {
+                .add('existMileage', '기존마일리지', 0, {
                     visible: false
                 })
                 .add('incentiveRate', '직원 인센율', 0, {
@@ -622,19 +628,7 @@
                 .add('comfirmRateAmt', '확정수수료', 0, {
                     visible: false
                 })
-                .add('refundInd', '환불여부', 0, {
-                    visible: false
-                })
                 .add('reqGubun', '요청구분', 0, {
-                    visible: false
-                })
-                .add('refundGubunName', '환불구분', 0, {
-                    visible: false
-                })
-                .add('expectAmt', '환불금액', 0, {
-                    visible: false
-                })
-                .add('expectRateAmt', '환불금액', 0, {
                     visible: false
                 })
                 .add('confirmMileage', '적립마일리지', 0, {
@@ -646,7 +640,28 @@
                 .add('confirmDate', '승인일자', 0, {
                     visible: false
                 })
-                .add('remark', '환불금액', 0, {
+                .add('remark', '비고', 0, {
+                    visible: false
+                })
+                .add('gubunName', '요청구분', 80, {
+                    visible: false
+                })
+                .add('refundInd', '환불여부', 0, {
+                    visible: false
+                })
+                .add('refundSettlementSeq', '환불시 정산요청번호', 80, {
+                    visible: false
+                })
+                .add('refundWorkDay', '환불일수', 80, {
+                    visible: false
+                })
+                .add('refundInflowCnt', '환불유입수', 80, {
+                    visible: false
+                })
+                .add('refundExpectRateAmt', '환불수수료', 80, {
+                    visible: false
+                })
+                .add('refundProdTotalAmt', '환불금액', 80, {
                     visible: false
                 })
 
@@ -690,57 +705,9 @@
                         const gridInstance = paymentGrid.getGrid();
                         gridInstance.resetData(data); // 데이터 새로 고침
 
-
-                        // const columns = gridInstance.getColumns();
-                        // gridInstance.setColumns(columns); // 컬럼 재설정
-
-                        // setTimeout(function () {
-                        // data.forEach((row, index) => {
-                        //     gridInstance.setValue(index, 'action', row.action); // 특정 셀 데이터 업데이트
-                        // })}, 100);
-
-                        // 버튼 숨김처리
-                        // gridInstance.on('onGridUpdated', () => {
-                        //     data.forEach((row, index) => {
-                        //         const cellEl = gridInstance.getElement(index, 'action'); // 셀 DOM 요소 가져오기
-                        //         if (cellEl) {
-                        //             const button = cellEl.querySelector('button'); // 버튼 요소 검색
-                        //             if (row.hideButton) {
-                        //                 button.style.display = 'none';
-                        //             } else {
-                        //                 button.style.display = 'inline-block';
-                        //             }
-                        //         }
-                        //     });
-                        // });
                     }
                 }
             })
-
-            //
-            // paymentGrid.load(apiUrl, param, function(data){
-            //     // 초기 상태 설정
-            //     data.forEach(row => {
-            //         if(row.applyStatus == "02") {
-            //             row.hideButton = true;
-            //             row.action = "확인";
-            //         }
-            //         else {
-            //             row.hideButton = false;
-            //             row.action = "승인대기";
-            //         }
-            //
-            //         // row.action = parseInt(row.confirmAmt) > 0 ? false : true; // 금액 여부로 상태 설정
-            //     });
-            //
-            //     paymentGrid.bind(data);
-            //     //columns.init('paymentGrid', data);
-            //
-            //     // 강제 렌더링 호출
-            //     const gridInstance = paymentGrid.getGrid();
-            //     gridInstance.refreshLayout(); // 전체 레이아웃 갱신
-            //     gridInstance.refresh(); // 셀 렌더러 갱신
-            // });
         }
 
         const fn_savePaymentGrid = () => {
@@ -783,36 +750,6 @@
             }
         }
 
-        // const fn_deletePaymentGrid = () => {
-        //     const focusedCell = paymentGrid.getFocusedCell();
-        //     if (isNull(focusedCell)) {
-        //         alert("삭제할 행을 선택해주세요.");
-        //         return;
-        //     }
-        //
-        //     const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
-        //     if (confirmResult) {
-        //         const focusRow = paymentGrid.getRow(focusedCell.rowKey);
-        //         let params = {
-        //             menuId : focusRow.menuId
-        //         }
-        //         $.ajax({
-        //             url: apiUrl + "/up/list",
-        //             data: JSON.stringify(params),
-        //             contentType:'application/json',
-        //             type: 'DELETE',
-        //             success: (result) => {
-        //                 if (result > 0) {
-        //                     alert("삭제가 완료되었습니다.");
-        //                     search();
-        //                 } else {
-        //                     alert("삭제에 실패하였습니다.");
-        //                     search();
-        //                 }
-        //             }
-        //         })
-        //     }
-        // }
 
         const openPgmModal = () => {
 
@@ -822,13 +759,17 @@
             $("#applyView").hide();
             $("#refundView").hide();
 
+
             if(focusedData["refundInd"] == "Y") {
 
-                $("#refundDay").val(focusedData.workDay);
+                $("#settlementSeqView").val(focusedData.refundSettlementSeq);
 
+                $("#refundDay").val(focusedData.workDay);
                 $("#refundView").show();
             }
             else {
+
+                $("#settlementSeqView").val(focusedData.settlementSeq);
 
                 // 영업이익 = 판매총액 - 상품총액
                 var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
@@ -889,25 +830,11 @@
                 $("#modalDepositApprBtn").show();
             }
 
-            //환불
-            if(rsData.refundInd == "Y")
-            {
-                $('#applySet').hide();
-                $('#refundSet').show();
-            }
-            else {
-
-                $('#applySet').show();
-                $('#refundSet').hide();
-            }
-
-
             var settlementSeq = rsData.settlementSeq;   //정산요청ID
             var incentiveRate = isNull(rsData.incentiveRate) ? 0.3 : rsData.incentiveRate;  //적용인센률
             var prodTotalAmt = isNull(rsData.prodTotalAmt) ? 0 : rsData.prodTotalAmt;       //상품총액
             var saleTotalAmt = isNull(rsData.saleTotalAmt) ? 0 : rsData.saleTotalAmt;       //판매총액
             var expectRateAmt = isNull(rsData.expectRateAmt) ? 0 : rsData.expectRateAmt     //담당자수수료(예정)
-
 
             $("#settlementSeq").val(settlementSeq);
             $("#incentiveRate").val(incentiveRate);
@@ -915,27 +842,57 @@
             $("#deposit_saleTotalAmt").val(formatNumber(saleTotalAmt));
             $("#deposit_expectRateAmt").val(formatNumber(expectRateAmt));
 
+            //환불
+            if(rsData.refundInd == "Y")
+            {
+                $('#applySet').hide();
+                $('#refundSet').show();
 
-            var confirmAmt = isNull(rsData.confirmAmt) ? 0 : rsData.confirmAmt;                 //입금총액
-            var confirmMileage = isNull(rsData.confirmMileage) ? 0 : rsData.confirmMileage;     //적립수수료
-            var confirmRateAmt = isNull(rsData.confirmRateAmt) ? 0 : rsData.confirmRateAmt;     //확정수수료
+                var gubunName = isNull(rsData.gubunName) ? "" : rsData.gubunName;                               //환불구분
+                var refundWorkDay = isNull(rsData.refundWorkDay) ? 0 : rsData.refundWorkDay;                    //환불일
+                var refundProdTotalAmt = isNull(rsData.refundProdTotalAmt) ? 0 : formatNumber(rsData.refundProdTotalAmt);     //환불금액
+                var refundSaleTotalAmt = isNull(rsData.refundSaleTotalAmt) ? 0 : formatNumber(rsData.refundSaleTotalAmt);     //환불금액
+                var refundExpectRateAmt = isNull(rsData.refundExpectRateAmt) ? 0 : formatNumber(rsData.refundExpectRateAmt);  //확정수수료
 
-            // 부가세율 설정 (10% 부가세)
-            var vatRate = 1.1;
+                $("#deposit_gubunName").val(gubunName);
+                $("#deposit_refundWorkDay").val(refundWorkDay);
+                $("#deposit_refundProdTotalAmt").val(refundProdTotalAmt);
+                $("#deposit_refundExpectRateAmt").val(refundExpectRateAmt);
 
-            var costAmt = parseInt(saleTotalAmt) - parseInt(prodTotalAmt);
+                var guide1 = "* 상품총액(" + refundProdTotalAmt + ") : 상품가(" + rsData.prodAmt + ") * 유입수(" + rsData.inflowCnt + ") * 환불일수("+ rsData.refundWorkDay + "일)";
+                var guide2 = "* 환불총액(" + refundSaleTotalAmt + ") : 판매가(" + rsData.prodAmt + ") * 유입수(" + rsData.inflowCnt + ") * 환불일수("+ rsData.refundWorkDay + "일)";
+                var guide3 = "* 환불수수료 : (환불총액 - 상품총액) / 부가세(1.1) * 담당자수수료(" + rsData.incentiveRate + ")";
 
-            // 입금총액
-            $("#deposit_confirmAmt").val(formatNumber(confirmAmt));
-            // 영업이익
-            $("#deposit_costAmt").val(formatNumber(costAmt));
-            // 확정수수료
-            $("#deposit_confirmRateAmt").val(formatNumber(confirmRateAmt));
-            // 적립마일리지
-            $("#deposit_confirmMileage").val(formatNumber(confirmMileage));
-            // 판매총액 (입금총액 - 적립마일리지)
-            $("#deposit_confirmMaxAmt").val(formatNumber(confirmAmt - confirmMileage));
+                $("#guide1").text(guide1);
+                $("#guide2").text(guide2);
+                $("#guide3").text(guide3);
 
+            }
+            else {
+
+                $('#applySet').show();
+                $('#refundSet').hide();
+
+                var confirmAmt = isNull(rsData.confirmAmt) ? 0 : rsData.confirmAmt;                 //입금총액
+                var confirmMileage = isNull(rsData.confirmMileage) ? 0 : rsData.confirmMileage;     //적립수수료
+                var confirmRateAmt = isNull(rsData.confirmRateAmt) ? 0 : rsData.confirmRateAmt;     //확정수수료
+
+                // 부가세율 설정 (10% 부가세)
+                var vatRate = 1.1;
+
+                var costAmt = parseInt(saleTotalAmt) - parseInt(prodTotalAmt);
+
+                // 입금총액
+                $("#deposit_confirmAmt").val(formatNumber(confirmAmt));
+                // 영업이익
+                $("#deposit_costAmt").val(formatNumber(costAmt));
+                // 확정수수료
+                $("#deposit_confirmRateAmt").val(formatNumber(confirmRateAmt));
+                // 적립마일리지
+                $("#deposit_confirmMileage").val(formatNumber(confirmMileage));
+                // 판매총액 (입금총액 - 적립마일리지)
+                $("#deposit_confirmMaxAmt").val(formatNumber(confirmAmt - confirmMileage));
+            }
 
 
             $('#depositModal').modal('show');

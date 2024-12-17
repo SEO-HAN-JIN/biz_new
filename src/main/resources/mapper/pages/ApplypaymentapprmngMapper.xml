@@ -21,19 +21,23 @@
             ST.INFLOW_CNT,
             ST.PROD_TOTAL_AMT,
             ST.SALE_TOTAL_AMT,
-            ST.EXPECT_AMT,
-            ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
+            ST.EXPECT_AMT,
+            ST.EXPECT_RATE_AMT,
+            ST.MILEAGE_USE_IND,
             ST.USE_MILEAGE,
-            DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
-            ST.REQ_GUBUN,
-            CD1.CODE_NAME AS REQ_GUBUN_NAME,
-            ST.APPLY_STATUS,
-            CD2.CODE_NAME AS STATUS_NAME,
+            ST.EXIST_MILEAGE,
             ST.REFUND_IND,
+            DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
+            ST.REFUND_SETTLEMENT_SEQ,
+            ST.REFUND_WORK_DAY,
+            ST.REFUND_INFLOW_CNT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
             IFNULL(SM.CONFIRM_AMT, 0) AS CONFIRM_AMT,
             SM.CONFIRM_MILEAGE,
             SM.CONFIRM_RATE_AMT,
@@ -42,7 +46,13 @@
             SM.TAX_IND,
             SM.PAY_YM,
             SM.ATCH_ID,
-            SM.REMARK
+            SM.REMARK,
+            ST.GUBUN,
+            CD3.CODE_NAME AS GUBUN_NAME,
+            ST.REQ_GUBUN,
+            CD1.CODE_NAME AS REQ_GUBUN_NAME,
+            ST.APPLY_STATUS,
+            CD2.CODE_NAME AS STATUS_NAME
         FROM SETTLEMENT ST
         LEFT JOIN SETTLEMENTMST SM
             ON ST.SETTLEMENT_SEQ = SM.SETTLEMENT_SEQ
@@ -59,9 +69,11 @@
         LEFT JOIN CDBASE CD2
             ON CD2.PATTERN_CODE = 'SE04'
         	AND ST.APPLY_STATUS = CD2.BASE_CODE
+        LEFT JOIN CDBASE CD3
+            ON CD3.PATTERN_CODE = 'SE02'
+        	AND ST.GUBUN = CD3.BASE_CODE
         WHERE 1=1
-        AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
-        AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
+        AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
@@ -145,12 +157,21 @@
     <select id="findSettlement" resultType="com.biz.framework.dto.pages.SettlementDto">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findSettlement */
         SELECT
-            SETTLEMENT_SEQ,
-            USER_ID,
-            CUST_ID,
-            PROD_ID,
-            INCENTIVE_RATE
-        FROM SETTLEMENT
+            ST.SETTLEMENT_SEQ,
+            ST.USER_ID,
+            ST.CUST_ID,
+            ST.PROD_ID,
+            ST.INCENTIVE_RATE,
+            ST.REFUND_IND,
+            ST.GUBUN,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
+            CD.CODE_NAME AS GUBUN_NAME
+        FROM SETTLEMENT ST
+        LEFT JOIN CDBASE CD
+             ON CD.PATTERN_CODE = 'SE02'
+            AND ST.GUBUN = CD.BASE_CODE
         WHERE SETTLEMENT_SEQ = #{settlementSeq}
     </select>
 

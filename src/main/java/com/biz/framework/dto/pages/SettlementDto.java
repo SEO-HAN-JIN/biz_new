@@ -47,6 +47,7 @@ public class SettlementDto extends BaseDto {
     private String empName;
     private String custName;
     private String prodName;
+    private String gubunName;
 
     private List<SettlementDto> settlementDtoList;
 

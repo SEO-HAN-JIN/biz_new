@@ -50,13 +50,28 @@ public class ApplypaymentapprmngService {
             settlementmstDto.setUserId(settlementDto.getUserId());
             settlementmstDto.setCustId(settlementDto.getCustId());
 
+            int mileageAmt = 0;
+
+            //환불의 경우
+            if("Y".equals(settlementDto.getRefundInd()))
+            {
+                settlementmstDto.setConfirmAmt(settlementDto.getRefundProdTotalAmt());      // 환불금액(상품가)
+                settlementmstDto.setConfirmRateAmt(settlementDto.getRefundExpectRateAmt()); // 확정수수료
+
+                if ("04".equals(settlementDto.getGubun())) {
+                    settlementmstDto.setConfirmMileage(settlementDto.getRefundSaleTotalAmt());  // 적립마일리지
+                }
+            }
+
             // 입금확인 마스터 저장
             result = applypaymentapprmngMapper.confirmApplypaymentmst(settlementmstDto);
 
             if (result > 0) {
-                int mileageAmt = 0;
+
                 if (!StringUtil.isNullOrEmpty(settlementmstDto.getConfirmMileage()))
+                {
                     mileageAmt = Integer.parseInt(settlementmstDto.getConfirmMileage());
+                }
 
                 // 누적마일리지가 있을 경우 고객 마일리지 누적 HIS UPDATE
                 if (mileageAmt > 0) {
@@ -70,17 +85,19 @@ public class ApplypaymentapprmngService {
                     mileageHisDto.setMileageAmt(mileageAmt);
                     mileageHisDto.setCreatedPage("SC");                             // 정산승인
                     mileageHisDto.setCreatedId(settlementmstDto.getLoginUserId());
+                    mileageHisDto.setReason(settlementDto.getGubunName());
                     mileageHisMapper.addMileageHistory(mileageHisDto);
                 }
 
                 result = applypaymentapprmngMapper.updateSettlement(settlementDto);
             }
+            else
+                throw new ServiceException("처리 도중 오류가 발생했습니다.");
         }
 
         return result;
 
     }
-
 
     public int cancelApplypayment(SettlementmstDto settlementmstDto) {
 
