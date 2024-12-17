@@ -494,16 +494,16 @@
         const initPaymentGrid = () => {
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('settlementSeq', '정산번호', 150, {})
+                .add('settlementSeq', '정산번호', 200, {})
                 .add('userName', '담당자', 150, {})
-                .add('custName', '고객명', 250, {})
-                .add('prodName', '상품명', 200, {})
-                .addNumber('prodAmt', '상품가', 150, {align: 'right', comma: true})
+                .add('custName', '고객명', 150, {})
+                .add('prodName', '상품명', 150, {})
+                .addNumber('prodAmt', '상품가', 120, {align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 120, {align: 'right', comma: true})
                 .add('inflowCnt', '유입수', 120, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
-                .addDate('workDay', '작업일수', 150, {})
+                .addDate('workDay', '작업일수', 100, {})
                 .addNumber('saleTotalAmt', '판매총액', 200, {
                     align: 'right',
                     textColor: 'red',
