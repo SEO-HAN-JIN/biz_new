@@ -130,12 +130,18 @@
                                                         <input type="text" id="depositorName" class="form-control" name="depositorName" placeholder="입금자명">
                                                     </div>
                                                 </div>
-
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="mileage">마일리지 누적금액</label>
                                                         <input type="text" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
                                                         <input type="hidden" id="mileagePrev" class="form-control" name="mileagePrev">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="mileage">인센티브율</label>
+                                                        <input type="number" id="incentiveRate" class="form-control" name="mileage" placeholder="인센티브율" step="0.1" min="0" max="99.9">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
@@ -230,21 +236,22 @@
 
             var columns = new CustomTuiGrid()
                 .add('bizNo', '사업자번호', 200, {})
-                .add('custName', '고객명', 100, {})
-                .add('empId', '직원ID', 150, {})
-                .add('empName', '직원명', 100, {})
-                .add('ownerName', '대표자성명', 100, { align: 'center' })
+                .add('custName', '고객명', 120, {})
+                .add('empId', '직원ID', 120, {})
+                .add('empName', '직원명', 120, {})
+                .add('ownerName', '대표자성명', 120, { align: 'center' })
                 .add('custAddr', '주소', 300, { align: 'center' })
                 .add('custTel', '연락처', 150, { align: 'center' })
                 .add('custMail', '이메일', 150, { align: 'center' })
-                .add('depositorName', '입금자명', 100, { align: 'center' })
+                .add('depositorName', '입금자명', 120, { align: 'center' })
                 .addNumber('mileage', '마일리지', 100, {
                     align: 'right',
                     comma: true,
                 })
+                .add('incentiveRate', '인센티브율', 100, { align: 'right' })
                 .add('useInd', '사용여부', 70, { align: 'center' })
                 .addDate('regDate', '등록일자', 100, { align: 'center' })
-                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                // .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             customerGrid = columns.init('customerGrid', [])
                 .render();

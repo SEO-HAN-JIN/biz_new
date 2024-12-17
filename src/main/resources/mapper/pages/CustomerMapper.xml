@@ -51,6 +51,7 @@
             , CUST_MAIL
             , DEPOSITOR_NAME
             , MILEAGE
+            , INCENTIVE_RATE
             , REG_DATE
             , USE_IND
         ) VALUES
@@ -64,6 +65,7 @@
             , #{custMail}
             , #{depositorName}
             , #{mileage}
+            , #{incentiveRate}
             , DATE_FORMAT(NOW(), '%Y-%m-%d')
             , #{useInd}
         ) ON DUPLICATE KEY UPDATE
@@ -73,6 +75,7 @@
             , CUST_ADDR     = #{custAddr}
             , CUST_TEL      = #{custTel}
             , CUST_MAIL     = #{custMail}
+            , INCENTIVE_RATE    = #{incentiveRate}
             , DEPOSITOR_NAME    = #{depositorName}
             , MILEAGE           = #{mileage}
             , USE_IND          = #{useInd}

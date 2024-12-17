@@ -19,6 +19,7 @@ public class CustomerDto extends BaseDto {
     private String depositorName;
     private int mileage;
     private int mileagePrev;
+    private float incentiveRate;
     private String regDate;
     private String useInd;
 
