@@ -394,6 +394,18 @@
                     {
                         $("#curExistMileage").val(setComma(result.mileage));
                         $("#existMileage").val(setComma(result.mileage));
+
+                        let incentiveRate = _incentiveRate;
+                        if (_incentiveRate === 0) {
+                            if (result.incentiveRate > 0) {
+                                incentiveRate = result.incentiveRate
+                            } else {
+                                incentiveRate = 0.3;
+                            }
+                        }
+
+                        $("#incentiveRate").val(incentiveRate);
+                        saleSum();
                     }
                 }
             });
