@@ -477,7 +477,7 @@
             const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay) * vatRate);
 
             // 영업이익 (환불판매총액 - 환불상품총액)
-            var costAmt = prodTotalAmt - saleTotalAmt;
+            var costAmt = saleTotalAmt - prodTotalAmt;
 
             // 환불수수료 (영업이익 * 인센티브 / 1.1)
             var expectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
