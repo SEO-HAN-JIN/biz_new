@@ -184,7 +184,7 @@
                                                             <label class="form-label">판매총액</label>
                                                             <input type="text" id="saleTotalAmt"
                                                                    class="form-control is-num text-end"
-                                                                   name="saleTotalAmt" disabled>
+                                                                   name="saleTotalAmt">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -378,6 +378,8 @@
                     }
                 })
             })
+
+            $("#saleTotalAmt").on('change', calcSaleAmt);
         }
 
         const findExistMileage = (param) => {
@@ -445,36 +447,45 @@
 
         function saleSum()
         {
+            const $saleTotalAmt = $("#saleTotalAmt");
+            const $saleAmt = $("#saleAmt");
+            const $prodAmt = $("#prodAmt");
+            const $inflowCnt = $("#inflowCnt");
+            const $workDay = $("#workDay");
+            const $incentiveRate = $("#incentiveRate");
+            const $expectRateAmt = $("#expectRateAmt");
+            const $expectAmt = $("#expectAmt");
+            const $prodTotalAmt = $("#prodTotalAmt");
 
-            var saleAmt = isNull($("#saleAmt").val()) ? 0 : parseInt(removeComma($("#saleAmt").val()));
-            var prodAmt = isNull($("#prodAmt").val()) ? 0 : parseInt(removeComma($("#prodAmt").val()));
-            var inflowCnt = isNull($("#inflowCnt").val()) ? 0 : parseInt(removeComma($("#inflowCnt").val()));
-            var workDay = isNull($("#workDay").val()) ? 0 : parseInt($("#workDay").val());
-            var incentiveRate = parseFloat($("#incentiveRate").val());
-
+            const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
+            const _saleAmt = isNull($saleAmt.val()) ? 0 : parseInt(removeComma($saleAmt.val()));
+            const _prodAmt = isNull($prodAmt.val()) ? 0 : parseInt(removeComma($prodAmt.val()));
+            const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
+            const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
+            const _incentiveRate = parseFloat($incentiveRate.val());
 
             // 부가세율 설정 (10% 부가세)
-            var vatRate = 1.1;
+            const vatRate = 1.1;
 
             // 판매총액 (판매가 * 유입수 * 작업일) - 부가세 포함
-            var saleTotalAmt = Math.floor((saleAmt * inflowCnt * workDay) * vatRate);
+            const saleTotalAmt = _saleTotalAmt === 0 ? Math.floor((_saleAmt * _inflowCnt * _workDay) * vatRate) : _saleTotalAmt;
 
             // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
-            var prodTotalAmt = Math.floor((prodAmt * inflowCnt * workDay) * vatRate);
+            const prodTotalAmt = Math.floor((_prodAmt * _inflowCnt * _workDay) * vatRate);
 
             // 영업이익
-            var costAmt = saleTotalAmt - prodTotalAmt;
+            const costAmt = saleTotalAmt - prodTotalAmt;
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor((costAmt * incentiveRate) / vatRate);
+            const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
 
-            $("#expectRateAmt").val(formatNumber(rate));
-            $("#saleTotalAmt").val(formatNumber(saleTotalAmt));
-            $("#prodTotalAmt").val(formatNumber(prodTotalAmt));
+            $saleTotalAmt.val(formatNumber(saleTotalAmt));
+            $expectRateAmt.val(formatNumber(rate));
+            $prodTotalAmt.val(formatNumber(prodTotalAmt));
 
             // expectAmt 재계산
             let useMileage = removeComma($("#useMileage").val());
-            $("#expectAmt").val(saleTotalAmt - useMileage);
+            $expectAmt.val(saleTotalAmt - useMileage);
 
         }
 
@@ -623,6 +634,7 @@
             $("#gubun").attr('disabled', flag);
             $("#mileageUseInd").attr('disabled', flag);
             $("#useMileage").attr('disabled', flag);
+            $("#saleTotalAmt").attr('disabled', flag);
 
             if (flag) {
                 document.getElementById("custId").choicesInstance.disable();
@@ -792,6 +804,24 @@
                     }
                 })
             }
+        }
+
+        // 판매가 구하기
+        const calcSaleAmt = () => {
+            const $saleTotalAmt = $("#saleTotalAmt");
+            const $saleAmt = $("#saleAmt");
+            const $inflowCnt = $("#inflowCnt");
+            const $workDay = $("#workDay");
+
+            const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
+            const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
+            const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
+
+            const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
+
+            $saleAmt.val(formatNumber(prodAmt));
+
+            saleSum();
         }
 
         const closeBeforeModal = () => {
