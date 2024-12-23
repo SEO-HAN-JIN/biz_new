@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3>선입금 킵 요청</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">마일리지관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">선입금 킵 요청</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body pt-3 pb-3" id="searchTable">
+<!--                            <div class="row align-items-center p-2" style="">-->
+                            <div class="row align-items-center p-2 search-area custom-bg">
+                                <div class="col-md-11">
+                                    <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">요청번호</label>
+                                        <div class="col-lg-2 col-9">
+                                            <input type="text" id="search_reqNo" class="form-control form-control-sm" name="reqNo" placeholder="요청번호">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">고객명</label>
+                                        <div class="col-lg-2 col-9">
+                                            <input type="text" id="search_custName" class="form-control form-control-sm" name="custName" placeholder="고객명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">담당자명</label>
+                                        <div class="col-lg-2 col-9">
+                                            <input type="text" id="search_userName" class="form-control form-control-sm" name="userName" placeholder="담당자명">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">요청목록</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-end" style="width: 100%;">
+                                <div class="d-flex pb-3 gap-1">
+                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#preMileageReqModal">추가</button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePreMileageReqGrid">삭제</button>
+                                </div>
+                            </div>
+                            <div id="preMileageReqGrid" class="tui-grid"></div>
+                        </div>
+
+                        <div class="modal fade" id="preMileageReqModal" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                                 role="document">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">선입금 킵 요청정보</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                        <form class="form">
+                                            <fieldset class="border p-3 rounded">
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자</label>
+                                                            <input type="text" id="userName" name="userName" class="form-control" disabled>
+                                                            <input type="hidden" id="userId" name="userId" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">고객</label>
+                                                            <th:block th:replace="components/cust-select :: cust-select(
+                                                                id='custId',
+                                                                name='custId')"></th:block>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청마일리지</label>
+                                                            <input type="text" id="reqAmt"
+                                                                   class="form-control is-num text-end" name="reqAmt">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">승인여부</label>
+                                                            <input type="text" id="approveInd" name="approveInd" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청일자</label>
+                                                            <input type="text" id="reqDate" name="reqDate" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" id="reqNo" name="reqNo">
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
+                                            <i class="bx bx-check"></i> 저장
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script th:inline="javascript">
+
+        const apiUrl = '/api/pages/premileagereq';
+
+        let preMileageReqGrid;
+        let $isNew = 'N';
+
+        let _userId;
+        let _userNm;
+
+        $(document).ready(function() {
+            initEvent();
+            initPreMileageReqGrid();
+
+            _userId = /*[[${userId}]]*/'';
+            _userNm = /*[[${userNm}]]*/'';
+        });
+
+
+        const initEvent = () => {
+
+            $("#btnDeletePreMileageReqGrid").on('click', deleteData);
+
+            $('#modalAddBtn').on('click', () => {openPgmModal('1')});
+            $('#customerModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
+            $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
+            $("#modalSaveBtn").on('click', save);
+
+            $("#searchBtn").on('click', search);
+        }
+
+        const initPreMileageReqGrid = () => {
+
+            var columns = new CustomTuiGrid()
+                .add('reqNo', '요청번호', 100, {})
+                .add('custName', '고객명', 100, {})
+                .add('userName', '담당자명', 100, {})
+                .addNumber('reqAmt', '요청마일리지', 100, {
+                    align: 'right',
+                    comma: true,
+                })
+                .add('approveInd', '승인여부', 50, {})
+                .add('reqDate', '요청일자', 70, {})
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+
+
+            preMileageReqGrid = columns.init('preMileageReqGrid', [])
+                .render();
+
+            // 더블 클릭 이벤트 설정
+            preMileageReqGrid.getGrid().on('dblclick', function(ev) {
+                openPgmModal('2');
+            });
+
+            search();
+        }
+
+        const search = () => {
+            preMileageReqGrid.clear();
+
+            const param = $("#searchTable").getData();
+
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                type: 'GET',
+                success: (result) => {
+                    preMileageReqGrid.bind(result);
+                }
+            });
+        }
+
+        const save = () => {
+            const param = {};
+            $('#preMileageReqModal').find('input, select, input[type="checkbox"]').each((index, item) => {
+                // checkbox일 때
+                if ($(item).is(':checkbox')) {
+                    param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
+                } else {
+                    // input일 때의 처리
+                    param[item.id] = item.value.replace(/,/g, ''); // input 값 설정
+                }
+            });
+
+            if ($isNew) {
+                param.rowStatus = 'C';
+            } else {
+                param.rowStatus = 'U';
+            }
+
+            if (param.approveInd === 'Y') {
+                alert("이미 승인된 데이터입니다.");
+                return;
+            }
+
+            if (confirm("데이터를 저장하시겠습니까?")) {
+                $.ajax({
+                    url: apiUrl,
+                    data: JSON.stringify(param),
+                    contentType:'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("저장이 완료되었습니다.");
+                            $('#preMileageReqModal').modal('hide');
+                            search();
+                        } else {
+                            alert("저장에 실패하였습니다.");
+                            $('#preMileageReqModal').modal('hide');
+                            search();
+                        }
+                    },error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+                    }
+                })
+            }
+        }
+
+        const deleteData = () => {
+            const focusedCell = preMileageReqGrid.getGrid().getFocusedCell();
+            if (isNull(focusedCell)) {
+                alert("삭제할 행을 선택해주세요.");
+                return;
+            }
+
+            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+            if (confirmResult) {
+                const focusRow = preMileageReqGrid.getGrid().getRow(focusedCell.rowKey);
+                $.ajax({
+                    url: apiUrl,
+                    data: JSON.stringify(focusRow),
+                    contentType:'application/json',
+                    type: 'DELETE',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("삭제가 완료되었습니다.");
+                            search();
+                        } else {
+                            alert("삭제에 실패하였습니다.");
+                            search();
+                        }
+                    }
+                })
+            }
+        }
+
+        const openPgmModal = (param) => {
+            clearForm('preMileageReqModal');
+
+            if (param === '1') {
+                $isNew = true;
+
+                $("#userId").val(_userId);
+                $("#userName").val(_userNm);
+
+                disableForm(false);
+            } else {
+                $isNew = false;
+
+                const focusedCell = preMileageReqGrid.getGrid().getFocusedCell();
+                const data = preMileageReqGrid.getGrid().getRow(focusedCell.rowKey);
+
+                $("#preMileageReqModal").bindForm(data);
+
+                if (data.approveInd === 'Y') {
+                    disableForm(true);
+                } else {
+                    disableForm(false);
+                    document.getElementById("custId").choicesInstance.disable();
+                }
+            }
+
+            $('#preMileageReqModal').modal('show');
+        }
+
+        const disableForm = (flag) => {
+
+            $("#reqAmt").attr('disabled', flag);
+
+            if (flag) {
+                document.getElementById("custId").choicesInstance.disable();
+            } else {
+                document.getElementById("custId").choicesInstance.enable();
+            }
+        }
+
+        const closeBeforeModal = () => {
+            $('#preMileageReqModal').find('input, select, textarea').each(function() {
+                if ($(this).is(':checkbox')) {
+                    // 체크박스는 false로 설정
+                    $(this).prop('checked', false);
+                } else {
+                    // 그 외의 입력 필드는 빈 문자열로 설정
+                    $(this).val('');
+                }
+            });
+        }
+
+        const closeAfterModal = () => {
+        }
+
+        const clearForm = (id) => {
+            $('#' + id).find('input, select, textarea').each(function () {
+                if ($(this).is(':checkbox')) {
+                    // 체크박스는 체크 해제
+                    $(this).prop('checked', false);
+                } else if ($(this).is('select')) {
+                    const obj = this;
+                    if (obj.classList.contains('choices') && obj.choicesInstance) {
+                        // Choices.js가 적용된 select 초기화
+                        obj.choicesInstance.setChoiceByValue(''); // 선택값 초기화
+                    } else {
+                        // 일반 select는 첫 번째 값으로 초기화
+                        $(this).val($(this).find('option:first').val());
+                    }
+                } else {
+                    // 나머지 input 및 textarea는 빈 값으로 초기화
+                    $(this).val('');
+                }
+            });
+        };
+    </script>
+</div>
+
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.PreMileageReqMapper">
+
+    <select id="findPreMileageReq">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.findPreMileageReq */
+        SELECT MR.REQ_NO
+             , MR.USER_ID
+             , TE.EMP_NAME  AS USER_NAME
+             , MR.CUST_ID
+             , TC.CUST_NAME
+             , MR.REQ_AMT
+             , IFNULL(MR.APPROVE_IND, 'N')  AS APPROVE_IND
+             , DATE_FORMAT(MR.REQ_DATE, '%Y-%m-%d') AS REQ_DATE
+          FROM MILEAGE_REQ      MR
+          LEFT JOIN TB_EMP      TE
+            ON TE.EMP_ID        = MR.USER_ID
+          LEFT JOIN TB_CUSTOMER TC
+            ON TC.BIZ_NO       = MR.CUST_ID
+         WHERE 1=1
+        <if test='reqNo != null  and reqNo != "" '>
+            AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
+        </if>
+        <if test='userName != null  and userName != "" '>
+            AND TE.EMP_NAME   LIKE CONCAT('%',#{userName} ,'%')
+        </if>
+        <if test='custName != null  and custName != "" '>
+            AND TC.CUST_NAME   LIKE CONCAT('%',#{custName} ,'%')
+        </if>
+    </select>
+
+    <insert id="saveMileageReq">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.saveMileageReq */
+        <selectKey resultType="String" keyProperty="reqNo" order="BEFORE">
+            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(REQ_NO), 0) + 1, '4', '0')) AS REQ_NO
+            FROM MILEAGE_REQ
+            WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+        </selectKey>
+        INSERT INTO MILEAGE_REQ(
+            REQ_NO
+            , USER_ID
+            , CUST_ID
+            , REQ_AMT
+            , APPROVE_IND
+            , REQ_DATE
+        ) VALUES (
+            #{reqNo}
+            , #{userId}
+            , #{custId}
+            , #{reqAmt}
+            , 'N'
+            , CURDATE()
+        )
+    </insert>
+
+    <update id="updateMileageReq">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.updateMileageReq */
+        UPDATE MILEAGE_REQ
+           SET REQ_AMT      = #{reqAmt}
+             , APPROVE_IND  = #{approveInd}
+             , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
+         WHERE REQ_NO       = #{reqNo}
+           AND USER_ID      = #{userId}
+           AND CUST_ID      = #{custId}
+    </update>
+
+    <delete id="deletePreMileageReq">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.deletePreMileageReq */
+        DELETE FROM MILEAGE_REQ
+        WHERE REQ_NO       = #{reqNo}
+          AND USER_ID      = #{userId}
+          AND CUST_ID      = #{custId}
+    </delete>
+
+    <select id="checkApproveInd">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.checkApproveInd */
+        SELECT COUNT(1)
+          FROM MILEAGE_REQ
+        WHERE REQ_NO       = #{reqNo}
+          AND USER_ID      = #{userId}
+          AND CUST_ID      = #{custId}
+    </select>
+</mapper>
