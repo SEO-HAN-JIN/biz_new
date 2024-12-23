@@ -135,3 +135,8 @@ function isNumeric(str) {
     return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
 }
+
+function roundDecimal(value, decimalPlaces) {
+    const factor = Math.pow(10, decimalPlaces);
+    return Math.round(value * factor) / factor;
+}

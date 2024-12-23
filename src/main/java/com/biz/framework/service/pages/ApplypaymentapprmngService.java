@@ -59,7 +59,7 @@ public class ApplypaymentapprmngService {
                 settlementmstDto.setConfirmRateAmt(settlementDto.getRefundExpectRateAmt()); // 확정수수료
 
                 if ("04".equals(settlementDto.getGubun())) {
-                    settlementmstDto.setConfirmMileage(settlementDto.getRefundSaleTotalAmt());  // 적립마일리지
+                    settlementmstDto.setConfirmMileage(settlementDto.getRefundProdTotalAmt());  // 환불금액(판매가기준) 적립
                 }
             }
 
@@ -94,6 +94,9 @@ public class ApplypaymentapprmngService {
             else
                 throw new ServiceException("처리 도중 오류가 발생했습니다.");
         }
+
+        if(result == 0)
+            throw new ServiceException("처리 도중 오류가 발생했습니다11.");
 
         return result;
 

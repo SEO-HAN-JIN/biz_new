@@ -328,6 +328,7 @@
                                                     <input type="hidden" id="settlementSeq">
                                                     <input type="hidden" id="incentiveRate">
                                                     <input type="hidden" id="saveMileage">
+                                                    <input type="hidden" id="refundInd">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품총액</label>
@@ -501,13 +502,15 @@
                 }
             });
 
-            //실제입금액
-            var realAmt = param.confirmAmt;
 
-            if(isNull(realAmt))
-            {
-                alert("입금금액을 입력해주세요.");
-                return false;
+            if(param.refundInd != "Y") {
+                //실제입금액
+                var realAmt = param.confirmAmt;
+
+                if (isNull(realAmt)) {
+                    alert("입금금액을 입력해주세요.");
+                    return false;
+                }
             }
 
             if (confirm("승인 처리하시겠습니까?")) {
@@ -583,6 +586,7 @@
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .add('settlementSeq', '정산번호', 150, {})
+                .add('reqGubunName', '요청구분', 80, {})
                 .add('empName', '담당자', 120, {sortable: true})
                 .add('custName', '고객명', 120, {sortable: true})
                 .add('prodName', '상품명', 120, { align: 'center', sortable: true })
@@ -593,21 +597,20 @@
                 .addDate('dateWorkTo', '작업종료일', 120, {})
                 .addDate('workDay', '작업일수', 80, {visible: false})
                 .addNumber('prodTotalAmt', '상품총액', 150, {visible: false})
+                .addNumber('totalAmt', '(판매/환불)총액', 150, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }})
+                .add('gubunName', '요청구분', 80, {})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
-                    align: 'right',
-                    textColor: 'red',
-                    comma: true,
-                    summary: {
-                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
-                    }})
+                    visible: false
+                })
                 .addNumber('confirmAmt', '입금액', 150, {
-                    align: 'right',
-                    textColor: 'red',
-                    comma: true,
-                    summary: {
-                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
-                    }})
-                .add('reqGubunName', '요청구분', 80, {})
+                    visible: false
+                })
                 .addButton('action', '입금여부', 100, {
                     buttonText: '확인',
                     textColor: 'red',
@@ -643,9 +646,7 @@
                 .add('remark', '비고', 0, {
                     visible: false
                 })
-                .add('gubunName', '요청구분', 80, {
-                    visible: false
-                })
+
                 .add('refundInd', '환불여부', 0, {
                     visible: false
                 })
@@ -836,6 +837,7 @@
             var saleTotalAmt = isNull(rsData.saleTotalAmt) ? 0 : rsData.saleTotalAmt;       //판매총액
             var expectRateAmt = isNull(rsData.expectRateAmt) ? 0 : rsData.expectRateAmt     //담당자수수료(예정)
 
+            $("#refundInd").val(rsData.refundInd);
             $("#settlementSeq").val(settlementSeq);
             $("#incentiveRate").val(incentiveRate);
             $("#deposit_prodTotalAmt").val(formatNumber(prodTotalAmt));
@@ -936,7 +938,7 @@
             var incentiveRate = parseFloat(incenRateStr);
 
             // 소수점 제외하고 정수만 출력
-            var rate = Math.floor((costAmt * incentiveRate) / 1.1) ;
+            var rate = roundDecimal((costAmt * incentiveRate) / 1.1, 0) ;
 
             $("#deposit_confirmRateAmt").val(setComma(rate));
         }

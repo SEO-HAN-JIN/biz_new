@@ -467,14 +467,20 @@
             const workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());           // 환불일수
             const incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());   // 직원인센티브율
 
+            debugger;
+
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
 
             // 환불상품총액(상품가 * 유입수 * 환불일수) * 부가세
-            const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay) * vatRate);
+            //const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay) * vatRate);
+            // * 환불상품총액 부가세 제외
+            const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay));
 
             // 환불판매총액 (판매가 * 유입수 * 환불일수) * 부가세
-            const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay) * vatRate);
+            //const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay) * vatRate);
+            // * 환불판매총액 부가세 제외
+            const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay));
 
             // 영업이익 (환불판매총액 - 환불상품총액)
             var costAmt = saleTotalAmt - prodTotalAmt;

@@ -166,7 +166,7 @@
                                                         <div class="form-group">
                                                             <label class="form-label">판매가</label>
                                                             <input type="text" id="saleAmt"
-                                                                   class="form-control is-num text-end" name="saleAmt">
+                                                                   class="form-control is-num text-end" name="saleAmt" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -468,24 +468,34 @@
             const vatRate = 1.1;
 
             // 판매총액 (판매가 * 유입수 * 작업일) - 부가세 포함
-            const saleTotalAmt = _saleTotalAmt === 0 ? Math.floor((_saleAmt * _inflowCnt * _workDay) * vatRate) : _saleTotalAmt;
+            //const saleTotalAmt = _saleTotalAmt === 0 ? Math.floor((_saleAmt * _inflowCnt * _workDay) * vatRate) : _saleTotalAmt;
 
-            // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
-            const prodTotalAmt = Math.floor((_prodAmt * _inflowCnt * _workDay) * vatRate);
+            // 상품가기준 상품총액 (상품가 * 유입수 * 작업일) - 부가세 포함
+            const prodTotalAmt = Math.floor((_prodAmt * _inflowCnt * _workDay));
 
             // 영업이익
-            const costAmt = saleTotalAmt - prodTotalAmt;
+            //const costAmt = saleTotalAmt - prodTotalAmt;
+
+            // * 영업이익 구할때 판매총액은 기입하므로 별도로 다시 안구해도됨 - HC
+            const costAmt = _saleTotalAmt - prodTotalAmt
 
             // 소수점 제외하고 정수만 출력
-            const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
+            //const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
 
-            $saleTotalAmt.val(formatNumber(saleTotalAmt));
+            // * 소수점 반올림 - HC
+            // if(급여차감 신규) { rate = prodTotalAmt }
+            // else
+            const rate = roundDecimal((costAmt * _incentiveRate) / vatRate, 0);
+
+            // * 판매총액 입력으로 변경해서 수정안해도됨
+            //$saleTotalAmt.val(formatNumber(saleTotalAmt));
             $expectRateAmt.val(formatNumber(rate));
             $prodTotalAmt.val(formatNumber(prodTotalAmt));
 
+
             // expectAmt 재계산
             let useMileage = removeComma($("#useMileage").val());
-            $expectAmt.val(saleTotalAmt - useMileage);
+            $expectAmt.val(_saleTotalAmt - useMileage);
 
         }
 
@@ -629,7 +639,7 @@
         const ableBtn = (flag) => {
             $("#dateWorkFrom").attr('disabled', flag);
             $("#dateWorkTo").attr('disabled', flag);
-            $("#saleAmt").attr('disabled', flag);
+            //$("#saleAmt").attr('disabled', flag);
             $("#inflowCnt").attr('disabled', flag);
             $("#gubun").attr('disabled', flag);
             $("#mileageUseInd").attr('disabled', flag);
@@ -817,9 +827,11 @@
             const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
             const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
 
-            const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
+            // 판매가, 상품가도 부가세 포함하여 금액 입력 그러므로 계산식에서 부가세 1*1 안해도됨
+            //const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
+            const prodAmt = roundDecimal(_saleTotalAmt / (_inflowCnt * _workDay), 2);
 
-            $saleAmt.val(formatNumber(prodAmt));
+            $saleAmt.val(prodAmt);
 
             saleSum();
         }

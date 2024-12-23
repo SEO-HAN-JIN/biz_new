@@ -38,6 +38,7 @@
             ST.REFUND_PROD_TOTAL_AMT,
             ST.REFUND_SALE_TOTAL_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
+            IFNULL(ST.REFUND_PROD_TOTAL_AMT, ST.SALE_TOTAL_AMT) AS TOTAL_AMT,
             IFNULL(SM.CONFIRM_AMT, 0) AS CONFIRM_AMT,
             SM.CONFIRM_MILEAGE,
             SM.CONFIRM_RATE_AMT,
@@ -102,8 +103,7 @@
 
     <insert id="confirmApplypaymentmst">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        INSERT SETTLEMENTMST
-        (
+        INSERT INTO SETTLEMENTMST (
             CONFIRM_SEQ,
             SETTLEMENT_SEQ,
             USER_ID,
@@ -119,19 +119,19 @@
         )
         VALUES
         (
-            #{confirmSeq},
-            #{settlementSeq},
-            #{userId},
-            #{confirmAmt},
-            #{confirmMileage},
-            #{confirmRateAmt},
-            DATE_FORMAT(NOW(), '%Y-%m-%d'),
-            'Y',
-            #{taxInd},
-            #{payYm},
-            #{atchId},
-            #{remark}
-        )
+           #{confirmSeq},
+           #{settlementSeq},
+           #{userId},
+           CASE WHEN #{confirmAmt} = '' THEN 0 ELSE CAST(#{confirmAmt} AS SIGNED) END,
+           CASE WHEN #{confirmMileage} = '' THEN 0 ELSE CAST(#{confirmMileage} AS SIGNED) END,
+           CASE WHEN #{confirmRateAmt} = '' THEN 0 ELSE CAST(#{confirmRateAmt} AS SIGNED) END,
+           DATE_FORMAT(NOW(), '%Y-%m-%d'),
+           'Y',
+           #{taxInd},
+           #{payYm},
+           #{atchId},
+           #{remark}
+       )
     </insert>
 
     <select id="checkPayrollInd">
