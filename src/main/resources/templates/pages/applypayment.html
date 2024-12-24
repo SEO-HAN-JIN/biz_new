@@ -342,7 +342,7 @@
             });
 
             // 판매시작일, 판매종료일, 판매가, 유입수 입력 이벤트 설정
-            const elements = ['dateWorkFrom', 'dateWorkTo', 'saleAmt', 'inflowCnt'];
+            const elements = ['dateWorkFrom', 'dateWorkTo', 'saleAmt', 'inflowCnt', 'gubun'];
 
             elements.forEach(id => {
                 const element = document.getElementById(id);
@@ -350,6 +350,30 @@
                     element.addEventListener("change", function () {
                         if (id == "dateWorkFrom" || id == "dateWorkTo")
                             $("#workDay").val(getDateDiff($("#dateWorkFrom").val(), $("#dateWorkTo").val()))
+
+                        if(id == "gubun") {
+
+                            if(["05", "06"].includes(element.value)) {
+                                $("#mileageUseInd").prop('checked', false);
+                                $("#mileageUseInd").attr('disabled', true);
+
+                            }
+                            else {
+                                $("#mileageUseInd").attr('disabled', false);
+                            }
+
+                            // 킵사용 제어
+                            if($("#mileageUseInd").prop('checked'))
+                            {
+                                $("#useMileage").attr('disabled', false);
+                            }
+                            else
+                            {
+                                $("#useMileage").val('0');
+                                $("#useMileage").attr('disabled', true);
+                            }
+
+                        }
 
                         saleSum();
                     });
@@ -375,6 +399,7 @@
 
                     if (!isNull(rsData)) {
                         $("#prodAmt").val(setComma(rsData.prodAmt));
+                        saleSum();
                     }
                 })
             })
@@ -456,6 +481,7 @@
             const $expectRateAmt = $("#expectRateAmt");
             const $expectAmt = $("#expectAmt");
             const $prodTotalAmt = $("#prodTotalAmt");
+            const $useMileage = $("#useMileage");
 
             const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
             const _saleAmt = isNull($saleAmt.val()) ? 0 : parseInt(removeComma($saleAmt.val()));
@@ -463,6 +489,7 @@
             const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
             const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
             const _incentiveRate = parseFloat($incentiveRate.val());
+            const _useMileage = isNull($useMileage.val()) ? 0 : parseInt(removeComma($useMileage.val()));
 
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
@@ -482,20 +509,26 @@
             // 소수점 제외하고 정수만 출력
             //const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
 
+            let rate = 0;
+            let expectAmt = 0;
             // * 소수점 반올림 - HC
-            // if(급여차감 신규) { rate = prodTotalAmt }
-            // else
-            const rate = roundDecimal((costAmt * _incentiveRate) / vatRate, 0);
+            if(["05", "06"].includes($("#gubun").val()))
+            {
+                rate = -_saleTotalAmt;
+                expectAmt = -(_saleTotalAmt - _useMileage);
+            }
+            else {
+                rate = roundDecimal((costAmt * _incentiveRate) / vatRate, 0);
+                expectAmt = (_saleTotalAmt - _useMileage);
+            }
 
             // * 판매총액 입력으로 변경해서 수정안해도됨
             //$saleTotalAmt.val(formatNumber(saleTotalAmt));
             $expectRateAmt.val(formatNumber(rate));
             $prodTotalAmt.val(formatNumber(prodTotalAmt));
 
-
             // expectAmt 재계산
-            let useMileage = removeComma($("#useMileage").val());
-            $expectAmt.val(_saleTotalAmt - useMileage);
+            $expectAmt.val(expectAmt);
 
         }
 
@@ -829,7 +862,11 @@
 
             // 판매가, 상품가도 부가세 포함하여 금액 입력 그러므로 계산식에서 부가세 1*1 안해도됨
             //const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
-            const prodAmt = roundDecimal(_saleTotalAmt / (_inflowCnt * _workDay), 2);
+            const inflowAmt = (_inflowCnt * _workDay);
+
+            let prodAmt = 0;
+            if(inflowAmt != 0)
+                prodAmt= roundDecimal(_saleTotalAmt / inflowAmt, 2);
 
             $saleAmt.val(prodAmt);
 

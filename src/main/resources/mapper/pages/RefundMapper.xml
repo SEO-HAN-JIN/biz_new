@@ -97,6 +97,7 @@
              , ST.PROD_TOTAL_AMT
              , ST.MILEAGE_USE_IND
              , ST.EXIST_MILEAGE
+             , ST.GUBUN
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU
             ON ST.CUST_ID           = CU.BIZ_NO

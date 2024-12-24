@@ -175,6 +175,7 @@
                                                     <input type="hidden" id="_refundModal_expectRateAmt" name="expectRateAmt">
                                                     <input type="hidden" id="_refundModal_mileageUseInd" name="mileageUseInd">
                                                     <input type="hidden" id="_refundModal_useMileage" name="useMileage">
+                                                    <input type="hidden" id="_refundModal_reqGubun" name="reqGubun">
                                                     <input type="hidden" id="_refundModal_existMileage" name="existMileage">
                                                 </div>
                                             </div>
@@ -486,9 +487,14 @@
             var costAmt = saleTotalAmt - prodTotalAmt;
 
             // 환불수수료 (영업이익 * 인센티브 / 1.1)
-            var expectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
+            var expectRateAmt = 0;
 
-            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(saleTotalAmt));                    // 환불판매총액
+            if(["07"].includes($("#_refundModal_gubun").val()))
+                expectRateAmt = saleTotalAmt;
+            else
+                expectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
+
+            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(saleTotalAmt));      // 환불판매총액
             $("#" + refundModalPrefix + "refundProdTotalAmt").val(formatNumber(prodTotalAmt));      // 환불상품총액
             $("#" + refundModalPrefix + "refundExpectRateAmt").val(formatNumber(expectRateAmt));    // 환불수수료
         }
@@ -783,6 +789,14 @@
             if (!isNull(focusedCell)) {
                 // 정산요청 모달 hide
                 $('#paymentModal').modal('hide');
+
+                $("#_refundModal_gubun").attr('disabled', false);
+                $("#_refundModal_gubun").val('');
+
+                if(["05", "06"].includes(focusedRow.gubun)) {
+                    $("#_refundModal_gubun").attr('disabled', true);
+                    $("#_refundModal_gubun").val('07');
+                }
 
                 // 환불요청 모달 > 정산요청 정보 바인딩
                 $('.paymentDetail').bindForm(focusedRow);

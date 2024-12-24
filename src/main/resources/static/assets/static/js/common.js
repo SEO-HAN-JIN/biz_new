@@ -137,6 +137,10 @@ function isNumeric(str) {
 }
 
 function roundDecimal(value, decimalPlaces) {
+
+    if(isNull(value))
+        return 0;
+
     const factor = Math.pow(10, decimalPlaces);
     return Math.round(value * factor) / factor;
 }

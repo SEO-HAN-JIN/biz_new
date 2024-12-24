@@ -604,7 +604,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('gubunName', '요청구분', 80, {})
+                .add('gubunName', '요청구분', 120, {})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
                     visible: false
                 })
@@ -711,45 +711,45 @@
             })
         }
 
-        const fn_savePaymentGrid = () => {
-            let modifiedData = paymentGrid.getModifiedRows();
-            const createdData = modifiedData.createdRows;
-            const updatedData = modifiedData.updatedRows;
-
-            const createdLength = !isNull(createdData.length) ? createdData.length : 0;
-            const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
-
-            const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
-
-            let params = [];
-            for (let i = 0; i < createdData.length; i++) {
-                createdData[i].rowStatus = 'C';
-                params.push(createdData[i]);
-            }
-
-            for (let i = 0; i < updatedData.length; i++) {
-                updatedData[i].rowStatus = 'U';
-                params.push(updatedData[i]);
-            }
-
-            if (result) {
-                $.ajax({
-                    url: apiUrl + "/up/list",
-                    data: JSON.stringify(params),
-                    contentType:'application/json',
-                    type: 'POST',
-                    success: (result) => {
-                        if (result > 0) {
-                            alert("저장이 완료되었습니다.");
-                            search();
-                        } else {
-                            alert("저장에 실패하였습니다.");
-                            search();
-                        }
-                    }
-                })
-            }
-        }
+        // const fn_savePaymentGrid = () => {
+        //     let modifiedData = paymentGrid.getModifiedRows();
+        //     const createdData = modifiedData.createdRows;
+        //     const updatedData = modifiedData.updatedRows;
+        //
+        //     const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        //     const updatedLength = !isNull(updatedData.length) ? updatedData.length : 0;
+        //
+        //     const result = confirm("총 " + (createdLength + updatedLength) + "건의 데이터를 저장하시겠습니까?");
+        //
+        //     let params = [];
+        //     for (let i = 0; i < createdData.length; i++) {
+        //         createdData[i].rowStatus = 'C';
+        //         params.push(createdData[i]);
+        //     }
+        //
+        //     for (let i = 0; i < updatedData.length; i++) {
+        //         updatedData[i].rowStatus = 'U';
+        //         params.push(updatedData[i]);
+        //     }
+        //
+        //     if (result) {
+        //         $.ajax({
+        //             url: apiUrl + "/up/list",
+        //             data: JSON.stringify(params),
+        //             contentType:'application/json',
+        //             type: 'POST',
+        //             success: (result) => {
+        //                 if (result > 0) {
+        //                     alert("저장이 완료되었습니다.");
+        //                     search();
+        //                 } else {
+        //                     alert("저장에 실패하였습니다.");
+        //                     search();
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
 
 
         const openPgmModal = () => {
@@ -878,6 +878,15 @@
                 var confirmAmt = isNull(rsData.confirmAmt) ? 0 : rsData.confirmAmt;                 //입금총액
                 var confirmMileage = isNull(rsData.confirmMileage) ? 0 : rsData.confirmMileage;     //적립수수료
                 var confirmRateAmt = isNull(rsData.confirmRateAmt) ? 0 : rsData.confirmRateAmt;     //확정수수료
+
+                if(["05", "06"].includes(rsData.gubun)) {
+                    confirmAmt = saleTotalAmt;
+                    confirmRateAmt = -saleTotalAmt;
+                    $("#deposit_confirmAmt").attr('disabled', true);
+                }
+                else
+                    $("#deposit_confirmAmt").attr('disabled', false);
+
 
                 // 부가세율 설정 (10% 부가세)
                 var vatRate = 1.1;
