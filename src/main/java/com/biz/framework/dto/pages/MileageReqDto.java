@@ -15,6 +15,7 @@ public class MileageReqDto extends BaseDto {
     private String reqAmt;
     private String approveInd;
     private String reqDate;
+    private String reqGubun;
 
     private String userName;
     private String custName;

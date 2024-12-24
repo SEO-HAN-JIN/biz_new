@@ -14,11 +14,17 @@
              , MR.REQ_AMT
              , IFNULL(MR.APPROVE_IND, 'N')  AS APPROVE_IND
              , DATE_FORMAT(MR.REQ_DATE, '%Y-%m-%d') AS REQ_DATE
+             , MR.REQ_GUBUN
+             , C.CODE_NAME      AS REQ_GUBUN_NAME
+             , TC.MILEAGE       AS REST_MILEAGE
           FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
             ON TE.EMP_ID        = MR.USER_ID
           LEFT JOIN TB_CUSTOMER TC
             ON TC.BIZ_NO       = MR.CUST_ID
+          LEFT JOIN CDBASE        C
+            ON C.PATTERN_CODE     = 'SE05'
+           AND C.BASE_CODE        = MR.REQ_GUBUN
          WHERE 1=1
         <if test='reqNo != null  and reqNo != "" '>
             AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
@@ -45,6 +51,7 @@
             , REQ_AMT
             , APPROVE_IND
             , REQ_DATE
+            , REQ_GUBUN
         ) VALUES (
             #{reqNo}
             , #{userId}
@@ -52,6 +59,7 @@
             , #{reqAmt}
             , 'N'
             , CURDATE()
+            , #{reqGubun}
         )
     </insert>
 
@@ -61,6 +69,7 @@
            SET REQ_AMT      = #{reqAmt}
              , APPROVE_IND  = #{approveInd}
              , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
+             , REQ_GUBUN    = #{reqGubun}
          WHERE REQ_NO       = #{reqNo}
            AND USER_ID      = #{userId}
            AND CUST_ID      = #{custId}
@@ -81,5 +90,15 @@
         WHERE REQ_NO       = #{reqNo}
           AND USER_ID      = #{userId}
           AND CUST_ID      = #{custId}
+    </select>
+
+    <select id="checkAlreadyApprov">
+        /* com.biz.framework.mapper.pages.PreMileageReqMapper.checkAlreadyApprov */
+        SELECT COUNT(1)
+          FROM MILEAGE_REQ
+        WHERE REQ_NO       = #{reqNo}
+          AND USER_ID      = #{userId}
+          AND CUST_ID      = #{custId}
+          AND APPROVE_IND   = 'Y'
     </select>
 </mapper>

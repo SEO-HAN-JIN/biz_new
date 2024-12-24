@@ -106,10 +106,21 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <select id="reqGubun" name="reqGubun" class="form-select form-control-sm">
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">잔여마일리지</label>
+                                                            <input type="text" id="restMileage"
+                                                                   class="form-control is-num text-end" name="restMileage" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -166,6 +177,7 @@
         let _userNm;
 
         $(document).ready(function() {
+            findInitCodes();
             initEvent();
             initPreMileageReqGrid();
 
@@ -173,6 +185,25 @@
             _userNm = /*[[${userNm}]]*/'';
         });
 
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "SE05"}
+                ];
+
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
+
+        const findCodeCallback = (result) => {
+            const options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE05,
+                placeholder: '선택'
+            };
+            $("#reqGubun").addOptions(options);
+        }
 
         const initEvent = () => {
 
@@ -184,6 +215,11 @@
             $("#modalSaveBtn").on('click', save);
 
             $("#searchBtn").on('click', search);
+
+            // 고객 정보 변경할 때마다 마일리지 금액 가져오기
+            $("#custId").on("change", function () {
+                findExistMileage(this.value);
+            })
         }
 
         const initPreMileageReqGrid = () => {
@@ -245,10 +281,9 @@
                 param.rowStatus = 'U';
             }
 
-            if (param.approveInd === 'Y') {
-                alert("이미 승인된 데이터입니다.");
-                return;
-            }
+            // if (validation(param)) {
+            //     return;
+            // };
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 $.ajax({
@@ -275,14 +310,19 @@
 
         const deleteData = () => {
             const focusedCell = preMileageReqGrid.getGrid().getFocusedCell();
+            const focusRow = preMileageReqGrid.getGrid().getRow(focusedCell.rowKey);
             if (isNull(focusedCell)) {
                 alert("삭제할 행을 선택해주세요.");
                 return;
             }
 
+            if (focusRow.approveInd === 'Y') {
+                alert("이미 승인된 데이터입니다.");
+                return;
+            }
+
             const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
             if (confirmResult) {
-                const focusRow = preMileageReqGrid.getGrid().getRow(focusedCell.rowKey);
                 $.ajax({
                     url: apiUrl,
                     data: JSON.stringify(focusRow),
@@ -296,6 +336,9 @@
                             alert("삭제에 실패하였습니다.");
                             search();
                         }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+
                     }
                 })
             }
@@ -333,6 +376,7 @@
         const disableForm = (flag) => {
 
             $("#reqAmt").attr('disabled', flag);
+            $("#reqGubun").attr('disabled', flag);
 
             if (flag) {
                 document.getElementById("custId").choicesInstance.disable();
@@ -376,6 +420,56 @@
                 }
             });
         };
+
+        const findExistMileage = (param) => {
+            var params = {
+                bizNo: param
+            };
+
+            $.ajax({
+                url: apiUrl + "/custinfo",
+                data: params,
+                type: 'GET',
+                success: (result) => {
+                    if(!isNull(result))
+                    {
+                        $("#restMileage").val(setComma(result.mileage));
+                    }
+                }
+            });
+        }
+
+        const validation = (param) => {
+
+            if (isNull(param.custId)) {
+                alert("고객을 선택해주세요.");
+                return true;
+            }
+
+            if (isNull(param.reqGubun)) {
+                alert("요청구분을 선택해주세요.");
+                return true;
+            }
+
+            if (isNull(param.reqAmt)) {
+                alert("마일리지를 입력해주세요.");
+                return true;
+            }
+
+            if (param.reqGubun === '02') {
+                if (param.restMileage - param.reqAmt < 0) {
+                    alert("요청금액은 잔여마일리지보다 작아야합니다.");
+                    return true;
+                }
+            }
+
+            if (param.approveInd === 'Y') {
+                alert("이미 승인된 데이터입니다.");
+                return true;
+            }
+
+            return false;
+        }
     </script>
 </div>
 

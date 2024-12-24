@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.NumberFormatter;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional
@@ -19,6 +22,7 @@ import java.util.List;
 public class PreMileageReqService {
 
     private final PreMileageReqMapper preMileageReqMapper;
+    private final CustomerMapper customerMapper;
 
     public List<CamelCaseMap> findPreMileageReq(MileageReqDto mileageReqDto) {
         return preMileageReqMapper.findPreMileageReq(mileageReqDto);
@@ -27,12 +31,24 @@ public class PreMileageReqService {
     public int savePreMileageReq(MileageReqDto mileageReqDto) {
         int result = 0;
 
+        if ("02".equals(mileageReqDto.getReqGubun())) {
+            int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getCustId());
+            if (mileage - Integer.parseInt(mileageReqDto.getReqAmt()) < 0) {
+                NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
+                String formattedMileage = formatter.format(mileage);
+
+                throw new ServiceException("요청금액은 현재 고객의 잔여마일리지 보다 작아야합니다.\n고개마일리지: " + formattedMileage);
+            }
+        }
+
         switch (mileageReqDto.getRowStatus()) {
-            case C -> result += preMileageReqMapper.saveMileageReq(mileageReqDto);
+            case C -> {
+                result += preMileageReqMapper.saveMileageReq(mileageReqDto);
+            }
             case U -> {
-                if (preMileageReqMapper.checkApproveInd(mileageReqDto) > 0 ) {
+                if (preMileageReqMapper.checkAlreadyApprov(mileageReqDto) > 0 ) {
                     throw new ServiceException("이미 승인된 데이터입니다.");
-                };
+                }
                 result += preMileageReqMapper.updateMileageReq(mileageReqDto);
             }
         }
@@ -41,6 +57,9 @@ public class PreMileageReqService {
     }
 
     public int deletePreMileageReq(MileageReqDto mileageReqDto) {
+        if (preMileageReqMapper.checkAlreadyApprov(mileageReqDto) > 0) {
+            throw new ServiceException("이미 승인된 데이터입니다.");
+        };
         return preMileageReqMapper.deletePreMileageReq(mileageReqDto);
     }
 }
