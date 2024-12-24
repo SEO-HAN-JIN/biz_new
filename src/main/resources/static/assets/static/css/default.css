@@ -14,3 +14,7 @@
     background-color: #2E2E2E;
     color: #CCCCCC;
 }
+
+.choices.is-disabled .choices__inner .choices__list {
+    background-color: #e9ecef; /* 원하는 배경색 */
+}
