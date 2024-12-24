@@ -16,6 +16,7 @@ import java.util.List;
 public class PreMileageReqRestController {
 
     private final PreMileageReqService preMileageReqService;
+    private final CustomerService customerService;
 
     @GetMapping
     public List<CamelCaseMap> findPreMileageReq(MileageReqDto mileageReqDto) {
@@ -30,5 +31,10 @@ public class PreMileageReqRestController {
     @DeleteMapping
     public int deletePreMileageReq(@RequestBody MileageReqDto mileageReqDto) {
         return preMileageReqService.deletePreMileageReq(mileageReqDto);
+    }
+
+    @GetMapping("/custinfo")
+    public CamelCaseMap findCustInfo(CustomerDto customerDto) {
+        return customerService.findCustomerInfo(customerDto);
     }
 }

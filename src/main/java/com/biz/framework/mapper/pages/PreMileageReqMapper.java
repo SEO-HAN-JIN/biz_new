@@ -17,4 +17,6 @@ public interface PreMileageReqMapper {
     int deletePreMileageReq(MileageReqDto mileageReqDto);
 
     int checkApproveInd(MileageReqDto mileageReqDto);
+
+    int checkAlreadyApprov(MileageReqDto mileageReqDto);
 }
