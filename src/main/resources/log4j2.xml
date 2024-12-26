@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration status="OFF">
 
     <Properties>
-        <Property name="logFileName">Log4j Test</Property>
+        <Property name="logFileName">framework</Property>
         <Property name="consoleLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,
             ERROR=red, INFO=green, DEBUG=blue} [%c] %style{[%t]}{yellow}- %m%n
         </Property>
@@ -12,40 +12,24 @@
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="${consoleLayout}"/>
+            <PatternLayout charset="UTF-8" pattern="${consoleLayout}"/>
         </Console>
         <Console name="SlowConsole" target="SYSTEM_OUT">
-            <PatternLayout disableAnsi="false" pattern="${consoleLayout}"/>
+            <PatternLayout charset="UTF-8" disableAnsi="false" pattern="${consoleLayout}"/>
         </Console>
-        <!--        <RollingFile name="file" fileName="logs/${logFileName}.log"-->
-        <!--                     filePattern="logs/${logFileName}.%d{yyyy-MM-dd}.log">-->
-        <!--            <PatternLayout pattern="${fileLayout}"/>-->
-        <!--            <Policies>-->
-        <!--                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>&lt;!&ndash; 시간별 로그 파일 생성&ndash;&gt;-->
-        <!--                <OnStartupTriggeringPolicy  modulate="true"/>&lt;!&ndash; 시간별 로그 파일 생성&ndash;&gt;-->
-        <!--            </Policies>-->
-        <!--            <DefaultRolloverStrategy max="10" fileIndex="min"/>&lt;!&ndash; 롤링 파일 5개 까지 생성 &ndash;&gt;-->
-        <!--        </RollingFile>-->
+        <RollingFile name="file" fileName="logs/${logFileName}.log" filePattern="logs/${logFileName}.%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${fileLayout}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/><!-- 시간별 로그 파일 생성-->
+            </Policies>
+            <DefaultRolloverStrategy max="10" fileIndex="min"/><!-- 롤링 파일 5개 까지 생성 -->
+        </RollingFile>
     </Appenders>
 
     <Loggers>
         <ROOT level="INFO">
             <AppenderRef ref="SlowConsole"/>
-            <!--            <AppenderRef ref="file"/>-->
-            <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
+            <AppenderRef ref="file"/>
         </ROOT>
-
-        <!--        <Logger name="com.example" level="INFO" additivity="false">-->
-        <!--            <AppenderRef ref="SlowConsole"/>-->
-        <!--            <AppenderRef ref="file"/>-->
-        <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
-        <!--        </Logger>-->
-
-        <!--        <Logger name="com.gsitm" level="INFO" additivity="false">-->
-        <!--            <AppenderRef ref="SlowConsole"/>-->
-        <!--            <AppenderRef ref="file"/>-->
-        <!--            <RegexFilter regex="(?s).*==IGNORE_LOG==.*" onMatch="DENY" onMismatch="NEUTRAL" useRawMsg="true" />-->
-        <!--        </Logger>-->
-
     </Loggers>
 </Configuration>

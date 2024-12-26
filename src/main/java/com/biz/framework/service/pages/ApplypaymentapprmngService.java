@@ -1,18 +1,14 @@
 package com.biz.framework.service.pages;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.dto.pages.SettlementmstDto;
-import com.biz.framework.mapper.pages.ApplypaymentMapper;
 import com.biz.framework.mapper.pages.ApplypaymentapprmngMapper;
 import com.biz.framework.mapper.pages.CustomerMapper;
 import com.biz.framework.mapper.pages.MileageHisMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -68,7 +64,7 @@ public class ApplypaymentapprmngService {
 
             if (result > 0) {
 
-                if (!StringUtil.isNullOrEmpty(settlementmstDto.getConfirmMileage()))
+                if (!StringUtils.isEmpty(settlementmstDto.getConfirmMileage()))
                 {
                     mileageAmt = Integer.parseInt(settlementmstDto.getConfirmMileage());
                 }
