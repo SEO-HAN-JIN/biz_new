@@ -175,10 +175,14 @@ if (typeof CustomTuiGrid === "undefined") {
                             return;
                         }
 
+                        // 체크박스 열 너비 보정
+                        const checkboxWidth = self.rowHeaders.includes('checkbox') ? 40 : 0;
+                        const adjustedContainerWidth = containerWidth - checkboxWidth;
+
                         // 각 컬럼의 비율에 맞춰 너비 조정
                         validColumns.forEach(column => {
                             const widthRatio = column.width / totalInitialWidth;
-                            column.width = Math.floor(containerWidth * widthRatio); // 비율에 따라 너비 설정
+                            column.width = Math.floor(adjustedContainerWidth * widthRatio); // 비율에 따라 너비 설정
                         });
 
                         self.grid.setColumns(self.columns); // 업데이트된 컬럼 설정 반영

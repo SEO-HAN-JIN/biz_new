@@ -34,6 +34,7 @@
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.GUBUN,
+            CD2.CODE_NAME AS GUBUN_NAME,
             ST.MILEAGE_USE_IND,
             IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
             IFNULL(ST.EXIST_MILEAGE, 0)  AS CUR_EXIST_MILEAGE,
@@ -50,6 +51,9 @@
         LEFT JOIN CDBASE        C
           ON C.PATTERN_CODE     = 'SE04'
          AND C.BASE_CODE        = ST.APPLY_STATUS
+        LEFT JOIN CDBASE CD2
+          ON CD2.PATTERN_CODE = 'SE02'
+         AND ST.GUBUN = CD2.BASE_CODE
        WHERE 1=1
          AND ST.USER_ID = #{loginUserId}
          AND ST.REFUND_IND IS NULL

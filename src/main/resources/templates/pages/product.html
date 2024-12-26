@@ -102,7 +102,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품가</label>
-                                                        <input type="text" id="_productPop_prodAmt" class="form-control priceformat" name="prodAmt">
+                                                        <input type="text" id="_productPop_prodAmt" class="form-control" name="prodAmt">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -276,8 +276,8 @@
                             $(this).prop('checked', focusedData[fieldName] === 'Y' || focusedData[fieldName] === true);
                         } else if (fieldName === 'prodAmt') {
                             $('#' + _popPrefix_ + fieldName).val(focusedData[fieldName]);
-                            const replaceNumber = formatToCurrency(focusedData[fieldName]);
-                            $(this).val(replaceNumber);
+                            //const replaceNumber = formatToCurrency(focusedData[fieldName]);
+                            //$(this).val(replaceNumber);
                         } else {
                             // 그 외 input, textarea는 값 바인딩
                             $(this).val(focusedData[fieldName]);

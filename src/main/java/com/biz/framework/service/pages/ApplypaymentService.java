@@ -11,8 +11,10 @@ import com.biz.framework.mapper.pages.MileageHisMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,35 +68,43 @@ public class ApplypaymentService {
             throw new ServiceException("승인요청건만 삭제 가능합니다.");
         }
 
-        result += applypaymentMapper.deleteSettlement(settlementDto);
+        if(!CollectionUtils.isEmpty(settlementDto.getSettlementDtoList()))
+        {
+            for(SettlementDto dto : settlementDto.getSettlementDtoList())
+            {
+                result += applypaymentMapper.deleteSettlement(dto);
 
-        if ("Y".equals(settlementDto.getMileageUseInd())) {
-            // 고객정보 가져오기
-            CustomerDto customerDto = new CustomerDto();
-            customerDto.setBizNo(settlementDto.getCustId());
-            CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
+                if ("Y".equals(dto.getMileageUseInd())) {
+                    // 고객정보 가져오기
+                    CustomerDto customerDto = new CustomerDto();
+                    customerDto.setBizNo(dto.getCustId());
+                    CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
 
-            String bizNo = (String) customerInfo.get("bizNo");
-            int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
+                    String bizNo = (String) customerInfo.get("bizNo");
+                    int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
 
-            int useMileage = Integer.parseInt(settlementDto.getUseMileage());
-            int saveMileage = existMileage + useMileage;
+                    int useMileage = Integer.parseInt(dto.getUseMileage());
+                    int saveMileage = existMileage + useMileage;
 
-            customerMapper.updateMileage(bizNo, saveMileage);
+                    customerMapper.updateMileage(bizNo, saveMileage);
 
-            if (useMileage > 0) {
-                MileageHisDto mileageHisDto = new MileageHisDto();
-                mileageHisDto.setBizNo(bizNo);
-                mileageHisDto.setEmpId(settlementDto.getUserId());
-                mileageHisDto.setMileagePrev(existMileage);
-                mileageHisDto.setMileageAft(saveMileage);
-                mileageHisDto.setCreatedPage("AQ"); // 정산요청: AQ
-                mileageHisDto.setCreatedId(settlementDto.getLoginUserId());
-                mileageHisDto.setSettlementSeq(settlementDto.getSettlementSeq());
+                    if (useMileage > 0) {
+                        MileageHisDto mileageHisDto = new MileageHisDto();
+                        mileageHisDto.setBizNo(bizNo);
+                        mileageHisDto.setEmpId(dto.getUserId());
+                        mileageHisDto.setMileagePrev(existMileage);
+                        mileageHisDto.setMileageAft(saveMileage);
+                        mileageHisDto.setCreatedPage("AQ"); // 정산요청: AQ
+                        mileageHisDto.setCreatedId(dto.getLoginUserId());
+                        mileageHisDto.setSettlementSeq(dto.getSettlementSeq());
 
-                mileageHisMapper.saveMileageHis(mileageHisDto);
+                        mileageHisMapper.saveMileageHis(mileageHisDto);
+                    }
+                }
             }
         }
+
+
         return result;
     }
 

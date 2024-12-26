@@ -10,7 +10,7 @@ public class ProductDto extends BaseDto {
 
     private String prodId;
     private String prodName;
-    private int prodAmt;
+    private String prodAmt;
     private String effDateFrom;
     private String effDateTo;
     private String useInd;

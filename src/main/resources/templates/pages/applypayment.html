@@ -484,8 +484,8 @@
             const $useMileage = $("#useMileage");
 
             const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
-            const _saleAmt = isNull($saleAmt.val()) ? 0 : parseInt(removeComma($saleAmt.val()));
-            const _prodAmt = isNull($prodAmt.val()) ? 0 : parseInt(removeComma($prodAmt.val()));
+            // const _saleAmt = isNull($saleAmt.val()) ? 0 : Number(removeComma($saleAmt.val()));
+            const _prodAmt = isNull($prodAmt.val()) ? 0 : Number(removeComma($prodAmt.val()));
             const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
             const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
             const _incentiveRate = parseFloat($incentiveRate.val());
@@ -548,17 +548,18 @@
         const initPaymentGrid = () => {
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .enableCheckbox(true) // 체크박스 활성화
                 .add('settlementSeq', '정산번호', 200, {})
-                .add('userName', '담당자', 150, {})
-                .add('custName', '고객명', 150, {})
-                .add('prodName', '상품명', 150, {})
+                .add('userName', '담당자', 100, {})
+                .add('custName', '고객명', 100, {})
+                .add('prodName', '상품명', 100, {})
                 .addNumber('prodAmt', '상품가', 120, {align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 120, {align: 'right', comma: true})
                 .add('inflowCnt', '유입수', 120, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 150, {})
                 .addDate('dateWorkTo', '작업종료일', 150, {})
-                .addDate('workDay', '작업일수', 100, {})
-                .addNumber('saleTotalAmt', '판매총액', 200, {
+                .addDate('workDay', '작업일수', 90, {})
+                .addNumber('saleTotalAmt', '판매총액', 190, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
@@ -566,7 +567,7 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }
                 })
-                .addNumber('expectRateAmt', '예상정산금액', 200, {
+                .addNumber('expectRateAmt', '예상정산금액', 190, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
@@ -574,6 +575,7 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }
                 })
+                .add('gubunName', '요청구분', 150, {})
                 .add('applyStatusName', '진행상태', 150, {})
                 .add('prodId', '상품ID', 'auto', {visible: false})
                 .add('custId', '고객ID', 'auto', {visible: false})
@@ -813,24 +815,32 @@
         }
 
         const fn_deletePaymentGrid = () => {
-            const focusedCell = paymentGrid.getGrid().getFocusedCell();
-            if (isNull(focusedCell)) {
+
+
+            const checkedRows = paymentGrid.getCheckedRows();
+            if (checkedRows.length <= 0) {
                 alert("삭제할 행을 선택해주세요.");
                 return;
             }
 
-            const data = paymentGrid.getGrid().getRow(focusedCell.rowKey);
-            if (data.applyStatus !== '01') {
+            // 승인요청건이 아닌 항목을 확인
+            const invalidRows = checkedRows.filter(el => el.applyStatus !== '01');
+            if (invalidRows.length > 0) {
                 alert("승인요청건만 삭제가 가능합니다.");
                 return;
             }
 
             const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
             if (confirmResult) {
-                const focusRow = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
+                // settlementDtoList 형식에 맞게 객체로 변환
+                var requestData = {
+                    settlementDtoList: checkedRows // 배열 그대로 전달
+                };
+
                 $.ajax({
                     url: apiUrl,
-                    data: JSON.stringify(focusRow),
+                    data: JSON.stringify(requestData),
                     contentType: 'application/json',
                     type: 'DELETE',
                     success: (result) => {
