@@ -30,7 +30,7 @@
             ON SE04.PATTERN_CODE   = 'SE04'
            AND SE04.BASE_CODE      = MR.APPLY_STATUS
          WHERE 1=1
-           AND MR.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+           AND DATE_FORMAT(MR.REQ_DATE, '%Y%m%d') BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         <if test='reqNo != null  and reqNo != "" '>
             AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
         </if>
