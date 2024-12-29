@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3>마일리지승인관리</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">마일리지관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">마일리지승인관리</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div id="searchTable" class="table">
+                            <div class="card-body pt-3 pb-3" id="searchForm">
+                                <!--                            <div class="row align-items-center p-2" style="">-->
+                                <div class="row align-items-center p-2 search-area custom-bg">
+                                    <div class="col-md-11">
+                                        <div class="form-group row mb-0 align-items-center text-center">
+                                            <!-- 요청일 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">날짜</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <input type="date" class="form-control form-control-sm me-2" id="searchStartDate" name="searchStartDate">
+                                                    <input type="date" class="form-control form-control-sm" id="searchEndDate" name="searchEndDate" >
+                                                </div>
+                                            </div>
+                                            <!-- 담당자명 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">담당자명</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" id="searchEmplName" name="searchEmplName" class="form-control form-control-sm" placeholder="담당자명">
+                                            </div>
+                                            <!-- 결재상태 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">결재상태</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select class="form-select" id="searchApplyStatus" name="searchApplyStatus">
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row mb-0 align-items-center text-center mt-2">
+
+                                            <!-- 고객명 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">고객명</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" id="searchCustName" name="searchCustName" class="form-control form-control-sm" placeholder="고객명">
+                                            </div>
+                                            <!-- 요청구분 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">요청구분</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <select class="form-select" id="searchReqGubun" name="searchReqGubun">
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 조회 버튼 -->
+                                    <div class="col-md-1 text-end">
+                                        <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">요청목록</h4>
+                        </div>
+                        <div class="card-body">
+                            <div id="premileagemngGrid" class="tui-grid"></div>
+                        </div>
+                        
+                        <!--정산요청 상세정보-->
+                        <div class="modal fade" id="reqInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">요청정보</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                        <form class="form">
+                                            <fieldset class="border p-3 rounded">
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자</label>
+                                                            <input type="text" id="_infoModal_userName" name="_infoModal_userName" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">고객</label>
+                                                            <input type="text" id="_infoModal_custName" name="_infoModal_custName" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <input type="text" id="_infoModal_reqGubunNm" name="_infoModal_reqGubunNm" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">잔여마일리지</label>
+                                                            <input type="text" id="_infoModal_restMileage" class="form-control is-num text-end" name="_infoModal_restMileage" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청마일리지</label>
+                                                            <input type="text" id="_infoModal_reqAmt" class="form-control is-num text-end" name="_infoModal_reqAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">결재상태</label>
+                                                            <input type="text" id="_infoModal_applyStatusNm" class="form-control is-num" name="_infoModal_applyStatusNm" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청일자</label>
+                                                            <input type="date" class="form-control" id="_infoModal_eqDate" name="_infoModal_reqDate" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+<!--                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">-->
+<!--                                            <i class="bx bx-check"></i> 저장-->
+<!--                                        </button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--입금정보 상세정보-->
+                        <div class="modal fade" id="applyModal" tabindex="-1" role="dialog" aria-labelledby="depositModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">요청정보</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form">
+                                            <fieldset class="border p-3 rounded">
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">담당자</label>
+                                                            <input type="text" id="userName" name="userName" class="form-control" disabled>
+                                                            <input type="hidden" id="userId" name="userId" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">고객</label>
+                                                            <th:block th:replace="components/cust-select :: cust-select(
+                                                                id='custId',
+                                                                name='custId')"></th:block>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청구분</label>
+                                                            <select id="reqGubun" name="reqGubun" class="form-select form-control-sm" disabled>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">잔여마일리지</label>
+                                                            <input type="text" id="restMileage"
+                                                                   class="form-control is-num text-end" name="restMileage" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청마일리지</label>
+                                                            <input type="text" id="reqAmt" class="form-control is-num text-end" name="reqAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">결재상태</label>
+                                                            <select class="form-select" id="applyStatus" name="applyStatus" disabled>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">요청일자</label>
+                                                            <input type="date" class="form-control" id="reqDate" name="reqDate" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" id="reqNo" name="reqNo">
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                        <button type="button" class="btn btn-danger ms-1" id="rejectBtn">
+                                            <i class="bx bx-check"></i> 승인취소
+                                        </button>
+                                        <button type="button" class="btn btn-primary ms-1" id="apprBtn">
+                                            <i class="bx bx-check"></i> 승인
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script type="text/javascript">
+
+        const apiUrl = '/api/pages/premileagemng';
+
+        let premileagemngGrid;
+        let menuGrid;
+
+        $(document).ready(function() {
+
+            findInitCodes();
+            initEvent();
+
+            const nowYear = new Date().getFullYear();
+            const nowMonth = new Date().getMonth();
+
+            const startDate = new Date(nowYear, nowMonth - 1, 1); // 이전 달 1일
+            const endDate = new Date(nowYear, nowMonth + 1, 0); // 현재 달의 마지막 날
+
+            // 포맷팅된 날짜 값을 input에 설정
+            $("#searchStartDate").val(formatDate(startDate));
+            $("#searchEndDate").val(formatDate(endDate));
+
+            document.getElementById("custId").choicesInstance.disable();
+        });
+
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "SE04"},
+                    {"patternCode": "SE05"}
+                ];
+
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
+
+        const findCodeCallback = (result) => {
+            const SE04Options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE04,
+                placeholder: '전체'
+            };
+            $("#searchApplyStatus").addOptions(SE04Options);
+            $("#applyStatus").addOptions(SE04Options);
+
+            $("#searchApplyStatus").val('01');
+
+            const options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE05,
+                placeholder: '전체'
+            };
+            $("#searchReqGubun").addOptions(options);
+            $("#reqGubun").addOptions(options);
+
+            initPaymentGrid();
+
+        }
+
+        const initEvent = () => {
+            $("#searchBtn").on('click', search);
+
+            $("#apprBtn").on('click', approve);
+            $("#rejectBtn").on('click', reject);
+        }
+
+        const approve = () => {
+
+            const param = {};
+
+            $('#applyModal').find('input, select, input[type="checkbox"]').each((index, item) => {
+
+                var id = item.id.replace("deposit_", "");
+
+                // checkbox일 때
+                if ($(item).is(':checkbox')) {
+                    param[id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
+                } else {
+                    // input일 때의 처리
+                    param[id] = item.value.replace(/,/g, ''); // input 값 설정
+                }
+            });
+
+            param.applyStatus = '02';
+
+            if (confirm("승인 처리하시겠습니까?")) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(param),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("처리 완료되었습니다.");
+                                $('#applyModal').modal('hide');
+                                search();
+                            } else {
+                                alert("처리 도중 실패하였습니다.");
+                                $('#applyModal').modal('hide');
+                                search();
+                                return false;
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                            return false;
+                        }
+                    })
+                });
+            }
+        }
+
+        const reject = () => {
+
+            const param = {};
+
+            $('#applyModal').find('input, select, input[type="checkbox"]').each((index, item) => {
+
+                var id = item.id.replace("deposit_", "");
+
+                // checkbox일 때
+                if ($(item).is(':checkbox')) {
+                    param[id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
+                } else {
+                    // input일 때의 처리
+                    param[id] = item.value.replace(/,/g, ''); // input 값 설정
+                }
+            });
+
+            param.applyStatus = '03';
+
+            if (confirm("승인취소 처리하시겠습니까?")) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: apiUrl + "/cancel",
+                        data: JSON.stringify(param),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("승인취소 되었습니다.");
+                                $('#applyModal').modal('hide');
+                                search();
+                            } else {
+                                alert("처리 도중 실패하였습니다.");
+                                $('#applyModal').modal('hide');
+                                search();
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                            return false;
+                        }
+                    })
+                });
+            }
+        }
+
+        const initPaymentGrid = () => {
+
+
+            var columns = new CustomTuiGrid()
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .add('reqNo', '요청번호', 100, {})
+                .add('custName', '고객명', 100, {})
+                .add('userName', '담당자명', 100, {})
+                .addNumber('reqAmt', '요청마일리지', 100, {
+                    align: 'right',
+                    comma: true,
+                })
+                .add('applyStatusNm', '결재상태', 100, {})
+                .add('reqDate', '요청일자', 100, {})
+                .add('reqGubunNm', '요청구분', 100, {})
+                .addButton('action', '적립여부', 100, {
+                    buttonText: '확인',
+                    textColor: 'red',
+                    onClick: (rowData, rowKey) => {
+                        openApplyModal(rowData);
+                    }
+                })
+            ;
+
+            premileagemngGrid = columns.init('premileagemngGrid', [])
+                .render();
+
+            // 더블 클릭 이벤트 설정
+            premileagemngGrid.getGrid().on('dblclick', function(ev) {
+                openPgmModal('2');
+            });
+
+            search();
+        }
+
+        const search = () => {
+            premileagemngGrid.clear();
+
+            const param = $("#searchTable").getData();
+
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                contentType:'application/json',
+                type: 'GET',
+                success: (data) => {
+
+                    if (data.length > 0) {
+
+                        data.forEach(row => {
+                            if(row.applyStatus == "02") {
+                                row.hideButton = true;
+                                row.action = "완료";
+                            } else if (row.applyStatus == "03") {
+                                row.hideButton = true;
+                                row.action = "거절";
+                            }
+                            else {
+                                row.hideButton = false;
+                                row.action = "대기";
+                            }
+                        });
+
+                        // 데이터 리셋 및 렌더링 강제 갱신
+                        const gridInstance = premileagemngGrid.getGrid();
+                        gridInstance.resetData(data); // 데이터 새로 고침
+
+                    }
+                }
+            })
+        }
+
+        const openPgmModal = () => {
+            $("#reqInfoModal").clear();
+
+            const focusedCell = premileagemngGrid.getGrid().getFocusedCell();
+            const focusedData = premileagemngGrid.getGrid().getRow(focusedCell.rowKey);
+
+            $("#reqInfoModal").bindForm(focusedData, {prefix: '_infoModal_'});
+
+            $('#reqInfoModal').modal('show');
+        }
+
+        const openApplyModal = (data) => {
+            document.getElementById("custId").choicesInstance.disable();
+
+            const focusedCell = premileagemngGrid.getGrid().getFocusedCell();
+            const focusedData = premileagemngGrid.getGrid().getRow(focusedCell.rowKey);
+
+            $("#applyModal").bindForm(focusedData);
+            if (data.applyStatus !== '01') {
+                $("#rejectBtn").attr('disabled', true);
+                $("#apprBtn").attr('disabled', true);
+            } else {
+                $("#rejectBtn").attr('disabled', false);
+                $("#apprBtn").attr('disabled', false);
+            }
+
+            $('#applyModal').modal('show');
+        }
+
+        const closeBeforeModal = () => {
+            console.log('모달이 곧 닫힙니다!');
+        }
+
+        const closeAfterModal = () => {
+            console.log('모달이 닫혔습니다!');
+        }
+
+
+        const modalAcceptBtn = () => {
+            search();
+        }
+
+
+    </script>
+
+</div>
+
+</html>
