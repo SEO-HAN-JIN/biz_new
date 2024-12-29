@@ -12,28 +12,39 @@
              , MR.CUST_ID
              , TC.CUST_NAME
              , MR.REQ_AMT
-             , IFNULL(MR.APPROVE_IND, 'N')  AS APPROVE_IND
+             , MR.APPLY_STATUS
+             , SE04.CODE_NAME   AS APPLY_STATUS_NM
              , DATE_FORMAT(MR.REQ_DATE, '%Y-%m-%d') AS REQ_DATE
              , MR.REQ_GUBUN
-             , C.CODE_NAME      AS REQ_GUBUN_NAME
+             , SE05.CODE_NAME      AS REQ_GUBUN_NM
              , TC.MILEAGE       AS REST_MILEAGE
           FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
             ON TE.EMP_ID        = MR.USER_ID
           LEFT JOIN TB_CUSTOMER TC
             ON TC.BIZ_NO       = MR.CUST_ID
-          LEFT JOIN CDBASE        C
-            ON C.PATTERN_CODE     = 'SE05'
-           AND C.BASE_CODE        = MR.REQ_GUBUN
+          LEFT JOIN CDBASE        SE05
+            ON SE05.PATTERN_CODE     = 'SE05'
+           AND SE05.BASE_CODE        = MR.REQ_GUBUN
+          LEFT JOIN CDBASE      SE04
+            ON SE04.PATTERN_CODE   = 'SE04'
+           AND SE04.BASE_CODE      = MR.APPLY_STATUS
          WHERE 1=1
+           AND MR.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         <if test='reqNo != null  and reqNo != "" '>
             AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
         </if>
-        <if test='userName != null  and userName != "" '>
-            AND TE.EMP_NAME   LIKE CONCAT('%',#{userName} ,'%')
+        <if test='searchEmplName != null  and searchEmplName != "" '>
+            AND TE.EMP_NAME   LIKE CONCAT('%',#{searchEmplName} ,'%')
         </if>
-        <if test='custName != null  and custName != "" '>
-            AND TC.CUST_NAME   LIKE CONCAT('%',#{custName} ,'%')
+        <if test='searchApplyStatus != null  and searchApplyStatus != "" '>
+            AND MR.APPLY_STATUS   = #{searchApplyStatus}
+        </if>
+        <if test='searchCustName != null  and searchCustName != "" '>
+            AND TC.CUST_NAME   LIKE CONCAT('%',#{searchCustName} ,'%')
+        </if>
+        <if test='searchReqGubun != null  and searchReqGubun != "" '>
+            AND MR.REQ_GUBUN   = #{searchReqGubun}
         </if>
     </select>
 
@@ -49,7 +60,7 @@
             , USER_ID
             , CUST_ID
             , REQ_AMT
-            , APPROVE_IND
+            , APPLY_STATUS
             , REQ_DATE
             , REQ_GUBUN
         ) VALUES (
@@ -57,8 +68,8 @@
             , #{userId}
             , #{custId}
             , #{reqAmt}
-            , 'N'
-            , CURDATE()
+            , #{applyStatus}
+            , STR_TO_DATE(#{reqDate}, '%Y-%m-%d')
             , #{reqGubun}
         )
     </insert>
@@ -67,7 +78,7 @@
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.updateMileageReq */
         UPDATE MILEAGE_REQ
            SET REQ_AMT      = #{reqAmt}
-             , APPROVE_IND  = #{approveInd}
+             , APPLY_STATUS  = #{applyStatus}
              , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
              , REQ_GUBUN    = #{reqGubun}
          WHERE REQ_NO       = #{reqNo}
@@ -83,15 +94,6 @@
           AND CUST_ID      = #{custId}
     </delete>
 
-    <select id="checkApproveInd">
-        /* com.biz.framework.mapper.pages.PreMileageReqMapper.checkApproveInd */
-        SELECT COUNT(1)
-          FROM MILEAGE_REQ
-        WHERE REQ_NO       = #{reqNo}
-          AND USER_ID      = #{userId}
-          AND CUST_ID      = #{custId}
-    </select>
-
     <select id="checkAlreadyApprov">
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.checkAlreadyApprov */
         SELECT COUNT(1)
@@ -99,6 +101,6 @@
         WHERE REQ_NO       = #{reqNo}
           AND USER_ID      = #{userId}
           AND CUST_ID      = #{custId}
-          AND APPROVE_IND   = 'Y'
+          AND APPLY_STATUS != '01'
     </select>
 </mapper>

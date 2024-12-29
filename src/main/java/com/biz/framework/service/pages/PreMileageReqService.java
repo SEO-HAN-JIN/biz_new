@@ -47,7 +47,7 @@ public class PreMileageReqService {
             }
             case U -> {
                 if (preMileageReqMapper.checkAlreadyApprov(mileageReqDto) > 0 ) {
-                    throw new ServiceException("이미 승인된 데이터입니다.");
+                    throw new ServiceException("승인요청건만 변경이 가능합니다.");
                 }
                 result += preMileageReqMapper.updateMileageReq(mileageReqDto);
             }
@@ -58,7 +58,7 @@ public class PreMileageReqService {
 
     public int deletePreMileageReq(MileageReqDto mileageReqDto) {
         if (preMileageReqMapper.checkAlreadyApprov(mileageReqDto) > 0) {
-            throw new ServiceException("이미 승인된 데이터입니다.");
+            throw new ServiceException("승인요청건만 삭제가 가능합니다.");
         };
         return preMileageReqMapper.deletePreMileageReq(mileageReqDto);
     }
