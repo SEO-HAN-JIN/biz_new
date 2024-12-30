@@ -57,7 +57,7 @@
            (
                SELECT COALESCE(MAX(MILEAGE_AFT), 0)
                FROM TB_MILEAGE_HIS
-               WHERE BIZ_NO = #{bizNo} AND EMP_ID = #{empId}
+               WHERE BIZ_NO = #{bizNo}
            ) + #{mileageAmt},
            NOW(),
            #{createdPage},

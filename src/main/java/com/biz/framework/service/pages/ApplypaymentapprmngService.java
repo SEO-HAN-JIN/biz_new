@@ -101,7 +101,7 @@ public class ApplypaymentapprmngService {
     public int cancelApplypayment(SettlementmstDto settlementmstDto) {
 
         int result = 0;
-        if(applypaymentapprmngMapper.checkPayrollInd(settlementmstDto) >= 0)
+        if(applypaymentapprmngMapper.checkPayrollInd(settlementmstDto) > 0)
             throw new ServiceException("이미 급여처리가 진행된 요청 건입니다.");
 
         // 결재완료되서 settlementmst 테이블 데이터 여부 체크

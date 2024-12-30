@@ -147,13 +147,13 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="userId" class="form-control" disabled>
+                                                            <input type="text" id="empName" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">고객</label>
-                                                            <input type="text" id="custId" class="form-control" disabled>
+                                                            <input type="text" name="custName" class="form-control" disabled>
                                                         </div>
                                                     </div>
 
@@ -185,7 +185,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품</label>
-                                                            <input type="text" id="prodId" class="form-control" disabled>
+                                                            <input type="text" name="prodName" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -524,6 +524,7 @@
                             if (result > 0) {
                                 alert("처리 완료되었습니다.");
                                 search();
+                                $("#depositModal").modal('hide');
                                 return true;
                             } else {
                                 alert("처리 도중 실패하였습니다.");
@@ -536,6 +537,8 @@
                     })
                 });
             }
+
+
         }
 
         const rejectDeposit = () => {
@@ -566,6 +569,7 @@
                             if (result > 0) {
                                 alert("승인취소 되었습니다.");
                                 search();
+                                $("#depositModal").modal('hide');
                                 return true;
                             } else {
                                 alert("처리 도중 실패하였습니다.");
@@ -696,6 +700,10 @@
                                 row.hideButton = true;
                                 row.action = "완료";
                             }
+                            else if(row.applyStatus == "03") {
+                                row.hideButton = true;
+                                row.action = "완료";
+                            }
                             else {
                                 row.hideButton = false;
                                 row.action = "대기";
@@ -815,7 +823,7 @@
             var confirmInd = rsData.confirmInd;
 
             // 승인여부
-            if(confirmInd == "Y")
+            if(confirmInd == "Y" || rsData.applyStatus == "03")
             {
                 $("#deposit_confirmAmt").attr('disabled', true);
                 $("#deposit_remark").attr('disabled', true);
@@ -884,8 +892,8 @@
                     confirmRateAmt = -saleTotalAmt;
                     $("#deposit_confirmAmt").attr('disabled', true);
                 }
-                else
-                    $("#deposit_confirmAmt").attr('disabled', false);
+                // else
+                //     $("#deposit_confirmAmt").attr('disabled', false);
 
 
                 // 부가세율 설정 (10% 부가세)
