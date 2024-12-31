@@ -219,7 +219,6 @@
     const modalAcceptBtn = () => {
         const focusedCell = empGrid.getGrid().getFocusedCell();
         const getRow = empGrid.getGrid().getRow(focusedCell.rowKey);
-        console.log("## getRow ##", getRow);
         if (isNull(getRow)) {
             alert("직원을 선택해 주세요.");
             return;
