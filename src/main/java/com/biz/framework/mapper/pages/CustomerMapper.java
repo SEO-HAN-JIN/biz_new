@@ -22,4 +22,6 @@ public interface CustomerMapper {
     int findMileageByBizNo(@Param("coCode") String coCode, @Param("bizNo") String bizNo);
 
     void updateFinalMileage(@Param("coCode") String coCode, @Param("bizNo") String bizNo, @Param("mileage") int mileage);
+
+    List<CamelCaseMap> findCustomerByLoginId(CustomerDto customerDto);
 }

@@ -54,4 +54,8 @@ public class CustomerService {
     public CamelCaseMap findCustomerInfo(CustomerDto customerDto) {
         return customerMapper.findCustomerInfo(customerDto);
     }
+
+    public List<CamelCaseMap> findCustomerByLoginId(CustomerDto customerDto) {
+        return customerMapper.findCustomerByLoginId(customerDto);
+    }
 }

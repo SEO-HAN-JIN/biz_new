@@ -27,6 +27,16 @@ public class CustomerRestController {
         return empService.findAllEmps(empDto);
     }
 
+    /**
+     * 로그인한 직원별 고객관리
+     * @param customerDto
+     * @return
+     */
+    @GetMapping("/login_user")
+    public List<CamelCaseMap> findCustomerByLoginId(CustomerDto customerDto) {
+        return customerService.findCustomerByLoginId(customerDto);
+    }
+
     @GetMapping
     public List<CamelCaseMap> findCustomers(CustomerDto customerDto) {
         return customerService.findCustomers(customerDto);

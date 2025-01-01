@@ -116,4 +116,22 @@
           AND BIZ_NO        = #{bizNo}
     </update>
 
+    <select id="findCustomerByLoginId">
+        /* com.biz.framework.mapper.pages.CustomerMapper.findCustomerByLoginId */
+        SELECT C.CO_CODE
+             , EC.EMP_ID
+             , E.EMP_NAME
+             , C.BIZ_NO
+             , C.CUST_NAME
+          FROM TB_CUSTOMER      C
+          JOIN EMP_CUSTOMER     EC
+            ON EC.CO_CODE       = C.CO_CODE
+           AND EC.BIZ_NO        = C.BIZ_NO
+          JOIN TB_EMP           E
+            ON E.CO_CODE        = EC.CO_CODE
+           AND E.EMP_ID         = EC.EMP_ID
+          WHERE C.CO_CODE       = #{loginCoId}
+            AND E.EMP_ID        = #{loginUserId}
+    </select>
+
 </mapper>
