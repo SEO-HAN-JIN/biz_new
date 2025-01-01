@@ -1,8 +1,6 @@
 package com.biz.framework.config;
 
 import com.biz.framework.security.dto.AuthenticationDto;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -10,7 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class SystemWeb {
@@ -33,8 +32,15 @@ public class SystemWeb {
         String userId = authenticationDto.getUserId();
         String userNm = authenticationDto.getUserNm();
 
+        List<GrantedAuthority> authorities = authenticationDto.getAuthorities();
+        List<String> roleIds = new ArrayList<>();
+        for (GrantedAuthority authority : authorities) {
+            roleIds.add(authority.getAuthority());
+        }
+
         modelAndView.addObject("userId", userId);
         modelAndView.addObject("userNm", userNm);
+        modelAndView.addObject("roleIds", roleIds);
         modelAndView.addObject("path", "/" + dept1 + "/" + dept2);
         modelAndView.setViewName(dept1 + "/" + dept2);
         return modelAndView;
@@ -45,9 +51,15 @@ public class SystemWeb {
         AuthenticationDto authenticationDto = (AuthenticationDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = authenticationDto.getUserId();
         String userNm = authenticationDto.getUserNm();
+        List<GrantedAuthority> authorities = authenticationDto.getAuthorities();
+        List<String> roleIds = new ArrayList<>();
+        for (GrantedAuthority authority : authorities) {
+            roleIds.add(authority.getAuthority());
+        }
 
         modelAndView.addObject("userId", userId);
         modelAndView.addObject("userNm", userNm);
+        modelAndView.addObject("roleIds", roleIds);
         modelAndView.addObject("path", "/" + dept1 + "/" + dept2 + "/" + dept3);
         modelAndView.setViewName(dept1 + "/" + dept2 + "/" + dept3);
         return modelAndView;

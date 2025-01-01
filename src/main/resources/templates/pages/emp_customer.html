@@ -31,9 +31,12 @@
                             <div class="col-md-11">
                                 <div class="form-group row mb-0 align-items-center text-center">
                                     <label class="col-form-label col-lg-1 col-3">직원</label>
-                                    <div class="col-lg-2 col-9">
-                                        <input type="text" id="searchEmpId" class="form-control form-control-sm"
-                                               name="searchEmpId" placeholder="직원ID 혹은 직원명">
+                                    <div class="col-lg-3 col-9">
+                                        <div class="d-flex">
+                                        <input type="text" id="searchEmpId" class="form-control form-control-sm" name="searchEmpId" placeholder="직원ID">
+                                            <span style="padding: 0px 5px">/</span>
+                                        <input type="text" id="searchEmpNm" class="form-control form-control-sm" name="searchEmpId" placeholder="직원명">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -143,15 +146,32 @@
     </section>
 
 </div>
-<script type="text/javascript">
+<script th:inline="javascript">
 
     const apiUrl = '/api/pages/emp_customer';
 
+    let _isAdmin;
     let empGrid;
     let customerGrid;
     let customerModalGrid;
 
     $(document).ready(function() {
+        const roleIds = /*[[${roleIds}]]*/'';
+        const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+        let isAdmin = adminRoles.some(value => roleIds.includes(value));
+
+        const userId = /*[[${userId}]]*/'';
+        const userNm = /*[[${userNm}]]*/'';
+
+        if (isAdmin) {
+            _isAdmin = true
+            $("#searchEmpId").val('').attr('disabled', false);
+            $("#searchEmpNm").val('').attr('disabled', false);
+        } else {
+            _isAdmin = false;
+            $("#searchEmpId").val(userId).attr('disabled', true);
+            $("#searchEmpNm").val(userNm).attr('disabled', true);
+        }
         initEvent();
         initEmpGrid();
         initCustomerGrid();
@@ -246,7 +266,11 @@
     const searchEmpGrid = () => {
         customerGrid.clear();
 
-        let param = $("#searchForm").getData();
+        let param = {
+            searchEmpId : $("#searchEmpId").val(),
+            searchEmpNm : $("#searchEmpNm").val(),
+            isAdmin : _isAdmin ? 'Y' : 'N'
+        }
 
         empGrid.load(apiUrl + "/emp/list", param, function(data){});
     }
@@ -283,6 +307,10 @@
         const createdData = modifiedData.createdRows;
 
         const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        if (createdLength === 0 ) {
+            alert("변경된 데이터가 없습니다.");
+            return;
+        }
 
         const result = confirm("총 " + (createdLength) + "건의 데이터를 저장하시겠습니까?");
 

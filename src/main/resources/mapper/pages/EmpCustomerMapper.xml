@@ -10,10 +10,19 @@
           FROM TB_EMP            T
          WHERE 1=1
            AND T.EMP_ID         != 'admin'
-        <if test='searchEmpId != null and searchEmpId != "" '>
-            AND T.EMP_ID LIKE CONCAT('%', #{searchEmpId}, '%')
-                OR T.EMP_NAME LIKE CONCAT('%', #{searchEmpId},'%')
-        </if>
+        <choose>
+            <when test='isAdmin != null and isAdmin == "Y"'>
+                <if test='searchEmpId != null and searchEmpId != ""'>
+                    AND T.EMP_ID LIKE CONCAT('%', #{searchEmpId}, '%')
+                </if>
+                <if test='searchEmpNm != null and searchEmpNm != ""'>
+                    AND T.EMP_NAME LIKE CONCAT('%', #{searchEmpNm}, '%')
+                </if>
+            </when>
+            <otherwise>
+                AND T.EMP_ID = #{searchEmpId}
+            </otherwise>
+        </choose>
     </select>
 
     <select id="findCustoemrList" resultType="CamelCaseMap">
@@ -31,13 +40,10 @@
 
     <select id="findCustomerListByBizNo">
         /* com.biz.framework.mapper.pages.EmpCustomerMapper.findCustomerListByBizNo */
-        SELECT EC.EMP_ID
-             , EC.BIZ_NO
+        SELECT TC.BIZ_NO
              , TC.CUST_NAME
              , TC.OWNER_NAME
-          FROM EMP_CUSTOMER     EC
-          JOIN TB_CUSTOMER      TC
-            ON TC.BIZ_NO        = EC.BIZ_NO
+          FROM TB_CUSTOMER      TC
          WHERE 1=1
         <if test='searchCustId != null and searchCustId != "" '>
             AND TC.BIZ_NO LIKE CONCAT('%', #{searchCustId}, '%')

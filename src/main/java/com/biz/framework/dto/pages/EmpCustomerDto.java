@@ -12,6 +12,9 @@ public class EmpCustomerDto extends BaseDto {
     private String empId;
     private String bizNo;
 
+    private String isAdmin;
+
     private String searchEmpId;
+    private String searchEmpNm;
     private String searchCustId;
 }
