@@ -34,10 +34,6 @@
                                         <div class="col-lg-2 col-9">
                                             <input type="text" id="search_bizNo" class="form-control form-control-sm" name="bizNo" placeholder="사업자번호">
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">직원명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="search_empName" class="form-control form-control-sm" name="empName" placeholder="직원명">
-                                        </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
                                         <div class="col-lg-2 col-9">
                                             <input type="text" id="search_custName" class="form-control form-control-sm" name="custName" placeholder="고객명">
@@ -95,15 +91,6 @@
                                                     <div class="form-group">
                                                         <label for="custName">고객명</label>
                                                         <input type="text" id="custName" class="form-control" placeholder="고객명" name="custName">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label>직원</label>
-                                                        <fieldset class="form-group">
-                                                            <select id="empId" class="form-select">
-                                                            </select>
-                                                        </fieldset>
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
@@ -224,7 +211,6 @@
             $("#btnDeleteCustomerGrid").on('click', fn_deleteCustomerGrid);
 
             $('#modalAddBtn').on('click', () => {openPgmModal('1')});
-            // $('#customerModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
             $('#customerModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
             $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
             $("#modalSaveBtn").on('click', fn_saveCustomerGrid);
@@ -237,8 +223,6 @@
             var columns = new CustomTuiGrid()
                 .add('bizNo', '사업자번호', 200, {})
                 .add('custName', '고객명', 120, {})
-                .add('empId', '직원ID', 120, {})
-                .add('empName', '직원명', 120, {})
                 .add('ownerName', '대표자성명', 120, { align: 'center' })
                 .add('custAddr', '주소', 300, { align: 'center' })
                 .add('custTel', '연락처', 150, { align: 'center' })
@@ -251,7 +235,8 @@
                 .add('incentiveRate', '인센티브율', 100, { align: 'right' })
                 .add('useInd', '사용여부', 70, { align: 'center' })
                 .addDate('regDate', '등록일자', 100, { align: 'center' })
-                // .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+            ;
 
             customerGrid = columns.init('customerGrid', [])
                 .render();
@@ -306,11 +291,6 @@
 
             if (isNull(param.bizNo)) {
                 alert("사업자번호는 필수 값 입니다.");
-                return false;
-            }
-
-            if (isNull(param.empId)) {
-                alert("직원은 필수 값 입니다.");
                 return false;
             }
 

@@ -7,21 +7,11 @@
     <select id="findCustomers" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
         SELECT T.*
-             , U.EMP_NAME
           FROM TB_CUSTOMER      T
-          LEFT JOIN TB_EMP      U
-            ON T.CO_CODE        = U.CO_CODE
-           AND U.EMP_ID         = T.EMP_ID
          WHERE 1=1
            AND T.CO_CODE        = #{loginCoId}
         <if test='bizNo != null  and bizNo != "" '>
             AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
-        </if>
-        <if test='empName != null  and empName != "" '>
-            AND U.EMP_ID   = #{empId}
-        </if>
-        <if test='empName != null  and empName != "" '>
-            AND U.EMP_NAME   LIKE CONCAT('%',#{empName} ,'%')
         </if>
         <if test='custName != null  and custName != "" '>
             AND T.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
@@ -33,13 +23,9 @@
         SELECT  T.*,
                 U.EMP_NAME
           FROM TB_CUSTOMER      T
-          LEFT JOIN TB_EMP      U
-            ON U.CO_CODE        = T.CO_CODE
-           AND U.EMP_ID         = T.EMP_ID
          WHERE 1=1
            AND T.CO_CODE        = #{loginCoId}
            AND T.BIZ_NO         = #{bizNo}
-
     </select>
 
     <insert id="saveCustomer">
@@ -48,7 +34,6 @@
         (
             CO_CODE
             , BIZ_NO
-            , EMP_ID
             , CUST_NAME
             , OWNER_NAME
             , CUST_ADDR
@@ -63,7 +48,6 @@
         (
             #{loginCoId}
             , #{bizNo}
-            , #{empId}
             , #{custName}
             , #{ownerName}
             , #{custAddr}
@@ -101,7 +85,6 @@
          WHERE 1=1
            AND CO_CODE  = #{loginCoId}
            AND BIZ_NO   = #{bizNo}
-           AND EMP_ID   = #{empId}
     </select>
 
     <select id="findMileageByBizNo">
