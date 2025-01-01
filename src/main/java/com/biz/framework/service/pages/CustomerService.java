@@ -35,7 +35,7 @@ public class CustomerService {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(customerDto.getBizNo());
             mileageHisDto.setEmpId(customerDto.getEmpId());
-            mileageHisDto.setMileagePrev(customerDto.getMileagePrev());
+            mileageHisDto.setMileagePrev(customerDto.getMileage());
             mileageHisDto.setMileageAft(customerDto.getMileage());
             mileageHisDto.setCreatedPage("CU");
             mileageHisDto.setCreatedId(customerDto.getLoginUserId());

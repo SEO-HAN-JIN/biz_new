@@ -50,7 +50,8 @@
             MILEAGE_AFT,
             CREATED_DATE,
             CREATED_PAGE,
-            CREATED_ID
+            CREATED_ID,
+            SETTLEMENT_SEQ
         )
         SELECT
            #{loginCoId},
@@ -60,14 +61,17 @@
            #{mileageAmt},
            -- 누적 마일리지 : 이전 마일리지 + savemileage
            (
-               SELECT COALESCE(MAX(MILEAGE_AFT), 0)
+               SELECT IFNULL(MILEAGE_AFT, 0)
                  FROM TB_MILEAGE_HIS
                 WHERE CO_CODE       = #{loginCoId}
                   AND BIZ_NO        = #{bizNo}
+                ORDER BY CREATED_DATE DESC
+                LIMIT 1
            ) + #{mileageAmt},
            NOW(),
            #{createdPage},
-           #{createdId}
+           #{createdId},
+           #{settlementSeq}
        FROM DUAL
 
     </insert>

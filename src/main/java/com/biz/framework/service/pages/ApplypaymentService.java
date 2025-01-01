@@ -82,24 +82,20 @@ public class ApplypaymentService {
                     CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
 
                     String bizNo = (String) customerInfo.get("bizNo");
-                    int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
-
                     int useMileage = Integer.parseInt(dto.getUseMileage());
-                    int saveMileage = existMileage + useMileage;
 
-                    customerMapper.updateMileage(dto.getLoginCoId(), bizNo, saveMileage);
+                    customerMapper.updateFinalMileage(dto.getLoginCoId(), bizNo, useMileage);
 
                     if (useMileage > 0) {
                         MileageHisDto mileageHisDto = new MileageHisDto();
                         mileageHisDto.setBizNo(bizNo);
                         mileageHisDto.setEmpId(dto.getUserId());
-                        mileageHisDto.setMileagePrev(existMileage);
-                        mileageHisDto.setMileageAft(saveMileage);
+                        mileageHisDto.setSettlementSeq(dto.getSettlementSeq());
+                        mileageHisDto.setMileageAmt(useMileage);
                         mileageHisDto.setCreatedPage("AQ"); // 정산요청: AQ
                         mileageHisDto.setCreatedId(dto.getLoginUserId());
-                        mileageHisDto.setSettlementSeq(dto.getSettlementSeq());
 
-                        mileageHisMapper.saveMileageHis(mileageHisDto);
+                        mileageHisMapper.addMileageHistory(mileageHisDto);
                     }
                 }
             }
@@ -126,9 +122,9 @@ public class ApplypaymentService {
         CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
         String bizNo = (String) customerInfo.get("bizNo");
         int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
-        int useMileage = Integer.parseInt(settlementDto.getUseMileage());       // 새로 기입한 마일리지
+        int useMileage = -(Integer.parseInt(settlementDto.getUseMileage()));       // 새로 기입한 마일리지
         int restMileage;
-        restMileage = existMileage - useMileage;
+        restMileage = existMileage + useMileage;
 
         if (restMileage < 0) {
             NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.KOREA);
@@ -137,19 +133,15 @@ public class ApplypaymentService {
             throw new ServiceException("킵 사용금액이 잔여킵금액보다 같거나 더 적어야 합니다.\n잔여킵금액: " + formattedExistMileage + "\n킵사용금액: " + formattedUseMileage);
         }
 
-        customerMapper.updateMileage(settlementDto.getLoginCoId(), bizNo, restMileage);
-        if (useMileage > 0) {
-            MileageHisDto mileageHisDto = new MileageHisDto();
-            mileageHisDto.setBizNo(bizNo);
-            mileageHisDto.setEmpId(settlementDto.getUserId());
-            mileageHisDto.setMileagePrev(existMileage);
-            mileageHisDto.setMileageAft(restMileage);
-            mileageHisDto.setCreatedPage("AQ"); // 정산요청: AQ
-            mileageHisDto.setCreatedId(settlementDto.getLoginUserId());
-            mileageHisDto.setSettlementSeq(settlementDto.getSettlementSeq());
-
-            mileageHisMapper.saveMileageHis(mileageHisDto);
-        }
+        customerMapper.updateFinalMileage(settlementDto.getLoginCoId(), bizNo, useMileage);
+        MileageHisDto mileageHisDto = new MileageHisDto();
+        mileageHisDto.setBizNo(bizNo);
+        mileageHisDto.setEmpId(settlementDto.getUserId());
+        mileageHisDto.setSettlementSeq(settlementDto.getSettlementSeq());
+        mileageHisDto.setMileageAmt(useMileage);
+        mileageHisDto.setCreatedPage("AQ"); // 정산요청: AQ
+        mileageHisDto.setCreatedId(settlementDto.getLoginUserId());
+        mileageHisMapper.addMileageHistory(mileageHisDto);
     }
 
 }

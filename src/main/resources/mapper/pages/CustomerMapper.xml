@@ -124,9 +124,10 @@
     <update id="updateFinalMileage">
         /* com.biz.framework.mapper.pages.CustomerMapper.updateFinalMileage */
         UPDATE TB_CUSTOMER
-        SET MILEAGE = ( SELECT COALESCE(MAX(MILEAGE), 0)
-                            FROM TB_CUSTOMER
-                            WHERE BIZ_NO = #{bizNo}
+        SET MILEAGE = ( SELECT IFNULL(MILEAGE, 0)
+                          FROM TB_CUSTOMER
+                         WHERE CO_CODE  = #{coCode}
+                           AND BIZ_NO   = #{bizNo}
                        ) + #{mileage}
         WHERE CO_CODE       = #{coCode}
           AND BIZ_NO        = #{bizNo}
