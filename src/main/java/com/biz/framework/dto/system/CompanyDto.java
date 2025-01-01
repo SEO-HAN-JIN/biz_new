@@ -4,11 +4,13 @@ import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
+import java.util.List;
+
 @Getter
-public class UserDto extends BaseDto {
+@Setter
+public class CompanyDto extends BaseDto {
+
     private String coCode;
-    private String userId;
-    private String userPw;
-    private String userNm;
+    private String coName;
+    private String useYn;
 }

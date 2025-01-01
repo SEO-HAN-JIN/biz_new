@@ -6,14 +6,13 @@ import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 public abstract class BaseDto {
 
     private RowStatus rowStatus;
 
+    private String loginCoId;
     private String loginUserId;      //로그인한 사용자ID
     private String loginUserNm;      //로그인한 사용자명
 

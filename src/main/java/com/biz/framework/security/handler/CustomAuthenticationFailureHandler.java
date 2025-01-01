@@ -1,5 +1,6 @@
 package com.biz.framework.security.handler;
 
+import com.biz.framework.security.exception.CompanyNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,6 +17,10 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         String errorMsg = "유효하지 않은 아이디 혹은 비밀번호 입니다.";
+
+        if (exception instanceof CompanyNotFoundException) {
+            errorMsg = "유효하지 않은 회사코드입니다.";
+        }
 
         // 한글은 인코딩하지 않으면 controller 로 가지 않음.
         errorMsg = URLEncoder.encode(errorMsg, "UTF-8");

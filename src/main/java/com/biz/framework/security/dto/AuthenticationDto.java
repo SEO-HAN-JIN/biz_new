@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class AuthenticationDto {
+    private String coCode;
     private String userId;
     private String userPw;
     private String userNm;

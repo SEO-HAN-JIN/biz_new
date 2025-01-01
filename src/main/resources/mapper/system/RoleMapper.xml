@@ -68,8 +68,10 @@
              , U.USER_NM
           FROM ROLE_USER    R
           JOIN USER         U
-            ON U.USER_ID    = R.USER_ID
+            ON U.CO_CODE    = R.CO_CODE
+           AND U.USER_ID    = R.USER_ID
          WHERE 1=1
+           AND R.CO_CODE    = #{coCode}
         <if test='roleId != null  and userId != "" '>
             AND R.ROLE_ID      = #{roleId}
         </if>

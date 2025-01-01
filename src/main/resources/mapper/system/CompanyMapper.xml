@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.system.CompanyMapper">
+
+    <select id="findCompanyList" resultType="com.biz.framework.dto.system.CompanyDto">
+        /* com.biz.framework.mapper.system.CompanyMapper.findCompanyList */
+        SELECT CO_CODE
+             , CO_NAME
+             , USE_YN
+          FROM TB_COMPANY
+         WHERE 1=1
+           AND USE_YN   = 'Y'
+    </select>
+</mapper>
