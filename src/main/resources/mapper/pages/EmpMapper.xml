@@ -7,9 +7,10 @@
     <select id="findAllEmps">
         /* com.biz.framework.mapper.pages.EmpMapper.findAllEmps */
         SELECT EMP_ID
-            , EMP_NAME
-            FROM TB_EMP
-          WHERE EMP_ID != 'admin'
+             , EMP_NAME
+          FROM TB_EMP
+         WHERE CO_CODE       = #{loginCoId}
+           AND EMP_ID       != 'admin'
     </select>
 
     <select id="findEmps" resultType="CamelCaseMap">
@@ -18,10 +19,12 @@
              , C.CODE_NAME      AS GRADE_NAME
           FROM TB_EMP           T
           LEFT JOIN CDBASE      C
-            ON C.PATTERN_CODE   = 'CD01'
+            ON C.CO_CODE        = T.CO_CODE
+           AND C.PATTERN_CODE   = 'CD01'
            AND C.BASE_CODE      = T.GRADE_CODE
         WHERE 1=1
-          AND EMP_ID != 'admin'
+          AND T.CO_CODE         = #{loginCoId}
+          AND EMP_ID            != 'admin'
         <if test='empId != null  and empId != "" '>
             AND T.EMP_ID  LIKE CONCAT('%',#{empId} ,'%')
         </if>
@@ -34,7 +37,8 @@
         /* com.biz.framework.mapper.pages.EmpMapper.saveEmp */
         INSERT INTO TB_EMP
         (
-            EMP_ID
+            CO_CODE
+            , EMP_ID
             , EMP_NAME
             , ENTRANCE_DATE
             , RETIRE_DATE
@@ -44,7 +48,8 @@
             , INCENTIVE_RATE
         ) VALUES
         (
-            #{empId}
+            #{loginCoId}
+            , #{empId}
             , #{empName}
             , STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
             , IFNULL(STR_TO_DATE(#{retireDate}, '%Y-%m-%d'), '2999-12-31')
@@ -65,13 +70,15 @@
     <delete id="deleteEmp">
         /* com.biz.framework.mapper.pages.EmpMapper.deleteEmp */
         DELETE FROM TB_EMP
-        WHERE EMP_ID    = #{empId}
+        WHERE CO_CODE   = #{loginCoId}
+          AND EMP_ID    = #{empId}
     </delete>
 
     <select id="checkDuplEmpId">
         /* com.biz.framework.mapper.pages.EmpMapper.checkDuplEmpId */
         SELECT COUNT(1)
          FROM TB_EMP
-        WHERE EMP_ID = #{empId}
+        WHERE CO_CODE   = #{loginCoId}
+          AND EMP_ID    = #{empId}
     </select>
 </mapper>

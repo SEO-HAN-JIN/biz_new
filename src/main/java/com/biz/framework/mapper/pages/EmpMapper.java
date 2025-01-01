@@ -15,5 +15,5 @@ public interface EmpMapper {
     int deleteEmp(EmpDto empDto);
     int checkDuplEmpId(EmpDto empDto);
 
-    List<CamelCaseMap> findAllEmps();
+    List<CamelCaseMap> findAllEmps(EmpDto empDto);
 }

@@ -54,8 +54,4 @@ public class CustomerService {
     public CamelCaseMap findCustomerInfo(CustomerDto customerDto) {
         return customerMapper.findCustomerInfo(customerDto);
     }
-
-    public int findMileage(String bizNo) {
-        return customerMapper.findMileageByBizNo(bizNo);
-    }
 }

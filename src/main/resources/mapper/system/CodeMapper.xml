@@ -10,6 +10,7 @@
              , PATTERN_NAME
           FROM CDPATT
          WHERE 1=1
+           AND CO_CODE  = #{loginCoId}
         <if test='patternName != null  and patternName != "" '>
             AND PATTERN_NAME LIKE CONCAT('%', #{patternName}, '%')
         </if>
@@ -19,16 +20,19 @@
         /* com.biz.framework.mapper.system.CodeMapper.checkCdpatt */
         SELECT COUNT(1)
         FROM CDPATT
-        WHERE PATTERN_CODE      = #{patternCode}
+        WHERE CO_CODE   = #{loginCoId}
+          AND PATTERN_CODE      = #{patternCode}
     </select>
 
     <insert id="saveCdpatt">
         /* com.biz.framework.mapper.system.CodeMapper.saveCdpatt */
         INSERT INTO CDPATT (
-            PATTERN_CODE
+            CO_CODE
+            , PATTERN_CODE
             , PATTERN_NAME
         ) VALUES (
-            #{patternCode}
+            #{loginCoId}
+            , #{patternCode}
             , #{patternName}
         )
     </insert>
@@ -37,19 +41,22 @@
         /* com.biz.framework.mapper.system.CodeMapper.updateCdpatt */
         UPDATE CDPATT
            SET PATTERN_NAME     = #{patternName}
-         WHERE PATTERN_CODE     = #{patternCode}
+         WHERE CO_CODE          = #{loginCoId}
+           AND PATTERN_CODE     = #{patternCode}
     </update>
 
     <delete id="deleteCdpatt">
         /* com.biz.framework.mapper.system.CodeMapper.deleteCdpatt */
         DELETE FROM CDPATT
-        WHERE PATTERN_CODE = #{patternCode}
+        WHERE CO_CODE           = #{loginCoId}
+          AND PATTERN_CODE      = #{patternCode}
     </delete>
 
     <delete id="deleteCdbaseByPatternCode">
         /* com.biz.framework.mapper.system.CodeMapper.deleteCdbaseByPatternCode */
         DELETE FROM CDBASE
-        WHERE PATTERN_CODE = #{patternCode}
+        WHERE CO_CODE       = #{loginCoId}
+          AND PATTERN_CODE  = #{patternCode}
 
     </delete>
 
@@ -61,7 +68,8 @@
              , CD.GROUP_CODE
              , CD.DISPLAY_ORDER
           FROM CDBASE               CD
-         WHERE CD.PATTERN_CODE      = #{patternCode}
+         WHERE CD.CO_CODE           = #{loginCoId}
+           AND CD.PATTERN_CODE      = #{patternCode}
          ORDER BY CD.DISPLAY_ORDER
     </select>
 
@@ -69,20 +77,23 @@
         /* com.biz.framework.mapper.system.CodeMapper.checkCdbase */
         SELECT COUNT(1)
         FROM CDBASE
-        WHERE PATTERN_CODE  = #{patternCode}
+        WHERE CO_CODE       = #{loginCoId}
+          AND PATTERN_CODE  = #{patternCode}
           AND BASE_CODE     = #{baseCode}
     </select>
 
     <insert id="saveCdbase">
         /* com.biz.framework.mapper.system.CodeMapper.saveCdbase */
         INSERT INTO CDBASE (
-            PATTERN_CODE
+            CO_CODE
+            , PATTERN_CODE
             , BASE_CODE
             , CODE_NAME
             , GROUP_CODE
             , DISPLAY_ORDER
         ) VALUES (
-            #{patternCode}
+            #{loginCoId}
+            , #{patternCode}
             , #{baseCode}
             , #{codeName}
             , #{groupCode}
@@ -93,7 +104,8 @@
     <delete id="deleteCdbase">
         /* com.biz.framework.mapper.system.CodeMapper.saveCdbase */
         DELETE FROM CDBASE
-         WHERE PATTERN_CODE = #{patternCode}
+         WHERE CO_CODE      = #{loginCoId}
+           AND PATTERN_CODE = #{patternCode}
            AND BASE_CODE    = #{baseCode}
     </delete>
 
@@ -104,7 +116,8 @@
              , CODE_NAME
              , DISPLAY_ORDER
           FROM CDBASE
-        WHERE PATTERN_CODE   = #{patternCode}
+         WHERE CO_CODE          = #{loginCoId}
+           AND PATTERN_CODE     = #{patternCode}
     <if test='groupCode != null  and groupCode != "" '>
         AND GROUP_CODE = #{groupCode}
     </if>
@@ -116,7 +129,8 @@
           SET CODE_NAME         = #{codeName}
             , GROUP_CODE        = #{groupCode}
             , DISPLAY_ORDER     = #{displayOrder}
-        WHERE PATTERN_CODE      = #{patternCode}
+        WHERE CO_CODE           = #{loginCoId}
+          AND PATTERN_CODE      = #{patternCode}
           AND BASE_CODE         = #{baseCode}
     </update>
 </mapper>

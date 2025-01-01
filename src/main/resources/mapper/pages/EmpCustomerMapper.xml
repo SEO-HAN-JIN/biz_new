@@ -9,6 +9,7 @@
         SELECT T.*
           FROM TB_EMP            T
          WHERE 1=1
+           AND T.CO_CODE        = #{loginCoId}
            AND T.EMP_ID         != 'admin'
         <choose>
             <when test='isAdmin != null and isAdmin == "Y"'>
@@ -33,9 +34,11 @@
              , TC.OWNER_NAME
           FROM EMP_CUSTOMER     EC
           JOIN TB_CUSTOMER      TC
-            ON TC.BIZ_NO        = EC.BIZ_NO
+            ON TC.CO_CODE       = EC.CO_CODE
+           AND TC.BIZ_NO        = EC.BIZ_NO
          WHERE 1=1
-           AND EC.EMP_ID           = #{empId}
+           AND EC.CO_CODE       = #{loginCoId}
+           AND EC.EMP_ID        = #{empId}
     </select>
 
     <select id="findCustomerListByBizNo">
@@ -45,6 +48,7 @@
              , TC.OWNER_NAME
           FROM TB_CUSTOMER      TC
          WHERE 1=1
+           AND TC.CO_CODE       = #{loginCoId}
         <if test='searchCustId != null and searchCustId != "" '>
             AND TC.BIZ_NO LIKE CONCAT('%', #{searchCustId}, '%')
             OR TC.CUST_NAME LIKE CONCAT('%', #{searchCustId},'%')
@@ -54,10 +58,12 @@
     <insert id="saveEmpCustomerList">
         /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
         INSERT INTO EMP_CUSTOMER(
-            EMP_ID
+            CO_CODE
+            , EMP_ID
             , BIZ_NO
         ) VALUES (
-            #{empId}
+            #{loginCoId}
+            , #{empId}
             , #{bizNo}
         )
     </insert>
@@ -66,14 +72,16 @@
         /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
         SELECT COUNT(1)
           FROM EMP_CUSTOMER
-         WHERE EMP_ID   = #{empId}
+         WHERE CO_CODE  = #{loginCoId}
+           AND EMP_ID   = #{empId}
            AND BIZ_NO   = #{bizNo}
     </select>
 
     <delete id="deleteEmpCustomer">
         /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
         DELETE FROM EMP_CUSTOMER
-        WHERE EMP_ID    = #{empId}
+        WHERE CO_cODE   = #{loginCoId}
+          AND EMP_ID    = #{empId}
           AND BIZ_NO    = #{bizNo}
     </delete>
 </mapper>

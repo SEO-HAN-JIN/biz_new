@@ -13,6 +13,7 @@
              , PROGRAM_SRT_ORD
           FROM PROGRAM
          WHERE 1=1
+           AND CO_CODE  = #{loginCoId}
         <if test='programNm != null  and programNm != "" '>
             AND PROGRAM_NM LIKE CONCAT('%', #{programNm}, '%')
                 OR PROGRAM_URL LIKE CONCAT('%', #{programNm}, '%')
@@ -23,12 +24,14 @@
     <insert id="saveProgramList">
         /* com.biz.framework.mapper.ProgramMapper.saveProgramList */
         INSERT INTO PROGRAM (
-            PROGRAM_NM
+            CO_CODE
+            , PROGRAM_NM
             , PROGRAM_URL
             , USE_YN
             , PROGRAM_SRT_ORD
         ) VALUES (
-            #{programNm}
+            #{loginCoId}
+            , #{programNm}
             , #{programUrl}
             , #{useYn}
             , #{programSrtOrd}
@@ -42,13 +45,15 @@
              , PROGRAM_URL      = #{programUrl}
              , USE_YN           = #{useYn}
              , PROGRAM_SRT_ORD  = #{programSrtOrd}
-         WHERE PROGRAM_ID       = #{programId}
+         WHERE CO_CODE          = #{loginCoId}
+           AND PROGRAM_ID       = #{programId}
     </update>
 
     <delete id="deleteProgramList">
         /* com.biz.framework.mapper.ProgramMapper.deleteProgramList */
         DELETE FROM PROGRAM
-         WHERE PROGRAM_ID      = #{programId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROGRAM_ID      = #{programId}
     </delete>
 
     <select id="findProgramMenuList" resultType="CamelCaseMap">
@@ -61,26 +66,31 @@
              , P.PROGRAM_SRT_ORD
           FROM MENU_PROGRAM         MP
           LEFT JOIN PROGRAM         P
-            ON P.PROGRAM_ID         = MP.PROGRAM_ID
-         WHERE MP.MENU_ID           = #{menuId}
+            ON P.CO_CODE            = MP.CO_CODE
+           AND P.PROGRAM_ID         = MP.PROGRAM_ID
+         WHERE MP.CO_CODE           = #{loginCoId}
+           AND MP.MENU_ID           = #{menuId}
          ORDER BY P.PROGRAM_SRT_ORD
     </select>
 
     <select id="checkMenuPgmDupl">
         /* com.biz.framework.mapper.ProgramMapper.checkMenuPgmDupl */
         SELECT COUNT(1)
-        FROM MENU_PROGRAM
-        WHERE MENU_ID      = #{menuId}
-        AND PROGRAM_ID   = #{programId}
+          FROM MENU_PROGRAM
+        WHERE CO_CODE       = #{loginCoId}
+          AND MENU_ID       = #{menuId}
+          AND PROGRAM_ID    = #{programId}
     </select>
 
     <insert id="saveMenuProgramList">
         /* com.biz.framework.mapper.ProgramMapper.saveMenuProgramList */
         INSERT INTO MENU_PROGRAM (
-            MENU_ID
+            CO_CODE
+            , MENU_ID
             , PROGRAM_ID
         ) VALUES (
-            #{menuId}
+            #{loginCoId}
+            , #{menuId}
             , #{programId}
         )
     </insert>
@@ -88,7 +98,8 @@
     <delete id="deleteMenuProgramList">
         /* com.biz.framework.mapper.ProgramMapper.deleteMenuProgramList */
         DELETE FROM MENU_PROGRAM
-         WHERE PROGRAM_ID   = #{programId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROGRAM_ID   = #{programId}
            AND MENU_ID      = #{menuId}
     </delete>
 
@@ -102,7 +113,9 @@
              , P.PROGRAM_SRT_ORD
           FROM MENU_PROGRAM         MP
           LEFT JOIN PROGRAM         P
-            ON P.PROGRAM_ID         = MP.PROGRAM_ID
+            ON P.CO_CODE            = MP.CO_CODE
+           AND P.PROGRAM_ID         = MP.PROGRAM_ID
+         WHERE MP.CO_CODE           = #{loginCoId}
          ORDER BY P.PROGRAM_SRT_ORD
     </select>
 </mapper>

@@ -8,7 +8,9 @@
         /* com.biz.framework.mapper.MenuMapper.findUpMenuList */
         SELECT *
           FROM MENU
-         WHERE MENU_UP_ID IS NULL
+         WHERE 1=1
+           AND CO_CODE  = #{loginCoId}
+           AND MENU_UP_ID IS NULL
         <if test='menuNm != null  and menuNm != "" '>
             AND MENU_NM LIKE CONCAT('%', #{menuNm}, '%')
         </if>
@@ -19,18 +21,22 @@
         /* com.biz.framework.mapper.MenuMapper.findMenuListByMenuUpId */
         SELECT *
           FROM MENU
-         WHERE MENU_UP_ID   = #{menuUpId}
+         WHERE 1=1
+           AND CO_CODE      = #{loginCoId}
+           AND MENU_UP_ID   = #{menuUpId}
          ORDER BY MENU_SRT_ORD
     </select>
 
     <insert id="saveMenuList">
         /* com.biz.framework.mapper.MenuMapper.saveMenuList */
         INSERT INTO MENU (
-            MENU_NM
+            CO_CODE
+            , MENU_NM
             , MENU_SRT_ORD
             , MENU_UP_ID
         ) VALUES (
-            #{menuNm}
+            #{loginCoId}
+            , #{menuNm}
             , #{menuSrtOrd}
             , #{menuUpId}
         )
@@ -42,7 +48,9 @@
            SET MENU_NM          = #{menuNm}
              , MENU_SRT_ORD     = #{menuSrtOrd}
              , MENU_UP_ID       = #{menuUpId}
-         WHERE MENU_ID          = #{menuId}
+         WHERE 1=1
+           AND CO_CODE          = #{loginCoId}
+           AND MENU_ID          = #{menuId}
         <if test='menuUpId != null  and menuUpId != "" '>
            AND MENU_UP_ID       = #{menuUpId}
         </if>
@@ -51,7 +59,8 @@
     <delete id="deleteMenu">
         /* com.biz.framework.mapper.MenuMapper.deleteMenu */
         DELETE FROM MENU
-         WHERE MENU_ID      = #{menuId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND MENU_ID      = #{menuId}
         <if test='menuUpId != null  and menuUpId != "" '>
             AND MENU_UP_ID  = #{menuUpId}
         </if>
@@ -64,31 +73,39 @@
              , MENU_SRT_ORD
              , MENU_UP_ID
           FROM MENU
+         WHERE CO_CODE  = #{loginCoId}
          ORDER BY MENU_UP_ID IS NOT NULL, MENU_SRT_ORD
     </select>
 
     <select id="findSideLayout" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.MenuMapper.findSideLayout */
-        with pgm as (
-            select distinct CONCAT('PGM', mp.program_id)	as menu_id
-                 , mp.menu_id		            as menu_up_id
-                 , program_url 		            as url
-                 , program_nm 		            as menu_nm
-                 , program_srt_ord 	            as srt_ord
-              from menu_program     mp
-              join program 		    p
-                on p.program_id     = mp.program_id
-              join role_program     rp
-                on rp.program_id    = p.program_id
-              join role_user 		ru
-                on ru.role_id		= rp.role_id
-             where 1=1
+        WITH PGM AS (
+            SELECT MP.CO_CODE
+                 , CONCAT('PGM', MP.PROGRAM_ID)	AS MENU_ID
+                 , MP.MENU_ID		            AS MENU_UP_ID
+                 , PROGRAM_URL 		            AS URL
+                 , PROGRAM_NM 		            AS MENU_NM
+                 , PROGRAM_SRT_ORD 	            AS SRT_ORD
+              FROM MENU_PROGRAM     MP
+              JOIN PROGRAM 		    P
+                ON P.CO_CODE        = MP.CO_CODE
+               AND P.PROGRAM_ID     = MP.PROGRAM_ID
+              JOIN ROLE_PROGRAM     RP
+                ON RP.CO_CODE       = P.CO_CODE
+               AND RP.PROGRAM_ID    = P.PROGRAM_ID
+              JOIN ROLE_USER 		RU
+                ON RU.CO_CODE       = RP.CO_CODE
+               AND RU.ROLE_ID		= RP.ROLE_ID
+             WHERE 1=1
+               AND MP.CO_CODE = #{loginCoId}
                AND RU.ROLE_ID  IN
             <foreach item="item" collection="authorityList" open="(" separator="," close=")">
                 #{item}
             </foreach>
+             GROUP BY MP.CO_CODE, CONCAT('PGM', MP.PROGRAM_ID)
         )
-        SELECT CASE WHEN MENU_ID LIKE '%PGM%' THEN '3'
+        SELECT CO_CODE
+             , CASE WHEN MENU_ID LIKE '%PGM%' THEN '3'
                     WHEN MENU_UP_ID IS NOT NULL THEN '2'
                     ELSE '1' END AS CATEGORY
              , MENU_ID
@@ -97,41 +114,52 @@
              , MENU_NM
              , SRT_ORD
           FROM (
-                select um.menu_id
-                     , um.menu_up_id
-                     , '' 	as url
-                     , um.menu_nm
-                     , um.menu_srt_ord as srt_ord
-                  from menu		as um
-                  join (
-                    select m.menu_id
-                         , m.menu_up_id
-                         , '' 	as url
-                         , m.menu_nm
-                         , m.menu_srt_ord as srt_ord
-                      from menu 		m
-                      join pgm			p
-                        on p.menu_up_id	= m.menu_id
-                    ) md
-                    on md.menu_up_id	= um.menu_id
-                 group by um.menu_id
-                union all
-                 select m.menu_id
-                      , m.menu_up_id
-                      , '' 	as url
-                      , m.menu_nm
-                      , m.menu_srt_ord as srt_ord
-                   from menu 		m
-                   join pgm			p
-                     on p.menu_up_id	= m.menu_id
-                  group by m.menu_id
-                union all
-                 select menu_id
-                      , menu_up_id
-                      , url
-                      , menu_nm
-                      , srt_ord
-                   from pgm
+                SELECT UM.CO_CODE
+                     , UM.MENU_ID
+                     , UM.MENU_UP_ID
+                     , '' 	AS URL
+                     , UM.MENU_NM
+                     , UM.MENU_SRT_ORD AS SRT_ORD
+                  FROM MENU		AS UM
+                  JOIN (
+                    SELECT M.CO_CODE
+                         , M.MENU_ID
+                         , M.MENU_UP_ID
+                         , '' 	AS URL
+                         , M.MENU_NM
+                         , M.MENU_SRT_ORD AS SRT_ORD
+                      FROM MENU 		M
+                      JOIN PGM			P
+                        ON P.CO_CODE    = M.CO_CODE
+                       AND P.MENU_UP_ID	= M.MENU_ID
+                     WHERE M.CO_CODE    = #{loginCoId}
+                    ) MD
+                    ON MD.CO_CODE       = UM.CO_CODE
+                   AND MD.MENU_UP_ID	= UM.MENU_ID
+                 WHERE UM.CO_CODE       = #{loginCoId}
+                 GROUP BY UM.MENU_ID
+                UNION ALL
+                 SELECT M.CO_cODE
+                      , M.MENU_ID
+                      , M.MENU_UP_ID
+                      , '' 	AS URL
+                      , M.MENU_NM
+                      , M.MENU_SRT_ORD AS SRT_ORD
+                   FROM MENU 		M
+                   JOIN PGM			P
+                     ON P.CO_CODE       = M.CO_CODE
+                    AND P.MENU_UP_ID	= M.MENU_ID
+                  WHERE M.CO_CODE       = #{loginCoId}
+                  GROUP BY M.MENU_ID
+                UNION ALL
+                 SELECT CO_CODE
+                      , MENU_ID
+                      , MENU_UP_ID
+                      , URL
+                      , MENU_NM
+                      , SRT_ORD
+                   FROM PGM
+                  WHERE CO_CODE     = #{loginCoId}
             ) AS A
         ORDER BY CASE WHEN MENU_UP_ID IS NULL THEN 0 ELSE 1 END, CATEGORY, SRT_ORD
     </select>

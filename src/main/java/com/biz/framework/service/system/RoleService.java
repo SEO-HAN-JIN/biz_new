@@ -62,6 +62,7 @@ public class RoleService {
     }
 
     public List<CamelCaseMap> findRoleUser(RoleDto roleDto) {
+        roleDto.setCoCode(roleDto.getLoginCoId());
         return roleMapper.findRoleUser(roleDto);
     }
 

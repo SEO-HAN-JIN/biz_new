@@ -11,6 +11,7 @@
              , ROLE_DESC
           FROM ROLE
          WHERE 1=1
+           AND CO_CODE   = #{loginCoId}
         <if test='roleNm != null  and roleNm != "" '>
             AND ROLE_NM LIKE CONCAT('%', #{programNm}, '%')
         </if>
@@ -19,10 +20,12 @@
     <insert id="saveRoles">
         /* com.biz.framework.mapper.system.RoleMapper.saveRoles */
         INSERT INTO ROLE (
-            ROLE_NM
+            CO_CODE
+            , ROLE_NM
             , ROLE_DESC
         ) VALUES (
-            #{roleNm}
+            #{loginCoId}
+            , #{roleNm}
             , #{roleDesc}
         )
     </insert>
@@ -32,22 +35,26 @@
         UPDATE ROLE
            SET ROLE_NM       = #{roleNm}
              , ROLE_DESC     = #{roleDesc}
-         WHERE ROLE_ID       = #{roleId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND ROLE_ID       = #{roleId}
     </update>
 
     <delete id="deleteRoles">
         /* com.biz.framework.mapper.system.RoleMapper.deleteRoles */
         DELETE FROM ROLE
-         WHERE ROLE_ID     = #{roleId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND ROLE_ID     = #{roleId}
     </delete>
 
     <insert id="saveRoleUser">
         /* com.biz.framework.mapper.system.RoleMapper.saveRoleUser */
         INSERT INTO ROLE_USER (
-            role_id
-          , user_id
+            CO_CODE
+          , ROLE_ID
+          , USER_ID
         )
         VALUES(
+            #{loginCoId},
             #{roleId},
             #{userId}
         )
@@ -57,7 +64,8 @@
         /* com.biz.framework.mapper.system.RoleMapper.checkRoleUserDupl */
         SELECT COUNT(1)
           FROM ROLE_USER
-         WHERE ROLE_ID = #{roleId}
+         WHERE CO_CODE   = #{loginCoId}
+           AND ROLE_ID = #{roleId}
            AND USER_ID = #{userId}
     </select>
 
@@ -83,7 +91,8 @@
     <delete id="deleteRoleUser">
         /* com.biz.framework.mapper.system.RoleMapper.deleteRoleUser */
         DELETE FROM ROLE_USER
-         WHERE ROLE_ID = #{roleId}
+         WHERE CO_CODE  = #{loginCoId}
+           AND ROLE_ID = #{roleId}
            AND USER_ID = #{userId}
     </delete>
 
@@ -96,19 +105,23 @@
              , P.USE_YN
          FROM ROLE_PROGRAM  RP
          JOIN PROGRAM       P
-           ON P.PROGRAM_ID  = RP.PROGRAM_ID
-        WHERE RP.ROLE_ID   = #{roleId}
+           ON P.CO_CODE     = RP.CO_CODE
+          AND P.PROGRAM_ID  = RP.PROGRAM_ID
+        WHERE RP.CO_CODE    = #{loginCoId}
+          AND RP.ROLE_ID   = #{roleId}
     </select>
 
     <insert id="saveRelProgramList">
         /* com.biz.framework.mapper.system.RoleMapper.saveRelProgramList */
         INSERT INTO ROLE_PROGRAM
         (
-            ROLE_ID
+            CO_CODE
+            , ROLE_ID
             , PROGRAM_ID
         ) VALUES
         (
-            #{roleId}
+            #{loginCoId}
+            , #{roleId}
             , #{programId}
         )
     </insert>
@@ -116,8 +129,9 @@
     <delete id="deleteRelProgramList">
         /* com.biz.framework.mapper.system.RoleMapper.deleteRelProgramList */
         DELETE FROM ROLE_PROGRAM
-        WHERE ROLE_ID = #{roleId}
-          AND PROGRAM_ID = #{programId}
+        WHERE CO_CODE       = #{loginCoId}
+          AND ROLE_ID       = #{roleId}
+          AND PROGRAM_ID    = #{programId}
     </delete>
 
     <select id="findRoleProgram">
@@ -126,8 +140,10 @@
              , RP.PROGRAM_ID
           FROM ROLE_PROGRAM     RP
           JOIN PROGRAM          P
-            ON P.PROGRAM_ID     = RP.PROGRAM_ID
-         WHERE CONCAT(P.PROGRAM_URL, '/')    LIKE CONCAT(TRIM(#{programUrl}), '/', '%')
+            ON P.CO_CODE        = RP.CO_CODE
+           AND P.PROGRAM_ID     = RP.PROGRAM_ID
+         WHERE RP.CO_CODE       = #{loginCoId}
+           AND CONCAT(P.PROGRAM_URL, '/')    LIKE CONCAT(TRIM(#{programUrl}), '/', '%')
            AND P.USE_YN         = 'Y'
     </select>
 </mapper>

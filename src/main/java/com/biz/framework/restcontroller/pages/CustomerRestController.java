@@ -2,6 +2,7 @@ package com.biz.framework.restcontroller.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
+import com.biz.framework.dto.pages.EmpDto;
 import com.biz.framework.service.pages.CustomerService;
 import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.system.UserService;
@@ -22,8 +23,8 @@ public class CustomerRestController {
     private final CustomerService customerService;
 
     @GetMapping("/emps")
-    public List<CamelCaseMap> findEmps() {
-        return empService.findAllEmps();
+    public List<CamelCaseMap> findEmps(EmpDto empDto) {
+        return empService.findAllEmps(empDto);
     }
 
     @GetMapping

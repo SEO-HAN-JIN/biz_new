@@ -15,6 +15,7 @@
           , USE_IND
         FROM TB_PRODUCTS    P
        WHERE 1=1
+        AND P.CO_CODE       = #{loginCoId}
         AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
         <if test='prodId != null  and prodId != "" '>
             AND PROD_ID     LIKE CONCAT('%', #{prodId}, '%')
@@ -35,6 +36,7 @@
         , USE_IND
         FROM TB_PRODUCTS    P
         WHERE 1=1
+        AND P.CO_CODE       = #{loginCoId}
         AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
         AND PROD_ID = #{prodId}
     </select>
@@ -43,7 +45,8 @@
         /* com.biz.framework.mapper.pages.ProductMapper.saveProducts */
         INSERT INTO TB_PRODUCTS
         (
-            PROD_ID
+            CO_CODE
+            , PROD_ID
             , EFF_DATE_FROM
             , EFF_DATE_TO
             , PROD_NAME
@@ -51,7 +54,8 @@
             , USE_IND
         ) VALUES
         (
-            #{prodId}
+            #{loginCoId}
+            , #{prodId}
             , STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
             , STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
             , #{prodName}
@@ -67,15 +71,17 @@
     <delete id="deleteProducts">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProducts */
         DELETE FROM TB_PRODUCTS
-        WHERE PROD_ID       = #{prodId}
-        AND EFF_DATE_FROM   = #{effDateFrom}
+         WHERE CO_CODE          = #{loginCoId}
+           AND PROD_ID          = #{prodId}
+           AND EFF_DATE_FROM    = #{effDateFrom}
     </delete>
 
     <select id="checkDuplProduct">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkDuplProduct */
         SELECT COUNT(1)
           FROM TB_PRODUCTS
-         WHERE PROD_ID = #{prodId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROD_ID      = #{prodId}
            AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
            AND #{effDateTo} >= EFF_DATE_FROM
     </select>
@@ -84,7 +90,8 @@
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateProductEffDate */
         UPDATE TB_PRODUCTS
            SET EFF_DATE_TO  = DATE_ADD(STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d'), INTERVAL -1 DAY)
-         WHERE PROD_ID  = #{prodId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROD_ID      = #{prodId}
            AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
            AND #{effDateTo} >= EFF_DATE_FROM
     </update>

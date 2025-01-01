@@ -20,16 +20,21 @@
              , TC.MILEAGE       AS REST_MILEAGE
           FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
-            ON TE.EMP_ID        = MR.USER_ID
+            ON TE.CO_CODE       = MR.CO_CODE
+           AND TE.EMP_ID        = MR.USER_ID
           LEFT JOIN TB_CUSTOMER TC
-            ON TC.BIZ_NO       = MR.CUST_ID
-          LEFT JOIN CDBASE        SE05
-            ON SE05.PATTERN_CODE     = 'SE05'
-           AND SE05.BASE_CODE        = MR.REQ_GUBUN
-          LEFT JOIN CDBASE      SE04
-            ON SE04.PATTERN_CODE   = 'SE04'
-           AND SE04.BASE_CODE      = MR.APPLY_STATUS
+            ON TC.CO_CODE       = MR.CO_CODE
+           AND TC.BIZ_NO        = MR.CUST_ID
+          LEFT JOIN CDBASE          SE05
+            ON SE05.CO_CODE         = MR.CO_CODE
+           AND SE05.PATTERN_CODE    = 'SE05'
+           AND SE05.BASE_CODE       = MR.REQ_GUBUN
+          LEFT JOIN CDBASE          SE04
+            ON SE04.CO_CODE         = MR.CO_CODE
+           AND SE04.PATTERN_CODE    = 'SE04'
+           AND SE04.BASE_CODE       = MR.APPLY_STATUS
          WHERE 1=1
+           AND MR.CO_CODE           = #{loginCoId}
            AND DATE_FORMAT(MR.REQ_DATE, '%Y%m%d') BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         <if test='reqNo != null  and reqNo != "" '>
             AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
@@ -52,11 +57,13 @@
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.saveMileageReq */
         <selectKey resultType="String" keyProperty="reqNo" order="BEFORE">
             SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(REQ_NO), 0) + 1, '4', '0')) AS REQ_NO
-            FROM MILEAGE_REQ
-            WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+              FROM MILEAGE_REQ
+             WHERE CO_CODE      = #{loginCoId}
+               AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
         </selectKey>
         INSERT INTO MILEAGE_REQ(
-            REQ_NO
+            CO_CODE
+            , REQ_NO
             , USER_ID
             , CUST_ID
             , REQ_AMT
@@ -64,7 +71,8 @@
             , REQ_DATE
             , REQ_GUBUN
         ) VALUES (
-            #{reqNo}
+            #{loginCoId}
+            , #{reqNo}
             , #{userId}
             , #{custId}
             , #{reqAmt}
@@ -78,10 +86,11 @@
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.updateMileageReq */
         UPDATE MILEAGE_REQ
            SET REQ_AMT      = #{reqAmt}
-             , APPLY_STATUS  = #{applyStatus}
+             , APPLY_STATUS = #{applyStatus}
              , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
              , REQ_GUBUN    = #{reqGubun}
-         WHERE REQ_NO       = #{reqNo}
+         WHERE CO_CODE      = #{loginCoId}
+           AND REQ_NO       = #{reqNo}
            AND USER_ID      = #{userId}
            AND CUST_ID      = #{custId}
     </update>
@@ -89,7 +98,8 @@
     <delete id="deletePreMileageReq">
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.deletePreMileageReq */
         DELETE FROM MILEAGE_REQ
-        WHERE REQ_NO       = #{reqNo}
+        WHERE CO_CODE      = #{loginCoId}
+          AND REQ_NO       = #{reqNo}
           AND USER_ID      = #{userId}
           AND CUST_ID      = #{custId}
     </delete>
@@ -98,7 +108,8 @@
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.checkAlreadyApprov */
         SELECT COUNT(1)
           FROM MILEAGE_REQ
-        WHERE REQ_NO       = #{reqNo}
+        WHERE CO_CODE      = #{loginCoId}
+          AND REQ_NO       = #{reqNo}
           AND USER_ID      = #{userId}
           AND CUST_ID      = #{custId}
           AND APPLY_STATUS != '01'

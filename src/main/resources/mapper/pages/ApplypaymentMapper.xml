@@ -8,7 +8,8 @@
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.findIncentiveRate */
         SELECT IFNULL(INCENTIVE_RATE, 0) AS INCENTIVE_RATE
           FROM TB_EMP
-         WHERE EMP_ID   = #{loginUserId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND EMP_ID       = #{loginUserId}
     </select>
 
     <select id="findApplypayment" resultType="CamelCaseMap">
@@ -42,20 +43,26 @@
             C.CODE_NAME                 AS APPLY_STATUS_NAME
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
-          ON ST.CUST_ID         = CU.BIZ_NO
+          ON ST.CO_CODE         = CU.CO_CODE
+         AND ST.CUST_ID         = CU.BIZ_NO
         LEFT JOIN TB_PRODUCTS   PR
-          ON ST.PROD_ID         = PR.PROD_ID
+          ON ST.CO_CODE         = PR.CO_CODE
+         AND ST.PROD_ID         = PR.PROD_ID
          AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
         LEFT JOIN TB_EMP        EP
-          ON ST.USER_ID         = EP.EMP_ID
+          ON ST.CO_CODE         = EP.CO_cODE
+         AND ST.USER_ID         = EP.EMP_ID
         LEFT JOIN CDBASE        C
-          ON C.PATTERN_CODE     = 'SE04'
+          ON C.CO_CODE          = ST.CO_CODE
+         AND C.PATTERN_CODE     = 'SE04'
          AND C.BASE_CODE        = ST.APPLY_STATUS
         LEFT JOIN CDBASE CD2
-          ON CD2.PATTERN_CODE = 'SE02'
-         AND ST.GUBUN = CD2.BASE_CODE
+          ON ST.CO_CODE         = CD2.CO_CODE
+         AND CD2.PATTERN_CODE   = 'SE02'
+         AND ST.GUBUN           = CD2.BASE_CODE
        WHERE 1=1
-         AND ST.USER_ID = #{loginUserId}
+         AND ST.CO_CODE         = #{loginCoId}
+         AND ST.USER_ID         = #{loginUserId}
          AND ST.REFUND_IND IS NULL
          AND ST.DATE_WORK_FROM <![CDATA[<=]]> #{searchEndDate}
          AND ST.DATE_WORK_TO    >= #{searchStartDate}
@@ -72,13 +79,15 @@
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
         SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
           FROM SETTLEMENT
-         WHERE REQ_DATE = DATE_FORMAT(NOW(), '%Y-%m-%d')
+         WHERE CO_CODE      = #{loginCoId}
+           AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
     </select>
 
     <insert id="saveApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.saveApplypayment */
         INSERT INTO SETTLEMENT
-        ( SETTLEMENT_SEQ
+        ( CO_CODE
+        , SETTLEMENT_SEQ
         , PROD_ID
         , USER_ID
         , CUST_ID
@@ -110,7 +119,8 @@
         , REQ_GUBUN
         ) VALUES
         (
-          #{settlementSeq}
+          #{loginCoId}
+        , #{settlementSeq}
         , #{prodId}
         , #{userId}
         , #{custId}
@@ -146,20 +156,22 @@
     <delete id="deleteSettlement">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteSettlement */
         DELETE FROM SETTLEMENT
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
-          AND PROD_ID = #{prodId}
-          AND USER_ID = #{userId}
-          AND CUST_ID = #{custId}
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+          AND PROD_ID           = #{prodId}
+          AND USER_ID           = #{userId}
+          AND CUST_ID           = #{custId}
     </delete>
 
     <select id="checkApplyStatus">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkApplyStatus */
         SELECT APPLY_STATUS
           FROM SETTLEMENT
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
-          AND PROD_ID = #{prodId}
-          AND USER_ID = #{userId}
-          AND CUST_ID = #{custId}
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+          AND PROD_ID           = #{prodId}
+          AND USER_ID           = #{userId}
+          AND CUST_ID           = #{custId}
     </select>
 
     <update id="updateApplypayment">
@@ -176,15 +188,16 @@
              , DATE_WORK_TO     = #{dateWorkTo}
              , WORK_DAY         = #{workDay}
              , INCENTIVE_RATE   = #{incentiveRate}
-             , GUBUN             = #{gubun}
+             , GUBUN            = #{gubun}
              , MILEAGE_USE_IND  = #{mileageUseInd}
              , USE_MILEAGE      = #{useMileage}
-             , EXIST_MILEAGE     = #{existMileage}
+             , EXIST_MILEAGE    = #{existMileage}
              , REFUND_GUBUN     = #{refundGubun}
-        WHERE SETTLEMENT_SEQ   = #{settlementSeq}
-          AND PROD_ID          = #{prodId}
-          AND USER_ID          = #{userId}
-          AND CUST_ID          = #{custId}
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+          AND PROD_ID           = #{prodId}
+          AND USER_ID           = #{userId}
+          AND CUST_ID           = #{custId}
     </update>
 
 </mapper>

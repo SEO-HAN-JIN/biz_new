@@ -4,13 +4,16 @@ import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.system.MenuDto;
 import com.biz.framework.mapper.system.MenuMapper;
 import com.biz.framework.mapper.system.ProgramMapper;
+import com.biz.framework.security.dto.AuthenticationDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +52,7 @@ public class MenuService {
     }
 
     public List<MenuDto> findMenuHierarchy(MenuDto menuDto) {
-        List<MenuDto> findList = menuMapper.findMenuList();
+        List<MenuDto> findList = menuMapper.findMenuList(menuDto);
 
         List<MenuDto> upMenuList = findList.stream().filter(s -> s.getMenuUpId() == null).toList();
         for (MenuDto upMenu : upMenuList) {
@@ -65,8 +68,12 @@ public class MenuService {
 
 
     public List<CamelCaseMap> findSideLayout(List<String> authorityList) {
-        HashMap<String, List<String>> param = new HashMap<>();
+        AuthenticationDto authentication = (AuthenticationDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String coCode = authentication.getCoCode();
+
+        Map<String, Object> param = new HashMap<>();
         param.put("authorityList", authorityList);
+        param.put("loginCoId", coCode);
         return menuMapper.findSideLayout(param);
     }
 }

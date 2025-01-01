@@ -18,6 +18,7 @@ public abstract class BaseDto {
 
     public BaseDto() {
         try {
+            String coCode = null;
             String userId = null;
             String userNm = null;
 
@@ -29,10 +30,12 @@ public abstract class BaseDto {
                 }else if(principal instanceof AuthenticationDto){
 
                     AuthenticationDto authenticationDto = (AuthenticationDto) principal;
+                    coCode = authenticationDto.getCoCode();
                     userId = authenticationDto.getUserId();
                     userNm = authenticationDto.getUserNm();
                 }
             }
+            this.loginCoId = coCode;
             this.loginUserId = userId == null ? "__anonymous__" : userId;
             this.loginUserNm = userNm == null ? "__anonymous__" : userNm;
 

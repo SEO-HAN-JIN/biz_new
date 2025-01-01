@@ -64,14 +64,15 @@ public class ApplypaymentService {
 
     public int deleteSettlement(SettlementDto settlementDto) {
         int result = 0;
-        if (!"01".equals(applypaymentMapper.checkApplyStatus(settlementDto))) {
-            throw new ServiceException("승인요청건만 삭제 가능합니다.");
-        }
 
         if(!CollectionUtils.isEmpty(settlementDto.getSettlementDtoList()))
         {
             for(SettlementDto dto : settlementDto.getSettlementDtoList())
             {
+                if (!"01".equals(applypaymentMapper.checkApplyStatus(dto))) {
+                    throw new ServiceException("승인요청건만 삭제 가능합니다.");
+                }
+
                 result += applypaymentMapper.deleteSettlement(dto);
 
                 if ("Y".equals(dto.getMileageUseInd())) {
@@ -86,7 +87,7 @@ public class ApplypaymentService {
                     int useMileage = Integer.parseInt(dto.getUseMileage());
                     int saveMileage = existMileage + useMileage;
 
-                    customerMapper.updateMileage(bizNo, saveMileage);
+                    customerMapper.updateMileage(dto.getLoginCoId(), bizNo, saveMileage);
 
                     if (useMileage > 0) {
                         MileageHisDto mileageHisDto = new MileageHisDto();
@@ -136,7 +137,7 @@ public class ApplypaymentService {
             throw new ServiceException("킵 사용금액이 잔여킵금액보다 같거나 더 적어야 합니다.\n잔여킵금액: " + formattedExistMileage + "\n킵사용금액: " + formattedUseMileage);
         }
 
-        customerMapper.updateMileage(bizNo, restMileage);
+        customerMapper.updateMileage(settlementDto.getLoginCoId(), bizNo, restMileage);
         if (useMileage > 0) {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(bizNo);

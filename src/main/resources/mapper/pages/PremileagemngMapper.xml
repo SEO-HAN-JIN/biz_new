@@ -18,18 +18,23 @@
              , MR.REQ_GUBUN
              , SE05.CODE_NAME      AS REQ_GUBUN_NM
              , TC.MILEAGE       AS REST_MILEAGE
-          FROM MILEAGE_REQ    MR
+          FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
-            ON TE.EMP_ID        = MR.USER_ID
+            ON TE.CO_CODE       = MR.CO_CODE
+           AND TE.EMP_ID        = MR.USER_ID
           LEFT JOIN TB_CUSTOMER TC
-            ON TC.BIZ_NO       = MR.CUST_ID
-          LEFT JOIN CDBASE        SE05
-            ON SE05.PATTERN_CODE     = 'SE05'
-           AND SE05.BASE_CODE        = MR.REQ_GUBUN
-          LEFT JOIN CDBASE      SE04
-            ON SE04.PATTERN_CODE   = 'SE04'
-           AND SE04.BASE_CODE      = MR.APPLY_STATUS
+            ON TC.CO_CODE       = MR.CO_CODE
+           AND TC.BIZ_NO        = MR.CUST_ID
+          LEFT JOIN CDBASE          SE05
+            ON SE05.CO_CODE         = MR.CO_CODE
+           AND SE05.PATTERN_CODE    = 'SE05'
+           AND SE05.BASE_CODE       = MR.REQ_GUBUN
+          LEFT JOIN CDBASE          SE04
+            ON SE04.CO_CODE         = MR.CO_CODE
+           AND SE04.PATTERN_CODE    = 'SE04'
+           AND SE04.BASE_CODE       = MR.APPLY_STATUS
          WHERE 1=1
+           AND MR.CO_CODE           = #{loginCoId}
            AND DATE_FORMAT(MR.REQ_DATE, '%Y%m%d') BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
            <if test='reqNo != null  and reqNo != "" '>
                AND MR.REQ_NO   LIKE CONCAT('%',#{reqNo} ,'%')
@@ -52,7 +57,8 @@
         /* com.biz.framework.mapper.pages.PremileagemngMapper.findApplyStatus */
         SELECT APPLY_STATUS
           FROM MILEAGE_REQ
-         WHERE REQ_NO       = #{reqNo}
+         WHERE CO_CODE      = #{loginCoId}
+           AND REQ_NO       = #{reqNo}
            AND USER_ID      = #{userId}
            AND CUST_ID      = #{custId}
     </select>
@@ -61,29 +67,35 @@
         /* com.biz.framework.mapper.pages.PremileagemngMapper.updateApplyStatus */
         UPDATE MILEAGE_REQ
            SET APPLY_STATUS = #{applyStatus}
-         WHERE REQ_NO       = #{reqNo}
+         WHERE CO_CODE      = #{loginCoId}
+           AND REQ_NO       = #{reqNo}
            AND USER_ID      = #{userId}
            AND CUST_ID      = #{custId}
     </update>
 
     <select id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
-        SELECT COUNT(*) FROM SETTLEMENTMST
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
-        AND PAY_YM IS NOT NULL
-        AND PAY_YM != ''
+        SELECT COUNT(*)
+          FROM SETTLEMENTMST
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PAY_YM IS NOT NULL
+           AND PAY_YM           != ''
     </select>
 
     <select id="checkSettlementmst" resultType="int">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
-        SELECT COUNT(*) FROM SETTLEMENTMST
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+        SELECT COUNT(*)
+          FROM SETTLEMENTMST
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
     </select>
 
     <insert id="cancelApplypayment">
         /* com.biz.framework.mapper.pages.PremileagemngMapper.confirmApplypayment */
         DELETE FROM SETTLEMENTMST
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
     </insert>
 
     <select id="findSettlement" resultType="com.biz.framework.dto.pages.SettlementDto">
@@ -100,17 +112,20 @@
             ST.REFUND_PROD_TOTAL_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
             CD.CODE_NAME AS GUBUN_NAME
-        FROM SETTLEMENT ST
-        LEFT JOIN CDBASE CD
-             ON CD.PATTERN_CODE = 'SE02'
-            AND ST.GUBUN = CD.BASE_CODE
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+        FROM SETTLEMENT         ST
+        LEFT JOIN CDBASE        CD
+          ON CD.CO_CODE         = ST.CO_CODE
+         AND CD.PATTERN_CODE    = 'SE02'
+         AND ST.GUBUN           = CD.BASE_CODE
+       WHERE ST.CO_CODE         = #{loginCoId}
+         AND COSETTLEMENT_SEQ   = #{settlementSeq}
     </select>
 
     <update id="updateSettlement">
         UPDATE SETTLEMENT
-        SET APPLY_STATUS = #{applyStatus}
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+           SET APPLY_STATUS     = #{applyStatus}
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
     </update>
 
 </mapper>

@@ -19,9 +19,9 @@ public interface CustomerMapper {
 
     int checkDupl(CustomerDto customerDto);
 
-    int findMileageByBizNo(String bizNo);
+    int findMileageByBizNo(@Param("coCode") String coCode, @Param("bizNo") String bizNo);
 
-    void updateMileage(@Param("bizNo") String bizNo, @Param("mileage") int mileage);
+    void updateMileage(@Param("coCode") String coCode, @Param("bizNo") String bizNo, @Param("mileage") int mileage);
 
-    void updateFinalMileage(@Param("bizNo") String bizNo, @Param("mileage") int mileage);
+    void updateFinalMileage(@Param("coCode") String coCode, @Param("bizNo") String bizNo, @Param("mileage") int mileage);
 }

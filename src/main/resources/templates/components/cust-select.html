@@ -15,7 +15,26 @@
                    required=${required} ?: false">
 
 <select class="choices cust-select form-control-sm" th:id="${id}" th:name="${name}"></select>
+<style>
+    .choices__list--dropdown {
+        max-height: 200px; /* 최대 높이를 설정 */
+        overflow-y: auto; /* 스크롤 생성 */
+    }
 
+    /* 스크롤바 스타일 */
+    .choices__list--dropdown::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .choices__list--dropdown::-webkit-scrollbar-thumb {
+        background: #888; /* 스크롤바 색상 */
+        border-radius: 4px;
+    }
+
+    .choices__list--dropdown::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
 <script th:inline="javascript">
     document.addEventListener("DOMContentLoaded", function() {
         const selectElement = document.getElementById(/*[[${id}]]*/ "");
@@ -54,7 +73,8 @@
                         selectElement.choicesInstance = new Choices(selectElement, {
                             placeholder: true,
                             placeholderValue: '',
-                            itemSelectText: 'select'
+                            itemSelectText: 'select',
+                            maxItemCount: 4, // 표시할 최대 항목 수
                         });
                     }
                 })

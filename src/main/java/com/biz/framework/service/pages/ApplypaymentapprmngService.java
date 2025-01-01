@@ -72,7 +72,7 @@ public class ApplypaymentapprmngService {
                 // 누적마일리지가 있을 경우 고객 마일리지 누적 HIS UPDATE
                 if (mileageAmt > 0) {
 
-                    customerMapper.updateFinalMileage(settlementmstDto.getCustId(), mileageAmt);
+                    customerMapper.updateFinalMileage(settlementDto.getLoginCoId(), settlementmstDto.getCustId(), mileageAmt);
 
                     MileageHisDto mileageHisDto = new MileageHisDto();
                     mileageHisDto.setBizNo(settlementmstDto.getCustId());           // 고객 key

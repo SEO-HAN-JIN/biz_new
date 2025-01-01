@@ -36,23 +36,29 @@
             CD.CODE_NAME AS STATUS_NAME,
             SM.TAX_IND,
             SM.PAY_YM
-        FROM SETTLEMENT ST
-        JOIN SETTLEMENTMST SM
-            ON ST.SETTLEMENT_SEQ = SM.SETTLEMENT_SEQ
-        LEFT JOIN TB_CUSTOMER CU
-            ON ST.CUST_ID = CU.BIZ_NO
-        LEFT JOIN TB_PRODUCTS PR
-            ON ST.PROD_ID = PR.PROD_ID
-            AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
-        LEFT JOIN TB_EMP EP
-            ON ST.USER_ID = EP.EMP_ID
-        LEFT JOIN CDBASE CD
-            ON CD.PATTERN_CODE = 'SE02'
-        	AND ST.APPLY_STATUS = CD.BASE_CODE
-        WHERE 1=1
-        AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
-        AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
-        AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
+        FROM SETTLEMENT         ST
+        JOIN SETTLEMENTMST      SM
+          ON ST.CO_CODE         = SM.CO_CODE
+         AND ST.SETTLEMENT_SEQ  = SM.SETTLEMENT_SEQ
+        LEFT JOIN TB_CUSTOMER   CU
+          ON ST.CO_CODE         = CU.CO_CODE
+         AND ST.CUST_ID         = CU.BIZ_NO
+        LEFT JOIN TB_PRODUCTS   PR
+          ON ST.CO_CODE         = PR.CO_CODE
+         AND ST.PROD_ID         = PR.PROD_ID
+         AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
+        LEFT JOIN TB_EMP        EP
+          ON ST.CO_CODE         = EP.CO_CODE
+         AND ST.USER_ID         = EP.EMP_ID
+        LEFT JOIN CDBASE        CD
+          ON ST.CO_CODE         = ST.CO_CODE
+         AND CD.PATTERN_CODE    = 'SE02'
+         AND ST.APPLY_STATUS    = CD.BASE_CODE
+       WHERE 1=1
+         AND ST.CO_CODE         = #{loginCoId}
+         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
+         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
+         AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
@@ -68,29 +74,33 @@
     <insert id="confirmApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
         UPDATE SETTLEMENT
-            SET CONFIRM_AMT = #{confirmAmt},
-                CONFIRM_RATE_AMT = #{confirmRateAmt},
-                SAVE_MILEAGE = #{saveMileage},
-                STATUS = '2'
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+            SET CONFIRM_AMT         = #{confirmAmt},
+                CONFIRM_RATE_AMT    = #{confirmRateAmt},
+                SAVE_MILEAGE        = #{saveMileage},
+                STATUS              = '2'
+          WHERE CO_CODE             = #{loginCoId}
+            AND SETTLEMENT_SEQ      = #{settlementSeq}
     </insert>
 
     <delete id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
-        SELECT COUNT(*) FROM SETTLEMENT
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
-        AND PAY_YM IS NOT NULL
-        AND PAY_YM != ''
+        SELECT COUNT(*)
+          FROM SETTLEMENT
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PAY_YM IS NOT NULL
+           AND PAY_YM           != ''
     </delete>
 
     <insert id="cancelApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
         UPDATE SETTLEMENT
-        SET CONFIRM_AMT = 0,
-            CONFIRM_RATE_AMT = 0,
-            SAVE_MILEAGE = 0,
-            STATUS = '3'
-        WHERE SETTLEMENT_SEQ = #{settlementSeq}
+           SET CONFIRM_AMT          = 0,
+               CONFIRM_RATE_AMT     = 0,
+               SAVE_MILEAGE         = 0,
+               STATUS               = '3'
+         WHERE CO_CODE              = #{loginCoId}
+           AND SETTLEMENT_SEQ       = #{settlementSeq}
     </insert>
 
 </mapper>

@@ -9,6 +9,7 @@
         SELECT USER_ID
              , USER_NM
           FROM USER
+         WHERE CO_CODE  = #{loginCoId}
     </select>
 
     <select id="findByUserId" resultType="com.biz.framework.dto.system.UserDto">
@@ -29,6 +30,7 @@
              , USER_NM
           FROM USER
          WHERE 1=1
+           AND CO_CODE  = #{loginCoId}
         <if test='userNm != null  and userNm != "" '>
             AND USER_ID LIKE CONCAT('%', #{userNm}, '%')
                 OR USER_NM LIKE CONCAT('%', #{userNm}, '%')
@@ -38,10 +40,12 @@
     <insert id="saveRoles">
         /* com.biz.framework.mapper.system.RoleMapper.saveRoles */
         INSERT INTO ROLE (
-            ROLE_NM
+            CO_CODE
+            , ROLE_NM
             , ROLE_DESC
         ) VALUES (
-            #{roleNm}
+            #{loginCoId}
+            , #{roleNm}
             , #{roleDesc}
         )
     </insert>
@@ -51,26 +55,30 @@
         UPDATE ROLE
            SET ROLE_NM       = #{roleNm}
              , ROLE_DESC     = #{roleDesc}
-         WHERE ROLE_ID       = #{roleId}
+         WHERE CO_CODE       = #{loginCoId}
+           AND ROLE_ID       = #{roleId}
     </update>
 
     <delete id="deleteRoles">
         /* com.biz.framework.mapper.system.RoleMapper.deleteRoles */
         DELETE FROM ROLE
-         WHERE ROLE_ID     = #{roleId}
+         WHERE CO_CODE      = #{loginCoId}
+           AND ROLE_ID     = #{roleId}
     </delete>
 
     <insert id="saveUser">
         /* com.biz.framework.mapper.system.RoleMapper.deleteRoles */
         INSERT INTO USER
         (
-            USER_ID
+            CO_CODE
+            , USER_ID
             , USER_PW
             , USER_NM
         )
         VALUES
         (
-            #{userId}
+            #{loginCoId}
+            , #{userId}
             , #{userPw}
             , #{userNm}
         )
@@ -79,6 +87,7 @@
     <delete id="deleteUser">
         /* com.biz.framework.mapper.system.UserMapper.deleteUser */
         DELETE FROM USER
-        WHERE USER_ID = #{userId}
+        WHERE CO_CODE   = #{loginCoId}
+          AND USER_ID = #{userId}
     </delete>
 </mapper>

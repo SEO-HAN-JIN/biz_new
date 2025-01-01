@@ -32,7 +32,7 @@ public class PreMileageReqService {
         int result = 0;
 
         if ("02".equals(mileageReqDto.getReqGubun())) {
-            int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getCustId());
+            int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId());
             if (mileage - Integer.parseInt(mileageReqDto.getReqAmt()) < 0) {
                 NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
                 String formattedMileage = formatter.format(mileage);

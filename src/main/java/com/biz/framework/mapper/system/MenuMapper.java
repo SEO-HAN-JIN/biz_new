@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface MenuMapper {
@@ -17,7 +18,7 @@ public interface MenuMapper {
     int updateMenuList(MenuDto menuDto);
     int deleteMenu(MenuDto menuDto);
 
-    List<MenuDto> findMenuList();
+    List<MenuDto> findMenuList(MenuDto menuDto);
 
-    List<CamelCaseMap> findSideLayout(HashMap<String, List<String>> param);
+    List<CamelCaseMap> findSideLayout(Map<String, Object> param);
 }

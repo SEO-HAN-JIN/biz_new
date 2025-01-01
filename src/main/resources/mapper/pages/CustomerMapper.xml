@@ -8,10 +8,12 @@
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
         SELECT T.*
              , U.EMP_NAME
-          FROM TB_CUSTOMER  T
-          LEFT JOIN TB_EMP       U
-            ON U.EMP_ID    = T.EMP_ID
-        WHERE 1=1
+          FROM TB_CUSTOMER      T
+          LEFT JOIN TB_EMP      U
+            ON T.CO_CODE        = U.CO_CODE
+           AND U.EMP_ID         = T.EMP_ID
+         WHERE 1=1
+           AND T.CO_CODE        = #{loginCoId}
         <if test='bizNo != null  and bizNo != "" '>
             AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
         </if>
@@ -30,11 +32,13 @@
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomerInfo */
         SELECT  T.*,
                 U.EMP_NAME
-        FROM TB_CUSTOMER  T
-        LEFT JOIN TB_EMP       U
-        ON U.EMP_ID    = T.EMP_ID
-        WHERE 1=1
-        AND T.BIZ_NO = #{bizNo}
+          FROM TB_CUSTOMER      T
+          LEFT JOIN TB_EMP      U
+            ON U.CO_CODE        = T.CO_CODE
+           AND U.EMP_ID         = T.EMP_ID
+         WHERE 1=1
+           AND T.CO_CODE        = #{loginCoId}
+           AND T.BIZ_NO         = #{bizNo}
 
     </select>
 
@@ -42,7 +46,8 @@
         /* com.biz.framework.mapper.pages.CustomerMapper.saveCustomer */
         INSERT INTO TB_CUSTOMER
         (
-            BIZ_NO
+            CO_CODE
+            , BIZ_NO
             , EMP_ID
             , CUST_NAME
             , OWNER_NAME
@@ -56,7 +61,8 @@
             , USE_IND
         ) VALUES
         (
-            #{bizNo}
+            #{loginCoId}
+            , #{bizNo}
             , #{empId}
             , #{custName}
             , #{ownerName}
@@ -84,7 +90,8 @@
     <delete id="deleteCustomer">
         /* com.biz.framework.mapper.pages.CustomerMapper.deleteCustomer */
         DELETE FROM TB_CUSTOMER
-        WHERE BIZ_NO    = #{bizNo}
+        WHERE CO_CODE   = #{loginCoId}
+          AND BIZ_NO    = #{bizNo}
     </delete>
 
     <select id="checkDupl">
@@ -92,6 +99,7 @@
         SELECT COUNT(1)
           FROM TB_CUSTOMER
          WHERE 1=1
+           AND CO_CODE  = #{loginCoId}
            AND BIZ_NO   = #{bizNo}
            AND EMP_ID   = #{empId}
     </select>
@@ -101,14 +109,16 @@
         SELECT MILEAGE
           FROM TB_CUSTOMER
          WHERE 1=1
+           AND CO_CODE  = #{coCode}
            AND BIZ_NO   = #{bizNo}
     </select>
 
     <update id="updateMileage">
         /* com.biz.framework.mapper.pages.CustomerMapper.updateMileage */
         UPDATE TB_CUSTOMER
-          SET MILEAGE   = #{mileage}
-        WHERE BIZ_NO    = #{bizNo}
+          SET MILEAGE       = #{mileage}
+        WHERE CO_CODE       = #{coCode}
+          AND BIZ_NO        = #{bizNo}
     </update>
 
     <update id="updateFinalMileage">
@@ -118,7 +128,8 @@
                             FROM TB_CUSTOMER
                             WHERE BIZ_NO = #{bizNo}
                        ) + #{mileage}
-        WHERE BIZ_NO = #{bizNo}
+        WHERE CO_CODE       = #{coCode}
+          AND BIZ_NO        = #{bizNo}
     </update>
 
 </mapper>

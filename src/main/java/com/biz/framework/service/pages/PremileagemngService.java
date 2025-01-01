@@ -41,7 +41,7 @@ public class PremileagemngService {
 
         // 잔여킵환불시 기존 마일리지와 비교하여 요청 마일리지가 더 큰지 확인
         if ("02".equals(mileageReqDto.getReqGubun())) {
-            int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getCustId());
+            int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId());
             if (mileage - Integer.parseInt(mileageReqDto.getReqAmt()) < 0) {
                 NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
                 String formattedMileage = formatter.format(mileage);
@@ -62,7 +62,7 @@ public class PremileagemngService {
 
         if (result > 0) {
 
-            customerMapper.updateFinalMileage(mileageReqDto.getCustId(), reqAmt);
+            customerMapper.updateFinalMileage(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId(), reqAmt);
 
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(mileageReqDto.getCustId());           // 고객 key

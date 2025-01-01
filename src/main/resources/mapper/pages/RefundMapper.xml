@@ -44,21 +44,28 @@
             SE04.CODE_NAME      AS APPLY_STATUS_NAME
         FROM SETTLEMENT         ST      -- 환불요청
         LEFT JOIN SETTLEMENT    ST2     -- 전산요청
-          ON ST2.SETTLEMENT_SEQ = ST.REFUND_SETTLEMENT_SEQ
+          ON ST2.CO_CODE        = ST.CO_CODE
+         AND ST2.SETTLEMENT_SEQ = ST.REFUND_SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER   CU
-          ON ST.CUST_ID         = CU.BIZ_NO
+          ON ST.CO_CODE         = CU.CO_CODE
+         AND ST.CUST_ID         = CU.BIZ_NO
         LEFT JOIN TB_PRODUCTS   PR
-          ON ST.PROD_ID         = PR.PROD_ID
+          ON ST.CO_CODE         = PR.CO_CODE
+         AND ST.PROD_ID         = PR.PROD_ID
          AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
         LEFT JOIN TB_EMP        EP
-          ON ST.USER_ID         = EP.EMP_ID
+          ON ST.CO_CODE         = EP.CO_CODE
+         AND ST.USER_ID         = EP.EMP_ID
         LEFT JOIN CDBASE 	    CD
-          ON CD.PATTERN_CODE    = 'SE02'
+          ON CD.CO_CODE         = ST.CO_CODE
+         AND CD.PATTERN_CODE    = 'SE02'
          AND CD.BASE_CODE	    = ST.GUBUN
         LEFT JOIN CDBASE        SE04
-          ON SE04.PATTERN_CODE  = 'SE04'
+          ON SE04.CO_CODE       = ST.CO_CODE
+         AND SE04.PATTERN_CODE  = 'SE04'
          AND SE04.BASE_CODE     = ST.APPLY_STATUS
        WHERE 1=1
+         AND ST.CO_CODE         = #{loginCoId}
          AND ST.USER_ID         = #{loginUserId}
          AND ST.REFUND_IND      = 'Y'
          AND ST.REFUND_DATE BETWEEN #{searchStartDate} AND #{searchEndDate}
@@ -100,16 +107,21 @@
              , ST.GUBUN
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU
-            ON ST.CUST_ID           = CU.BIZ_NO
+            ON ST.CO_CODE           = CU.CO_CODE
+           AND ST.CUST_ID           = CU.BIZ_NO
           LEFT JOIN TB_PRODUCTS     PR
-            ON ST.PROD_ID           = PR.PROD_ID
+            ON ST.CO_CODE           = PR.CO_CODE
+           AND ST.PROD_ID           = PR.PROD_ID
            AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
           LEFT JOIN TB_EMP          EP
-            ON ST.USER_ID           = EP.EMP_ID
+            ON ST.CO_cODE           = EP.CO_CODE
+           AND ST.USER_ID           = EP.EMP_ID
           LEFT JOIN CDBASE          CD
-            ON CD.PATTERN_CODE      = 'SE02'
+            ON CD.CO_CODE           = ST.CO_CODE
+           AND CD.PATTERN_CODE      = 'SE02'
            AND CD.BASE_CODE         = ST.APPLY_STATUS
          WHERE 1=1
+           AND ST.CO_CODE           = #{loginCoId}
            AND ST.USER_ID           = #{loginUserId}
            AND IFNULL(ST.REFUND_IND, 'N')    != 'Y'
            AND ST.APPLY_STATUS      = '02'  -- 승인완료(SE04)
@@ -117,8 +129,9 @@
            AND STR_TO_DATE(#{searchEndDate}, '%Y-%m-%d') >= ST.DATE_WORK_FROM
            AND NOT EXISTS(
              SELECT ST2.SETTLEMENT_SEQ
-               FROM SETTLEMENT ST2
-              WHERE ST2.REFUND_SETTLEMENT_SEQ = ST.SETTLEMENT_SEQ
+               FROM SETTLEMENT                  ST2
+              WHERE ST2.CO_CODE                 = ST.CO_CODE
+                AND ST2.REFUND_SETTLEMENT_SEQ   = ST.SETTLEMENT_SEQ
             )
         <if test='settlementSeq != null  and settlementSeq != "" '>
             AND ST.SETTLEMENT_SEQ LIKE CONCAT('%', #{settlementSeq}, '%')

@@ -8,7 +8,8 @@
         /* com.biz.framework.mapper.pages.MileageHisMapper.saveMileageHis */
         INSERT INTO TB_MILEAGE_HIS
         (
-            BIZ_NO
+            CO_CODE
+            , BIZ_NO
             , EMP_ID
             , MILEAGE_PREV
             , MILEAGE_AFT
@@ -18,7 +19,8 @@
             , SETTLEMENT_SEQ
         ) VALUES
         (
-            #{bizNo}
+            #{loginCoId}
+            , #{bizNo}
             , #{empId}
             , #{mileagePrev}
             , #{mileageAft}
@@ -32,7 +34,8 @@
     <delete id="deleteMileageHisByBizNoEmpId">
         /* com.biz.framework.mapper.pages.MileageHisMapper.deleteMileageHisByBizNoEmpId */
         DELETE FROM TB_MILEAGE_HIS
-        WHERE BIZ_NO     = #{bizNo}
+        WHERE CO_CODE    = #{loginCoId}
+          AND BIZ_NO     = #{bizNo}
           AND EMP_ID     = #{empId}
     </delete>
 
@@ -40,6 +43,7 @@
         /* com.biz.framework.mapper.pages.MileageHisMapper.addMileageHistory */
         -- 기존 마일리지 조회 및 누적 계산 로직을 반영
         INSERT INTO TB_MILEAGE_HIS (
+            CO_CODE,
             BIZ_NO,
             EMP_ID,
             MILEAGE_PREV,
@@ -49,6 +53,7 @@
             CREATED_ID
         )
         SELECT
+           #{loginCoId},
            #{bizNo},
            #{empId},
            -- 사용 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
@@ -56,8 +61,9 @@
            -- 누적 마일리지 : 이전 마일리지 + savemileage
            (
                SELECT COALESCE(MAX(MILEAGE_AFT), 0)
-               FROM TB_MILEAGE_HIS
-               WHERE BIZ_NO = #{bizNo}
+                 FROM TB_MILEAGE_HIS
+                WHERE CO_CODE       = #{loginCoId}
+                  AND BIZ_NO        = #{bizNo}
            ) + #{mileageAmt},
            NOW(),
            #{createdPage},

@@ -64,7 +64,7 @@ public class EmpService {
         return result;
     }
 
-    public List<CamelCaseMap> findAllEmps() {
-        return empMapper.findAllEmps();
+    public List<CamelCaseMap> findAllEmps(EmpDto empDto) {
+        return empMapper.findAllEmps(empDto);
     }
 }
