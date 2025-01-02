@@ -16,7 +16,4 @@ public class MileageHisService {
         return mileageHisMapper.saveMileageHis(mileageHisDto);
     }
 
-    public int deleteMileageHisByBizNoEmpId(MileageHisDto mileageHisDto) {
-        return mileageHisMapper.deleteMileageHisByBizNoEmpId(mileageHisDto);
-    }
 }

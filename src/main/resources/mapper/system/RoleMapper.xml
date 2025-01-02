@@ -21,10 +21,12 @@
         /* com.biz.framework.mapper.system.RoleMapper.saveRoles */
         INSERT INTO ROLE (
             CO_CODE
+            , ROLE_ID
             , ROLE_NM
             , ROLE_DESC
         ) VALUES (
             #{loginCoId}
+            , (SELECT IFNULL(MAX(ROLE_ID), 0) + 1 FROM ROLE R WHERE R.CO_CODE = #{loginCoId})
             , #{roleNm}
             , #{roleDesc}
         )

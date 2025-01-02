@@ -31,11 +31,13 @@
         /* com.biz.framework.mapper.MenuMapper.saveMenuList */
         INSERT INTO MENU (
             CO_CODE
+            , MENU_ID
             , MENU_NM
             , MENU_SRT_ORD
             , MENU_UP_ID
         ) VALUES (
             #{loginCoId}
+            , (SELECT IFNULL(MAX(MENU_ID), 0) + 1 FROM MENU M WHERE M.CO_CODE = #{loginCoId})
             , #{menuNm}
             , #{menuSrtOrd}
             , #{menuUpId}

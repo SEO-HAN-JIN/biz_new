@@ -10,6 +10,7 @@
         (
             CO_CODE
             , BIZ_NO
+            , SEQ
             , EMP_ID
             , MILEAGE_PREV
             , MILEAGE_AFT
@@ -21,6 +22,7 @@
         (
             #{loginCoId}
             , #{bizNo}
+            , (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizno})
             , #{empId}
             , #{mileagePrev}
             , #{mileageAft}
@@ -31,20 +33,13 @@
         )
     </insert>
 
-    <delete id="deleteMileageHisByBizNoEmpId">
-        /* com.biz.framework.mapper.pages.MileageHisMapper.deleteMileageHisByBizNoEmpId */
-        DELETE FROM TB_MILEAGE_HIS
-        WHERE CO_CODE    = #{loginCoId}
-          AND BIZ_NO     = #{bizNo}
-          AND EMP_ID     = #{empId}
-    </delete>
-
     <insert id="addMileageHistory">
         /* com.biz.framework.mapper.pages.MileageHisMapper.addMileageHistory */
         -- 기존 마일리지 조회 및 누적 계산 로직을 반영
         INSERT INTO TB_MILEAGE_HIS (
             CO_CODE,
             BIZ_NO,
+            SEQ,
             EMP_ID,
             MILEAGE_PREV,
             MILEAGE_AFT,
@@ -56,6 +51,7 @@
         SELECT
            #{loginCoId},
            #{bizNo},
+           (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizno}),
            #{empId},
            -- 사용 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
            #{mileageAmt},
@@ -65,7 +61,7 @@
                  FROM TB_MILEAGE_HIS
                 WHERE CO_CODE       = #{loginCoId}
                   AND BIZ_NO        = #{bizNo}
-                ORDER BY CREATED_DATE DESC
+                ORDER BY SEQ DESC
                 LIMIT 1
            ) + #{mileageAmt},
            NOW(),

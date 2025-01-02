@@ -25,12 +25,14 @@
         /* com.biz.framework.mapper.ProgramMapper.saveProgramList */
         INSERT INTO PROGRAM (
             CO_CODE
+            , PROGRAM_ID
             , PROGRAM_NM
             , PROGRAM_URL
             , USE_YN
             , PROGRAM_SRT_ORD
         ) VALUES (
             #{loginCoId}
+            , (SELECT IFNULL(MAX(PROGRAM_ID), 0) + 1 FROM PROGRAM P WHERE P.CO_CODE = #{loginCoId})
             , #{programNm}
             , #{programUrl}
             , #{useYn}

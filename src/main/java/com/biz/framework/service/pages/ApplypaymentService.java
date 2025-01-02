@@ -118,13 +118,12 @@ public class ApplypaymentService {
         // 고객정보 가져오기
         CustomerDto customerDto = new CustomerDto();
         customerDto.setBizNo(settlementDto.getCustId());
-
         CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
+
         String bizNo = (String) customerInfo.get("bizNo");
-        int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));
-        int useMileage = -(Integer.parseInt(settlementDto.getUseMileage()));       // 새로 기입한 마일리지
-        int restMileage;
-        restMileage = existMileage + useMileage;
+        int existMileage = Integer.parseInt((String) customerInfo.get("mileage"));  // 기존 고객 잔여 마일리지
+        int useMileage = -(Integer.parseInt(settlementDto.getUseMileage()));        // 사용할 마일리지
+        int restMileage = existMileage + useMileage;                                // 잔여 마일리지 - 사용 마일리지
 
         if (restMileage < 0) {
             NumberFormat currencyInstance = NumberFormat.getCurrencyInstance(Locale.KOREA);
