@@ -20,8 +20,7 @@
 
     <select id="findCustomerInfo" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomerInfo */
-        SELECT  T.*,
-                U.EMP_NAME
+        SELECT  T.*
           FROM TB_CUSTOMER      T
          WHERE 1=1
            AND T.CO_CODE        = #{loginCoId}

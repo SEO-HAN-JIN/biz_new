@@ -22,7 +22,7 @@
         (
             #{loginCoId}
             , #{bizNo}
-            , (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizno})
+            , (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizNo})
             , #{empId}
             , #{mileagePrev}
             , #{mileageAft}
@@ -51,7 +51,7 @@
         SELECT
            #{loginCoId},
            #{bizNo},
-           (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizno}),
+           (SELECT IFNULL(MAX(SEQ), 0) + 1 FROM TB_MILEAGE_HIS MH WHERE MH.CO_CODE = #{loginCoId} AND MH.BIZ_NO = #{bizNo}),
            #{empId},
            -- 사용 마일리지 : 해당 사용자와 사업자의 누적 마일리지 합산
            #{mileageAmt},
