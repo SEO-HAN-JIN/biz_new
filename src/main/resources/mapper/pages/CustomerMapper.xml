@@ -6,16 +6,46 @@
 
     <select id="findCustomers" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.CustomerMapper.findCustomers */
-        SELECT T.*
-          FROM TB_CUSTOMER      T
-         WHERE 1=1
-           AND T.CO_CODE        = #{loginCoId}
+
+        SELECT
+            TC.CO_CODE,
+            TC.BIZ_NO,
+            TC.CUST_NAME,
+            TC.EMP_ID,
+            TC.OWNER_NAME,
+            TC.CUST_ADDR,
+            TC.CUST_TEL,
+            TC.CUST_MAIL,
+            TC.DEPOSITOR_NAME,
+            TC.MILEAGE,
+            TC.INCENTIVE_RATE
+        FROM TB_CUSTOMER TC
+        LEFT JOIN EMP_CUSTOMER EC
+             ON TC.CO_CODE = EC.CO_CODE
+            AND TC.BIZ_NO = EC.BIZ_NO
+        WHERE TC.CO_CODE = #{loginCoId}
+        <if test='empId != null  and empId != "" '>
+            AND EC.EMP_ID = #{empId}
+        </if>
         <if test='bizNo != null  and bizNo != "" '>
-            AND T.BIZ_NO   LIKE CONCAT('%',#{bizNo} ,'%')
+            AND TC.BIZ_NO LIKE CONCAT('%',#{bizNo} ,'%')
         </if>
         <if test='custName != null  and custName != "" '>
-            AND T.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
+            AND TC.CUST_NAME LIKE CONCAT('%',#{custName} ,'%')
         </if>
+        GROUP BY    TC.CO_CODE,
+                    TC.BIZ_NO,
+                    TC.CUST_NAME,
+                    TC.EMP_ID,
+                    TC.OWNER_NAME,
+                    TC.CUST_ADDR,
+                    TC.CUST_TEL,
+                    TC.CUST_MAIL,
+                    TC.DEPOSITOR_NAME,
+                    TC.MILEAGE,
+                    TC.INCENTIVE_RATE
+
+
     </select>
 
     <select id="findCustomerInfo" resultType="CamelCaseMap">

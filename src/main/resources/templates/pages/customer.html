@@ -170,7 +170,7 @@
             </div>
         </section>
     </div>
-    <script type="text/javascript">
+    <script th:inline="javascript">
 
         const apiUrl = '/api/pages/customer';
 
@@ -178,7 +178,14 @@
         let empIdChoiceObj;
         let $isNew = 'N';
 
+        let isAdmin;
+
         $(document).ready(function() {
+
+            const roleIds = /*[[${roleIds}]]*/'';
+            const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+            isAdmin = adminRoles.some(value => roleIds.includes(value));
+
             findAllUsers();
             initEvent();
             initCustomerGrid();

@@ -5,10 +5,14 @@ import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.mapper.pages.CustomerMapper;
+import com.biz.framework.security.dto.AuthenticationDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +24,17 @@ public class CustomerService {
     private final MileageHisService mileageHisService;
 
     public List<CamelCaseMap> findCustomers(CustomerDto customerDto) {
+
+        AuthenticationDto authenticationDto = (AuthenticationDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<GrantedAuthority> authorities = authenticationDto.getAuthorities();
+
+        if(!authorities.stream()
+                .map(GrantedAuthority::getAuthority) // 권한 이름 가져오기
+                .anyMatch(auth -> auth.equals("1") || auth.equals("2")))
+        {
+            customerDto.setEmpId(customerDto.getLoginUserId());
+        }
+
         return customerMapper.findCustomers(customerDto);
     }
 
