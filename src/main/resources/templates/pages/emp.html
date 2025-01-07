@@ -140,6 +140,12 @@
                                                         <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
                                                     </div>
                                                 </div>
+                                                <div class="col-md-3 ">
+                                                    <div class="form-group">
+                                                        <label for="userPw">비밀번호</label>
+                                                        <input type="text" id="userPw" class="form-control" name="userPw" placeholder="비밀번호">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
@@ -224,6 +230,7 @@
                 .add('gradeCode', '직급코드', 'auto', {
                     hidden: true
                 })
+                .add('userPw', '비밀번호', 150, {visible: false})
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             empGrid = columns.init('empGrid', [])
@@ -302,6 +309,13 @@
                 return false;
             }
 
+            if (isNull(param.userPw.trim())) {
+                alert("비밀번호는 필수 값 입니다.");
+                return false;
+            }
+
+            param.userPw = param.userPw.trim();
+
             if (confirm("데이터를 저장하시겠습니까?")) {
                 $.ajax({
                     url: apiUrl,
@@ -367,6 +381,7 @@
             if (param === '2') {
                 const focusedCell = empGrid.getGrid().getFocusedCell();
                 const focusedData = empGrid.getGrid().getRow(focusedCell.rowKey);
+                console.log("# focusedData #", focusedData);
 
                 $('#empModal').find('input, select, textarea').each(function() {
                     const fieldId = $(this).attr('id');

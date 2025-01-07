@@ -40,14 +40,12 @@ public class EmpService {
 
         result += empMapper.saveEmp(empDto);
 
-        if (empDto.isNew()) {
-            UserDto userDto = new UserDto();
-            userDto.setUserId(empDto.getEmpId());
-            userDto.setUserNm(empDto.getEmpName());
-            userDto.setUserPw(empDto.getEntranceDate().replaceAll("-", ""));
+        UserDto userDto = new UserDto();
+        userDto.setUserId(empDto.getEmpId());
+        userDto.setUserNm(empDto.getEmpName());
+        userDto.setUserPw(empDto.getUserPw());
 
-            result += userMapper.saveUser(userDto);
-        }
+        result += userMapper.saveUser(userDto);
 
         return result;
     }

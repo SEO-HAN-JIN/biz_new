@@ -81,7 +81,9 @@
             , #{userId}
             , #{userPw}
             , #{userNm}
-        )
+        ) ON DUPLICATE KEY UPDATE
+             USER_PW    = #{userPw}
+            , USER_NM   = #{userNm}
     </insert>
 
     <delete id="deleteUser">

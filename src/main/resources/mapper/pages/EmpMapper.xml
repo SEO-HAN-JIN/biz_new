@@ -16,8 +16,12 @@
     <select id="findEmps" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.EmpMapper.findEmps */
         SELECT T.*
+             , U.USER_PW
              , C.CODE_NAME      AS GRADE_NAME
           FROM TB_EMP           T
+          JOIN USER             U
+            ON U.CO_CODE        = T.CO_CODE
+           AND T.EMP_ID         = U.USER_ID
           LEFT JOIN CDBASE      C
             ON C.CO_CODE        = T.CO_CODE
            AND C.PATTERN_CODE   = 'CD01'

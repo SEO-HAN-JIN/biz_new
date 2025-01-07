@@ -17,6 +17,7 @@ public class EmpDto extends BaseDto {
     private String empTel;
     private String empMail;
     private float incentiveRate;
+    private String userPw;
 
     @JsonProperty("isNew")
     private boolean isNew;
