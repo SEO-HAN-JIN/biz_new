@@ -309,7 +309,7 @@
                 return false;
             }
 
-            if (isNull(param.userPw.trim())) {
+            if (isNull(param.userPw) || isNull(param.userPw.trim())) {
                 alert("비밀번호는 필수 값 입니다.");
                 return false;
             }
