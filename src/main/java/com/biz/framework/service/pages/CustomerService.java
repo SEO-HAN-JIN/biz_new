@@ -3,8 +3,10 @@ package com.biz.framework.service.pages;
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
+import com.biz.framework.dto.pages.EmpCustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.mapper.pages.CustomerMapper;
+import com.biz.framework.mapper.pages.EmpCustomerMapper;
 import com.biz.framework.security.dto.AuthenticationDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +24,7 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper;
     private final MileageHisService mileageHisService;
+    private final EmpCustomerMapper empCustomerMapper;
 
     public List<CamelCaseMap> findCustomers(CustomerDto customerDto) {
 
@@ -46,7 +49,7 @@ public class CustomerService {
                 throw new ServiceException("동일한 사업번호와 직원의 데이터가 존재합니다.");
             }
         }
-        if (customerDto.isNew() || customerDto.getMileagePrev() != customerDto.getMileage()) {
+        if (customerDto.isNew() && customerDto.getMileage() > 0) {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(customerDto.getBizNo());
             mileageHisDto.setEmpId(customerDto.getEmpId());
@@ -57,6 +60,15 @@ public class CustomerService {
             result += mileageHisService.saveMileageHis(mileageHisDto);
         }
         result+= customerMapper.saveCustomer(customerDto);
+
+        // 직원별 고객관리 저장
+        if (customerDto.isNew()) {
+            EmpCustomerDto empCustomerDto = new EmpCustomerDto();
+            empCustomerDto.setBizNo(customerDto.getBizNo());
+            empCustomerDto.setEmpId(customerDto.getLoginUserId());
+            empCustomerMapper.saveEmpCustomerList(empCustomerDto);
+        }
+
         return result;
     }
 

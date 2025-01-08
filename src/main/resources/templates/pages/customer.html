@@ -140,13 +140,13 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">사용여부</label>
+                                                        <select class="form-select" id="useInd" name="useInd"></select>
                                                     </div>
-                                                    <input type="checkbox" id="useInd" class="form-check-input" name="useInd">
                                                 </div>
                                                 <!-- 주소 필드를 맨 아래로 이동 -->
-                                                <div class="col-md-12 ">
+                                                <div class="col-md-6 ">
                                                     <div class="form-group">
-                                                        <label for="custAddr">주소</label>
+                                                        <label class="form-label" for="custAddr">주소</label>
                                                         <input type="text" id="custAddr" class="form-control" name="custAddr" placeholder="주소">
                                                     </div>
                                                 </div>
@@ -175,7 +175,6 @@
         const apiUrl = '/api/pages/customer';
 
         let customerGrid;
-        let empIdChoiceObj;
         let $isNew = 'N';
 
         let isAdmin;
@@ -186,31 +185,37 @@
             const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
             isAdmin = adminRoles.some(value => roleIds.includes(value));
 
-            findAllUsers();
+            if (!isAdmin) {
+                $("#btnDeleteCustomerGrid").hide();
+            }
+
             initEvent();
-            initCustomerGrid();
+            findInitCodes();
 
             $("#custTel").on('input', formatPhoneNumber);
             $("#mileage").on('input', formatCurrency);
         });
 
-        const findAllUsers = () => {
-            $.ajax({
-                url: apiUrl + "/emps",
-                data: null,
-                contentType:'application/json',
-                type: 'GET',
-                success: (result) => {
-                    let empId = document.getElementById('empId');
-                    empIdChoiceObj = new Choices(empId, {
-                        sorter: () => 0 // 정렬을 하지 않도록 설정
-                    });
-                    empIdChoiceObj.setChoices([{value: '', label: '선택'}, ...result.map(item => ({ value: item.empId, label: item.empName }))], 'value', 'label', false);
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "SE06"}
+                ];
 
-                },error: (xhr, status, error) => {
-                    alert(xhr.responseText);
-                }
-            })
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
+
+        const findCodeCallback = (result) => {
+            const SE06Options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE06,
+                placeholder: '선택'
+            };
+            $("#useInd").addOptions(SE06Options);
+
+            initCustomerGrid();
         }
 
         const initEvent = () => {
@@ -393,7 +398,6 @@
                             $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
                         } else if ($(this).is('select')) {
                             $(this).val(focusedData[fieldId]);
-                            empIdChoiceObj.setChoiceByValue(focusedData[fieldId]); // Choices.js 인스턴스 사용
                         } else if (fieldId === 'mileage') {
                             $("#mileagePrev").val(focusedData[fieldId]);
                             const replaceNumber = formatToCurrency(focusedData[fieldId]);
@@ -408,7 +412,6 @@
                 $('#bizNo').attr('disabled', true);
             } else {
                 $('#bizNo').attr('disabled', false);
-                empIdChoiceObj.setChoiceByValue('');
             }
 
             $('#customerModal').modal('show');
