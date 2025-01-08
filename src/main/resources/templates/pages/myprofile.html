@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+
+
+<div layout:fragment="content">
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3></h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">개인정보관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">개인정보</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="page-content">
+            <section class="row">
+                <div class="col-12 col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Profile Section -->
+                            <h4 class="mb-3">개인정보</h4>
+                            <form>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="employee-id" class="form-label">ID</label>
+                                        <input type="text" class="form-control" id="employee-id" value="EMP12345" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="employee-name" class="form-label">이름</label>
+                                        <input type="text" class="form-control" id="employee-name" value="John Doe" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="employee-position" class="form-label">직급</label>
+                                        <input type="text" class="form-control" id="employee-position" value="Manager" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="hire-date" class="form-label">입사일자</label>
+                                        <input type="text" class="form-control" id="hire-date" value="2020-01-15" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <label for="phone-number" class="form-label">휴대전화</label>
+                                        <input type="text" class="form-control" id="phone-number" placeholder="Enter your phone number" value="123-456-7890">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" placeholder="Enter your email" value="john.doe@example.com">
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary " style="width: auto;">저장</button>
+                                </div>
+                            </form>
+
+                            <!-- Password Change Section -->
+                            <h4 class="mt-5 mb-3">비밀번호 변경</h4>
+                            <form>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="current-password" class="form-label">현재 비밀번호</label>
+                                        <input type="password" class="form-control" id="current-password" placeholder="현재 패스워드 입력해주세요." required>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="new-password" class="form-label">신규 비밀번호</label>
+                                        <input type="password" class="form-control" id="new-password" placeholder="신규 패스워드 입력해주세요." required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-12">
+                                        <label for="confirm-password" class="form-label">신규 비밀번호 확인</label>
+                                        <input type="password" class="form-control" id="confirm-password" placeholder="신규 패스워드 다시 입력해주세요." required>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary" style="width: auto;">변경</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
