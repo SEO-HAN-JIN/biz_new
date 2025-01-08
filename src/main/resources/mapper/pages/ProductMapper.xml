@@ -95,4 +95,11 @@
            AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
            AND #{effDateTo} >= EFF_DATE_FROM
     </update>
+
+    <select id="createProdId">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createProdId */
+        SELECT CONCAT('PD-', LPAD(IFNULL(MAX(SUBSTRING_INDEX(PROD_ID, '-', -1)), 0) + 1, 4, '0'))
+          FROM TB_PRODUCTS	TP
+         WHERE TP.CO_CODE 	= #{loginCoId}
+    </select>
 </mapper>

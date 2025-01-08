@@ -20,4 +20,6 @@ public interface ProductMapper {
     int checkDuplProduct(ProductDto productDto);
 
     void updateProductEffDate(ProductDto productDto);
+
+    String createProdId(ProductDto productDto);
 }

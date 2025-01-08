@@ -9,6 +9,7 @@ import com.biz.framework.mapper.pages.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class ProductService {
             case C -> {
                 if (productMapper.checkDuplProduct(productDto) > 0) {
                     productMapper.updateProductEffDate(productDto);
+                }
+                if (StringUtils.isEmpty(productDto.getProdId())) {
+                    productDto.setProdId(productMapper.createProdId(productDto));
                 }
                 result += productMapper.saveProducts(productDto);
             }

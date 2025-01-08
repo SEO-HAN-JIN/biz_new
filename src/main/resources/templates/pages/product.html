@@ -90,7 +90,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품코드</label>
-                                                        <input type="text" id="_productPop_prodId" class="form-control" name="prodId">
+                                                        <input type="text" id="_productPop_prodId" class="form-control" name="prodId" placeholder="상품코드 자동 생성">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -108,8 +108,9 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">사용여부</label>
+                                                        <select class="form-select" id="_productPop_useInd" name="useInd">
+                                                        </select>
                                                     </div>
-                                                    <input type="checkbox" id="_productPop_useInd" class="form-check-input" name="useInd">
                                                 </div>
                                                 <!-- Row 2 -->
                                                 <div class="col-md-3">
@@ -162,7 +163,7 @@
 
             $("#baseDate").val(`${year}-${month}-${day}`);
             initEvent();
-            initProductGrid();
+            findInitCodes();
         });
 
         const initEvent = () => {
@@ -184,22 +185,30 @@
                 var obj = $(this);
                 obj.val(formatNumber(obj.val()));
             });
+
+            $("#_productPop_prodAmt").on('input', formatCurrency);
         }
 
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "SE06"}
+                ];
 
-        function selectKeepInd(obj) {
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
 
-            var keepInd = obj.value;
+        const findCodeCallback = (result) => {
+            const SE06Options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE06,
+                placeholder: '선택'
+            };
+            $("#_productPop_useInd").addOptions(SE06Options);
 
-            var inputElement = modalElement.querySelector("#custKeepUseAmt");
-
-            if (keepInd === "Y") {
-                // Enable the element
-                $(inputElement).prop("disabled", false);
-            } else {
-                // Disable the element
-                $(inputElement).prop("disabled", true);
-            }
+            initProductGrid();
         }
 
         const initProductGrid = () => {
@@ -210,11 +219,7 @@
                 .add('prodName', '상품명', 200, {})
                 .addNumber('prodAmt', '상품가', 200, {
                     align: 'right',
-                    // textColor: 'red',
                     comma: true,
-                    // summary: {
-                    //     template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
-                    // }
                 })
                 .addDate('effDateFrom', '시작일', 250, { align: 'center' })
                 .addDate('effDateTo', '종료일', 250, { align: 'center'})
@@ -320,10 +325,18 @@
                 }
             });
 
-            console.log("## param ##", param);
+            if (isNull(param.prodName)) {
+                alert("상품명을 입력해주세요.");
+                return false;
+            }
 
             if (isNull(param.prodAmt)) {
                 alert("상품가를 입력해주세요.");
+                return false;
+            }
+
+            if (isNull(param.useInd)) {
+                alert("사용여부를 선택해주세요.");
                 return false;
             }
 
@@ -344,11 +357,6 @@
             if(new Date(dateTo) < new Date(dateFrom))
             {
                 alert("시작일이 종료일보다 더 빨라야합니다.");
-                return false;
-            }
-
-            if (isNull(param.useInd)) {
-                alert("사용여부를 선택해주세요.");
                 return false;
             }
 
@@ -485,6 +493,22 @@
                         }, container);
                     });
             }
+        }
+
+        function formatCurrency() {
+            // 현재 입력 값 가져오기
+            let value = $(this).val();
+
+            // 숫자 이외의 문자 제거
+            value = value.replace(/[^0-9]/g, '');
+
+            // 천 단위로 콤마 추가
+            if (value) {
+                value = Number(value).toLocaleString();  // 콤마 추가
+            }
+
+            // 포맷팅된 값을 입력 필드에 설정
+            $(this).val(value);
         }
 
     </script>
