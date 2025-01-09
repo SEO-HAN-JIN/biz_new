@@ -91,7 +91,7 @@
                                             <legend class="float-none w-auto px-2">정산요청 정보</legend>
                                             <div class="refundModal paymentDetail">
                                                 <div class="row g-3">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">정산번호</label>
                                                             <div class="d-flex align-items-center">
@@ -112,6 +112,12 @@
                                                         <div class="form-group">
                                                             <label class="form-label">고객</label>
                                                             <input type="text" id="_refundModal_custName" class="form-control" name="custName" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품</label>
+                                                            <input type="text" id="_refundModal_prodName" class="form-control" name="prodName" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -136,16 +142,16 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">유입수</label>
-                                                            <input type="text" id="_refundModal_inflowCnt" class="form-control is-num text-end" name="inflowCnt" disabled>
+                                                            <label class="form-label">적용 인센티브율</label>
+                                                            <input type="text" id="incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">상품</label>
-                                                            <input type="text" id="_refundModal_prodName" class="form-control" name="prodName" disabled>
+                                                            <label class="form-label">유입수</label>
+                                                            <input type="text" id="_refundModal_inflowCnt" class="form-control is-num text-end" name="inflowCnt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">

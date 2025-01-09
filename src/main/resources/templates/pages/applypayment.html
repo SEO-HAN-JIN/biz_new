@@ -197,6 +197,12 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
+                                                            <label class="form-label">적용 인센티브율</label>
+                                                            <input type="text" id="incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
                                                             <label class="form-label">요청구분</label>
                                                             <select id="gubun" name="gubun" class="form-select form-control-sm">
                                                             </select>
@@ -205,7 +211,6 @@
                                                     <input type="hidden" id="settlementSeq" name="settlementSeq">
                                                     <input type="hidden" id="expectAmt" name="expectAmt">
                                                     <input type="hidden" id="prodTotalAmt" name="prodTotalAmt">
-                                                    <input type="hidden" id="incentiveRate" name="incentiveRate">
                                                     <input type="hidden" id="existMileage" name="existMileage">
                                                 </div>
                                             </fieldset>
@@ -269,7 +274,7 @@
 
         let paymentGrid;
         let $isNew = 'N';
-        let _incentiveRate;
+        let _incentiveRate; // 직원 인센티브율
 
         let _userId;
         let _userNm;
@@ -422,14 +427,8 @@
                         $("#curExistMileage").val(setComma(result.mileage));
                         $("#existMileage").val(setComma(result.mileage));
 
-                        let incentiveRate = _incentiveRate;
-                        if (_incentiveRate === 0) {
-                            if (result.incentiveRate > 0) {
-                                incentiveRate = result.incentiveRate
-                            } else {
-                                incentiveRate = 0.3;
-                            }
-                        }
+                        // 고객에 대한 인센티브가 존재하면 고객 인센테브 우선 적용
+                        let incentiveRate = result.incentiveRate > 0? result.incentiveRate : _incentiveRate;
 
                         $("#incentiveRate").val(incentiveRate);
                         saleSum();
