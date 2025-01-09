@@ -76,6 +76,7 @@
                                             data-bs-toggle="modal" data-bs-target="#paymentModal">추가
                                     </button>
 
+                                    <button type="button" class="btn btn-secondary btn-m" id="btnCancel">요청취소</button>
                                     <button type="button" class="btn btn-secondary btn-m" id="btnDeletePaymentGrid">삭제
                                     </button>
                                 </div>
@@ -380,7 +381,7 @@
 
                         }
 
-                        saleSum();
+                        calcSaleAmt();
                     });
                 }
             });
@@ -410,6 +411,7 @@
             })
 
             $("#saleTotalAmt").on('change', calcSaleAmt);
+            $("#btnCancel").on('click', cancel);
         }
 
         const findExistMileage = (param) => {
@@ -650,19 +652,23 @@
                 $('#paymentModal').bindForm(data);
 
                 // 승인요청인 경우 수정 가능
-                if (data.applyStatus === '01') {
+                if (data.applyStatus === 'C') {
+                    findExistMileage(data.custId);
+
                     ableBtn(false);
                     const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
                     if (isChecked) {
                         $("#useMileage").attr('disabled', false);
                     }
+                    document.getElementById("custId").choicesInstance.disable();
+                    document.getElementById("prodId").choicesInstance.disable();
                 } else {
                     ableBtn(true);
                 }
 
                 // 수정기능 우선 없앰
-                ableBtn(true);
-                $("#useMileage").attr('disabled', true);
+                // ableBtn(true);
+                // $("#useMileage").attr('disabled', true);
 
             }
 
@@ -892,6 +898,49 @@
 
         const modalAcceptBtn = () => {
             searchPaymentGrid();
+        }
+
+        const cancel = () => {
+            const checkedRows = paymentGrid.getCheckedRows();
+            if (checkedRows.length <= 0) {
+                alert("요청취소할 행을 선택해주세요.");
+                return;
+            }
+
+            // 승인요청건이 아닌 항목을 확인
+            const invalidRows = checkedRows.filter(el => el.applyStatus !== '01');
+            if (invalidRows.length > 0) {
+                alert("승인요청건만 요청취소가 가능합니다.");
+                return;
+            }
+
+            const confirmResult = confirm("선택한 행의 데이터를 요청취소 하시겠습니까? \n사용한 마일리지는 초기화 됩니다.");
+            if (confirmResult) {
+
+                // settlementDtoList 형식에 맞게 객체로 변환
+                var requestData = {
+                    settlementDtoList: checkedRows // 배열 그대로 전달
+                };
+
+                $.ajax({
+                    url: apiUrl + "/cancel",
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("요청취소가 완료되었습니다.");
+                            searchPaymentGrid();
+                        } else {
+                            alert("요청취소가 실패하였습니다.");
+                            searchPaymentGrid();
+                        }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+
+                    }
+                })
+            }
         }
 
     </script>

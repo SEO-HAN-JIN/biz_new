@@ -55,4 +55,9 @@ public class ApplypaymentRestController {
     public CamelCaseMap searchProducts(ProductDto productDto) {
         return productService.findProductsInfo(productDto);
     }
+
+    @PostMapping("/cancel")
+    public int cancelSettlement(@RequestBody SettlementDto settlementDto) {
+        return applypaymentService.cancelSettlement(settlementDto);
+    }
 }

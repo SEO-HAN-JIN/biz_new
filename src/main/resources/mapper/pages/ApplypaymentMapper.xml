@@ -182,17 +182,27 @@
              , SALE_AMT         = #{saleAmt}
              , INFLOW_CNT       = #{inflowCnt}
              , SALE_TOTAL_AMT   = #{saleTotalAmt}
+             , PROD_TOTAL_AMT   = #{prodTotalAmt}
              , EXPECT_AMT       = #{expectAmt}
              , EXPECT_RATE_AMT  = #{expectRateAmt}
              , DATE_WORK_FROM   = #{dateWorkFrom}
              , DATE_WORK_TO     = #{dateWorkTo}
              , WORK_DAY         = #{workDay}
              , INCENTIVE_RATE   = #{incentiveRate}
-             , GUBUN            = #{gubun}
              , MILEAGE_USE_IND  = #{mileageUseInd}
              , USE_MILEAGE      = #{useMileage}
              , EXIST_MILEAGE    = #{existMileage}
-             , REFUND_GUBUN     = #{refundGubun}
+             , REFUND_IND       = #{refundInd}
+             , REFUND_DATE      = #{refundDate}
+             , REFUND_WORK_DAY  = #{refundWorkDay}
+             , REFUND_INFLOW_CNT        = #{refundInflowCnt}
+             , REFUND_SALE_TOTAL_AMT    = #{refundSaleTotalAmt}
+             , REFUND_PROD_TOTAL_AMT    = #{refundProdTotalAmt}
+             , REFUND_SETTLEMENT_SEQ    = #{refundSettlementSeq}
+             , REFUND_EXPECT_RATE_AMT   = #{refundExpectRateAmt}
+             , GUBUN            = #{gubun}
+             , APPLY_STATUS     = #{applyStatus}
+             , REQ_GUBUN        = #{reqGubun}
         WHERE CO_CODE           = #{loginCoId}
           AND SETTLEMENT_SEQ    = #{settlementSeq}
           AND PROD_ID           = #{prodId}
@@ -200,4 +210,14 @@
           AND CUST_ID           = #{custId}
     </update>
 
+    <update id="cancelSettlement">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.cancelSettlement */
+        UPDATE SETTLEMENT
+           SET APPLY_STATUS     = 'C'
+         WHERE CO_cODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PROD_ID          = #{prodId}
+           AND USER_ID          = #{userId}
+           AND CUST_ID          = #{custId}
+    </update>
 </mapper>

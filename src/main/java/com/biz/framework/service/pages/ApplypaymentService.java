@@ -48,14 +48,14 @@ public class ApplypaymentService {
 
                 // 킵사용시 마일리지 유효성 검사 및 저장
                 if ("Y".equals(settlementDto.getMileageUseInd())) {
-                    saveMileageAq(settlementDto, "C");
+                    saveMileageAq(settlementDto);
                 }
             }
             case U -> {
                 result += applypaymentMapper.updateApplypayment(settlementDto);
 
                 if ("Y".equals(settlementDto.getMileageUseInd())) {
-                    saveMileageAq(settlementDto, "U");
+                    saveMileageAq(settlementDto);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class ApplypaymentService {
         return applypaymentMapper.findIncentiveRate(settlementDto);
     }
 
-    private void saveMileageAq(SettlementDto settlementDto, String rowStatus) {
+    private void saveMileageAq(SettlementDto settlementDto) {
 
         // 고객정보 가져오기
         CustomerDto customerDto = new CustomerDto();
@@ -143,4 +143,46 @@ public class ApplypaymentService {
         mileageHisMapper.addMileageHistory(mileageHisDto);
     }
 
+    public int cancelSettlement(SettlementDto settlementDto) {
+        int result = 0;
+
+        if(!CollectionUtils.isEmpty(settlementDto.getSettlementDtoList()))
+        {
+            for(SettlementDto dto : settlementDto.getSettlementDtoList())
+            {
+                if (!"01".equals(applypaymentMapper.checkApplyStatus(dto))) {
+                    throw new ServiceException("승인요청건만 삭제 가능합니다.");
+                }
+
+                result += applypaymentMapper.cancelSettlement(dto);
+
+                if ("Y".equals(dto.getMileageUseInd())) {
+                    // 고객정보 가져오기
+                    CustomerDto customerDto = new CustomerDto();
+                    customerDto.setBizNo(dto.getCustId());
+                    CamelCaseMap customerInfo = customerMapper.findCustomerInfo(customerDto);
+
+                    String bizNo = (String) customerInfo.get("bizNo");
+                    int useMileage = Integer.parseInt(dto.getUseMileage());
+
+                    customerMapper.updateFinalMileage(dto.getLoginCoId(), bizNo, useMileage);
+
+                    if (useMileage > 0) {
+                        MileageHisDto mileageHisDto = new MileageHisDto();
+                        mileageHisDto.setBizNo(bizNo);
+                        mileageHisDto.setEmpId(dto.getUserId());
+                        mileageHisDto.setSettlementSeq(dto.getSettlementSeq());
+                        mileageHisDto.setMileageAmt(useMileage);
+                        mileageHisDto.setCreatedPage("CQ"); // 취소요청: CQ
+                        mileageHisDto.setCreatedId(dto.getLoginUserId());
+
+                        mileageHisMapper.addMileageHistory(mileageHisDto);
+                    }
+                }
+            }
+        }
+
+
+        return result;
+    }
 }

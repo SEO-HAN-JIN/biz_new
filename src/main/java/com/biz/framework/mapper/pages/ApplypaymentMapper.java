@@ -25,4 +25,6 @@ public interface ApplypaymentMapper {
     int updateApplypayment(SettlementDto settlementDto);
 
     String createSettlementSeq(SettlementDto settlementDto);
+
+    int cancelSettlement(SettlementDto dto);
 }
