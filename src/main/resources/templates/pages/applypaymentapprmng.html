@@ -329,28 +329,42 @@
                                                     <input type="hidden" id="incentiveRate">
                                                     <input type="hidden" id="saveMileage">
                                                     <input type="hidden" id="refundInd">
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">상품총액</label>
                                                             <input type="text" id="deposit_prodTotalAmt"  class="form-control is-num text-end" name="deposit_prodTotalAmt" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">판매총액</label>
-                                                            <input type="text" id="deposit_saleTotalAmt"  class="form-control is-num text-end" name="deposit_saleTotalAmt" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">영업이익</label>
                                                             <input type="text" id="deposit_costAmt"  class="form-control is-num text-end" name="deposit_costAmt" disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자정산금액</label>
                                                             <input type="text" id="deposit_expectRateAmt" class="form-control is-num text-end" name="deposit_expectRateAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row g-3">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">판매총액</label>
+                                                            <input type="text" id="deposit_saleTotalAmt"  class="form-control is-num text-end" name="deposit_saleTotalAmt" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">마일리지 사용금액</label>
+                                                            <input type="text" id="deposit_useMileage"  class="form-control is-num text-end" name="deposit_useMileage" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="form-label">입금예정금액</label>
+                                                            <input type="text" id="deposit_expectedAmt"  class="form-control is-num text-end" name="deposit_expectedAmt" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -589,14 +603,14 @@
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('settlementSeq', '정산번호', 150, {})
+                .add('settlementSeq', '정산번호', 140, {})
                 .add('reqGubunName', '요청구분', 80, {})
                 .add('empName', '담당자', 120, {sortable: true})
                 .add('custName', '고객명', 120, {sortable: true})
                 .add('prodName', '상품명', 120, { align: 'center', sortable: true })
                 .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
-                .addNumber('inflowCnt', '유입수', 100, {visible: false})
+                .addNumber('inflowCnt', '유입수', 80, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 120, {})
                 .addDate('dateWorkTo', '작업종료일', 120, {})
                 .addDate('workDay', '작업일수', 80, {visible: false})
@@ -843,14 +857,21 @@
             var incentiveRate = isNull(rsData.incentiveRate) ? 0.3 : rsData.incentiveRate;  //적용인센률
             var prodTotalAmt = isNull(rsData.prodTotalAmt) ? 0 : rsData.prodTotalAmt;       //상품총액
             var saleTotalAmt = isNull(rsData.saleTotalAmt) ? 0 : rsData.saleTotalAmt;       //판매총액
+            var useMileage = isNull(rsData.useMileage) ? 0 : rsData.useMileage;             //사용마일리지
             var expectRateAmt = isNull(rsData.expectRateAmt) ? 0 : rsData.expectRateAmt     //담당자수수료(예정)
+
 
             $("#refundInd").val(rsData.refundInd);
             $("#settlementSeq").val(settlementSeq);
             $("#incentiveRate").val(incentiveRate);
             $("#deposit_prodTotalAmt").val(formatNumber(prodTotalAmt));
             $("#deposit_saleTotalAmt").val(formatNumber(saleTotalAmt));
+            $("#deposit_useMileage").val(formatNumber(useMileage));
             $("#deposit_expectRateAmt").val(formatNumber(expectRateAmt));
+
+            var expectedAmt = (saleTotalAmt - useMileage) <= 0 ? 0 : formatNumber(saleTotalAmt - useMileage);
+
+            $("#deposit_expectedAmt").val(expectedAmt);
 
             //환불
             if(rsData.refundInd == "Y")
@@ -922,25 +943,28 @@
             // 상품가기준 판매총액 (상품가 * 유입수 * 작업일) - 부가세 포함
             var prodTotalAmt = removeComma($("#deposit_prodTotalAmt").val());
 
-            // 판매총액금액
-            var saleTotalAmt = removeComma($("#deposit_saleTotalAmt").val());
+            // 사용마일리지금액
+            var useMileage = removeComma($("#deposit_useMileage").val());
+
+            // 입금예정금액
+            var expectedAmt = removeComma($("#deposit_expectedAmt").val());
 
             // 실제입금금액
             var confirmAmt = removeComma($("#deposit_confirmAmt").val());
 
             // 영업이익
-            var costAmt = (confirmAmt) - (prodTotalAmt);
+            var costAmt = (parseInt(confirmAmt) + parseInt(useMileage)) - (prodTotalAmt);
 
             // 실제입금금액이 판매총액보다 크면 차익분은 고객 마일리지로 적립
-            if(parseInt(saleTotalAmt) < parseInt(confirmAmt)) {
-                const confirmMileage = confirmAmt - saleTotalAmt;
+            if(parseInt(expectedAmt) < parseInt(confirmAmt)) {
+                const confirmMileage = confirmAmt - expectedAmt;
 
                 //$("#saveMileage").val(confirmMileage);
 
-                $("#deposit_confirmMaxAmt").val(setComma(saleTotalAmt));
+                $("#deposit_confirmMaxAmt").val(setComma(expectedAmt));
                 $("#deposit_confirmMileage").val(setComma(confirmMileage));
 
-                costAmt = saleTotalAmt - prodTotalAmt;
+                costAmt = expectedAmt - prodTotalAmt;
             }
             else
             {
