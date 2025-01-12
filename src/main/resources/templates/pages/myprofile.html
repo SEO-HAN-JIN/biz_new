@@ -26,35 +26,35 @@
                         <div class="card-body">
                             <!-- Profile Section -->
                             <h4 class="mb-3">개인정보</h4>
-                            <form>
+                            <form id="myDetail">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="employee-id" class="form-label">ID</label>
-                                        <input type="text" class="form-control" id="employee-id" value="EMP12345" readonly>
+                                        <label for="empId" class="form-label">ID</label>
+                                        <input type="text" class="form-control" id="empId" name="empId" value="" disabled="disabled">
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="employee-name" class="form-label">이름</label>
-                                        <input type="text" class="form-control" id="employee-name" value="John Doe" readonly>
+                                        <label for="empName" class="form-label">이름</label>
+                                        <input type="text" class="form-control" id="empName" name="empName" value="" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="employee-position" class="form-label">직급</label>
-                                        <input type="text" class="form-control" id="employee-position" value="Manager" readonly>
+                                        <label for="gradeName" class="form-label">직급</label>
+                                        <input type="text" class="form-control" id="gradeName" name="gradeName" value="" disabled="disabled">
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="hire-date" class="form-label">입사일자</label>
-                                        <input type="text" class="form-control" id="hire-date" value="2020-01-15" readonly>
+                                        <label for="entranceDate" class="form-label">입사일자</label>
+                                        <input type="text" class="form-control" id="entranceDate" name="entranceDate" value="" disabled="disabled">
                                     </div>
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <label for="phone-number" class="form-label">휴대전화</label>
-                                        <input type="text" class="form-control" id="phone-number" placeholder="Enter your phone number" value="123-456-7890">
+                                        <label for="empTel" class="form-label">휴대전화</label>
+                                        <input type="text" class="form-control" id="empTel" name="empTel" placeholder="Enter your phone number" value="">
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input type="email" class="form-control" id="email" placeholder="Enter your email" value="john.doe@example.com">
+                                        <label for="empMail" class="form-label">empMail</label>
+                                        <input type="email" class="form-control" id="empMail" name="empMail" placeholder="Enter your email" value="">
                                     </div>
                                 </div>
                                 <div class="text-end">
@@ -92,5 +92,34 @@
                 </div>
             </section>
         </div>
+        <script type="text/javascript">
+
+            var apiUrl = "/api/pages/myprofile"
+
+            $(document).ready(function() {
+
+                searchProfile();
+
+            });
+
+            function searchProfile()
+            {
+                $.ajax({
+                    url: apiUrl,
+                    data: null,
+                    type: 'GET',
+                    success: (result) => {
+                        $("#myDetail").bindForm(result);
+                        // $("#empId").val(result.empId);
+                        // $("#empName").val(result.empName);
+                        // $("#gradeName").val(result.gradeName);
+                        // $("#entranceDate").val(result.entranceDate);
+                        // $("#empTel").val(result.empTel);
+                        // $("#empMail").val(result.empMail);
+                    }
+                });
+            }
+
+        </script>
     </div>
 </div>
