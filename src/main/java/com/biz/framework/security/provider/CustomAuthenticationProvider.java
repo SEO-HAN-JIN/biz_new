@@ -1,8 +1,10 @@
 package com.biz.framework.security.provider;
 
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.pages.EmpDto;
 import com.biz.framework.dto.system.RoleDto;
 import com.biz.framework.dto.system.UserDto;
+import com.biz.framework.mapper.pages.EmpMapper;
 import com.biz.framework.mapper.system.RoleMapper;
 import com.biz.framework.mapper.system.UserMapper;
 import com.biz.framework.security.common.FormWebAuthenticationDetails;
@@ -33,6 +35,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
+    private final EmpMapper empMapper;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -49,18 +52,23 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         // === loadByUserName Start ====
         // loadByUsername 에 coCode를 못넘겨서 loadByUsername 내용을 여기에다 구현
-        UserDto userDto = new UserDto();
-        userDto.setCoCode(coCode);
-        userDto.setUserId(userId);
-        UserDto user = userMapper.findByUserId(userDto);
+//        UserDto userDto = new UserDto();
+//        userDto.setCoCode(coCode);
+//        userDto.setUserId(userId);
+//        UserDto user = userMapper.findByUserId(userDto);
 
-        if (user == null) {
+        EmpDto empDto = new EmpDto();
+        empDto.setCoCode(coCode);
+        empDto.setEmpId(userId);
+        EmpDto emp = empMapper.findByEmpId(empDto);
+
+        if (emp == null) {
             throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 
         RoleDto roleDto = new RoleDto();
-        roleDto.setCoCode(user.getCoCode());
-        roleDto.setUserId(user.getUserId());
+        roleDto.setCoCode(emp.getCoCode());
+        roleDto.setUserId(emp.getEmpId());
         List<CamelCaseMap> roleList = roleMapper.findRoleUser(roleDto);
         List<GrantedAuthority> roles = new ArrayList<>();
         for (CamelCaseMap camelCaseMap : roleList) {
@@ -69,10 +77,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         }
 
         AuthenticationDto auth = AuthenticationDto.builder()
-                .coCode(user.getCoCode())
-                .userId(user.getUserId())
-                .userPw(user.getUserPw())
-                .userNm(user.getUserNm())
+                .coCode(emp.getCoCode())
+                .userId(emp.getEmpId())
+                .userPw(emp.getPassword())
+                .userNm(emp.getEmpName())
                 .authorities(roles)
                 .build();
 

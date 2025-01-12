@@ -142,8 +142,8 @@
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
-                                                        <label for="userPw">비밀번호</label>
-                                                        <input type="text" id="userPw" class="form-control" name="userPw" placeholder="비밀번호">
+                                                        <label for="password">비밀번호</label>
+                                                        <input type="text" id="password" class="form-control" name="password" placeholder="비밀번호">
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,7 +230,7 @@
                 .add('gradeCode', '직급코드', 'auto', {
                     hidden: true
                 })
-                .add('userPw', '비밀번호', 150, {visible: false})
+                .add('password', '비밀번호', 150, {visible: false})
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             empGrid = columns.init('empGrid', [])
@@ -309,12 +309,12 @@
                 return false;
             }
 
-            if (isNull(param.userPw) || isNull(param.userPw.trim())) {
+            if (isNull(param.password) || isNull(param.password.trim())) {
                 alert("비밀번호는 필수 값 입니다.");
                 return false;
             }
 
-            param.userPw = param.userPw.trim();
+            param.password = param.password.trim();
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 $.ajax({

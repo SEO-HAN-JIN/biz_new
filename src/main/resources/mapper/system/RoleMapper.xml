@@ -75,11 +75,11 @@
         /* com.biz.framework.mapper.system.RoleMapper.findRoleUser */
         SELECT R.ROLE_ID
              , R.USER_ID
-             , U.USER_NM
+             , E.EMP_NAME
           FROM ROLE_USER    R
-          JOIN USER         U
-            ON U.CO_CODE    = R.CO_CODE
-           AND U.USER_ID    = R.USER_ID
+          JOIN TB_EMP       E
+            ON E.CO_CODE    = R.CO_CODE
+           AND E.EMP_ID     = R.USER_ID
          WHERE 1=1
            AND R.CO_CODE    = #{coCode}
         <if test='roleId != null  and userId != "" '>

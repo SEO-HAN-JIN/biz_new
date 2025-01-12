@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class EmpDto extends BaseDto {
 
+    private String coCode;
     private String empId;
     private String empName;
     private String entranceDate;
@@ -17,7 +18,7 @@ public class EmpDto extends BaseDto {
     private String empTel;
     private String empMail;
     private float incentiveRate;
-    private String userPw;
+    private String password;
 
     @JsonProperty("isNew")
     private boolean isNew;

@@ -4,6 +4,18 @@
 
 <mapper namespace="com.biz.framework.mapper.pages.EmpMapper">
 
+    <select id="findByEmpId">
+        /* com.biz.framework.mapper.pages.EmpMapper.findByEmpId */
+        SELECT CO_CODE
+             , EMP_ID
+             , PASSWORD
+             , EMP_NAME
+          FROM TB_EMP
+         WHERE 1=1
+           AND CO_CODE  = #{coCode}
+           AND EMP_ID   = #{empId}
+    </select>
+
     <select id="findAllEmps">
         /* com.biz.framework.mapper.pages.EmpMapper.findAllEmps */
         SELECT EMP_ID
@@ -16,12 +28,8 @@
     <select id="findEmps" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.EmpMapper.findEmps */
         SELECT T.*
-             , U.USER_PW
              , C.CODE_NAME      AS GRADE_NAME
           FROM TB_EMP           T
-          JOIN USER             U
-            ON U.CO_CODE        = T.CO_CODE
-           AND T.EMP_ID         = U.USER_ID
           LEFT JOIN CDBASE      C
             ON C.CO_CODE        = T.CO_CODE
            AND C.PATTERN_CODE   = 'CD01'
@@ -43,6 +51,7 @@
         (
             CO_CODE
             , EMP_ID
+            , PASSWORD
             , EMP_NAME
             , ENTRANCE_DATE
             , RETIRE_DATE
@@ -54,6 +63,7 @@
         (
             #{loginCoId}
             , #{empId}
+            , #{password}
             , #{empName}
             , STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
             , #{retireDate}
@@ -62,7 +72,8 @@
             , #{empMail}
             , #{incentiveRate}
         ) ON DUPLICATE KEY UPDATE
-            EMP_NAME            = #{empName}
+            PASSWORD            = #{password}
+            , EMP_NAME          = #{empName}
             , ENTRANCE_DATE     = STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
             , RETIRE_DATE       = STR_TO_DATE(#{retireDate}, '%Y-%m-%d')
             , GRADE_CODE        = #{gradeCode}

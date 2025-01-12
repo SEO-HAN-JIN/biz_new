@@ -40,12 +40,12 @@ public class EmpService {
 
         result += empMapper.saveEmp(empDto);
 
-        UserDto userDto = new UserDto();
-        userDto.setUserId(empDto.getEmpId());
-        userDto.setUserNm(empDto.getEmpName());
-        userDto.setUserPw(empDto.getUserPw());
-
-        result += userMapper.saveUser(userDto);
+//        UserDto userDto = new UserDto();
+//        userDto.setUserId(empDto.getEmpId());
+//        userDto.setUserNm(empDto.getEmpName());
+//        userDto.setUserPw(empDto.getUserPw());
+//
+//        result += userMapper.saveUser(userDto);
 
         return result;
     }
