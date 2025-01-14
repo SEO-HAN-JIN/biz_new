@@ -38,6 +38,7 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
             // 프로토콜 (http 또는 https), 서버 이름, 포트 정보를 동적으로 구성하여 제거
             String serverInfo = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
             requestURI = referer.replaceFirst(serverInfo, ""); // 서버 정보 제거
+            return new AuthorizationDecision(true);
         }
 
         ProgramDto programDto = new ProgramDto();
