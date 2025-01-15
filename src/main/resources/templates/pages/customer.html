@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
 
 
-<div layout:fragment="content">
+<th:block th:fragment="content">
 
     <div class="page-heading">
         <div class="page-title">
@@ -171,7 +171,7 @@
         </section>
     </div>
     <script th:inline="javascript">
-
+        (function() {
         const apiUrl = '/api/pages/customer';
 
         let customerGrid;
@@ -490,7 +490,6 @@
             // 포맷팅된 값을 입력 필드에 설정
             $(this).val(value);
         }
+        })();
     </script>
-</div>
-
-</html>
+</th:block>

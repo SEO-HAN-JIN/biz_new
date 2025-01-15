@@ -146,7 +146,7 @@
                                 } else {
                                     html += '<li class="submenu-item">';
                                 }
-                                html += `<a href="${item3.url}" class="submenu-link"><svg width="4" height="4" viewBox="0 0 8 8" style="margin-right: 6px;"><circle cx="4" cy="4" r="4" fill="#435EBE" /></svg> ${item3.name}</a>`;
+                                html += `<a id="pageBtn" data-url="${item3.url}"  class="submenu-link"><svg width="4" height="4" viewBox="0 0 8 8" style="margin-right: 6px;"><circle cx="4" cy="4" r="4" fill="#435EBE" /></svg> ${item3.name}</a>`;
                                 html += '</li>';
                             }
                             html += '</ul>';
@@ -186,6 +186,21 @@
             };
         }
 
+        $(document).on('click', '#pageBtn', function(e) {
+            e.preventDefault();
+            document.getElementById("spinnerOverlay").style.display = "flex";
+
+            $("#content").empty(); // 기존 콘텐츠 제거
+
+            const url = $(this).data('url'); // data-url 속성에서 URL 가져오기
+
+            $("#content").load(url, function(response, status, xhr){
+                if(status == "error"){
+                    alert("콘텐츠 로딩에 실패했습니다.");
+                }
+                document.getElementById("spinnerOverlay").style.display = "none";
+            });
+        })
     </script>
 
     <!-- 사이드바 하위메뉴 선택 시 이벤트 발생-->

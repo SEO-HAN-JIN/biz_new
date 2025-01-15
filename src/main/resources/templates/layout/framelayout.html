@@ -14,7 +14,7 @@
         <th:block th:replace="~{layout/sidelayout :: sideFragment}"></th:block>
         <div id="main">
             <th:block th:replace="~{layout/headerlayout :: headerFragment}"></th:block>
-            <div layout:fragment="content"></div>
+            <div layout:fragment="content" id="content"></div>
             <th:block th:replace="~{layout/footerlayout :: footerFragment}"></th:block>
         </div>
     </div>

@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
 
 
-<div layout:fragment="content">
+<th:block th:fragment="content">
 
     <div class="page-heading">
         <div class="page-title">
@@ -326,7 +326,7 @@
         }
     </style>
     <script type="text/javascript">
-
+        (function() {
         const apiUrl = '/api/pages/refund';
 
         let refundGrid;
@@ -852,9 +852,9 @@
                 })
             }
         }
-
+        })();
     </script>
 
-</div>
+</th:block>
 
-</html>
+<!--</html>-->

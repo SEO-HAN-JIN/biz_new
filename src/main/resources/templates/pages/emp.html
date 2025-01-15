@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
 
 
-<div layout:fragment="content">
+<th:block th:fragment="content">
 
     <div class="page-heading">
         <div class="page-title">
@@ -26,24 +26,26 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body pt-3 pb-3" id="searchForm">
-<!--                            <div class="row align-items-center p-2" style="">-->
+                            <!--                            <div class="row align-items-center p-2" style="">-->
                             <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
-<!--                                        <label class="col-form-label col-lg-1 col-3">날짜</label>-->
-<!--                                        <div class="col-lg-3 col-9">-->
-<!--                                            <div class="d-flex">-->
-<!--                                                <input type="date" class="form-control form-control-sm me-2" id="startDate" value="2024-10-15">-->
-<!--                                                <input type="date" class="form-control form-control-sm" id="endDate" value="2024-10-15">-->
-<!--                                            </div>-->
-<!--                                        </div>-->
+                                        <!--                                        <label class="col-form-label col-lg-1 col-3">날짜</label>-->
+                                        <!--                                        <div class="col-lg-3 col-9">-->
+                                        <!--                                            <div class="d-flex">-->
+                                        <!--                                                <input type="date" class="form-control form-control-sm me-2" id="startDate" value="2024-10-15">-->
+                                        <!--                                                <input type="date" class="form-control form-control-sm" id="endDate" value="2024-10-15">-->
+                                        <!--                                            </div>-->
+                                        <!--                                        </div>-->
                                         <label class="col-form-label col-lg-1 col-3">직원ID</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="search_empId" class="form-control form-control-sm" name="empId" placeholder="직원ID">
+                                            <input type="text" id="search_empId" class="form-control form-control-sm"
+                                                   name="empId" placeholder="직원ID">
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">직원명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="search_empName" class="form-control form-control-sm" name="empName" placeholder="직원명">
+                                            <input type="text" id="search_empName" class="form-control form-control-sm"
+                                                   name="empName" placeholder="직원명">
                                         </div>
                                     </div>
                                 </div>
@@ -67,21 +69,27 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#empModal">추가</button>
+                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn"
+                                            data-bs-toggle="modal" data-bs-target="#empModal">추가
+                                    </button>
 
-                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeleteEmpGrid">삭제</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeleteEmpGrid">삭제
+                                    </button>
                                 </div>
                             </div>
                             <div id="empGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="empModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                        <div class="modal fade" id="empModal" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg"
+                                 role="document">
                                 <div class="modal-content">
                                     <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title text-white" id="exampleModalCenterTitle">직원 정보
                                         </h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal"
+                                                aria-label="Close">
                                             <i data-feather="x"></i>
                                         </button>
                                     </div>
@@ -91,13 +99,15 @@
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="empId">직원ID</label>
-                                                        <input type="text" id="empId" class="form-control" placeholder="직원ID" name="empId">
+                                                        <input type="text" id="empId" class="form-control"
+                                                               placeholder="직원ID" name="empId">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="empName">직원명</label>
-                                                        <input type="text" id="empName" class="form-control" placeholder="직원명" name="empName">
+                                                        <input type="text" id="empName" class="form-control"
+                                                               placeholder="직원명" name="empName">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
@@ -112,38 +122,45 @@
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="entranceDate">입사일자</label>
-                                                        <input type="date" id="entranceDate" class="form-control" placeholder="입사일자" name="entranceDate">
+                                                        <input type="date" id="entranceDate" class="form-control"
+                                                               placeholder="입사일자" name="entranceDate">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="retireDate">퇴사일자</label>
-                                                        <input type="date" id="retireDate" class="form-control" name="retireDate" placeholder="retireDate">
+                                                        <input type="date" id="retireDate" class="form-control"
+                                                               name="retireDate" placeholder="retireDate">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="empTel">전화번호</label>
-                                                        <input type="text" id="empTel" class="form-control" placeholder="전화번호" name="empTel">
+                                                        <input type="text" id="empTel" class="form-control"
+                                                               placeholder="전화번호" name="empTel">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="empMail">이메일</label>
-                                                        <input type="text" id="empMail" class="form-control" name="empMail" placeholder="이메일">
+                                                        <input type="text" id="empMail" class="form-control"
+                                                               name="empMail" placeholder="이메일">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="incentiveRate">인센티브율</label>
-                                                        <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
+                                                        <input type="number" id="incentiveRate" class="form-control"
+                                                               name="incentiveRate" placeholder="인센티브율" step="0.1"
+                                                               min="0" max="99.9">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3 ">
                                                     <div class="form-group">
                                                         <label for="password">비밀번호</label>
-                                                        <input type="text" id="password" class="form-control" name="password" placeholder="비밀번호">
+                                                        <input type="text" id="password" class="form-control"
+                                                               name="password" placeholder="비밀번호">
                                                     </div>
                                                 </div>
                                             </div>
@@ -167,324 +184,328 @@
         </section>
     </div>
     <script type="text/javascript">
+        (function() {
+            var apiUrl = '/api/pages/emp';
 
-        const apiUrl = '/api/pages/emp';
+            let empGrid;
+            let $isNew = 'N';
+            let previousValue = '';
 
-        let empGrid;
-        let $isNew = 'N';
-        let previousValue = '';
-
-        $(document).ready(function() {
-            findInitCodes();
-            initEvent();
-            initEmpGrid();
-        });
-
-        const findInitCodes = async () => {
-            const param =
-                [
-                    {"patternCode": "CD01"}
-                ];
-
-            const result = await CommonJs.initFindCodes(param);
-            findCodeCallback(result);
-        }
-
-        const findCodeCallback = (result) => {
-            const options = {
-                value: 'baseCode',
-                text: 'codeName',
-                items: result.CD01,
-                placeholder: '선택'
-            };
-            $("#gradeCode").addOptions(options);
-        }
-
-        const initEvent = () => {
-
-            $("#btnDeleteEmpGrid").on('click', fn_deleteEmpGrid);
-
-            $('#modalAddBtn').on('click', () => {openPgmModal('1')});
-            // $('#empModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
-            $('#empModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
-            $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
-            $("#modalSaveBtn").on('click', fn_saveEmpGrid);
-
-            $("#searchBtn").on('click', searchEmpGrid);
-
-            $("#empTel").on('input', formatPhoneNumber);
-            $("#incentiveRate").on('input', invalidIncentive);
-        }
-
-        const initEmpGrid = () => {
-
-            var columns = new CustomTuiGrid()
-                .add('empId', '직원ID', 150, {})
-                .add('empName', '직원명', 120, {})
-                .add('gradeName', '직급', 120, {})
-                .addDate('entranceDate', '입사일자', 150, { align: 'center' })
-                .add('empTel', '전화번호', 400, { align: 'center' })
-                .add('empMail', '이메일', 200, { align: 'center' })
-                .add('incentiveRate', '인센티브율', 100, { align: 'right' })
-                .add('retireDate', '퇴사일자', 150, { align: 'center' })
-                .add('gradeCode', '직급코드', 'auto', {
-                    hidden: true
-                })
-                .add('password', '비밀번호', 150, {visible: false})
-                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-
-            empGrid = columns.init('empGrid', [])
-                .render();
-
-            // 더블 클릭 이벤트 설정
-            empGrid.getGrid().on('dblclick', function(ev) {
-                openPgmModal('2');
+            $(document).ready(function () {
+                findInitCodes();
+                initEvent();
+                initEmpGrid();
             });
 
-            searchEmpGrid();
-        }
+            const findInitCodes = async () => {
+                const param =
+                    [
+                        {"patternCode": "CD01"}
+                    ];
 
-        const searchEmpGrid = () => {
-            empGrid.clear();
-
-            let $empId = $('#search_empId').val();
-            let $empName = $('#search_empName').val();
-
-            const param = {
-                empId : $empId,
-                empName : $empName,
-            };
-
-            $.ajax({
-                url: apiUrl,
-                data: param,
-                type: 'GET',
-                success: (result) => {
-                    empGrid.bind(result);
-                }
-            });
-        }
-
-        const fn_saveEmpGrid = () => {
-
-            const param = {};
-            $('#empModal').find('input, select, input[type="checkbox"]').each((index, item) => {
-                // checkbox일 때
-                if ($(item).is(':checkbox')) {
-                    param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
-                } else {
-                    let value = item.value;
-                    if (item.value === '') {
-                        value = null;
-                    }
-                    // input일 때의 처리
-                    param[item.id] = value; // input 값 설정
-                }
-            });
-
-            param.isNew = $isNew;
-
-            if (isNull(param.empId)) {
-                alert("직원ID는 필수 값 입니다.");
-                return false;
+                const result = await CommonJs.initFindCodes(param);
+                findCodeCallback(result);
             }
 
-            if (isNull(param.empName)) {
-                alert("직원명은 필수 값 입니다.");
-                return false;
+            const findCodeCallback = (result) => {
+                const options = {
+                    value: 'baseCode',
+                    text: 'codeName',
+                    items: result.CD01,
+                    placeholder: '선택'
+                };
+                $("#gradeCode").addOptions(options);
             }
 
-            if (isNull(param.entranceDate)) {
-                alert("입사일자는 필수 값 입니다.");
-                return false;
+            const initEvent = () => {
+
+                $("#btnDeleteEmpGrid").on('click', fn_deleteEmpGrid);
+
+                $('#modalAddBtn').on('click', () => {
+                    openPgmModal('1')
+                });
+                // $('#empModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+                $('#empModal').off('hide.bs.modal').on('hide.bs.modal', closeBeforeModal);  // 모달이 닫히기 전에 이벤트 발생
+                $('#exampleModalCenter').off('hidden.bs.modal').on('hidden.bs.modal', closeAfterModal); // 모달이 완전히 닫힌 후 이벤트 발생
+                $("#modalSaveBtn").on('click', fn_saveEmpGrid);
+
+                $("#searchBtn").on('click', searchEmpGrid);
+
+                $("#empTel").on('input', formatPhoneNumber);
+                $("#incentiveRate").on('input', invalidIncentive);
             }
 
-            if (!isNull(param.empMail) && !isValidEmail(param.empMail)) {
-                alert("유효하지 않은 이메일 형식입니다.");
-                return false;
+            const initEmpGrid = () => {
+
+                var columns = new CustomTuiGrid()
+                    .add('empId', '직원ID', 150, {})
+                    .add('empName', '직원명', 120, {})
+                    .add('gradeName', '직급', 120, {})
+                    .addDate('entranceDate', '입사일자', 150, {align: 'center'})
+                    .add('empTel', '전화번호', 400, {align: 'center'})
+                    .add('empMail', '이메일', 200, {align: 'center'})
+                    .add('incentiveRate', '인센티브율', 100, {align: 'right'})
+                    .add('retireDate', '퇴사일자', 150, {align: 'center'})
+                    .add('gradeCode', '직급코드', 'auto', {
+                        hidden: true
+                    })
+                    .add('password', '비밀번호', 150, {visible: false})
+                    .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+
+                empGrid = columns.init('empGrid', [])
+                    .render();
+
+                // 더블 클릭 이벤트 설정
+                empGrid.getGrid().on('dblclick', function (ev) {
+                    openPgmModal('2');
+                });
+
+                searchEmpGrid();
             }
 
-            if (!validEmpId(param.empId)) {
-                alert("직원ID는 영어+숫자 조합으로만 가능합니다.");
-                return false;
-            }
+            const searchEmpGrid = () => {
+                empGrid.clear();
 
-            if (isNull(param.password) || isNull(param.password.trim())) {
-                alert("비밀번호는 필수 값 입니다.");
-                return false;
-            }
+                let $empId = $('#search_empId').val();
+                let $empName = $('#search_empName').val();
 
-            param.password = param.password.trim();
+                const param = {
+                    empId: $empId,
+                    empName: $empName,
+                };
 
-            if (confirm("데이터를 저장하시겠습니까?")) {
                 $.ajax({
                     url: apiUrl,
-                    data: JSON.stringify(param),
-                    contentType:'application/json',
-                    type: 'POST',
+                    data: param,
+                    type: 'GET',
                     success: (result) => {
-                        if (result > 0) {
-                            alert("저장이 완료되었습니다.");
-                            $('#empModal').modal('hide');
-                            searchEmpGrid();
-                        } else {
-                            alert("저장에 실패하였습니다.");
-                            searchEmpGrid();
-                        }
-                    },error: (xhr, status, error) => {
-                        alert(xhr.responseText);
+                        empGrid.bind(result);
                     }
-                })
-            }
-        }
-
-        const fn_deleteEmpGrid = () => {
-            const focusedCell = empGrid.getGrid().getFocusedCell();
-            if (isNull(focusedCell)) {
-                alert("삭제할 행을 선택해주세요.");
-                return;
+                });
             }
 
-            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
-            if (confirmResult) {
-                const focusRow = empGrid.getGrid().getRow(focusedCell.rowKey);
-                let params = {
-                    empId : focusRow.empId
+            const fn_saveEmpGrid = () => {
+
+                const param = {};
+                $('#empModal').find('input, select, input[type="checkbox"]').each((index, item) => {
+                    // checkbox일 때
+                    if ($(item).is(':checkbox')) {
+                        param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
+                    } else {
+                        let value = item.value;
+                        if (item.value === '') {
+                            value = null;
+                        }
+                        // input일 때의 처리
+                        param[item.id] = value; // input 값 설정
+                    }
+                });
+
+                param.isNew = $isNew;
+
+                if (isNull(param.empId)) {
+                    alert("직원ID는 필수 값 입니다.");
+                    return false;
                 }
-                $.ajax({
-                    url: apiUrl,
-                    data: JSON.stringify(params),
-                    contentType:'application/json',
-                    type: 'DELETE',
-                    success: (result) => {
-                        if (result > 0) {
-                            alert("삭제가 완료되었습니다.");
-                            searchEmpGrid();
-                        } else {
-                            alert("삭제에 실패하였습니다.");
-                            searchEmpGrid();
+
+                if (isNull(param.empName)) {
+                    alert("직원명은 필수 값 입니다.");
+                    return false;
+                }
+
+                if (isNull(param.entranceDate)) {
+                    alert("입사일자는 필수 값 입니다.");
+                    return false;
+                }
+
+                if (!isNull(param.empMail) && !isValidEmail(param.empMail)) {
+                    alert("유효하지 않은 이메일 형식입니다.");
+                    return false;
+                }
+
+                if (!validEmpId(param.empId)) {
+                    alert("직원ID는 영어+숫자 조합으로만 가능합니다.");
+                    return false;
+                }
+
+                if (isNull(param.password) || isNull(param.password.trim())) {
+                    alert("비밀번호는 필수 값 입니다.");
+                    return false;
+                }
+
+                param.password = param.password.trim();
+
+                if (confirm("데이터를 저장하시겠습니까?")) {
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(param),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("저장이 완료되었습니다.");
+                                $('#empModal').modal('hide');
+                                searchEmpGrid();
+                            } else {
+                                alert("저장에 실패하였습니다.");
+                                searchEmpGrid();
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
                         }
-                    }
-                })
+                    })
+                }
             }
-        }
 
-        const openPgmModal = (param) => {
-            if (param === '1') {
-                $isNew = true;
-            } else {
-                $isNew = false;
-            }
-            clearForm('empModal');
-
-            // 추가 버튼 클릭 시
-            if (param === '2') {
+            const fn_deleteEmpGrid = () => {
                 const focusedCell = empGrid.getGrid().getFocusedCell();
-                const focusedData = empGrid.getGrid().getRow(focusedCell.rowKey);
-                console.log("# focusedData #", focusedData);
+                if (isNull(focusedCell)) {
+                    alert("삭제할 행을 선택해주세요.");
+                    return;
+                }
 
-                $('#empModal').find('input, select, textarea').each(function() {
+                const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+                if (confirmResult) {
+                    const focusRow = empGrid.getGrid().getRow(focusedCell.rowKey);
+                    let params = {
+                        empId: focusRow.empId
+                    }
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(params),
+                        contentType: 'application/json',
+                        type: 'DELETE',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("삭제가 완료되었습니다.");
+                                searchEmpGrid();
+                            } else {
+                                alert("삭제에 실패하였습니다.");
+                                searchEmpGrid();
+                            }
+                        }
+                    })
+                }
+            }
+
+            const openPgmModal = (param) => {
+                if (param === '1') {
+                    $isNew = true;
+                } else {
+                    $isNew = false;
+                }
+                clearForm('empModal');
+
+                // 추가 버튼 클릭 시
+                if (param === '2') {
+                    const focusedCell = empGrid.getGrid().getFocusedCell();
+                    const focusedData = empGrid.getGrid().getRow(focusedCell.rowKey);
+                    console.log("# focusedData #", focusedData);
+
+                    $('#empModal').find('input, select, textarea').each(function () {
+                        const fieldId = $(this).attr('id');
+                        if (fieldId && focusedData[fieldId] !== undefined) {
+                            if ($(this).is(':checkbox')) {
+                                // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
+                                $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
+                            } else {
+                                // 그 외 input, textarea는 값 바인딩
+                                $(this).val(focusedData[fieldId]);
+                            }
+                        }
+                    });
+
+                    $('#empId').attr('disabled', true);
+                } else {
+                    $('#empId').attr('disabled', false);
+                }
+
+                $('#empModal').modal('show');
+            }
+
+            const closeBeforeModal = () => {
+                $('#empModal').find('input, select, textarea').each(function () {
+                    if ($(this).is(':checkbox')) {
+                        // 체크박스는 false로 설정
+                        $(this).prop('checked', false);
+                    } else {
+                        // 그 외의 입력 필드는 빈 문자열로 설정
+                        $(this).val('');
+                    }
+                });
+            }
+
+            const closeAfterModal = () => {
+                console.log('모달이 닫혔습니다!');
+            }
+
+            const clearForm = (id) => {
+                $('#' + id).find('input, select, textarea').each(function () {
+                    if ($(this).is(':checkbox')) {
+                        // 체크박스는 false로 설정
+                        $(this).prop('checked', false);
+                    } else {
+                        // 그 외의 입력 필드는 빈 문자열로 설정
+                        $(this).val('');
+                    }
+                });
+            }
+
+            const bindForm = (id) => {
+                $('#' + id).find('input, select, textarea').each(function () {
                     const fieldId = $(this).attr('id');
                     if (fieldId && focusedData[fieldId] !== undefined) {
                         if ($(this).is(':checkbox')) {
                             // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                            $(this).prop('checked', focusedData[fieldId] === 'Y' || focusedData[fieldId] === true);
+                            $(this).prop('checked', focusedData[fieldId] === 'Y' || data[fieldId] === true);
+                        } else if ($(this).is('select')) {
+                            // select 박스는 해당 value와 일치하는 option을 선택
+                            $(this).val(focusedData[fieldId]).trigger('change'); // trigger('change')는 select 박스의 변화를 반영
                         } else {
                             // 그 외 input, textarea는 값 바인딩
                             $(this).val(focusedData[fieldId]);
                         }
                     }
                 });
-
-                $('#empId').attr('disabled', true);
-            } else {
-                $('#empId').attr('disabled', false);
             }
 
-            $('#empModal').modal('show');
-        }
+            const validEmpId = () => {
+                let empId = $("#empId").val();
+                let valid = /^[a-zA-Z0-9]*$/.test(empId);
 
-        const closeBeforeModal = () => {
-            $('#empModal').find('input, select, textarea').each(function() {
-                if ($(this).is(':checkbox')) {
-                    // 체크박스는 false로 설정
-                    $(this).prop('checked', false);
+                return valid;
+            }
+
+            function invalidIncentive() {
+                const value = $(this).val();
+
+                // 빈 값이거나 0.0 ~ 99.9 범위와 소수점 첫째 자리 유효성 검사
+                const isValid = value === "" || (/^\d{1,2}(\.\d)?$/.test(value) && parseFloat(value) <= 99.9);
+
+                if (isValid) {
+                    // 값이 유효하면 현재 값을 previousValue에 저장
+                    previousValue = value;
                 } else {
-                    // 그 외의 입력 필드는 빈 문자열로 설정
-                    $(this).val('');
+                    // 값이 유효하지 않으면 이전 값으로 되돌림
+                    alert("값은 0.0에서 99.9 사이여야 하며, 소수점 첫째 자리까지만 입력 가능합니다.");
+                    $(this).val(previousValue);  // 이전 값으로 되돌림
                 }
-            });
-        }
+            }
 
-        const closeAfterModal = () => {
-            console.log('모달이 닫혔습니다!');
-        }
+            function formatPhoneNumber() {
+                let value = $(this).val().replace(/[^0-9]/g, ''); // 숫자 이외의 문자는 제거
 
-        const clearForm = (id) => {
-            $('#' + id).find('input, select, textarea').each(function() {
-                if ($(this).is(':checkbox')) {
-                    // 체크박스는 false로 설정
-                    $(this).prop('checked', false);
+                if (value.length < 4) {
+                    $(this).val(value);
+                } else if (value.length < 8) {
+                    $(this).val(value.slice(0, 3) + '-' + value.slice(3));
                 } else {
-                    // 그 외의 입력 필드는 빈 문자열로 설정
-                    $(this).val('');
+                    $(this).val(value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11));
                 }
-            });
-        }
-
-        const bindForm = (id) => {
-            $('#' + id).find('input, select, textarea').each(function() {
-                const fieldId = $(this).attr('id');
-                if (fieldId && focusedData[fieldId] !== undefined) {
-                    if ($(this).is(':checkbox')) {
-                        // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                        $(this).prop('checked', focusedData[fieldId] === 'Y' || data[fieldId] === true);
-                    } else if ($(this).is('select')) {
-                        // select 박스는 해당 value와 일치하는 option을 선택
-                        $(this).val(focusedData[fieldId]).trigger('change'); // trigger('change')는 select 박스의 변화를 반영
-                    } else {
-                        // 그 외 input, textarea는 값 바인딩
-                        $(this).val(focusedData[fieldId]);
-                    }
-                }
-            });
-        }
-
-        const validEmpId = () => {
-            let empId = $("#empId").val();
-            let valid = /^[a-zA-Z0-9]*$/.test(empId);
-
-            return valid;
-        }
-
-        function invalidIncentive() {
-            const value = $(this).val();
-
-            // 빈 값이거나 0.0 ~ 99.9 범위와 소수점 첫째 자리 유효성 검사
-            const isValid = value === "" || (/^\d{1,2}(\.\d)?$/.test(value) && parseFloat(value) <= 99.9);
-
-            if (isValid) {
-                // 값이 유효하면 현재 값을 previousValue에 저장
-                previousValue = value;
-            } else {
-                // 값이 유효하지 않으면 이전 값으로 되돌림
-                alert("값은 0.0에서 99.9 사이여야 하며, 소수점 첫째 자리까지만 입력 가능합니다.");
-                $(this).val(previousValue);  // 이전 값으로 되돌림
             }
-        }
-
-        function formatPhoneNumber() {
-            let value = $(this).val().replace(/[^0-9]/g, ''); // 숫자 이외의 문자는 제거
-
-            if (value.length < 4) {
-                $(this).val(value);
-            } else if (value.length < 8) {
-                $(this).val(value.slice(0, 3) + '-' + value.slice(3));
-            } else {
-                $(this).val(value.slice(0, 3) + '-' + value.slice(3, 7) + '-' + value.slice(7, 11));
-            }
-        }
+        })();
     </script>
-</div>
+</th:block>
+<!--    </div>-->
 
-</html>
+<!--</html>-->
