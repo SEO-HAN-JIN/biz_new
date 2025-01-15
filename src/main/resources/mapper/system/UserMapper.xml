@@ -26,14 +26,14 @@
 
     <select id="findUsers" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.system.UserMapper.findUsers */
-        SELECT USER_ID
-             , USER_NM
-          FROM USER
+        SELECT EMP_ID
+             , EMP_NAME
+          FROM TB_EMP
          WHERE 1=1
            AND CO_CODE  = #{loginCoId}
         <if test='userNm != null  and userNm != "" '>
-            AND USER_ID LIKE CONCAT('%', #{userNm}, '%')
-                OR USER_NM LIKE CONCAT('%', #{userNm}, '%')
+            AND EMP_ID LIKE CONCAT('%', #{userNm}, '%')
+                OR EMP_NAME LIKE CONCAT('%', #{userNm}, '%')
         </if>
     </select>
 

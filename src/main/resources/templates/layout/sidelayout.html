@@ -193,7 +193,6 @@
             $("#content").empty(); // 기존 콘텐츠 제거
 
             const url = $(this).data('url'); // data-url 속성에서 URL 가져오기
-            console.log("## url ##", url);
 
             $("#content").load(url, function(response, status, xhr){
                 if(status == "error"){

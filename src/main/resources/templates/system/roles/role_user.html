@@ -1,8 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
 
 
-<div layout:fragment="content">
+<th:block th:fragment="content">
             
 <div class="page-heading">
     <div class="page-title">
@@ -140,7 +140,7 @@
 
 </div>
 <script type="text/javascript">
-
+    (function() {
     const apiUrl = '/api/system/roles';
 
     let roleGrid;
@@ -247,7 +247,7 @@
                 },
                 {
                     header: '사용자명',
-                    name: 'userNm',
+                    name: 'empName',
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
@@ -271,7 +271,7 @@
             columns: [
                 {
                     header: '사용자ID',
-                    name: 'userId',
+                    name: 'empId',
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
@@ -282,7 +282,7 @@
                 },
                 {
                     header: '사용자명',
-                    name: 'userNm',
+                    name: 'empName',
                     align: 'center',
                     whiteSpace: 'normal',
                     // editor: 'text',
@@ -309,8 +309,8 @@
         checkedRows.forEach((el) => {
             let obj = {};
             obj.roleId = roleFocusRowData.roleId;
-            obj.userId = el.userId;
-            obj.userNm = el.userNm;
+            obj.userId = el.empId;
+            obj.userNm = el.empName;
             rowDataList.push(obj);
         })
         userGrid.appendRows(rowDataList, {});
@@ -464,8 +464,8 @@
             })
         }
     }
-
+    })();
 </script>
-</div>
+</th:block>
 
-</html>
+<!--</html>-->
