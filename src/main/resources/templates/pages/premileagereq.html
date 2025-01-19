@@ -279,6 +279,8 @@
             $("#custId").on("change", function () {
                 findExistMileage(this.value);
             })
+
+            $('.is-num').bind('keyup', numberKeyupEvent);
         }
 
         const initPreMileageReqGrid = () => {

@@ -357,6 +357,8 @@
             initEvent();
             initRefundGrid();
             initPaymentModalGrid();
+
+            $('.is-num').bind('keyup', numberKeyupEvent);
         });
 
         const findInitCodes = async () => {
@@ -806,7 +808,7 @@
 
                 // 환불요청 모달 > 정산요청 정보 바인딩
                 $('.paymentDetail').bindForm(focusedRow);
-                $("input[name=refundInflowCnt]").val(focusedRow.inflowCnt);
+                $("input[name=refundInflowCnt]").val(formatNumber(focusedRow.inflowCnt));
             }
         }
 

@@ -497,6 +497,8 @@
 
             $("#modalDepositApprBtn").on('click', apprDeposit);
             $("#modalDepositRejectBtn").on('click', rejectDeposit);
+
+            $('.is-num').bind('keyup', numberKeyupEvent);
         }
 
         const apprDeposit = () => {

@@ -102,7 +102,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품가</label>
-                                                        <input type="number" id="_productPop_prodAmt" class="form-control" name="prodAmt">
+                                                        <input type="text" id="_productPop_prodAmt" class="form-control is-num" name="prodAmt">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -168,6 +168,8 @@
             });
 
             // $("#_productPop_prodAmt").on('input', formatCurrency);
+
+            $('.is-num').bind('keyup', numberKeyupEvent);
         }
 
         const findInitCodes = async () => {
