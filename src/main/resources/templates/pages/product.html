@@ -30,12 +30,6 @@
                             <div class="row align-items-center p-2 search-area custom-bg">
                                 <div class="col-md-11">
                                     <div class="form-group row mb-0 align-items-center text-center">
-                                        <label class="col-form-label col-lg-1 col-3">기준일자</label>
-                                        <div class="col-lg-3 col-9">
-                                            <div class="d-flex">
-                                                <input type="date" class="form-control form-control-sm me-2" id="baseDate">
-                                            </div>
-                                        </div>
                                         <label class="col-form-label col-lg-1 col-3">상품코드</label>
                                         <div class="col-lg-2 col-9">
                                             <input type="text" id="_search_prodId" class="form-control form-control-sm" name="prodId" placeholder="상품코드">
@@ -43,6 +37,12 @@
                                         <label class="col-form-label col-lg-1 col-3">상품명</label>
                                         <div class="col-lg-2 col-9">
                                             <input type="text" id="_search_prodName" class="form-control form-control-sm" name="prodName" placeholder="상품명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">사용여부</label>
+                                        <div class="col-lg-3 col-9">
+                                            <div class="d-flex">
+                                                <select class="form-select" id="_search_useInd" name="useInd"></select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -102,7 +102,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label class="form-label">상품가</label>
-                                                        <input type="text" id="_productPop_prodAmt" class="form-control" name="prodAmt">
+                                                        <input type="number" id="_productPop_prodAmt" class="form-control" name="prodAmt">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -110,19 +110,6 @@
                                                         <label class="form-label">사용여부</label>
                                                         <select class="form-select" id="_productPop_useInd" name="useInd">
                                                         </select>
-                                                    </div>
-                                                </div>
-                                                <!-- Row 2 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">시작일</label>
-                                                        <input type="date" id="_productPop_effDateFrom" class="form-control" name="effDateFrom">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">종료일</label>
-                                                        <input type="date" id="_productPop_effDateTo" class="form-control" name="effDateTo">
                                                     </div>
                                                 </div>
                                             </div>
@@ -156,12 +143,6 @@
         let $isNew;
 
         $(document).ready(function() {
-            let date = new Date();
-            let year = date.getFullYear();
-            let month = String(date.getMonth() + 1).padStart(2, '0');
-            let day = String(date.getDate()).padStart(2, '0');
-
-            $("#baseDate").val(`${year}-${month}-${day}`);
             initEvent();
             findInitCodes();
         });
@@ -186,13 +167,13 @@
                 obj.val(formatNumber(obj.val()));
             });
 
-            $("#_productPop_prodAmt").on('input', formatCurrency);
+            // $("#_productPop_prodAmt").on('input', formatCurrency);
         }
 
         const findInitCodes = async () => {
             const param =
                 [
-                    {"patternCode": "SE06"}
+                    {"patternCode": "SE06"}      // 사용여부
                 ];
 
             const result = await CommonJs.initFindCodes(param);
@@ -200,7 +181,16 @@
         }
 
         const findCodeCallback = (result) => {
-            const SE06Options = {
+            let SE06Options;
+            SE06Options=  {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE06,
+                placeholder: '전체'
+            };
+            $("#_search_useInd").addOptions(SE06Options);
+
+            SE06Options = {
                 value: 'baseCode',
                 text: 'codeName',
                 items: result.SE06,
@@ -215,15 +205,14 @@
 
 
             var columns = new CustomTuiGrid()
-                .add('prodId', '상품코드', 150, {})
-                .add('prodName', '상품명', 200, {})
-                .addNumber('prodAmt', '상품가', 200, {
+                .add('prodId', '상품코드', 100, {})
+                .add('prodName', '상품명', 150, {})
+                .addNumber('prodAmt', '상품가', 150, {
                     align: 'right',
                     comma: true,
                 })
-                .addDate('effDateFrom', '시작일', 250, { align: 'center' })
-                .addDate('effDateTo', '종료일', 250, { align: 'center'})
-                .add('useInd', '사용여부', 'auto', { align: 'center' })
+                .add('useIndName', '사용여부', 70, { align: 'center' })
+                .add('useInd', '사용여부', 70, { visible: false })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
             productGrid = columns.init('productGrid', [])
@@ -241,9 +230,9 @@
             productGrid.clear();
 
             const param = {
-                baseDate: $("#baseDate").val(),
                 prodId : $("#_search_prodId").val(),
-                prodName : $("#_search_prodName").val()
+                prodName : $("#_search_prodName").val(),
+                useInd: $("#_search_useInd").val()
             };
 
             $.ajax({
@@ -268,7 +257,6 @@
                 $isNew = false;
 
                 $("#" + _popPrefix_ + "prodId").attr('disabled', true);
-                $("#" + _popPrefix_ + "effDateFrom").attr('disabled', true);
 
                 const focusedCell = productGrid.getGrid().getFocusedCell();
                 const focusedData = productGrid.getGrid().getRow(focusedCell.rowKey);
@@ -291,10 +279,8 @@
                 });
             } else {
                 $isNew = true;
-                $("#_productPop_effDateTo").val('2999-12-31');
 
                 $("#" + _popPrefix_ + "prodId").attr('disabled', false);
-                $("#" + _popPrefix_ + "effDateFrom").attr('disabled', false);
             }
 
             $('#productModal').modal('show');
@@ -337,26 +323,6 @@
 
             if (isNull(param.useInd)) {
                 alert("사용여부를 선택해주세요.");
-                return false;
-            }
-
-            var dateFrom = param.effDateFrom;
-            var dateTo = param.effDateTo;
-            if(isNull(dateFrom))
-            {
-                alert("시작일을 입력해주세요.");
-                return false;
-            }
-
-            if(isNull(dateTo))
-            {
-                alert("종료일을 입력해주세요.");
-                return false;
-            }
-
-            if(new Date(dateTo) < new Date(dateFrom))
-            {
-                alert("시작일이 종료일보다 더 빨라야합니다.");
                 return false;
             }
 
@@ -404,7 +370,6 @@
                 const focusRow = productGrid.getGrid().getRow(focusedCell.rowKey);
                 let params = {
                     prodId : focusRow.prodId,
-                    effDateFrom : focusRow.effDateFrom,
                 }
                 $.ajax({
                     url: apiUrl,
@@ -496,6 +461,7 @@
         }
 
         function formatCurrency() {
+            console.log("# abc #");
             // 현재 입력 값 가져오기
             let value = $(this).val();
 

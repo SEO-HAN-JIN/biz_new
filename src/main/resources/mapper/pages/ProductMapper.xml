@@ -10,18 +10,23 @@
             PROD_ID
           , PROD_NAME
           , PROD_AMT
-          , DATE_FORMAT(EFF_DATE_FROM, '%Y-%m-%d')  AS EFF_DATE_FROM
-          , DATE_FORMAT(EFF_DATE_TO, '%Y-%m-%d')    AS EFF_DATE_TO
           , USE_IND
-        FROM TB_PRODUCTS    P
+          , SE06.CODE_NAME AS USE_IND_NAME
+        FROM TB_PRODUCTS        P
+        LEFT JOIN CDBASE        SE06
+          ON SE06.CO_CODE       = P.CO_CODE
+         AND SE06.PATTERN_CODE  = 'SE06'
+         AND SE06.BASE_CODE 	= P.USE_IND
        WHERE 1=1
         AND P.CO_CODE       = #{loginCoId}
-        AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
         <if test='prodId != null  and prodId != "" '>
             AND PROD_ID     LIKE CONCAT('%', #{prodId}, '%')
         </if>
         <if test='prodName != null  and prodName != "" '>
             AND PROD_NAME    LIKE CONCAT('%', #{prodName}, '%')
+        </if>
+        <if test='useInd != null  and useInd != "" '>
+            AND USE_IND    = #{useInd}
         </if>
     </select>
 
@@ -31,14 +36,11 @@
         PROD_ID
         , PROD_NAME
         , PROD_AMT
-        , DATE_FORMAT(EFF_DATE_FROM, '%Y-%m-%d')  AS EFF_DATE_FROM
-        , DATE_FORMAT(EFF_DATE_TO, '%Y-%m-%d')    AS EFF_DATE_TO
         , USE_IND
         FROM TB_PRODUCTS    P
         WHERE 1=1
         AND P.CO_CODE       = #{loginCoId}
-        AND STR_TO_DATE(#{baseDate}, '%Y-%m-%d') BETWEEN P.EFF_DATE_FROM AND P.EFF_DATE_TO
-        AND PROD_ID = #{prodId}
+        AND PROD_ID         = #{prodId}
     </select>
 
     <insert id="saveProducts">
@@ -47,8 +49,6 @@
         (
             CO_CODE
             , PROD_ID
-            , EFF_DATE_FROM
-            , EFF_DATE_TO
             , PROD_NAME
             , PROD_AMT
             , USE_IND
@@ -56,14 +56,11 @@
         (
             #{loginCoId}
             , #{prodId}
-            , STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d')
-            , STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
             , #{prodName}
             , #{prodAmt}
             , #{useInd}
         ) ON DUPLICATE KEY UPDATE
-          EFF_DATE_TO       = STR_TO_DATE(#{effDateTo}, '%Y-%m-%d')
-        , PROD_NAME         = #{prodName}
+         PROD_NAME         = #{prodName}
         , PROD_AMT          = #{prodAmt}
         , USE_IND           = #{useInd}
     </insert>
@@ -73,7 +70,6 @@
         DELETE FROM TB_PRODUCTS
          WHERE CO_CODE          = #{loginCoId}
            AND PROD_ID          = #{prodId}
-           AND EFF_DATE_FROM    = #{effDateFrom}
     </delete>
 
     <select id="checkDuplProduct">
@@ -82,8 +78,6 @@
           FROM TB_PRODUCTS
          WHERE CO_CODE      = #{loginCoId}
            AND PROD_ID      = #{prodId}
-           AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
-           AND #{effDateTo} >= EFF_DATE_FROM
     </select>
 
     <update id="updateProductEffDate">
@@ -98,8 +92,21 @@
 
     <select id="createProdId">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createProdId */
-        SELECT CONCAT('PD-', LPAD(IFNULL(MAX(SUBSTRING_INDEX(PROD_ID, '-', -1)), 0) + 1, 4, '0'))
+        SELECT CONCAT('PD-', LPAD(IFNULL(MAX(cast(SUBSTRING_INDEX(PROD_ID, '-', -1) AS UNSIGNED INTEGER)), 0) + 1, 4, '0'))
           FROM TB_PRODUCTS	TP
          WHERE TP.CO_CODE 	= #{loginCoId}
+    </select>
+
+    <select id="findProductPopList">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductPopList */
+        SELECT
+            PROD_ID
+             , PROD_NAME
+             , PROD_AMT
+             , USE_IND
+        FROM TB_PRODUCTS    P
+        WHERE 1=1
+          AND P.CO_CODE       = #{loginCoId}
+          AND USE_IND        = 'Y'
     </select>
 </mapper>

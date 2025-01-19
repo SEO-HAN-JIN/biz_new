@@ -50,7 +50,7 @@
             String(nowDate.getDate()).padStart(2, '0');
 
         if (selectElement != null) {
-            fetch(`/api/pages/product?baseDate=${encodeURIComponent(formattedDate)}`)
+            fetch(`/api/pages/product/pop/list?`)
                 .then(response => response.json())
                 .then(data => {
                     selectElement.innerHTML = ''; // 기존 옵션 제거

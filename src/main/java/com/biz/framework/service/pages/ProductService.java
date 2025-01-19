@@ -1,5 +1,6 @@
 package com.biz.framework.service.pages;
 
+import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.ProductDto;
@@ -29,7 +30,7 @@ public class ProductService {
         switch (productDto.getRowStatus()) {
             case C -> {
                 if (productMapper.checkDuplProduct(productDto) > 0) {
-                    productMapper.updateProductEffDate(productDto);
+                    throw new ServiceException("동일한 상품코드가 존재합니다.");
                 }
                 if (StringUtils.isEmpty(productDto.getProdId())) {
                     productDto.setProdId(productMapper.createProdId(productDto));
@@ -48,5 +49,9 @@ public class ProductService {
 
     public CamelCaseMap findProductsInfo(ProductDto productDto) {
         return productMapper.findProductsInfo(productDto);
+    }
+
+    public List<CamelCaseMap> findProductPopList(ProductDto productDto) {
+        return productMapper.findProductPopList(productDto);
     }
 }

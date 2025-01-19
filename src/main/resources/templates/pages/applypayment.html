@@ -301,6 +301,8 @@
             findIncentiveRate();
             initEvent();
             initPaymentGrid();
+
+            $('.is-num').bind('keyup', numberKeyupEvent);
         });
 
         const findInitCodes = async () => {

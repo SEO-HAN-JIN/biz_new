@@ -35,4 +35,9 @@ public class ProductRestController {
     public int deleteProduct(@RequestBody ProductDto productDto) {
         return productService.deleteProduct(productDto);
     }
+
+    @GetMapping("/pop/list")
+    public List<CamelCaseMap> findProductPopList(ProductDto productDto) {
+        return productService.findProductPopList(productDto);
+    }
 }

@@ -22,4 +22,6 @@ public interface ProductMapper {
     void updateProductEffDate(ProductDto productDto);
 
     String createProdId(ProductDto productDto);
+
+    List<CamelCaseMap> findProductPopList(ProductDto productDto);
 }

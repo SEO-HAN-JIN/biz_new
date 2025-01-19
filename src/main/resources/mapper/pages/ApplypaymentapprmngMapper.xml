@@ -64,7 +64,6 @@
        LEFT JOIN TB_PRODUCTS    PR
          ON ST.CO_CODE          = PR.CO_CODE
         AND ST.PROD_ID          = PR.PROD_ID
-        AND DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') BETWEEN PR.EFF_DATE_FROM AND PR.EFF_DATE_TO
        LEFT JOIN TB_EMP         EP
          ON ST.CO_CODE          = EP.CO_CODE
         AND ST.USER_ID          = EP.EMP_ID
