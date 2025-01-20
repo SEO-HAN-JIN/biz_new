@@ -25,6 +25,10 @@ public class SettlementmstDto extends BaseDto {
     private String atchId;          // 첨부ID
     private String remark;
 
+    private String searchPayYmStart;
+    private String searchPayYmEnd;
+    private String searchReqGubun;
+
     
     private List<SettlementmstDto> settlementmstDtoList;
 

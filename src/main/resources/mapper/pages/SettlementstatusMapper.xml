@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.SettlementstatusMapper">
+
+    <select id="findSettlementstatus">
+        /* com.biz.framework.mapper.pages.SettlementstatusMapper.findSettlementstatus */
+        SELECT SM.PAY_YM
+             , SE01.CODE_NAME 		AS REQ_GUBUN_NAME
+             , SM.CONFIRM_RATE_AMT
+             , SR.SETTLEMENT_SEQ
+             , PD.PROD_NAME
+             , C.CUST_NAME
+        FROM SETTLEMENTMST 		    SM
+        JOIN SETTLEMENT			    SR
+          ON SR.CO_CODE 			= SM.CO_CODE
+         AND SR.SETTLEMENT_SEQ 	    = SM.SETTLEMENT_SEQ
+        LEFT JOIN CDBASE			SE01
+          ON SE01.CO_CODE 		    = SR.CO_CODE
+         AND SE01.PATTERN_CODE 	    = 'SE01'
+         AND SE01.BASE_CODE 		= SR.REQ_GUBUN
+        LEFT JOIN TB_PRODUCTS 	    PD
+          ON PD.CO_CODE 			= SR.CO_CODE
+         AND PD.PROD_ID 			= SR.PROD_ID
+        LEFT JOIN TB_CUSTOMER 	    C
+          ON C.CO_CODE 			    = SR.CO_CODE
+         AND C.BIZ_NO 			    = SR.CUST_ID
+        WHERE SM.CO_CODE 			= #{loginCoId}
+         AND SM.USER_ID             = #{loginUserId}
+         AND SM.PAY_YM BETWEEN DATE_FORMAT(STR_TO_DATE(#{searchPayYmStart}, '%Y-%m'), '%Y%m') AND DATE_FORMAT(STR_TO_DATE(#{searchPayYmEnd}, '%Y-%m'), '%Y%m')
+        <if test='searchReqGubun != null  and searchReqGubun != "" '>
+            AND SR.REQ_GUBUN    = #{searchReqGubun}
+        </if>
+    </select>
+
+    <select id="findSettlementstatusInfo">
+        /* com.biz.framework.mapper.pages.SettlementstatusMapper.findSettlementstatusInfo */
+        SELECT S2.REQ_GUBUN
+             , IFNULL(SUM(CASE WHEN S2.REQ_GUBUN = 'AQ' THEN S.CONFIRM_RATE_AMT ELSE 0 END), 0) AS CONFIRM_RATE_AMT_AQ
+             , IFNULL(SUM(CASE WHEN S2.REQ_GUBUN = 'RQ' THEN S.CONFIRM_RATE_AMT ELSE 0 END), 0) AS CONFIRM_RATE_AMT_RQ
+             , IFNULL(SUM(S.CONFIRM_RATE_AMT), 0)	AS CONFIRM_RATE_AMT_TOT
+        FROM SETTLEMENTMST 		S
+        JOIN SETTLEMENT 		S2
+          ON S2.CO_CODE 		= S.CO_CODE
+         AND S2.SETTLEMENT_SEQ 	= S.SETTLEMENT_SEQ
+       WHERE S.CO_CODE          = #{loginCoId}
+         AND S.USER_ID          = #{loginUserId}
+         AND S.PAY_YM BETWEEN DATE_FORMAT(STR_TO_DATE(#{searchPayYmStart}, '%Y-%m'), '%Y%m') AND DATE_FORMAT(STR_TO_DATE(#{searchPayYmEnd}, '%Y-%m'), '%Y%m')
+        <if test='searchReqGubun != null  and searchReqGubun != "" '>
+            AND S2.REQ_GUBUN    = #{searchReqGubun}
+        </if>
+    </select>
+
+</mapper>
