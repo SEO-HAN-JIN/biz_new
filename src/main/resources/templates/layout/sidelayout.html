@@ -195,6 +195,13 @@
             const url = $(this).data('url'); // data-url 속성에서 URL 가져오기
 
             $("#content").load(url, function(response, status, xhr){
+                // 응답 내용 내에 loginPageIndicator 요소가 있다면 로그인 페이지임을 판단
+                if (response.indexOf('id="loginPageIndicator"') !== -1) {
+                    // 전체 화면 리다이렉트 (프레임이나 콘텐츠 영역이 아닌 전체 페이지)
+                    window.location.href = '/login'; // 실제 로그인 URL에 맞게 수정
+                    return;
+                }
+
                 if(status == "error"){
                     alert("콘텐츠 로딩에 실패했습니다.");
                 }

@@ -29,6 +29,9 @@
                 <h1 class="auth-title pb-5">Log in.</h1>
 <!--                <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>-->
 
+                <!-- 로그인 페이지임을 알리는 식별자 -->
+                <div id="loginPageIndicator" style="display: none;"></div>
+
                 <form th:action="@{/login_proc}" method="post" onsubmit="return validateForm()">
                     <div class="form-group position-relative has-icon-left mb-4">
                         <select class="form-control form-control-xl" id="coCode" name="coCode">
