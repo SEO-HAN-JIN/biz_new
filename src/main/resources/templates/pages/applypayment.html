@@ -66,8 +66,9 @@
             <div class="row" id="basic-table">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">정산요청내역</h4>
+                        <div class="card-header d-flex align-items-center gap-3">
+                            <h4 class="card-title mb-0">정산요청내역</h4>
+                            <span class="data-count">[총 <span id="data-count-value">0</span>건]</span>
                         </div>
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
@@ -625,9 +626,7 @@
                 data: param,
                 type: 'GET',
                 success: (result) => {
-                    if (result.length > 0) {
-                        paymentGrid.bind(result);
-                    }
+                    paymentGrid.bind(result);
                 }
             });
         }

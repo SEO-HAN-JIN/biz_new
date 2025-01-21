@@ -106,8 +106,9 @@
             <div class="row" id="basic-table">
                 <div class="col-12">
                     <div class="card">
-                        <div class="card-header">
-                            <h4 class="card-title">정산요청목록</h4>
+                        <div class="card-header d-flex align-items-center gap-3">
+                            <h4 class="card-title mb-0">정산요청목록</h4>
+                            <span class="data-count">[총 <span id="data-count-value">0</span>건]</span>
                         </div>
                         <div class="card-body">
 <!--                            <div class="d-flex justify-content-end" style="width: 100%;">-->
@@ -729,6 +730,11 @@
                         // 데이터 리셋 및 렌더링 강제 갱신
                         const gridInstance = paymentGrid.getGrid();
                         gridInstance.resetData(data); // 데이터 새로 고침
+
+                        const countElement = document.getElementById('data-count-value');
+                        if (countElement) {
+                            countElement.innerText = data.length; // '총 건' 갯수 업데이트
+                        }
 
                     }
                 }

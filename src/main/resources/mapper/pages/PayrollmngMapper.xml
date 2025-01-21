@@ -8,6 +8,7 @@
         /* com.biz.framework.mapper.pages.PayrollmngMapper.findPayrollList */
         <![CDATA[
         SELECT
+            SM.CONFIRM_SEQ,
             ST.SETTLEMENT_SEQ,
             ST.PROD_ID,
             PR.PROD_NAME,
@@ -32,12 +33,11 @@
             SM.CONFIRM_RATE_AMT,
             ST.REFUND_IND,
             SM.ATCH_ID,
-            ST.APPLY_STATUS,
-            CD.CODE_NAME AS STATUS_NAME,
+            CD.CODE_NAME AS REQ_GUBUN_NAME,
             SM.TAX_IND,
-            SM.PAY_YM
-        FROM SETTLEMENT         ST
-        JOIN SETTLEMENTMST      SM
+            DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM
+        FROM SETTLEMENTMST      SM
+        JOIN SETTLEMENT         ST
           ON ST.CO_CODE         = SM.CO_CODE
          AND ST.SETTLEMENT_SEQ  = SM.SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER   CU
@@ -50,14 +50,13 @@
           ON ST.CO_CODE         = EP.CO_CODE
          AND ST.USER_ID         = EP.EMP_ID
         LEFT JOIN CDBASE        CD
-          ON ST.CO_CODE         = ST.CO_CODE
-         AND CD.PATTERN_CODE    = 'SE02'
-         AND ST.APPLY_STATUS    = CD.BASE_CODE
+          ON ST.CO_CODE         = CD.CO_CODE
+         AND CD.PATTERN_CODE    = 'SE01'
+         AND ST.REQ_GUBUN    = CD.BASE_CODE
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
-         AND (DATE_FORMAT(#{searchStartDate} , '%Y%m%d') <= ST.DATE_WORK_FROM)
-         AND (DATE_FORMAT(#{searchEndDate} , '%Y%m%d') >= ST.DATE_WORK_TO)
-         AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
+         AND (DATE_FORMAT(#{searchPayYmStart} , '%Y%m%d') <= ST.DATE_WORK_FROM)
+         AND (DATE_FORMAT(#{searchPayYmEnd} , '%Y%m%d') >= ST.DATE_WORK_TO)
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
@@ -68,17 +67,27 @@
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
         </if>
+        <if test="searchPayGubun != null and searchPayGubun != ''">
+            <choose>
+                <when test="searchPayGubun == 'Y'">
+                    AND SM.PAY_YM IS NOT NULL
+                </when>
+                <when test="searchPayGubun == 'N'">
+                    AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
+                </when>
+                <otherwise>
+                </otherwise>
+            </choose>
+        </if>
+        ORDER BY CONFIRM_SEQ, ST.REQ_DATE
     </select>
 
     <insert id="confirmApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        UPDATE SETTLEMENT
-            SET CONFIRM_AMT         = #{confirmAmt},
-                CONFIRM_RATE_AMT    = #{confirmRateAmt},
-                SAVE_MILEAGE        = #{saveMileage},
-                STATUS              = '2'
-          WHERE CO_CODE             = #{loginCoId}
-            AND SETTLEMENT_SEQ      = #{settlementSeq}
+        UPDATE SETTLEMENTMST
+            SET PAY_YM      = #{payYm}
+          WHERE CO_CODE     = #{loginCoId}
+            AND CONFIRM_SEQ = #{confirmSeq}
     </insert>
 
     <delete id="checkPayrollInd">

@@ -203,6 +203,13 @@ if (typeof CustomTuiGrid === "undefined") {
                 if (this.grid) {
                     this.data = data;  // 데이터 저장
                     this.grid.resetData(this.data);  // 데이터 리셋 및 요약 갱신
+
+                    const totalCount = this.data.length; // 데이터 길이
+
+                    const countElement = document.getElementById('data-count-value');
+                    if (countElement) {
+                        countElement.innerText = totalCount; // '총 건' 갯수 업데이트
+                    }
                 }
             },
 

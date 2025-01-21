@@ -2,6 +2,7 @@ package com.biz.framework.restcontroller.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.SettlementDto;
+import com.biz.framework.dto.pages.SettlementmstDto;
 import com.biz.framework.service.pages.ApplypaymentapprmngService;
 import com.biz.framework.service.pages.PayrollmngService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +18,14 @@ public class PayrollmngRestController {
     private final PayrollmngService payrollmngService;
 
     @GetMapping
-    public List<CamelCaseMap> findPayrollList(SettlementDto settlementDto) {
-        return payrollmngService.findPayrollList(settlementDto);
+    public List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto) {
+        return payrollmngService.findPayrollList(settlementmstDto);
     }
 
     /* 요청 승인 */
     @PostMapping("/payroll")
-    public int payrollApplypayment(@RequestBody SettlementDto settlementDto) {
-        return payrollmngService.payrollApplypayment(settlementDto);
+    public int payrollApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
+        return payrollmngService.payrollApplypayment(settlementmstDto);
     }
 //
 //    @PostMapping("/cancel")

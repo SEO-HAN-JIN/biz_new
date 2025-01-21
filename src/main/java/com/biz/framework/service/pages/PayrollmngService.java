@@ -2,6 +2,7 @@ package com.biz.framework.service.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.SettlementDto;
+import com.biz.framework.dto.pages.SettlementmstDto;
 import com.biz.framework.mapper.pages.MileageHisMapper;
 import com.biz.framework.mapper.pages.PayrollmngMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +19,16 @@ public class PayrollmngService {
     private final PayrollmngMapper payrollmngMapper;
     private final MileageHisMapper mileageHisMapper;
 
-    public List<CamelCaseMap> findPayrollList(SettlementDto settlementDto) {
-        return payrollmngMapper.findPayrollList(settlementDto);
+    public List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto) {
+        return payrollmngMapper.findPayrollList(settlementmstDto);
     }
 
-    public int payrollApplypayment(SettlementDto settlementDto) {
+    public int payrollApplypayment(SettlementmstDto settlementmstDto) {
 
         int result = 0;
 
         // 입금확인시 실제입금금액 및 상태 변경
-//        result = payrollmngMapper.confirmApplypayment(settlementDto);
+        //result = payrollmngMapper.confirmApplypayment(settlementmstDto);
 //
 //        if(result > 0) {
 //            int mileageAmt = 0;
