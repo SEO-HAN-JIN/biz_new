@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="page-content">
+        <div class="page-content" id="profile">
             <section class="row">
                 <div class="col-12 col-md-8 offset-md-2">
                     <div class="card">
@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="empName" class="form-label">이름</label>
-                                        <input type="text" class="form-control" id="empName" name="empName" value="" disabled="disabled">
+                                        <input type="text" class="form-control" id="empName" name="empName" value="">
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -58,33 +58,33 @@
                                     </div>
                                 </div>
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary " style="width: auto;">저장</button>
+                                    <button type="button" id="btnProfile" class="btn btn-primary " style="width: auto;">저장</button>
                                 </div>
                             </form>
 
                             <!-- Password Change Section -->
                             <h4 class="mt-5 mb-3">비밀번호 변경</h4>
-                            <form>
+                            <form id="myPassword">
                                 <div class="row mb-3">
                                     <div class="col-md-12">
-                                        <label for="current-password" class="form-label">현재 비밀번호</label>
-                                        <input type="password" class="form-control" id="current-password" placeholder="현재 패스워드 입력해주세요." required>
+                                        <label for="curPassword" class="form-label">현재 비밀번호</label>
+                                        <input type="password" class="form-control" id="curPassword" placeholder="현재 패스워드 입력해주세요." required>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-12">
-                                        <label for="new-password" class="form-label">신규 비밀번호</label>
-                                        <input type="password" class="form-control" id="new-password" placeholder="신규 패스워드 입력해주세요." required>
+                                        <label for="newPassword" class="form-label">신규 비밀번호</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="신규 패스워드 입력해주세요." required>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
                                     <div class="col-md-12">
-                                        <label for="confirm-password" class="form-label">신규 비밀번호 확인</label>
-                                        <input type="password" class="form-control" id="confirm-password" placeholder="신규 패스워드 다시 입력해주세요." required>
+                                        <label for="password" class="form-label">신규 비밀번호 확인</label>
+                                        <input type="password" class="form-control" id="password" placeholder="신규 패스워드 다시 입력해주세요." required>
                                     </div>
                                 </div>
                                 <div class="text-end">
-                                    <button type="submit" class="btn btn-primary" style="width: auto;">변경</button>
+                                    <button type="button" id="btnPassword"  class="btn btn-primary" style="width: auto;">변경</button>
                                 </div>
                             </form>
                         </div>
@@ -94,32 +94,78 @@
         </div>
         <script type="text/javascript">
             (function() {
-            var apiUrl = "/api/pages/myprofile"
+                var apiUrl = "/api/pages/myprofile"
 
-            $(document).ready(function() {
+                $(document).ready(function() {
 
-                searchProfile();
+                    searchProfile();
 
-            });
-
-            function searchProfile()
-            {
-                $.ajax({
-                    url: apiUrl,
-                    data: null,
-                    type: 'GET',
-                    success: (result) => {
-                        $("#myDetail").bindForm(result);
-                        // $("#empId").val(result.empId);
-                        // $("#empName").val(result.empName);
-                        // $("#gradeName").val(result.gradeName);
-                        // $("#entranceDate").val(result.entranceDate);
-                        // $("#empTel").val(result.empTel);
-                        // $("#empMail").val(result.empMail);
-                    }
                 });
-            }
+
+                function searchProfile()
+                {
+                    $.ajax({
+                        url: apiUrl,
+                        data: null,
+                        type: 'GET',
+                        success: (result) => {
+                            $("#myDetail").bindForm(result);
+                        }
+                    });
+                }
+
+                $("#btnProfile").on('click', fnProfile);
+                $("#btnPassword").on('click', fnPassword);
+
+                function fnProfile()
+                {
+                    $.ajax({
+                        url: apiUrl + "/info",
+                        data: JSON.stringify($("#myDetail").getData()),
+                        contentType:'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if(result > 0)
+                                alert("저장되었습니다.");
+
+                            searchProfile();
+                        },
+                        error: (result) => {
+                            alert(result.responseText);
+                        },
+                    })
+                }
+
+                function fnPassword()
+                {
+                    $.ajax({
+                        url: apiUrl + "/pwd",
+                        data: JSON.stringify({
+                            empId: $("#empId").val(),
+                            curPassword : $("#curPassword").val(),
+                            newPassword : $("#newPassword").val(),
+                            password : $("#password").val()
+                        }),
+                        contentType:'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if(result > 0)
+                                alert("저장되었습니다.");
+
+                            $("#myPassword").clear();
+
+                            searchProfile();
+                        },
+                        error: (result) => {
+                            alert(result.responseText);
+                        },
+                    })
+                }
+
             })();
+
+
+
         </script>
     </div>
 </th:block>

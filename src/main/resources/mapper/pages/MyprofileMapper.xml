@@ -5,7 +5,7 @@
 <mapper namespace="com.biz.framework.mapper.pages.MyprofileMapper">
 
     <select id="findMyprofile">
-        /* com.biz.framework.mapper.pages.EmpMapper.findAllEmps */
+        /* com.biz.framework.mapper.pages.MyprofileMapper.findAllEmps */
         SELECT EMP.EMP_ID
              , EMP.EMP_NAME
              , EMP.ENTRANCE_DATE
@@ -22,76 +22,32 @@
            AND EMP.EMP_ID        = #{loginUserId}
     </select>
 
-    <select id="findEmps" resultType="CamelCaseMap">
-        /* com.biz.framework.mapper.pages.EmpMapper.findEmps */
-        SELECT T.*
-             , U.USER_PW
-             , C.CODE_NAME      AS GRADE_NAME
-          FROM TB_EMP           T
-          JOIN USER             U
-            ON U.CO_CODE        = T.CO_CODE
-           AND T.EMP_ID         = U.USER_ID
-          LEFT JOIN CDBASE      C
-            ON C.CO_CODE        = T.CO_CODE
-           AND C.PATTERN_CODE   = 'CD01'
-           AND C.BASE_CODE      = T.GRADE_CODE
-        WHERE 1=1
-          AND T.CO_CODE         = #{loginCoId}
-          AND EMP_ID            != 'admin'
-        <if test='empId != null  and empId != "" '>
-            AND T.EMP_ID  LIKE CONCAT('%',#{empId} ,'%')
-        </if>
-        <if test='empName != null  and empName != "" '>
-            AND T.EMP_NAME  LIKE CONCAT('%',#{empName} ,'%')
-        </if>
-    </select>
-
-    <insert id="saveEmp">
-        /* com.biz.framework.mapper.pages.EmpMapper.saveEmp */
-        INSERT INTO TB_EMP
-        (
-            CO_CODE
-            , EMP_ID
-            , EMP_NAME
-            , ENTRANCE_DATE
-            , RETIRE_DATE
-            , GRADE_CODE
-            , EMP_TEL
-            , EMP_MAIL
-            , INCENTIVE_RATE
-        ) VALUES
-        (
-            #{loginCoId}
-            , #{empId}
-            , #{empName}
-            , STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
-            , #{retireDate}
-            , #{gradeCode}
-            , #{empTel}
-            , #{empMail}
-            , #{incentiveRate}
-        ) ON DUPLICATE KEY UPDATE
-            EMP_NAME            = #{empName}
-            , ENTRANCE_DATE     = STR_TO_DATE(#{entranceDate}, '%Y-%m-%d')
-            , RETIRE_DATE       = STR_TO_DATE(#{retireDate}, '%Y-%m-%d')
-            , GRADE_CODE        = #{gradeCode}
-            , EMP_TEL           = #{empTel}
-            , EMP_MAIL          = #{empMail}
-            , INCENTIVE_RATE    = #{incentiveRate}
-    </insert>
-
-    <delete id="deleteEmp">
-        /* com.biz.framework.mapper.pages.EmpMapper.deleteEmp */
-        DELETE FROM TB_EMP
+    <update id="updateEmp">
+        /* com.biz.framework.mapper.pages.MyprofileMapper.updateEmp */
+        UPDATE TB_EMP
+        SET EMP_NAME          = #{empName}
+          , EMP_TEL           = #{empTel}
+          , EMP_MAIL          = #{empMail}
         WHERE CO_CODE   = #{loginCoId}
           AND EMP_ID    = #{empId}
-    </delete>
+    </update>
 
-    <select id="checkDuplEmpId">
-        /* com.biz.framework.mapper.pages.EmpMapper.checkDuplEmpId */
-        SELECT COUNT(1)
-         FROM TB_EMP
+    <select id="checkPassword" resultType="int">
+        /* com.biz.framework.mapper.pages.MyprofileMapper.checkPassword */
+        SELECT
+            CASE
+                WHEN PASSWORD = #{curPassword} THEN 1
+            ELSE 0 END AS CHK
+        FROM TB_EMP
+        WHERE CO_CODE = #{loginCoId}
+          AND EMP_ID  = #{empId}
+    </select>
+
+    <update id="changePassword">
+        /* com.biz.framework.mapper.pages.MyprofileMapper.changePassword */
+        UPDATE TB_EMP
+            SET PASSWORD = #{password}
         WHERE CO_CODE   = #{loginCoId}
           AND EMP_ID    = #{empId}
-    </select>
+    </update>
 </mapper>

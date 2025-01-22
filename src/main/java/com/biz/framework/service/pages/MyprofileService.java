@@ -27,11 +27,22 @@ public class MyprofileService {
     }
 
     public int saveMyprofile(EmpDto empDto) {
-        return 1;
+
+        return myprofileMapper.updateEmp(empDto);
     }
 
     public int changePassword(EmpDto empDto) {
-        return 1;
+
+        if(myprofileMapper.checkPassword(empDto) <= 0)
+            throw new ServiceException("현재 패스워드가 다릅니다.");
+
+        if(empDto.getNewPassword().equals(empDto.getCurPassword()))
+             throw new ServiceException("현재와 신규패스워드가 동일합니다.");
+
+        if(!empDto.getNewPassword().equals(empDto.getPassword()))
+            throw new ServiceException("입력하신 신규 패스워드가 일치하지 않습니다.");
+
+        return myprofileMapper.changePassword(empDto);
     }
 
 //    public int saveEmp(EmpDto empDto) {

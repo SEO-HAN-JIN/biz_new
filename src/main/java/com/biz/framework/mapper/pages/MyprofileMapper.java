@@ -10,9 +10,8 @@ import java.util.List;
 public interface MyprofileMapper {
 
     CamelCaseMap findMyprofile(EmpDto empDto);
-    int saveEmp(EmpDto empDto);
-    int deleteEmp(EmpDto empDto);
-    int checkDuplEmpId(EmpDto empDto);
+    int updateEmp(EmpDto empDto);
+    int checkPassword(EmpDto empDto);
+    int changePassword(EmpDto empDto);
 
-    List<CamelCaseMap> findAllEmps(EmpDto empDto);
 }
