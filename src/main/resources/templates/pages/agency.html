@@ -1,0 +1,328 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
+
+
+<th:block th:fragment="content">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3>대행사관리</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">업무관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">대행사관리</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body pt-3 pb-3" id="searchForm">
+<!--                            <div class="row align-items-center p-2" style="">-->
+                            <div class="row align-items-center p-2 search-area custom-bg">
+                                <div class="col-md-11">
+                                    <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">대행사명</label>
+                                        <div class="col-lg-2 col-9">
+                                            <input type="text" id="searchAgencyName" class="form-control form-control-sm" name="agencyName" placeholder="사업자번호">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">대행사관리목록</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-end" style="width: 100%;">
+                                <div class="d-flex pb-3 gap-1">
+                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#agencyModal">추가</button>
+
+                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeleteAgencyGrid">삭제</button>
+                                </div>
+                            </div>
+                            <div id="agencyGrid" class="tui-grid"></div>
+                        </div>
+
+                        <div class="modal fade" id="agencyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle text-white">대행사 정보</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <div id="programModal" class="modal-body">
+                                        <form class="form">
+                                            <div class="row g-3">
+                                                <!-- Row 1 -->
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">대행사명</label>
+                                                        <input type="text" id="agencyName" class="form-control" placeholder="대행사명" name="agencyName">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">대행사마진율</label>
+                                                        <input type="number" id="agencyIncentiveRate" class="form-control" name="agencyIncentiveRate" placeholder="대행사마진율" step="0.1" min="0" max="99.9">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">상품단가</label>
+                                                        <input type="text" id="prodAmt" class="form-control is-num" name="prodAmt" placeholder="상품단가">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label class="form-label">사용여부</label>
+                                                        <select class="form-select" id="useInd" name="useInd"></select>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" id="agencyId" name="agencyId">
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
+                                            <i class="bx bx-check"></i> 저장
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script th:inline="javascript">
+        (function() {
+            const apiUrl = '/api/pages/agency';
+
+            let agencyGrid;
+            let $isNew = 'N';
+
+            let isAdmin;
+
+            $(document).ready(function() {
+
+                const roleIds = /*[[${roleIds}]]*/'';
+                const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+                isAdmin = adminRoles.some(value => roleIds.includes(value));
+
+                initEvent();
+                findInitCodes();
+            });
+
+            const findInitCodes = async () => {
+                const param =
+                    [
+                        {"patternCode": "SE06"}
+                    ];
+
+                const result = await CommonJs.initFindCodes(param);
+                findCodeCallback(result);
+            }
+
+            const findCodeCallback = (result) => {
+                const SE06Options = {
+                    value: 'baseCode',
+                    text: 'codeName',
+                    items: result.SE06,
+                    placeholder: '선택'
+                };
+                $("#useInd").addOptions(SE06Options);
+
+                initAgencyGrid();
+            }
+
+            const initEvent = () => {
+
+                $('.is-num').bind('keyup', numberKeyupEvent);
+
+                $("#btnDeleteAgencyGrid").on('click', fn_deleteAgencyGrid);
+
+                $('#modalAddBtn').on('click', () => {openPgmModal('1')});
+                $("#modalSaveBtn").on('click', fn_saveAgencyGrid);
+
+                $("#searchBtn").on('click', searchAgencyGrid);
+            }
+
+            const initAgencyGrid = () => {
+
+                var columns = new CustomTuiGrid()
+                    .add('agencyId', '번호', 200, {visible: false})
+                    .add('agencyName', '대행사명', 100, {})
+                    .add('agencyIncentiveRate', '대행사마진율', 100, {align: 'right'})
+                    .addNumber('prodAmt', '상품단가', 100, {
+                        align: 'right',
+                        comma: true,
+                    })
+                    .add('useInd', '사용여부', 100, {})
+                    .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                ;
+
+                agencyGrid = columns.init('agencyGrid', [])
+                    .render();
+
+                // 더블 클릭 이벤트 설정
+                agencyGrid.getGrid().on('dblclick', function(ev) {
+                    openPgmModal('2');
+                });
+
+                searchAgencyGrid();
+            }
+
+            const searchAgencyGrid = () => {
+                agencyGrid.clear();
+
+                let $bizNo = $('#search_bizNo').val();
+                let $empName = $('#search_empName').val();
+                let $custName = $('#search_custName').val();
+
+                const param = {
+                    bizNo : $bizNo,
+                    empName : $empName,
+                    custName : $custName
+                };
+
+                $.ajax({
+                    url: apiUrl,
+                    data: param,
+                    type: 'GET',
+                    success: (result) => {
+                        agencyGrid.bind(result);
+                    }
+                });
+            }
+
+            const fn_saveAgencyGrid = () => {
+
+                let param = $("#agencyModal").getData();
+                param.isNew = $isNew;
+
+                if (isNull(param.agencyName)) {
+                    alert("대행사명은 필수 값 입니다.");
+                    return false;
+                }
+
+                if (isNull(param.agencyIncentiveRate)) {
+                    alert("대행사 마진율은 필수 값 입니다.");
+                    return false;
+                }
+
+                if (isNull(param.prodAmt)) {
+                    alert("상품단가는 필수 값 입니다.");
+                    return false;
+                }
+
+                if (isNull(param.useInd)) {
+                    alert("사용여부는 필수 값 입니다.");
+                    return false;
+                }
+
+                if (confirm("데이터를 저장하시겠습니까?")) {
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(param),
+                        contentType:'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("저장이 완료되었습니다.");
+                                $('#agencyModal').modal('hide');
+                                searchAgencyGrid();
+                            } else {
+                                alert("저장에 실패하였습니다.");
+                                searchAgencyGrid();
+                            }
+                        },error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                        }
+                    })
+                }
+            }
+
+            const fn_deleteAgencyGrid = () => {
+                const focusedCell = agencyGrid.getGrid().getFocusedCell();
+                if (isNull(focusedCell)) {
+                    alert("삭제할 행을 선택해주세요.");
+                    return;
+                }
+
+                const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+                if (confirmResult) {
+                    const focusRow = agencyGrid.getGrid().getRow(focusedCell.rowKey);
+                    let params = {
+                        agencyId: focusRow.agencyId
+                    }
+                    $.ajax({
+                        url: apiUrl,
+                        data: JSON.stringify(params),
+                        contentType:'application/json',
+                        type: 'DELETE',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("삭제가 완료되었습니다.");
+                                searchAgencyGrid();
+                            } else {
+                                alert("삭제에 실패하였습니다.");
+                                searchAgencyGrid();
+                            }
+                        }
+                    })
+                }
+            }
+
+            const openPgmModal = (param) => {
+                $("#agencyModal").clear();
+
+                if (param === '1') {
+                    $isNew = true;
+                } else {
+                    $isNew = false;
+                }
+
+                // 추가 버튼 클릭 시
+                if (param === '2') {
+                    const focusedCell = agencyGrid.getGrid().getFocusedCell();
+                    const focusedData = agencyGrid.getGrid().getRow(focusedCell.rowKey);
+
+                    $('#agencyModal').bindForm(focusedData);
+                }
+
+                $('#agencyModal').modal('show');
+            }
+
+        })();
+    </script>
+</th:block>

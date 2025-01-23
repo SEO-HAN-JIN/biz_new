@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.AgencyMapper">
+
+    <select id="findAgency" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyMapper.findAgency */
+        SELECT
+            AG.CO_CODE,
+            AG.AGENCY_ID,
+            AG.AGENCY_NAME,
+            AG.AGENCY_INCENTIVE_RATE,
+            AG.PROD_AMT,
+            AG.USE_IND
+        FROM TB_AGENCY      AG
+        WHERE AG.CO_CODE = #{loginCoId}
+        <if test='agencyName != null  and agencyName != "" '>
+            AND AG.AGENCY_NAME  LIKE CONCAT('%', #{agencyName} ,'%')
+        </if>
+    </select>
+
+    <insert id="saveAgency">
+        /* com.biz.framework.mapper.pages.AgencyMapper.saveAgency */
+        <selectKey resultType="String" keyProperty="agencyId" order="BEFORE">
+            SELECT CONCAT('CP-', LPAD(IFNULL(MAX(cast(SUBSTRING_INDEX(AGENCY_ID , '-', -1) AS UNSIGNED INTEGER)), 0) + 1, 4, '0'))
+              FROM TB_AGENCY
+             WHERE CO_CODE      = #{loginCoId}
+        </selectKey>
+        INSERT INTO TB_AGENCY
+        (
+            CO_CODE
+            , AGENCY_ID
+            , AGENCY_NAME
+            , AGENCY_INCENTIVE_RATE
+            , PROD_AMT
+            , USE_IND
+        ) VALUES
+        (
+            #{loginCoId}
+            , #{agencyId}
+            , #{agencyName}
+            , #{agencyIncentiveRate}
+            , #{prodAmt}
+            , #{useInd}
+        )
+    </insert>
+
+    <delete id="deleteAgency">
+        /* com.biz.framework.mapper.pages.AgencyMapper.deleteAgency */
+        DELETE FROM TB_AGENCY
+        WHERE CO_CODE   = #{loginCoId}
+          AND AGENCY_ID = #{agencyId}
+    </delete>
+
+    <select id="findAgencyList">
+        /* com.biz.framework.mapper.pages.AgencyMapper.findAgencyList */
+        SELECT CO_CODE
+             , AGENCY_ID
+             , AGENCY_NAME
+             , AGENCY_INCENTIVE_RATE
+             , PROD_AMT
+             , USE_IND
+          FROM TB_AGENCY    TA
+         WHERE TA.CO_CODE   = #{loginCoId}
+           AND TA.USE_IND   = 'Y'
+    </select>
+
+    <update id="updateAgency">
+        /* com.biz.framework.mapper.pages.AgencyMapper.updateAgency */
+        UPDATE TB_AGENCY
+           SET AGENCY_NAME           = #{agencyName}
+             , AGENCY_INCENTIVE_RATE = #{agencyIncentiveRate}
+             , PROD_AMT              = #{prodAmt}
+             , USE_IND               = #{useInd}
+         WHERE CO_CODE          = #{loginCoId}
+           AND AGENCY_ID        = #{agencyId}
+    </update>
+</mapper>

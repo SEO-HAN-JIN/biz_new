@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.Emp
+CustomerMapper">
+
+    <select id="findEmplList">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findEmplList */
+        SELECT T.*
+          FROM TB_EMP            T
+         WHERE 1=1
+           AND T.CO_CODE        = #{loginCoId}
+           AND T.EMP_ID         != 'admin'
+        <choose>
+            <when test='isAdmin != null and isAdmin == "Y"'>
+                <if test='searchEmpId != null and searchEmpId != ""'>
+                    AND T.EMP_ID LIKE CONCAT('%', #{searchEmpId}, '%')
+                </if>
+                <if test='searchEmpNm != null and searchEmpNm != ""'>
+                    AND T.EMP_NAME LIKE CONCAT('%', #{searchEmpNm}, '%')
+                </if>
+            </when>
+            <otherwise>
+                AND T.EMP_ID = #{searchEmpId}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findCustoemrList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findCustoemrList */
+        SELECT EC.EMP_ID
+             , EC.BIZ_NO
+             , TC.CUST_NAME
+             , TC.OWNER_NAME
+          FROM EMP_CUSTOMER     EC
+          JOIN TB_CUSTOMER      TC
+            ON TC.CO_CODE       = EC.CO_CODE
+           AND TC.BIZ_NO        = EC.BIZ_NO
+         WHERE 1=1
+           AND EC.CO_CODE       = #{loginCoId}
+           AND EC.EMP_ID        = #{empId}
+    </select>
+
+    <select id="findCustomerListByBizNo">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findCustomerListByBizNo */
+        SELECT TC.BIZ_NO
+             , TC.CUST_NAME
+             , TC.OWNER_NAME
+          FROM TB_CUSTOMER      TC
+         WHERE 1=1
+           AND TC.CO_CODE       = #{loginCoId}
+        <if test='searchCustId != null and searchCustId != "" '>
+            AND TC.BIZ_NO LIKE CONCAT('%', #{searchCustId}, '%')
+            OR TC.CUST_NAME LIKE CONCAT('%', #{searchCustId},'%')
+        </if>
+    </select>
+
+    <insert id="saveEmpCustomerList">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
+        INSERT INTO EMP_CUSTOMER(
+            CO_CODE
+            , EMP_ID
+            , BIZ_NO
+        ) VALUES (
+            #{loginCoId}
+            , #{empId}
+            , #{bizNo}
+        )
+    </insert>
+
+    <select id="checkDupl">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
+        SELECT COUNT(1)
+          FROM EMP_CUSTOMER
+         WHERE CO_CODE  = #{loginCoId}
+           AND EMP_ID   = #{empId}
+           AND BIZ_NO   = #{bizNo}
+    </select>
+
+    <delete id="deleteEmpCustomer">
+        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
+        DELETE FROM EMP_CUSTOMER
+        WHERE CO_cODE   = #{loginCoId}
+          AND EMP_ID    = #{empId}
+          AND BIZ_NO    = #{bizNo}
+    </delete>
+</mapper>
