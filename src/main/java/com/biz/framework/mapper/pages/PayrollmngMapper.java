@@ -11,7 +11,7 @@ import java.util.List;
 public interface PayrollmngMapper {
 
     List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto);
-    int confirmApplypayment(SettlementmstDto settlementmstDto);
+    int confirmApplypayment(SettlementmstDto settlementmstDtoList);
 
     int checkPayrollInd(SettlementDto settlementDto);
 

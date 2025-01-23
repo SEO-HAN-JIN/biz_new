@@ -102,7 +102,12 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-danger btn-sm" id="payrollBtn">급여작업</button>
+                                    <button type="button" class="btn btn-danger ms-1" id="payrollBtn">
+                                        <i class="bx bx-check"></i> 급여작업
+                                    </button>
+                                    <button type="button" class="btn btn-danger ms-1" id="modalCancelBtn">
+                                        <i class="bx bx-check"></i> 반영취소
+                                    </button>
                                 </div>
                             </div>
                             <div id="paymentGrid" class="tui-grid"></div>
@@ -169,7 +174,7 @@
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
                                         <button type="button" class="btn btn-danger ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 급여반영
+                                            <i class="bx bx-check"></i> 반영
                                         </button>
                                     </div>
                                 </div>
@@ -358,7 +363,7 @@
                                         <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
+                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn213">
                                             <i class="bx bx-check"></i> 저장
                                         </button>
                                     </div>
@@ -397,9 +402,10 @@
         const initEvent = () => {
             $("#searchBtn").on('click', search);
 
-            $("#payrollBtn").on('click', openPgmModal);
+            $('#payrollBtn').on('click', openPgmModal);
 
             $("#modalSaveBtn").on('click', payroll);
+            $("#modalCancelBtn").on('click', payrollCancel);
         }
 
 
@@ -482,6 +488,14 @@
                 return false;
             }
 
+            if(grid.filter(x => !isNull(x.payYm)).length > 0)
+            {
+                alert("급여지급처리된 정산건이 있습니다.");
+                return false;
+            }
+
+            $("#payrollDate").val('');
+
             var paymentDate = $("#searchPayYmStart").val() + " ~ " + $("#searchPayYmEnd").val();
 
             $("#paymentDate").val(paymentDate);
@@ -552,9 +566,15 @@
 
             var params = paymentGrid.getCheckedRows();
 
+            if(isNull($("#payrollDate").val())) {
+                alert("급여지급일 선택해주세요.");
+                return false;
+            }
+
             // settlementDtoList 형식에 맞게 객체로 변환
             var requestData = {
-                settlementDtoList: params // 배열 그대로 전달
+                payYm: $("#payrollDate").val(),
+                settlementmstDtoList: params // 배열 그대로 전달
             };
 
             $.ajax({
@@ -565,6 +585,7 @@
                 success: (result) => {
                     if (result > 0) {
                         alert("급여처리 완료되었습니다.");
+                        $('#payrollModal').modal('hide');
                         search();
                     } else {
                         alert("급여처리에 실패하였습니다.");
@@ -572,6 +593,24 @@
                     }
                 }
             })
+        }
+
+        const payrollCancel = () => {
+
+
+            var grid = paymentGrid.getCheckedRows();
+
+            if (grid.length <= 0) {
+                alert("데이터가 없습니다.");
+                return false;
+            }
+
+            if(grid.filter(x => !isNull(x.payYm)).length > 0)
+            {
+                alert("급여지급처리가 되지 않은 정산건이 포함되어있습니다.");
+                return false;
+            }
+
         }
 
             const openPgmModalView = () => {

@@ -23,13 +23,20 @@ public class PayrollmngService {
         return payrollmngMapper.findPayrollList(settlementmstDto);
     }
 
+    @Transactional
     public int payrollApplypayment(SettlementmstDto settlementmstDto) {
 
         int result = 0;
 
         // 입금확인시 실제입금금액 및 상태 변경
-        //result = payrollmngMapper.confirmApplypayment(settlementmstDto);
-//
+        List<SettlementmstDto> settlementMstDtoList = settlementmstDto.getSettlementmstDtoList();
+        for (SettlementmstDto dto : settlementMstDtoList) {
+
+            dto.setPayYm(settlementmstDto.getPayYm());
+
+            result = payrollmngMapper.confirmApplypayment(dto);
+        }
+
 //        if(result > 0) {
 //            int mileageAmt = 0;
 //            if (!StringUtil.isNullOrEmpty(settlementDto.getSaveMileage()))

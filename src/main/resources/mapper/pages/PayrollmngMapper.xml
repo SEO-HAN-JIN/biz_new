@@ -82,13 +82,13 @@
         ORDER BY CONFIRM_SEQ, ST.REQ_DATE
     </select>
 
-    <insert id="confirmApplypayment">
+    <update id="confirmApplypayment" parameterType="list">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
         UPDATE SETTLEMENTMST
-            SET PAY_YM      = #{payYm}
-          WHERE CO_CODE     = #{loginCoId}
-            AND CONFIRM_SEQ = #{confirmSeq}
-    </insert>
+            SET PAY_YM      = REPLACE(#{payYm}, '-', '')
+        WHERE CO_CODE       = #{loginCoId}
+        AND CONFIRM_SEQ     = #{confirmSeq}
+    </update>
 
     <delete id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
