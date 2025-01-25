@@ -2,87 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.biz.framework.mapper.pages.Emp
-CustomerMapper">
+<mapper namespace="com.biz.framework.mapper.pages.EmpAgencyMapper">
 
     <select id="findEmplList">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findEmplList */
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.findEmplList */
         SELECT T.*
           FROM TB_EMP            T
          WHERE 1=1
            AND T.CO_CODE        = #{loginCoId}
            AND T.EMP_ID         != 'admin'
-        <choose>
-            <when test='isAdmin != null and isAdmin == "Y"'>
-                <if test='searchEmpId != null and searchEmpId != ""'>
-                    AND T.EMP_ID LIKE CONCAT('%', #{searchEmpId}, '%')
-                </if>
-                <if test='searchEmpNm != null and searchEmpNm != ""'>
-                    AND T.EMP_NAME LIKE CONCAT('%', #{searchEmpNm}, '%')
-                </if>
-            </when>
-            <otherwise>
-                AND T.EMP_ID = #{searchEmpId}
-            </otherwise>
-        </choose>
-    </select>
-
-    <select id="findCustoemrList" resultType="CamelCaseMap">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findCustoemrList */
-        SELECT EC.EMP_ID
-             , EC.BIZ_NO
-             , TC.CUST_NAME
-             , TC.OWNER_NAME
-          FROM EMP_CUSTOMER     EC
-          JOIN TB_CUSTOMER      TC
-            ON TC.CO_CODE       = EC.CO_CODE
-           AND TC.BIZ_NO        = EC.BIZ_NO
-         WHERE 1=1
-           AND EC.CO_CODE       = #{loginCoId}
-           AND EC.EMP_ID        = #{empId}
-    </select>
-
-    <select id="findCustomerListByBizNo">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.findCustomerListByBizNo */
-        SELECT TC.BIZ_NO
-             , TC.CUST_NAME
-             , TC.OWNER_NAME
-          FROM TB_CUSTOMER      TC
-         WHERE 1=1
-           AND TC.CO_CODE       = #{loginCoId}
-        <if test='searchCustId != null and searchCustId != "" '>
-            AND TC.BIZ_NO LIKE CONCAT('%', #{searchCustId}, '%')
-            OR TC.CUST_NAME LIKE CONCAT('%', #{searchCustId},'%')
+        <if test='searchEmpId != null and searchEmpId != ""'>
+            AND T.EMP_ID LIKE CONCAT('%', #{searchEmpId}, '%')
+        </if>
+        <if test='searchEmpNm != null and searchEmpNm != ""'>
+            AND T.EMP_NAME LIKE CONCAT('%', #{searchEmpNm}, '%')
         </if>
     </select>
 
-    <insert id="saveEmpCustomerList">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
-        INSERT INTO EMP_CUSTOMER(
+    <select id="findEmpAgencyList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.findEmpAgencyList */
+        SELECT EA.EMP_ID
+             , EA.AGENCY_ID
+             , TA.AGENCY_NAME
+             , TA.AGENCY_INCENTIVE_RATE
+             , TA.PROD_AMT
+             , TA.USE_IND
+        FROM EMP_AGENCY		EA
+        JOIN TB_AGENCY		TA
+          ON TA.CO_CODE     = EA.CO_CODE
+         AND TA.AGENCY_ID 	= EA.AGENCY_ID
+       WHERE 1=1
+         AND EA.CO_CODE     = #{loginCoId}
+         AND EA.EMP_ID 		= #{empId}
+    </select>
+
+    <select id="findAgencyList">
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.findAgencyList */
+        SELECT TA.AGENCY_ID
+             , TA.AGENCY_NAME
+             , TA.AGENCY_INCENTIVE_RATE
+             , TA.PROD_AMT
+             , TA.USE_IND
+          FROM TB_AGENCY      TA
+         WHERE 1=1
+           AND TA.CO_CODE       = #{loginCoId}
+        <if test='searchAgencyId != null and searchAgencyId != "" '>
+            AND TA.AGENCY_ID LIKE CONCAT('%', #{searchAgencyId}, '%')
+            OR TA.AGENCY_NAME LIKE CONCAT('%', #{searchAgencyId},'%')
+        </if>
+    </select>
+
+    <insert id="saveEmpAgencyList">
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.saveEmpAgencyList */
+        INSERT INTO EMP_AGENCY(
             CO_CODE
             , EMP_ID
-            , BIZ_NO
+            , AGENCY_ID
         ) VALUES (
             #{loginCoId}
             , #{empId}
-            , #{bizNo}
+            , #{agencyId}
         )
     </insert>
 
     <select id="checkDupl">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.checkDupl */
         SELECT COUNT(1)
-          FROM EMP_CUSTOMER
+          FROM EMP_AGENCY
          WHERE CO_CODE  = #{loginCoId}
            AND EMP_ID   = #{empId}
-           AND BIZ_NO   = #{bizNo}
+           AND AGENCY_ID    = #{agencyId}
     </select>
 
-    <delete id="deleteEmpCustomer">
-        /* com.biz.framework.mapper.pages.EmpCustomerMapper.saveEmpCustomerList */
-        DELETE FROM EMP_CUSTOMER
-        WHERE CO_cODE   = #{loginCoId}
+    <delete id="deleteEmpAgencyList">
+        /* com.biz.framework.mapper.pages.EmpAgencyMapper.deleteEmpAgencyList */
+        DELETE FROM EMP_AGENCY
+        WHERE CO_CODE   = #{loginCoId}
           AND EMP_ID    = #{empId}
-          AND BIZ_NO    = #{bizNo}
+          AND AGENCY_ID  = #{agencyId}
     </delete>
 </mapper>

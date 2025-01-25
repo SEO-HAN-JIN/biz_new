@@ -2,6 +2,7 @@ package com.biz.framework.service.pages;
 
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.pages.EmpAgencyDto;
 import com.biz.framework.dto.pages.EmpCustomerDto;
 import com.biz.framework.mapper.pages.EmpAgencyMapper;
 import com.biz.framework.mapper.pages.EmpCustomerMapper;
@@ -19,40 +20,40 @@ public class EmpAgencyService {
 
     private final EmpAgencyMapper empCustomerMapper;
 
-    public List<CamelCaseMap> findEmplList(EmpCustomerDto empCustomerDto) {
-        return empCustomerMapper.findEmplList(empCustomerDto);
+    public List<CamelCaseMap> findEmplList(EmpAgencyDto empAgencyDto) {
+        return empCustomerMapper.findEmplList(empAgencyDto);
     }
 
-    public List<CamelCaseMap> findCustoemrList(EmpCustomerDto empCustomerDto) {
-        return empCustomerMapper.findCustoemrList(empCustomerDto);
+    public List<CamelCaseMap> findEmpAgencyList(EmpAgencyDto empAgencyDto) {
+        return empCustomerMapper.findEmpAgencyList(empAgencyDto);
     }
 
-    public int saveEmpCustomerList(List<EmpCustomerDto> empCustomerDtoList) {
+    public int saveEmpAgencyList(List<EmpAgencyDto> empAgencyDtoList) {
         int result = 0;
-        if (!CollectionUtils.isEmpty(empCustomerDtoList)) {
-            for (EmpCustomerDto dto : empCustomerDtoList) {
+        if (!CollectionUtils.isEmpty(empAgencyDtoList)) {
+            for (EmpAgencyDto dto : empAgencyDtoList) {
                 if (empCustomerMapper.checkDupl(dto) > 0) {
-                    throw new ServiceException("중복되는 데이터가 존재합니다.\n사업자번호: " + dto.getBizNo());
+                    throw new ServiceException("중복되는 데이터가 존재합니다.\n대행사번호: " + dto.getAgencyId());
                 }
-                result += empCustomerMapper.saveEmpCustomerList(dto);
+                result += empCustomerMapper.saveEmpAgencyList(dto);
             }
         }
         return result;
     }
 
-    public int deleteEmpCustomerList(List<EmpCustomerDto> empCustomerDtoList) {
+    public int deleteEmpAgencyList(List<EmpAgencyDto> empAgencyDtoList) {
         int result = 0;
 
-        if (!CollectionUtils.isEmpty(empCustomerDtoList)) {
-            for (EmpCustomerDto dto : empCustomerDtoList) {
-                result += empCustomerMapper.deleteEmpCustomer(dto);
+        if (!CollectionUtils.isEmpty(empAgencyDtoList)) {
+            for (EmpAgencyDto dto : empAgencyDtoList) {
+                result += empCustomerMapper.deleteEmpAgencyList(dto);
             }
         }
 
         return result;
     }
 
-    public List<CamelCaseMap> findCustomerListModal(EmpCustomerDto empCustomerDto) {
-        return empCustomerMapper.findCustomerListByBizNo(empCustomerDto);
+    public List<CamelCaseMap> findAgencyList(EmpAgencyDto empAgencyDto) {
+        return empCustomerMapper.findAgencyList(empAgencyDto);
     }
 }

@@ -79,6 +79,12 @@
                                                 <!-- Row 1 -->
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <label class="form-label">대행사ID</label>
+                                                        <input type="text" id="agencyId" class="form-control" placeholder="대행사ID" name="agencyId" disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <label class="form-label">대행사명</label>
                                                         <input type="text" id="agencyName" class="form-control" placeholder="대행사명" name="agencyName">
                                                     </div>
@@ -101,7 +107,7 @@
                                                         <select class="form-select" id="useInd" name="useInd"></select>
                                                     </div>
                                                 </div>
-                                                <input type="hidden" id="agencyId" name="agencyId">
+<!--                                                <input type="hidden" id="agencyId" name="agencyId">-->
                                             </div>
                                         </form>
                                     </div>
@@ -181,6 +187,7 @@
 
                 var columns = new CustomTuiGrid()
                     .add('agencyId', '번호', 200, {visible: false})
+                    .add('agencyId', '대행사ID', 100, {})
                     .add('agencyName', '대행사명', 100, {})
                     .add('agencyIncentiveRate', '대행사마진율', 100, {align: 'right'})
                     .addNumber('prodAmt', '상품단가', 100, {

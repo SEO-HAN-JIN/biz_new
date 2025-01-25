@@ -29,13 +29,13 @@
                         <div class="row align-items-center p-2 search-area custom-bg">
                             <div class="col-md-11">
                                 <div class="form-group row mb-0 align-items-center text-center" id="searchTable">
-                                    <label class="col-form-label col-lg-1 col-3">직원</label>
-                                    <div class="col-lg-3 col-9">
-                                        <div class="d-flex">
+                                    <label class="col-form-label col-lg-1 col-3">직원ID</label>
+                                    <div class="col-lg-2 col-9">
                                         <input type="text" id="searchEmpId" class="form-control form-control-sm" name="searchEmpId" placeholder="직원ID">
-                                            <span style="padding: 0px 5px">/</span>
-                                        <input type="text" id="searchEmpNm" class="form-control form-control-sm" name="searchEmpId" placeholder="직원명">
-                                        </div>
+                                    </div>
+                                    <label class="col-form-label col-lg-1 col-3">직원명</label>
+                                    <div class="col-lg-2 col-9">
+                                        <input type="text" id="searchEmpNm" class="form-control form-control-sm" name="searchEmpNm" placeholder="직원명">
                                     </div>
                                 </div>
                             </div>
@@ -104,8 +104,8 @@
                                                         <div class="row align-items-center p-2 search-area custom-bg">
                                                             <!-- 입력 필드1 -->
                                                             <div class="col-md-4 d-flex align-items-center">
-                                                                <label for="agencyName" class="col-form-label me-2 col-lg-5">대행사명</label>
-                                                                <input type="text" id="agencyName" class="form-control form-control-sm col-lg-5" placeholder="대행사명">
+                                                                <label for="_agencyModal_agencyId" class="col-form-label me-2 col-lg-5">대행사ID/명</label>
+                                                                <input type="text" id="_agencyModal_agencyId" class="form-control form-control-sm col-lg-5" placeholder="대행사ID/명">
                                                             </div>
                                                             <!-- 입력 필드2 -->
                                                             <div class="col-md-4 d-flex align-items-center">
@@ -165,7 +165,7 @@
         initEvent();
         initEmpGrid();
         initAgencyGrid();
-        initCustomerModalGrid();
+        initAgencyModalGrid();
     });
 
     const initEvent = () => {
@@ -190,7 +190,7 @@
         empGrid = columns.init('empGrid', [])
             .render();
 
-        empGrid.getGrid().on('click', function (ev) {
+        empGrid.getGrid().on('focusChange', function (ev) {
             let value = empGrid.getGrid().getRow(ev.rowKey);
             if (!isNull(value)) {
                 searchAgencyGrid(value);
@@ -203,10 +203,14 @@
         const columns = new CustomTuiGrid()
             .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
             .enableCheckbox(true) // 체크박스 활성화
-            .add('agencyId', '대행사ID', 300, {visible: false})
-            .add('agencyName', '대행사명', 300, {})
-            .add('agencyIncentiveRate', '대행사마진율', 450, {})
-            .add('prodAmt', '상품단가', 450, {})
+            .add('agencyId', '대행사ID', 100, {})
+            .add('agencyName', '대행사명', 120, {})
+            .add('agencyIncentiveRate', '대행사마진율', 100, {})
+            .addNumber('prodAmt', '상품단가', 100, {
+                align: 'right',
+                comma: true,
+            })
+            .add('useInd', '사용여부', 80, {})
         ;
 
         agencyGrid = columns.init('agencyGrid', []).render();
@@ -214,13 +218,17 @@
         searchEmpGrid();
     }
 
-    const initCustomerModalGrid = () => {
+    const initAgencyModalGrid = () => {
         const columns = new CustomTuiGrid()
             .enableCheckbox(true) // 체크박스 활성화
-            .add('agencyId', '대행사ID', 300, {visible: false})
-            .add('agencyName', '대행사명', 300, {})
-            .add('agencyIncentiveRate', '대행사마진율', 450, {})
-            .add('prodAmt', '상품단가', 450, {})
+            .add('agencyId', '대행사ID', 170, {})
+            .add('agencyName', '대행사명', 170, {})
+            .add('agencyIncentiveRate', '대행사마진율', 140, {})
+            .addNumber('prodAmt', '상품단가', 120, {
+                align: 'right',
+                comma: true,
+            })
+            .add('useInd', '사용여부', 100, {})
         ;
 
         agencyModalGrid = columns.init('agencyModalGrid', []).render();
@@ -248,6 +256,7 @@
             obj.agencyName = el.agencyName;
             obj.agencyIncentiveRate = el.agencyIncentiveRate;
             obj.prodAmt = el.prodAmt;
+            obj.useInd = el.useInd;
             rowDataList.push(obj);
         })
         agencyGrid.getGrid().appendRows(rowDataList, {});
@@ -257,7 +266,11 @@
 
     const searchEmpGrid = () => {
         let param = $("#searchTable").getData();
-        empGrid.load(apiUrl + "/emp/list", param, function(data){});
+        empGrid.load(apiUrl + "/emp/list", param, function(data){
+            setTimeout(() => {
+                empGrid.getGrid().focus(0, 'empId', true);
+            }, 100)
+        });
     }
 
     const searchAgencyGrid = (param) => {
@@ -270,15 +283,15 @@
 
     const searchCustModalGrid = () => {
         let param = {
-            agencyName : $("#_agencyModal_agencyName").val()
+            searchAgencyId : $("#_agencyModal_agencyId").val()
         }
 
         agencyModalGrid.load(apiUrl + "/agency/modal/list", param, function(data){});
     }
 
     const openPgmModal = () => {
-        // agencyModalGrid.clear();
-        // agencyModalGrid.getGrid().refreshLayout();
+        agencyModalGrid.clear();
+        agencyModalGrid.getGrid().refreshLayout();
 
         searchCustModalGrid();
     }
