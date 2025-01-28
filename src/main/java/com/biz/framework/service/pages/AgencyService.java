@@ -54,4 +54,13 @@ public class AgencyService {
     public List<CamelCaseMap> findAgencyList(AgencyDto agencyDto) {
         return agencyMapper.findAgencyList(agencyDto);
     }
+
+    /**
+     * 대행사 인센티브
+     * @param agencyDto
+     * @return
+     */
+    public CamelCaseMap findAgencyIncentiveRate(AgencyDto agencyDto) {
+        return agencyMapper.findAgencyIncentiveRate(agencyDto);
+    }
 }

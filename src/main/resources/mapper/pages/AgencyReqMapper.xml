@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.AgencyReqMapper">
+
+    <select id="findIncentiveRate" resultType="double">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.findIncentiveRate */
+        SELECT IFNULL(INCENTIVE_RATE, 0) AS INCENTIVE_RATE
+          FROM TB_EMP
+         WHERE CO_CODE      = #{loginCoId}
+           AND EMP_ID       = #{loginUserId}
+    </select>
+
+    <select id="findApplypayment" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.findApplypayment */
+        SELECT *
+          FROM AGENCY_REQ
+        <if test='custName != null  and custName != "" '>
+            AND CU.CUST_NAME LIKE CONCAT('%', #{custName}, '%')
+        </if>
+        <if test='prodName != null  and prodName != "" '>
+            AND PR.PROD_NAME LIKE CONCAT('%', #{prodName}, '%')
+        </if>
+    </select>
+
+    <select id="createSettlementSeq">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.createSettlementSeq */
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(AGENCY_SEQ), 0) + 1, '4', '0')) AS AGENCY_SEQ
+          FROM AGENCY_REQ
+         WHERE CO_CODE      = #{loginCoId}
+           AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
+
+    <insert id="saveApplypayment">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.saveApplypayment */
+        INSERT INTO AGENCY_REQ
+        ( CO_CODE
+        , AGENCY_SEQ
+        , AGECNY_ID
+        , REQ_DATE
+        , PROD_NAME
+        , INFLOW_CNT
+        , PROD_AMT
+        , SETTLEMENT_AMT
+        , DEPOSIT_AMT
+        , APPLY_STATUS
+        ) VALUES
+        (
+          #{loginCoId}
+        , #{agencySeq}
+        , #{agencyId}
+        , DATE_FORMAT(NOW(), '%Y-%m-%d')
+        , #{prodAmt}
+        , #{inflowCnt}
+        , #{prodAmt}
+        , #{settlementAmt}
+        , #{depositAmt}
+        , #{applyStatus}
+        )
+    </insert>
+
+    <delete id="deleteSettlement">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.deleteSettlement */
+        DELETE FROM AGENCY_REQ
+        WHERE CO_CODE           = #{loginCoId}
+          AND AGENCY_SEQ        = #{agencySeq}
+          AND AGENCY_ID         = #{agencyId}
+    </delete>
+
+    <select id="checkApplyStatus">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.checkApplyStatus */
+        SELECT APPLY_STATUS
+          FROM SETTLEMENT
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+          AND PROD_ID           = #{prodId}
+          AND USER_ID           = #{userId}
+          AND CUST_ID           = #{custId}
+    </select>
+
+    <update id="updateApplypayment">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.updateApplypayment */
+        UPDATE AGENCY_REQ
+           SET REQ_DATE         = DATE_FORMAT(NOW(), '%Y-%m-%d')
+             , PROD_NAME        = #{prodName}
+             , INFLOW_CNT       = #{inflowCnt}
+             , PROD_AMT         = #{prodAmt}
+             , SETTLEMENT_AMT   = #{settlementAmt}
+             , DEPOSIT_AMT      = #{depositAmt}
+             , APPLY_STATUS     = #{applyStatus}
+         WHERE CO_CODE          = #{loginCoId}
+           AND AGENCY_SEQ       = #{agencySeq}
+           AND AGENCY_ID        = #{agencyId}
+    </update>
+
+    <update id="cancelSettlement">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.cancelSettlement */
+        UPDATE SETTLEMENT
+           SET APPLY_STATUS     = 'C'
+         WHERE CO_cODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PROD_ID          = #{prodId}
+           AND USER_ID          = #{userId}
+           AND CUST_ID          = #{custId}
+    </update>
+</mapper>

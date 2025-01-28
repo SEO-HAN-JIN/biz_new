@@ -233,6 +233,7 @@
 
                 if(status == "error"){
                     alert("콘텐츠 로딩에 실패했습니다.");
+                    window.location.href = '/';
                 }
                 document.getElementById("spinnerOverlay").style.display = "none";
             });

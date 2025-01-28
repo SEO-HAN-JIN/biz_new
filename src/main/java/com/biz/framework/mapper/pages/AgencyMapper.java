@@ -20,4 +20,6 @@ public interface AgencyMapper {
     List<CamelCaseMap> findAgencyList(AgencyDto agencyDto);
 
     int updateAgency(AgencyDto agencyDto);
+
+    CamelCaseMap findAgencyIncentiveRate(AgencyDto agencyDto);
 }

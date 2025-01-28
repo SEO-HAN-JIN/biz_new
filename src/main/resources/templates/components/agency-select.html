@@ -1,0 +1,88 @@
+<!-- templates/fragments/cust-select.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="agency-select (name)"
+          th:with="id=${id} ?: '',
+                   width=${width} ?: '100%',
+                   items=${items} ?: ${ { } },
+                   disabled=${disabled} ?: false,
+                   readonly=${readonly} ?: false,
+                   addClass=${addClass} ?: 'control is-select is-medium',
+                   title=${title} ?: '',
+                   addSelectClass = ${addSelectClass} ?: '',
+                   tabindex=${tabindex} ?: '-1',
+                   required=${required} ?: false">
+<select class="choices prod-select" th:id="${id}" th:name="${name}"></select>
+
+<style>
+    .choices__list--dropdown {
+        max-height: 200px; /* 최대 높이를 설정 */
+        overflow-y: auto; /* 스크롤 생성 */
+    }
+
+    /* 스크롤바 스타일 */
+    .choices__list--dropdown::-webkit-scrollbar {
+        width: 3px;
+    }
+
+    .choices__list--dropdown::-webkit-scrollbar-thumb {
+        background: #888; /* 스크롤바 색상 */
+        border-radius: 4px;
+    }
+
+    .choices__list--dropdown::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+</style>
+<script th:inline="javascript">
+
+
+    (function () {
+
+        const selectElement = document.getElementById(/*[[${id}]]*/ "");
+
+        // 현재 날짜를 가져옵니다.
+        var nowDate = new Date();
+
+        // 날짜를 'YYYY-MM-DD' 형식으로 포맷
+        var formattedDate = nowDate.getFullYear() + '-' +
+            String(nowDate.getMonth() + 1).padStart(2, '0') + '-' +
+            String(nowDate.getDate()).padStart(2, '0');
+
+        if (selectElement != null) {
+            fetch(`/api/pages/agency/list`)
+                .then(response => response.json())
+                .then(data => {
+                    selectElement.innerHTML = ''; // 기존 옵션 제거
+
+                    // 플레이스홀더 옵션 추가
+                    const placeholderOption = document.createElement('option');
+                    placeholderOption.value = '';
+                    placeholderOption.textContent = '';
+                    placeholderOption.disabled = true;
+                    placeholderOption.selected = true; // 기본 선택 상태
+                    selectElement.appendChild(placeholderOption);
+
+                    data.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.agencyId;
+                        option.textContent = item.agencyName;
+                        selectElement.appendChild(option);
+                    });
+
+                    if (!selectElement.choicesInstance) {
+                        selectElement.choicesInstance = new Choices(selectElement, {
+                            placeholder: true,
+                            placeholderValue: '',
+                            itemSelectText: 'select',
+                            maxItemCount: 4, // 표시할 최대 항목 수
+                        });
+                    }
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+    })()
+
+</script>
+</th:block>
+</html>

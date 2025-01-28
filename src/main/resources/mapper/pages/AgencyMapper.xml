@@ -76,4 +76,13 @@
          WHERE CO_CODE          = #{loginCoId}
            AND AGENCY_ID        = #{agencyId}
     </update>
+
+    <select id="findAgencyIncentiveRate">
+        /* com.biz.framework.mapper.pages.AgencyMapper.findAgencyIncentiveRate */
+        SELECT AGENCY_ID
+             , AGENCY_INCENTIVE_RATE
+          FROM TB_AGENCY        TA
+         WHERE TA.CO_cODE       = #{loginCoId}
+           AND TA.AGENCY_ID     = #{agencyId}
+    </select>
 </mapper>

@@ -34,4 +34,9 @@ public class AgencyRestController {
     public int deleteAgency(@RequestBody AgencyDto agencyDto) {
         return agencyService.deleteAgency(agencyDto);
     }
+
+    @GetMapping("/list")
+    public List<CamelCaseMap> findAgencyList(AgencyDto agencyDto) {
+        return agencyService.findAgencyList(agencyDto);
+    }
 }
