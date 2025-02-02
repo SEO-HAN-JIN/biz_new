@@ -73,10 +73,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-primary btn-m" id="modalAddBtn"
-                                            data-bs-toggle="modal" data-bs-target="#addModal">추가
-                                    </button>
-
+                                    <button type="button" class="btn btn-primary btn-m" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#addModal">추가</button>
                                     <button type="button" class="btn btn-secondary btn-m" id="btnCancel">요청취소</button>
                                     <button type="button" class="btn btn-secondary btn-m" id="btnDeleteAgencyReqGrid">삭제
                                     </button>
@@ -105,58 +102,58 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="_addModal_userName" name="_addModal_userName" class="form-control" disabled>
-                                                            <input type="hidden" id="_addModal_userId" name="_addModal_userId" class="form-control" disabled>
+                                                            <input type="text" id="_modal_userName" name="userName" class="form-control" disabled>
+                                                            <input type="hidden" id="_modal_userId" name="userId" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">대행사</label>
                                                             <th:block th:replace="components/agency-select :: agency-select(
-                                                                id='_addModal_agencyId',
+                                                                id='_modal_agencyId',
                                                                 name='agencyId')"></th:block>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">인센티브율</label>
-                                                            <input type="text" id="_addModal_agencyIncentiveRate" name="_addModal_agencyIncentiveRate" class="form-control is-num text-end" disabled>
+                                                            <input type="text" id="_modal_agencyIncentiveRate" name="agencyIncentiveRate" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품명</label>
-                                                            <input type="text" id="_addModal_prodName" class="form-control text-end" name="_addModal_prodName">
+                                                            <input type="text" id="_modal_prodName" class="form-control text-end" name="prodName">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">유입수</label>
-                                                            <input type="text" id="_addModal_inflowCnt" class="form-control is-num text-end" name="_addModal_inflowCnt">
+                                                            <input type="text" id="_modal_inflowCnt" class="form-control is-num text-end calc-settlement-amt" name="inflowCnt">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품가</label>
-                                                            <input type="text" id="_addModal_prodAmt" class="form-control is-num text-end" name="_addModal_prodAmt">
+                                                            <input type="text" id="_modal_prodAmt" class="form-control is-num text-end calc-settlement-amt" name="prodAmt">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">정산액</label>
-                                                            <input type="text" id="_addModal_settlementAmt" class="form-control is-num text-end" name="_addModal_settlementAmt" disabled>
+                                                            <input type="text" id="_modal_settlementAmt" class="form-control is-num text-end" name="settlementAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">입금액</label>
-                                                            <input type="text" id="_addModal_depositAmt" class="form-control is-num text-end" name="_addModal_depositAmt" disabled>
+                                                            <input type="text" id="_modal_depositAmt" class="form-control is-num text-end" name="depositAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">처리여부</label>
-                                                            <input type="text" id="applyStatus" class="form-control is-num text-end" name="applyStatus">
+                                                            <input type="text" id="_modal_applyStatus" class="form-control is-num text-end" name="applyStatus">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -185,8 +182,7 @@
     <script th:inline="javascript">
         (function() {
             const apiUrl = '/api/pages/agencyreq';
-            const _addModalPrefix = '_addModal_';
-            const _detailModalPrefix = '_detailModal_';
+            const _modalPrefix = '_modal_';
 
             let agencyReqGrid;
             let $isNew = 'N';
@@ -254,70 +250,16 @@
                     obj.val(formatNumber(obj.val()));
                 });
 
-                // 판매시작일, 판매종료일, 판매가, 유입수 입력 이벤트 설정
-                const elements = ['dateWorkFrom', 'dateWorkTo', 'saleAmt', 'inflowCnt', 'gubun'];
-
-                elements.forEach(id => {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.addEventListener("change", function () {
-                            if (id == "dateWorkFrom" || id == "dateWorkTo")
-                                $("#workDay").val(getDateDiff($("#dateWorkFrom").val(), $("#dateWorkTo").val()))
-
-                            if(id == "gubun") {
-
-                                if(["05", "06"].includes(element.value)) {
-                                    $("#mileageUseInd").prop('checked', false);
-                                    $("#mileageUseInd").attr('disabled', true);
-
-                                }
-                                else {
-                                    $("#mileageUseInd").attr('disabled', false);
-                                }
-
-                                // 킵사용 제어
-                                if($("#mileageUseInd").prop('checked'))
-                                {
-                                    $("#useMileage").attr('disabled', false);
-                                }
-                                else
-                                {
-                                    $("#useMileage").val('0');
-                                    $("#useMileage").attr('disabled', true);
-                                }
-
-                            }
-
-                            calcSaleAmt();
-                        });
-                    }
-                });
+                $(".calc-settlement-amt").on('input', function() {
+                    saleSum();
+                })
 
                 // 대행사 정보 변경할 때마다 마일리지 금액 가져오기
-                $('#' + _addModalPrefix + 'agencyId').on("change", function () {
+                $('#' + _modalPrefix + 'agencyId').on("change", function () {
                     findAgencyIncentiveRate(this.value);
                 })
 
-                // 상품 정보 변경할 때마다 상품가 가져오기
-                $("#prodId").on("change", function () {
 
-                    const nowDate = new Date(); // 당월 1일
-
-                    var params = {
-                        baseDate : formatDate(nowDate),
-                        prodId : this.value
-                    };
-
-                    $.get(apiUrl + "/prodinfo", params, function (rsData) {
-
-                        if (!isNull(rsData)) {
-                            $("#prodAmt").val(setComma(rsData.prodAmt));
-                            saleSum();
-                        }
-                    })
-                })
-
-                $("#saleTotalAmt").on('change', calcSaleAmt);
                 $("#btnCancel").on('click', cancel);
             }
 
@@ -329,7 +271,7 @@
                     success: (result) => {
                         if(!isNull(result))
                         {
-                            $('#' + _addModalPrefix + 'agencyIncentiveRate').val(result.agencyIncentiveRate);
+                            $('#' + _modalPrefix + 'agencyIncentiveRate').val(result.agencyIncentiveRate);
                             saleSum();
                         }
                     }
@@ -338,79 +280,16 @@
 
             function saleSum() {
                 let formData = $('#addModal').getData();
-                console.log("## formData ##", formData);
 
-                const $saleTotalAmt = $("#saleTotalAmt");
-                const $saleAmt = $("#saleAmt");
-                const $prodAmt = $("#prodAmt");
-                const $inflowCnt = $("#inflowCnt");
-                const $workDay = $("#workDay");
-                const $incentiveRate = $("#incentiveRate");
-                const $expectRateAmt = $("#expectRateAmt");
-                const $expectAmt = $("#expectAmt");
-                const $prodTotalAmt = $("#prodTotalAmt");
-                const $useMileage = $("#useMileage");
+                const inflowCnt = formData.inflowCnt; // 유입수
+                const prodAmt = formData.prodAmt;     // 상품가
+                const agencyIncentiveRate = formData.agencyIncentiveRate;  // 인센티브율
 
-                const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
-                // const _saleAmt = isNull($saleAmt.val()) ? 0 : Number(removeComma($saleAmt.val()));
-                const _prodAmt = isNull($prodAmt.val()) ? 0 : Number(removeComma($prodAmt.val()));
-                const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
-                const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
-                const _incentiveRate = parseFloat($incentiveRate.val());
-                const _useMileage = isNull($useMileage.val()) ? 0 : parseInt(removeComma($useMileage.val()));
+                const settlementAmt = Math.floor((inflowCnt * prodAmt));
+                $('#' + _modalPrefix + 'settlementAmt').val(formatNumber(settlementAmt));
 
-                // 부가세율 설정 (10% 부가세)
-                const vatRate = 1.1;
-
-                // 판매총액 (판매가 * 유입수 * 작업일) - 부가세 포함
-                //const saleTotalAmt = _saleTotalAmt === 0 ? Math.floor((_saleAmt * _inflowCnt * _workDay) * vatRate) : _saleTotalAmt;
-
-                // 상품가기준 상품총액 (상품가 * 유입수 * 작업일) - 부가세 포함
-                const prodTotalAmt = Math.floor((_prodAmt * _inflowCnt * _workDay));
-
-                // 영업이익
-                //const costAmt = saleTotalAmt - prodTotalAmt;
-
-                // * 영업이익 구할때 판매총액은 기입하므로 별도로 다시 안구해도됨 - HC
-                const costAmt = _saleTotalAmt - prodTotalAmt
-
-                // 소수점 제외하고 정수만 출력
-                //const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
-
-                let rate = 0;
-                let expectAmt = 0;
-                // * 소수점 반올림 - HC
-                if(["05", "06"].includes($("#gubun").val()))
-                {
-                    rate = -_saleTotalAmt;
-                    expectAmt = -(_saleTotalAmt - _useMileage);
-                }
-                else {
-                    rate = roundDecimal((costAmt * _incentiveRate) / vatRate, 0);
-                    expectAmt = (_saleTotalAmt - _useMileage);
-                }
-
-                // * 판매총액 입력으로 변경해서 수정안해도됨
-                //$saleTotalAmt.val(formatNumber(saleTotalAmt));
-                $expectRateAmt.val(formatNumber(rate));
-                $prodTotalAmt.val(formatNumber(prodTotalAmt));
-
-                // expectAmt 재계산
-                $expectAmt.val(expectAmt);
-
-            }
-
-            const getDateDiff = (d1, d2) => {
-
-                const date1 = new Date(d1);
-                const date2 = new Date(d2);
-
-                const diffDate = date1.getTime() - date2.getTime();
-                let diffDay = Math.abs(diffDate / (1000 * 60 * 60 * 24)) + 1; // 밀리세컨 * 초 * 분 * 시 = 일
-                if (Number.isNaN(diffDay)) {
-                    diffDay = 0;
-                }
-                return diffDay;
+                const depositAmt = Math.floor(settlementAmt * agencyIncentiveRate);
+                $('#' + _modalPrefix + 'depositAmt').val(formatNumber(depositAmt));
             }
 
             const initAgencyReqGrid = () => {
@@ -469,15 +348,15 @@
             }
 
             const openPgmModal = (param) => {
-                clearForm('addModal');
+                $("#addModal").clear();
 
                 if (param === '1') {
                     $isNew = true;
 
-                    $('#' + _addModalPrefix + 'userId').val(_userId);
-                    $('#' + _addModalPrefix + 'userName').val(_userNm);
+                    $('#' + _modalPrefix + 'userId').val(_userId);
+                    $('#' + _modalPrefix + 'userName').val(_userNm);
 
-                    ableBtn(false, _addModalPrefix);
+                    ableBtn(false, _modalPrefix);
 
                     $("#useMileage").attr('disabled', true);
 
@@ -533,59 +412,17 @@
 
             }
 
-            const clearForm = (id) => {
-                $('#' + id).find('input, select, textarea').each(function () {
-                    if ($(this).is(':checkbox')) {
-                        // 체크박스는 체크 해제
-                        $(this).prop('checked', false);
-                    } else if ($(this).is('select')) {
-                        const obj = this;
-                        if (obj.classList.contains('choices') && obj.choicesInstance) {
-                            // Choices.js가 적용된 select 초기화
-                            obj.choicesInstance.setChoiceByValue(''); // 선택값 초기화
-                        } else {
-                            // 일반 select는 첫 번째 값으로 초기화
-                            $(this).val($(this).find('option:first').val());
-                        }
-                    } else {
-                        // 나머지 input 및 textarea는 빈 값으로 초기화
-                        $(this).val('');
-                    }
-                });
-            };
-
-
             const fn_saveAgencyReqGrid = () => {
-                const param = {};
-                $('#addModal').find('input, select, input[type="checkbox"]').each((index, item) => {
-                    // checkbox일 때
-                    if ($(item).is(':checkbox')) {
-                        param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
-                    } else {
-                        // input일 때의 처리
-                        param[item.id] = item.value.replace(/,/g, ''); // input 값 설정
-                    }
-                });
+                let param = $('#addModal').getData();
+                console.log("## param ##", param);
 
-                var dateFrom = param.dateWorkFrom;
-                var dateTo = param.dateWorkTo;
-                if (isNull(dateFrom)) {
-                    alert("시작일을 입력해주세요.");
+                if (isNull(param.agencyId)) {
+                    alert("대행사를 선택해주세요.");
                     return false;
                 }
 
-                if (isNull(dateTo)) {
-                    alert("종료일을 입력해주세요.");
-                    return false;
-                }
-
-                if (new Date(dateTo) < new Date(dateFrom)) {
-                    alert("작업기간이 잘못되었습니다.");
-                    return false;
-                }
-
-                if (isNull(param.saleAmt)) {
-                    alert("판매가를 입력해주세요.");
+                if (isNull(param.prodName)) {
+                    alert("상품명을 입력해주세요.");
                     return false;
                 }
 
@@ -594,32 +431,9 @@
                     return false;
                 }
 
-                if (isNull(param.saleTotalAmt)) {
-                    alert("판매총액을 입력해주세요.");
+                if (isNull(param.prodAmt)) {
+                    alert("상품가를 입력해주세요.");
                     return false;
-                }
-
-                if (isNull(param.gubun)) {
-                    alert("요청구분을 선택해주세요");
-                    return false;
-                }
-
-                var keepInd = $("#mileageUseInd").prop('checked');
-                if (keepInd) {
-                    var keepUseAmt = removeComma($("#useMileage").val());
-
-                    if (keepUseAmt <= 0) {
-                        alert("킵 사용 체크 시 금액을 입력해주세요");
-                        return false;
-                    }
-                }
-
-                if (keepInd) {
-                    param.mileageUseInd = 'Y';
-                } else {
-                    param.mileageUseInd = 'N';
-                    param.useMileage = '0';     // 킵사용 안하면 0으로 세팅
-                    param.expectAmt = param.saleTotalAmt;
                 }
 
                 if ($isNew) {
@@ -655,7 +469,6 @@
             }
 
             const fn_deleteAgencyReqGrid = () => {
-
 
                 const checkedRows = agencyReqGrid.getCheckedRows();
                 if (checkedRows.length <= 0) {
@@ -697,42 +510,6 @@
                         }
                     })
                 }
-            }
-
-            // 판매가 구하기
-            const calcSaleAmt = () => {
-                const $saleTotalAmt = $("#saleTotalAmt");
-                const $saleAmt = $("#saleAmt");
-                const $inflowCnt = $("#inflowCnt");
-                const $workDay = $("#workDay");
-
-                const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
-                const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
-                const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
-
-                // 판매가, 상품가도 부가세 포함하여 금액 입력 그러므로 계산식에서 부가세 1*1 안해도됨
-                //const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
-                const inflowAmt = (_inflowCnt * _workDay);
-
-                let prodAmt = 0;
-                if(inflowAmt != 0)
-                    prodAmt= roundDecimal(_saleTotalAmt / inflowAmt, 2);
-
-                $saleAmt.val(prodAmt);
-
-                saleSum();
-            }
-
-            const closeBeforeModal = () => {
-                console.log('모달이 곧 닫힙니다!');
-            }
-
-            const closeAfterModal = () => {
-                console.log('모달이 닫혔습니다!');
-            }
-
-            const modalAcceptBtn = () => {
-                searchAgencyReqGrid();
             }
 
             const cancel = () => {

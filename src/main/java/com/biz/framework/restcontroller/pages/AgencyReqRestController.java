@@ -37,8 +37,4 @@ public class AgencyReqRestController {
         return agencyReqService.deleteSettlement(agencyReqDto);
     }
 
-    @PostMapping("/cancel")
-    public int cancelSettlement(@RequestBody AgencyReqDto agencyReqDto) {
-        return agencyReqService.cancelSettlement(agencyReqDto);
-    }
 }

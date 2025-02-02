@@ -24,16 +24,16 @@
         </if>
     </select>
 
-    <select id="createSettlementSeq">
-        /* com.biz.framework.mapper.pages.AgencyReqMapper.createSettlementSeq */
+    <select id="createAgencySeq">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.createAgencySeq */
         SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(AGENCY_SEQ), 0) + 1, '4', '0')) AS AGENCY_SEQ
           FROM AGENCY_REQ
          WHERE CO_CODE      = #{loginCoId}
            AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
     </select>
 
-    <insert id="saveApplypayment">
-        /* com.biz.framework.mapper.pages.AgencyReqMapper.saveApplypayment */
+    <insert id="saveAgencyReq">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.saveAgencyReq */
         INSERT INTO AGENCY_REQ
         ( CO_CODE
         , AGENCY_SEQ
@@ -42,8 +42,8 @@
         , PROD_NAME
         , INFLOW_CNT
         , PROD_AMT
-        , SETTLEMENT_AMT
-        , DEPOSIT_AMT
+        , SALE_TOTAL_AMT
+        , EXPECT_AMT
         , APPLY_STATUS
         ) VALUES
         (
@@ -54,8 +54,8 @@
         , #{prodAmt}
         , #{inflowCnt}
         , #{prodAmt}
-        , #{settlementAmt}
-        , #{depositAmt}
+        , #{saleTotalAmt}
+        , #{expectAmt}
         , #{applyStatus}
         )
     </insert>
@@ -65,6 +65,7 @@
         DELETE FROM AGENCY_REQ
         WHERE CO_CODE           = #{loginCoId}
           AND AGENCY_SEQ        = #{agencySeq}
+          AND USER_ID           = #{userId}
           AND AGENCY_ID         = #{agencyId}
     </delete>
 
@@ -79,18 +80,19 @@
           AND CUST_ID           = #{custId}
     </select>
 
-    <update id="updateApplypayment">
-        /* com.biz.framework.mapper.pages.AgencyReqMapper.updateApplypayment */
+    <update id="updateAgencyReq">
+        /* com.biz.framework.mapper.pages.AgencyReqMapper.updateAgencyReq */
         UPDATE AGENCY_REQ
            SET REQ_DATE         = DATE_FORMAT(NOW(), '%Y-%m-%d')
              , PROD_NAME        = #{prodName}
              , INFLOW_CNT       = #{inflowCnt}
              , PROD_AMT         = #{prodAmt}
-             , SETTLEMENT_AMT   = #{settlementAmt}
-             , DEPOSIT_AMT      = #{depositAmt}
+             , SALE_TOTAL_AMT   = #{saleTotalAmt}
+             , EXPECT_AMT       = #{expectAmt}
              , APPLY_STATUS     = #{applyStatus}
          WHERE CO_CODE          = #{loginCoId}
            AND AGENCY_SEQ       = #{agencySeq}
+           AND USER_ID          = #{userId}
            AND AGENCY_ID        = #{agencyId}
     </update>
 

@@ -13,7 +13,7 @@ public interface AgencyReqMapper {
 
     List<CamelCaseMap> findApplypayment(AgencyReqDto agencyReqDto);
 
-    int saveApplypayment(AgencyReqDto agencyReqDto);
+    int saveAgencyReq(AgencyReqDto agencyReqDto);
 
     int deleteSettlement(AgencyReqDto agencyReqDto);
 
@@ -21,9 +21,9 @@ public interface AgencyReqMapper {
 
     String checkApplyStatus(AgencyReqDto agencyReqDto);
 
-    int updateApplypayment(AgencyReqDto agencyReqDto);
+    int updateAgencyReq(AgencyReqDto agencyReqDto);
 
-    String createSettlementSeq(AgencyReqDto agencyReqDto);
+    String createAgencySeq(AgencyReqDto agencyReqDto);
 
     int cancelSettlement(AgencyReqDto dto);
 }
