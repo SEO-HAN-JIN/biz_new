@@ -36,5 +36,7 @@ public class SettlementmstDto extends BaseDto {
 
     
     private List<SettlementmstDto> settlementmstDtoList;
+    private String[] reqGubunList;
+    private String loginCoId;
 
 }

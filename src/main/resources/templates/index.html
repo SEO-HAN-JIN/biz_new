@@ -25,11 +25,11 @@
                                     <div class="d-flex">
                                         <div class="me-4">
                                             <h6 class="text-muted mb-1">정산 건수</h6>
-                                            <h6 class="font-extrabold mb-0">26</h6>
+                                            <h6 class="font-extrabold mb-0" id="settlementCount"></h6>
                                         </div>
                                         <div>
                                             <h6 class="text-muted mb-1">정산 금액</h6>
-                                            <h6 class="font-extrabold mb-0">5,000,000</h6>
+                                            <h6 class="font-extrabold mb-0" id="settlementAmount"></h6>
                                         </div>
                                     </div>
                                 </div>
@@ -51,11 +51,11 @@
                                     <div class="d-flex">
                                         <div class="me-4">
                                             <h6 class="text-muted mb-1">환불 건수</h6>
-                                            <h6 class="font-extrabold mb-0">80</h6>
+                                            <h6 class="font-extrabold mb-0" id="refundCount"></h6>
                                         </div>
                                         <div>
                                             <h6 class="text-muted mb-1">환불 금액</h6>
-                                            <h6 class="font-extrabold mb-0">1,120,000</h6>
+                                            <h6 class="font-extrabold mb-0" id="refundAmount"></h6>
                                         </div>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                             </div>
                                             <div class="ms-4">
                                                 <h6 class="text-muted mb-1">결재 건</h6>
-                                                <h5 class="font-weight-bold mb-0">12</h5>
+                                                <h5 class="font-weight-bold mb-0" id="allApproval"></h5>
                                             </div>
                                         </div>
                                     </div>
@@ -101,7 +101,7 @@
                                             </div>
                                             <div class="ms-4">
                                                 <h6 class="text-muted mb-1">진행 중</h6>
-                                                <h5 class="font-weight-bold mb-0">5</h5>
+                                                <h5 class="font-weight-bold mb-0" id="progressApproval"></h5>
                                             </div>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                                             </div>
                                             <div class="ms-4">
                                                 <h6 class="text-muted mb-1">결재 완료</h6>
-                                                <h5 class="font-weight-bold mb-0">8</h5>
+                                                <h5 class="font-weight-bold mb-0" id="confirmApproval"></h5>
                                             </div>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                             </div>
                                             <div class="ms-4">
                                                 <h6 class="text-muted mb-1">반려</h6>
-                                                <h5 class="font-weight-bold mb-0">2</h5>
+                                                <h5 class="font-weight-bold mb-0" id="rejectApproval"></h5>
                                             </div>
                                         </div>
                                     </div>
@@ -201,15 +201,90 @@
 
 
     <script th:inline="javascript">
-
-        const apiUrl = "/portal";
+        const apiUrl = '/api/approval';
 
         $(document).ready(function () {
-
-
+            // 정산현황
+            settlementStatus();
+            // 결재정보
+            approvalInfo();
 
         });
 
+        function settlementStatus() {
+            // 정산 건수
+            const settlementCount = document.querySelector("#settlementCount");
+            // 정산 금액
+            const settlementAmount = document.querySelector("#settlementAmount");
+            // 환불 건수
+            const refundCount = document.querySelector("#refundCount");
+            // 환불 금액
+            const refundAmount = document.querySelector("#refundAmount");
+
+            let param = {};
+            let reqGubunList = [];
+            reqGubunList.push('AQ');
+            reqGubunList.push('RQ');
+            param.reqGubunList = reqGubunList;
+
+            $.ajax({
+                url: apiUrl + "/settlement",
+                data: param,
+                success: (result) => {
+
+                    const aqData = result.filter((item) => item.reqGubun === 'AQ');
+                    const rqData = result.filter((item) => item.reqGubun === 'RQ');
+                    const aqCount = aqData.length;
+                    const rqCount = rqData.length;
+                    let aqConfirmAmt = 0;
+                    let rqConfirmAmt = 0;
+
+                    aqData.forEach((item) => {
+                        aqConfirmAmt += Number(item.confirmAmt)
+                    });
+
+                    rqData.forEach((item) => {
+                        rqConfirmAmt += Number(item.confirmAmt)
+                    });
+
+                    // 정산 건수
+                    settlementCount.innerText = aqCount;
+                    // 정산 금액
+                    settlementAmount.innerText = aqConfirmAmt;
+                    // 환불 건수
+                    refundCount.innerText = rqCount;
+                    // 환불 금액
+                    refundAmount.innerText = rqConfirmAmt;
+                }
+            })
+        }
+
+        function approvalInfo() {
+            const allApproval = document.querySelector("#allApproval");
+            const progressApproval = document.querySelector("#progressApproval");
+            const confirmApproval = document.querySelector("#confirmApproval");
+            const rejectApproval = document.querySelector("#rejectApproval");
+
+            $.ajax({
+                url: apiUrl + "/data",
+                type: 'GET',
+                success: (result) => {
+                    // 결재 건(전체 수), 진행 중(01), 결재 완료(02), 반려(03)
+                    const allApprovalData = result.length;
+                    // 진행 중
+                    const progressApprovalData = result.filter((item) => item.applyStatus === '01');
+                    // 결재 완료
+                    const confirmApprovalData = result.filter((item) => item.applyStatus === '02');
+                    // 반려
+                    const rejectApprovalData = result.filter((item) => item.applyStatus === '03');
+
+                    allApproval.innerText = allApprovalData;
+                    progressApproval.innerText = progressApprovalData.length;
+                    confirmApproval.innerText = confirmApprovalData.length;
+                    rejectApproval.innerText = rejectApprovalData.length;
+                }
+            });
+        }
     </script>
 
 

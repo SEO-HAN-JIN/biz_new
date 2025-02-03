@@ -1,3 +1,28 @@
+
+$(document).ready(async function () {
+    const indexMonthlyPayUrl = '/api/approval/monthly/pay';
+    let resultData;
+
+    await $.ajax({
+        url: indexMonthlyPayUrl,
+        type: 'GET',
+        success: (result) => {
+            resultData = result;
+            let dataList = [];
+            if(result.length > 0) {
+                result.forEach((item) => {
+                   dataList.push(item.confirmRateAmt)
+                });
+            }
+            chartProfileVisit.updateSeries([{
+                name: 'sales',
+                data: dataList
+            }])
+        }
+    });
+
+});
+
 var optionsProfileVisit = {
   annotations: {
     position: "back",
@@ -16,24 +41,24 @@ var optionsProfileVisit = {
   series: [
     {
       name: "sales",
-      data: [9, 20, 30, 20, 10, 20, 30, 20, 10, 20, 30, 20],
+      data: [],
     },
   ],
   colors: "#435ebe",
   xaxis: {
     categories: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+      "1월",
+      "2월",
+      "3월",
+      "4월",
+      "5월",
+      "6월",
+      "7월",
+      "8월",
+      "9월",
+      "10월",
+      "11월",
+      "12월",
     ],
   },
 }

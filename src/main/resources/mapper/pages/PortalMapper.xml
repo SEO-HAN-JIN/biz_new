@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.PortalMapper">
+
+    <select id="getApprovalData" resultType="CamelCaseMap">
+        SELECT CO_CODE
+             , SETTLEMENT_SEQ
+             , PROD_ID
+             , USER_ID
+             , CUST_ID
+             , APPLY_STATUS
+          FROM SETTLEMENT
+         WHERE CO_CODE = #{loginCoId}
+    </select>
+
+    <select id="getSettlementData" resultType="CamelCaseMap" parameterType="com.biz.framework.dto.pages.SettlementmstDto">
+        SELECT s.co_code
+             , s.settlement_seq
+             , s.user_id
+             , s.confirm_seq
+             , s.confirm_mileage
+             , s.pay_ym
+             , s.confirm_amt
+             , s2.req_gubun
+          FROM settlementmst s
+     LEFT JOIN settlement s2
+            ON s.co_code = s2.co_code
+           AND s.settlement_seq = s2.settlement_seq
+           AND s.user_id = s2.user_id
+         WHERE 1=1
+           AND s2.apply_status = '02' -- '승인 완료' 상태
+           AND s2.req_gubun in
+           <foreach collection="reqGubunList" item="item" open="(" close=")" separator=",">
+               #{item}
+           </foreach>
+           AND s.pay_ym = DATE_FORMAT(CURDATE(), '%Y%m')
+    </select>
+
+    <select id="getMonthlyPayData" resultType="CamelCaseMap" parameterType="com.biz.framework.dto.pages.SettlementmstDto">
+        WITH RECURSIVE month_range as (
+            SELECT 1 AS date
+            UNION ALL
+            SELECT date+1
+              FROM month_range
+             WHERE date <![CDATA[<]]> 12
+        )
+        SELECT CONCAT(YEAR(NOW()), LPAD(mr.date, 2 , '0')) AS month_data
+             , e.user_id
+             , IFNULL(e.confirm_rate_amt2, 0) AS confirm_rate_amt
+             , e.pay_ym
+          FROM month_range mr
+     LEFT JOIN (
+                SELECT s.co_code
+                     , s.user_id
+                     , SUM(s.confirm_rate_amt) AS confirm_rate_amt2
+                     , s.pay_ym
+                  FROM settlementmst s
+                 WHERE 1=1
+                   AND s.user_id = #{userId}
+                   AND LEFT(s.pay_ym, 4) = DATE_FORMAT(CURDATE(), '%Y')
+              GROUP BY pay_ym
+     ) AS e
+            ON CONCAT(YEAR(NOW()), LPAD(date, 2 , '0')) = e.pay_ym
+      ORDER BY month_data asc
+    </select>
+</mapper>
