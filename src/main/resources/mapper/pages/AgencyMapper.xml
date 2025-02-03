@@ -81,6 +81,7 @@
         /* com.biz.framework.mapper.pages.AgencyMapper.findAgencyIncentiveRate */
         SELECT AGENCY_ID
              , AGENCY_INCENTIVE_RATE
+             , PROD_AMT
           FROM TB_AGENCY        TA
          WHERE TA.CO_cODE       = #{loginCoId}
            AND TA.AGENCY_ID     = #{agencyId}

@@ -14,13 +14,26 @@
 
     <select id="findApplypayment" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.AgencyReqMapper.findApplypayment */
-        SELECT *
-          FROM AGENCY_REQ
-        <if test='custName != null  and custName != "" '>
-            AND CU.CUST_NAME LIKE CONCAT('%', #{custName}, '%')
-        </if>
-        <if test='prodName != null  and prodName != "" '>
-            AND PR.PROD_NAME LIKE CONCAT('%', #{prodName}, '%')
+        SELECT AR.CO_CODE
+             , AR.AGENCY_SEQ
+             , AR.USER_ID
+             , AR.AGENCY_ID
+             , AR.REQ_DATE
+             , AR.INCENTIVE_RATE
+             , AR.PROD_NAME
+             , AR.INFLOW_CNT
+             , AR.PROD_AMT
+             , AR.SALE_TOTAL_AMT
+             , AR.EXPECT_AMT
+             , AR.APPLY_STATUS
+          FROM AGENCY_REQ       AR
+          LEFT JOIN TB_AGENCY   TA
+            ON TA.CO_CODE       = AR.CO_CODE
+           AND TA.AGENCY_ID     = AR.AGENCY_ID
+         WHERE AR.CO_CODE       = #{loginCoId}
+           AND AR.REQ_DATE BETWEEN STR_TO_DATE(REPLACE(#{searchStartDate}, '-', ''), '%Y%m%d') AND STR_TO_DATE(REPLACE(#{searchEndDate}, '-', ''), '%Y%m%d')
+        <if test='agencyName != null  and agencyName != "" '>
+            AND TA.AGENCY_NAME LIKE CONCAT('%', #{agencyName}, '%')
         </if>
     </select>
 
@@ -37,8 +50,10 @@
         INSERT INTO AGENCY_REQ
         ( CO_CODE
         , AGENCY_SEQ
-        , AGECNY_ID
+        , USER_ID
+        , AGENCY_ID
         , REQ_DATE
+        , INCENTIVE_RATE
         , PROD_NAME
         , INFLOW_CNT
         , PROD_AMT
@@ -49,9 +64,11 @@
         (
           #{loginCoId}
         , #{agencySeq}
+        , #{loginCoId}
         , #{agencyId}
         , DATE_FORMAT(NOW(), '%Y-%m-%d')
-        , #{prodAmt}
+        , #{incentiveRate}
+        , #{prodName}
         , #{inflowCnt}
         , #{prodAmt}
         , #{saleTotalAmt}

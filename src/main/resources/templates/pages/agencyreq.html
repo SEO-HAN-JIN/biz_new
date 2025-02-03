@@ -34,21 +34,13 @@
                                         <label class="col-form-label col-lg-1 col-3">날짜</label>
                                         <div class="col-lg-3 col-9">
                                             <div class="d-flex">
-                                                <input type="date" class="form-control form-control-sm me-2"
-                                                       id="searchStartDate">
-                                                <input type="date" class="form-control form-control-sm"
-                                                       id="searchEndDate">
+                                                <input type="date" class="form-control form-control-sm me-2" id="searchStartDate">
+                                                <input type="date" class="form-control form-control-sm" id="searchEndDate">
                                             </div>
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">고객명</label>
+                                        <label class="col-form-label col-lg-1 col-3">대행사</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchCustName" class="form-control form-control-sm"
-                                                   name="fname" placeholder="메뉴명">
-                                        </div>
-                                        <label class="col-form-label col-lg-1 col-3">상품명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchProdName" class="form-control form-control-sm"
-                                                   name="fname" placeholder="메뉴명">
+                                            <input type="text" id="agencyName" class="form-control form-control-sm" name="agencyName" placeholder="대행사명">
                                         </div>
                                     </div>
                                 </div>
@@ -101,13 +93,6 @@
                                                 <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">담당자</label>
-                                                            <input type="text" id="_modal_userName" name="userName" class="form-control" disabled>
-                                                            <input type="hidden" id="_modal_userId" name="userId" class="form-control" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
                                                             <label class="form-label">대행사</label>
                                                             <th:block th:replace="components/agency-select :: agency-select(
                                                                 id='_modal_agencyId',
@@ -117,7 +102,13 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">인센티브율</label>
-                                                            <input type="text" id="_modal_agencyIncentiveRate" name="agencyIncentiveRate" class="form-control is-num text-end" disabled>
+                                                            <input type="text" id="_modal_incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품단가</label>
+                                                            <input type="text" id="_modal_prodAmt" name="prodAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -134,26 +125,21 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">상품가</label>
-                                                            <input type="text" id="_modal_prodAmt" class="form-control is-num text-end calc-settlement-amt" name="prodAmt">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
                                                             <label class="form-label">정산액</label>
-                                                            <input type="text" id="_modal_settlementAmt" class="form-control is-num text-end" name="settlementAmt" disabled>
+                                                            <input type="text" id="_modal_saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">입금액</label>
-                                                            <input type="text" id="_modal_depositAmt" class="form-control is-num text-end" name="depositAmt" disabled>
+                                                            <input type="text" id="_modal_expectAmt" class="form-control is-num text-end" name="expectAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">처리여부</label>
-                                                            <input type="text" id="_modal_applyStatus" class="form-control is-num text-end" name="applyStatus">
+                                                            <select id="_modal_applyStatus" name="applyStatus" class="form-select form-control-sm" disabled>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -216,7 +202,7 @@
             const findInitCodes = async () => {
                 const param =
                     [
-                        {"patternCode": "SE02", "groupCode": "A"}
+                        {"patternCode": "SE04"}
                     ];
 
                 const result = await CommonJs.initFindCodes(param);
@@ -227,10 +213,10 @@
                 const options = {
                     value: 'baseCode',
                     text: 'codeName',
-                    items: result.SE02,
+                    items: result.SE04,
                     placeholder: '선택'
                 };
-                $("#gubun").addOptions(options);
+                $('#' + _modalPrefix + 'applyStatus').addOptions(options);
             }
 
             const initEvent = () => {
@@ -256,14 +242,14 @@
 
                 // 대행사 정보 변경할 때마다 마일리지 금액 가져오기
                 $('#' + _modalPrefix + 'agencyId').on("change", function () {
-                    findAgencyIncentiveRate(this.value);
+                    findIncentiveRate(this.value);
                 })
 
 
                 $("#btnCancel").on('click', cancel);
             }
 
-            const findAgencyIncentiveRate = (param) => {
+            const findIncentiveRate = (param) => {
                 $.ajax({
                     url: apiUrl + "/find/incentiveRate",
                     data: {agencyId: param},
@@ -271,7 +257,9 @@
                     success: (result) => {
                         if(!isNull(result))
                         {
-                            $('#' + _modalPrefix + 'agencyIncentiveRate').val(result.agencyIncentiveRate);
+                            $('#' + _modalPrefix + 'incentiveRate').val(result.agencyIncentiveRate);
+                            $('#' + _modalPrefix + 'prodAmt').val(formatNumber(result.prodAmt));
+
                             saleSum();
                         }
                     }
@@ -283,13 +271,13 @@
 
                 const inflowCnt = formData.inflowCnt; // 유입수
                 const prodAmt = formData.prodAmt;     // 상품가
-                const agencyIncentiveRate = formData.agencyIncentiveRate;  // 인센티브율
+                const incentiveRate = formData.incentiveRate;  // 인센티브율
 
-                const settlementAmt = Math.floor((inflowCnt * prodAmt));
-                $('#' + _modalPrefix + 'settlementAmt').val(formatNumber(settlementAmt));
+                const saleTotalAmt = Math.floor((inflowCnt * prodAmt));
+                $('#' + _modalPrefix + 'saleTotalAmt').val(formatNumber(saleTotalAmt));
 
-                const depositAmt = Math.floor(settlementAmt * agencyIncentiveRate);
-                $('#' + _modalPrefix + 'depositAmt').val(formatNumber(depositAmt));
+                const expectAmt = Math.floor(saleTotalAmt * incentiveRate);
+                $('#' + _modalPrefix + 'expectAmt').val(formatNumber(expectAmt));
             }
 
             const initAgencyReqGrid = () => {
@@ -301,10 +289,11 @@
                     .add('prodName', '상품명', 100, {})
                     .addNumber('inflowCnt', '유입수', 120, {align: 'right', comma: true})
                     .addNumber('prodAmt', '상품단가', 120, {align: 'right', comma: true})
-                    .addNumber('settlementAmt', '정산액', 120, {align: 'right', comma: true})
-                    .addNumber('depositAmt', '입금액', 120, {align: 'right', comma: true})
+                    .addNumber('saleTotalAmt', '정산액', 120, {align: 'right', comma: true})
+                    .addNumber('expectAmt', '입금액', 120, {align: 'right', comma: true})
                     .add('applyStatus', '처리여부', 150, {})
                     .add('agencyId', '대행사ID', 'auto', {visible: false})
+                    .add('incentiveRate', '적용인센티브율', 'auto', {visible: false})
                 ;
 
                 agencyReqGrid = columns.init('agencyReqGrid', [])
@@ -333,8 +322,7 @@
                 const param = {
                     searchStartDate: $("#searchStartDate").val(),
                     searchEndDate: $("#searchEndDate").val(),
-                    custName: $("#searchCustName").val(),
-                    prodName: $("#searchProdName").val()
+                    agencyName: $("#searchCustName").val(),
                 };
 
                 $.ajax({
@@ -353,12 +341,9 @@
                 if (param === '1') {
                     $isNew = true;
 
-                    $('#' + _modalPrefix + 'userId').val(_userId);
-                    $('#' + _modalPrefix + 'userName').val(_userNm);
-
                     ableBtn(false, _modalPrefix);
 
-                    $("#useMileage").attr('disabled', true);
+                    $('#' + _modalPrefix + 'applyStatus').val('01');
 
                 } else {
                     $isNew = false;
@@ -370,21 +355,10 @@
 
                     // 승인요청인 경우 수정 가능
                     if (data.applyStatus === 'C') {
-
-                        ableBtn(false);
-                        const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
-                        if (isChecked) {
-                            $("#useMileage").attr('disabled', false);
-                        }
-                        document.getElementById("custId").choicesInstance.disable();
-                        document.getElementById("prodId").choicesInstance.disable();
+                        ableBtn(false, _modalPrefix);
                     } else {
-                        ableBtn(true);
+                        ableBtn(true, _modalPrefix);
                     }
-
-                    // 수정기능 우선 없앰
-                    // ableBtn(true);
-                    // $("#useMileage").attr('disabled', true);
 
                 }
 
@@ -393,14 +367,8 @@
             }
 
             const ableBtn = (flag, prefix) => {
-                $("#dateWorkFrom").attr('disabled', flag);
-                $("#dateWorkTo").attr('disabled', flag);
-                //$("#saleAmt").attr('disabled', flag);
-                $("#inflowCnt").attr('disabled', flag);
-                $("#gubun").attr('disabled', flag);
-                $("#mileageUseInd").attr('disabled', flag);
-                $("#useMileage").attr('disabled', flag);
-                $("#saleTotalAmt").attr('disabled', flag);
+                $('#' + _modalPrefix + 'prodName').attr('disabled', flag);
+                $('#' + _modalPrefix + 'inflowCnt').attr('disabled', flag);
 
                 if (flag) {
                     document.getElementById(prefix + 'agencyId').choicesInstance.disable();
