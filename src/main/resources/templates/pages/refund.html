@@ -442,8 +442,8 @@
             const date2 = new Date(d2); // 환불-요청일
             const date3 = new Date(d3); // 정산-작업시작일
 
-            if (date1.getTime() < date2.getTime() || date3.getTime() > date2.getTime() ) {
-                alert("환불요청일은 정산요청의 작업시작일과 작업종료일 사이어야 합니다.");
+            if (date1.getTime() < date2.getTime()) {
+                alert("환불요청일은 정산요청의 작업종료일 이전이어야 합니다.");
                 $("#" + refundModalPrefix + "refundDate").val('');
                 $("#" + refundModalPrefix + "refundWorkDay").val('');
                 $("#" + refundModalPrefix + "refundSaleTotalAmt").val('');
@@ -463,8 +463,19 @@
             const date2 = new Date(d2);
 
             const diffDate = date1.getTime() - date2.getTime();
+            const refundDays = Math.abs(diffDate / (1000 * 60 * 60 * 24));
 
-            $("#" + refundModalPrefix + "refundWorkDay").val(Math.abs(diffDate / (1000 * 60 * 60 * 24)));
+            let reqDays = $("#_refundModal_workDay").val();
+            if (refundDays > reqDays) {
+                alert("환불요청 일 수는 정산요청일 수 보다 많을 수 없습니다.");
+                $("#" + refundModalPrefix + "refundDate").val('');
+                $("#" + refundModalPrefix + "refundWorkDay").val('');
+                $("#" + refundModalPrefix + "refundSaleTotalAmt").val('');
+                $("#" + refundModalPrefix + "refundExpectRateAmt").val('');
+                return;
+            }
+
+            $("#" + refundModalPrefix + "refundWorkDay").val(refundDays);
 
             saleSum();
         }

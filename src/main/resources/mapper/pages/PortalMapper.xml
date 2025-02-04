@@ -30,12 +30,14 @@
            AND s.settlement_seq = s2.settlement_seq
            AND s.user_id = s2.user_id
          WHERE 1=1
+           AND S.CO_CODE    = #{loginCoId}
+           AND S.USER_ID    = #{loginUserId}
            AND s2.apply_status = '02' -- '승인 완료' 상태
            AND s2.req_gubun in
            <foreach collection="reqGubunList" item="item" open="(" close=")" separator=",">
                #{item}
            </foreach>
-           AND s.pay_ym = DATE_FORMAT(CURDATE(), '%Y%m')
+           AND DATE_FORMAT(S2.REQ_DATE, '%Y%m') = DATE_FORMAT(CURDATE(), '%Y%m')
     </select>
 
     <select id="getMonthlyPayData" resultType="CamelCaseMap" parameterType="com.biz.framework.dto.pages.SettlementmstDto">
