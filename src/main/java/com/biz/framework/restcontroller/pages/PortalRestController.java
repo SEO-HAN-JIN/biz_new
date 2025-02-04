@@ -22,8 +22,8 @@ public class PortalRestController {
     private final PortalService portalService;
 
     @GetMapping("/data")
-    public List<CamelCaseMap> getApprovalData() {
-        return portalService.getApprovalData();
+    public List<CamelCaseMap> getApprovalData(SettlementmstDto settlementmstDto) {
+        return portalService.getApprovalData(settlementmstDto);
     }
 
     @GetMapping("/settlement")

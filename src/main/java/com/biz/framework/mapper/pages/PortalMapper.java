@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface PortalMapper {
-    List<CamelCaseMap> getApprovalData();
+    List<CamelCaseMap> getApprovalData(SettlementmstDto settlementmstDto);
     List<CamelCaseMap> getSettlementData(SettlementmstDto settlementmstDto);
     List<CamelCaseMap> getMonthlyPayData(SettlementmstDto settlementmstDto);
 }

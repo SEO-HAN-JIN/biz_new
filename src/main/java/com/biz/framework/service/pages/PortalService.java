@@ -16,8 +16,8 @@ import java.util.List;
 public class PortalService {
     private final PortalMapper portalMapper;
 
-    public List<CamelCaseMap> getApprovalData() {
-        return portalMapper.getApprovalData();
+    public List<CamelCaseMap> getApprovalData(SettlementmstDto settlementmstDto) {
+        return portalMapper.getApprovalData(settlementmstDto);
     }
 
     public List<CamelCaseMap> getSettlementData(SettlementmstDto settlementmstDto) {

@@ -12,7 +12,8 @@
              , CUST_ID
              , APPLY_STATUS
           FROM SETTLEMENT
-         WHERE CO_CODE = #{loginCoId}
+         WHERE CO_CODE   = #{loginCoId}
+           AND USER_ID  = #{loginUserId}
     </select>
 
     <select id="getSettlementData" resultType="CamelCaseMap" parameterType="com.biz.framework.dto.pages.SettlementmstDto">
