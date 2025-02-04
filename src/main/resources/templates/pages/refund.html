@@ -482,8 +482,8 @@
 
         function saleSum() {
 
-            const prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "prodAmt").val()));          // 상품가(공급가)
-            const saleAmt = isNull($("#" + refundModalPrefix + "saleAmt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "saleAmt").val()));          // 판매가
+            const prodAmt = isNull($("#" + refundModalPrefix + "prodAmt").val()) ? 0 : parseFloat(removeComma($("#" + refundModalPrefix + "prodAmt").val()));          // 상품가(공급가)
+            const saleAmt = isNull($("#" + refundModalPrefix + "saleAmt").val()) ? 0 : parseFloat(removeComma($("#" + refundModalPrefix + "saleAmt").val()));          // 판매가
             const refundInflowCnt = isNull($("#" + refundModalPrefix + "refundInflowCnt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "refundInflowCnt").val()));    // 유입수
             const workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());           // 환불일수
             const incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());   // 직원인센티브율
