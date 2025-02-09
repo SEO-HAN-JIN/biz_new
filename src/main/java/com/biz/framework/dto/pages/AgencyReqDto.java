@@ -14,9 +14,9 @@ public class AgencyReqDto extends BaseDto {
     private String agencySeq;
     private String userId;
     private String agencyId;
+    private String prodId;
     private String reqDate;
     private String incentiveRate;
-    private String prodName;
     private String inflowCnt;
     private String prodAmt;
     private String saleTotalAmt;

@@ -2,6 +2,7 @@ package com.biz.framework.service.pages;
 
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.pages.AgencyProductDto;
 import com.biz.framework.dto.pages.ProductDto;
 import com.biz.framework.mapper.pages.AgencyProductMapper;
 import com.biz.framework.mapper.pages.ProductMapper;
@@ -51,5 +52,9 @@ public class AgencyProductService {
 
     public List<CamelCaseMap> findProductPopList(ProductDto productDto) {
         return agencyProductMapper.findProductPopList(productDto);
+    }
+
+    public CamelCaseMap findProdAmt(AgencyProductDto agencyProductDto) {
+        return agencyProductMapper.findProdAmtByPk(agencyProductDto);
     }
 }

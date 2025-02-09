@@ -38,9 +38,9 @@
                                                 <input type="date" class="form-control form-control-sm" id="searchEndDate">
                                             </div>
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">대행사</label>
+                                        <label class="col-form-label col-lg-1 col-3">대행사명</label>
                                         <div class="col-lg-2 col-9">
-                                            <input type="text" id="agencyName" class="form-control form-control-sm" name="agencyName" placeholder="대행사명">
+                                            <input type="text" id="searchAgencyName" class="form-control form-control-sm" name="searchAgencyName" placeholder="대행사명">
                                         </div>
                                     </div>
                                 </div>
@@ -95,53 +95,56 @@
                                                         <div class="form-group">
                                                             <label class="form-label">대행사</label>
                                                             <th:block th:replace="components/agency-select :: agency-select(
-                                                                id='_modal_agencyId',
+                                                                id='agencyId',
                                                                 name='agencyId')"></th:block>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">인센티브율</label>
-                                                            <input type="text" id="_modal_incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
+                                                            <input type="text" id="incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">상품</label>
+                                                            <select class="choices prod-select" id="prodId" name="prodId"></select>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품단가</label>
-                                                            <input type="text" id="_modal_prodAmt" name="prodAmt" class="form-control is-num text-end" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="form-label">상품명</label>
-                                                            <input type="text" id="_modal_prodName" class="form-control text-end" name="prodName">
+                                                            <input type="text" id="prodAmt" name="prodAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">유입수</label>
-                                                            <input type="text" id="_modal_inflowCnt" class="form-control is-num text-end calc-settlement-amt" name="inflowCnt">
+                                                            <input type="text" id="inflowCnt" class="form-control is-num text-end calc-settlement-amt" name="inflowCnt">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">정산액</label>
-                                                            <input type="text" id="_modal_saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
+                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">입금액</label>
-                                                            <input type="text" id="_modal_expectAmt" class="form-control is-num text-end" name="expectAmt" disabled>
+                                                            <input type="text" id="expectAmt" class="form-control is-num text-end" name="expectAmt" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">처리여부</label>
-                                                            <select id="_modal_applyStatus" name="applyStatus" class="form-select form-control-sm" disabled>
+                                                            <label class="form-label">진행상태</label>
+                                                            <select id="applyStatus" name="applyStatus" class="form-select form-control-sm" disabled>
                                                             </select>
                                                         </div>
                                                     </div>
+
+                                                    <input type="hidden" id="agencySeq" name="agencySeq">
+                                                    <input type="hidden" id="userId" name="userId">
                                                 </div>
                                             </fieldset>
                                         </form>
@@ -197,7 +200,54 @@
                 initAgencyReqGrid();
 
                 $('.is-num').bind('keyup', numberKeyupEvent);
+
+                // 상품 select 초기화
+                initProductSelect();
             });
+
+            function initProductSelect() {
+                $.ajax({
+                    url: apiUrl + "/find/product/list",
+                    data: null,
+                    type: 'GET',
+                    success: (result) => {
+
+                        const modalProdId = document.getElementById('prodId');
+
+                        // 기존 Choices 인스턴스 제거
+                        if (modalProdId.choicesInstance) {
+                            modalProdId.choicesInstance.destroy();
+                            modalProdId.choicesInstance = null;
+                        }
+
+                        modalProdId.innerHTML = `<option value="" disabled selected></option>`;
+
+
+                        if(!isNull(result)) {
+
+                            result.forEach(product => {
+                                const option = document.createElement('option');
+                                option.value = product.prodId;
+                                option.textContent = product.prodName;
+                                modalProdId.appendChild(option);
+                            });
+
+                            // Choices 재초기화
+                            modalProdId.choicesInstance = new Choices(modalProdId, {
+                                placeholder: true,
+                                placeholderValue: '',
+                                itemSelectText: '선택',
+                            });
+
+                            // **선택값 초기화**
+                            modalProdId.value = '';
+                            modalProdId.choicesInstance.setChoiceByValue('');
+
+
+                        }
+                    }
+                });
+            }
 
             const findInitCodes = async () => {
                 const param =
@@ -216,7 +266,7 @@
                     items: result.SE04,
                     placeholder: '선택'
                 };
-                $('#' + _modalPrefix + 'applyStatus').addOptions(options);
+                $('#applyStatus').addOptions(options);
             }
 
             const initEvent = () => {
@@ -240,16 +290,20 @@
                     saleSum();
                 })
 
-                // 대행사 정보 변경할 때마다 마일리지 금액 가져오기
-                $('#' + _modalPrefix + 'agencyId').on("change", function () {
-                    findIncentiveRate(this.value);
+                // 대행사 정보 변경할 때마다 대행사별 상품정보 및 인센티브율 조회
+                $('#agencyId').on("change", function () {
+                    findAgencyInfo(this.value);
+                })
+
+                $('#prodId').on("change", function () {
+                    findProdAmt(this.value);
                 })
 
 
                 $("#btnCancel").on('click', cancel);
             }
 
-            const findIncentiveRate = (param) => {
+            const findAgencyInfo = (param) => {
                 $.ajax({
                     url: apiUrl + "/find/incentiveRate",
                     data: {agencyId: param},
@@ -257,8 +311,68 @@
                     success: (result) => {
                         if(!isNull(result))
                         {
-                            $('#' + _modalPrefix + 'incentiveRate').val(result.agencyIncentiveRate);
-                            $('#' + _modalPrefix + 'prodAmt').val(formatNumber(result.prodAmt));
+                            $('#incentiveRate').val(result.agencyIncentiveRate);
+
+                            saleSum();
+                        }
+                    }
+                });
+
+                $.ajax({
+                    url: apiUrl + "/find/agency/product/list",
+                    data: {agencyId: param},
+                    type: 'GET',
+                    success: (result) => {
+
+                        const modalProdId = document.getElementById('prodId');
+
+                        // 기존 Choices 인스턴스 제거
+                        if (modalProdId.choicesInstance) {
+                            modalProdId.choicesInstance.destroy();
+                            modalProdId.choicesInstance = null;
+                        }
+
+                        modalProdId.innerHTML = `<option value="" disabled selected></option>`;
+
+
+                        if(!isNull(result)) {
+
+                            result.forEach(product => {
+                                const option = document.createElement('option');
+                                option.value = product.prodId;
+                                option.textContent = product.prodName;
+                                modalProdId.appendChild(option);
+                            });
+
+                            // Choices 재초기화
+                            modalProdId.choicesInstance = new Choices(modalProdId, {
+                                placeholder: true,
+                                placeholderValue: '',
+                                itemSelectText: '선택',
+                            });
+
+                            // **선택값 초기화**
+                            modalProdId.value = '';
+                            modalProdId.choicesInstance.setChoiceByValue('');
+
+                            $("#prodAmt").val('');
+
+                            saleSum();
+
+                        }
+                    }
+                });
+            }
+
+            const findProdAmt = (param) => {
+                $.ajax({
+                    url: apiUrl + "/find/prodAmt",
+                    data: {prodId: param},
+                    type: 'GET',
+                    success: (result) => {
+                        if(!isNull(result))
+                        {
+                            $('#prodAmt').val(formatNumber(result.prodAmt));
 
                             saleSum();
                         }
@@ -274,26 +388,28 @@
                 const incentiveRate = formData.incentiveRate;  // 인센티브율
 
                 const saleTotalAmt = Math.floor((inflowCnt * prodAmt));
-                $('#' + _modalPrefix + 'saleTotalAmt').val(formatNumber(saleTotalAmt));
+                $('#saleTotalAmt').val(formatNumber(saleTotalAmt));
 
                 const expectAmt = Math.floor(saleTotalAmt * incentiveRate);
-                $('#' + _modalPrefix + 'expectAmt').val(formatNumber(expectAmt));
+                $('#expectAmt').val(formatNumber(expectAmt));
             }
 
             const initAgencyReqGrid = () => {
                 var columns = new CustomTuiGrid()
                     .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                     .enableCheckbox(true) // 체크박스 활성화
-                    .add('agencySeq', '대행사요청번호', 200, {})
-                    .add('reqDate', '정산일', 100, {})
+                    .add('agencySeq', '대행사요청번호', 170, {})
+                    .add('agencyName', '대행사명', 100, {})
                     .add('prodName', '상품명', 100, {})
                     .addNumber('inflowCnt', '유입수', 120, {align: 'right', comma: true})
                     .addNumber('prodAmt', '상품단가', 120, {align: 'right', comma: true})
                     .addNumber('saleTotalAmt', '정산액', 120, {align: 'right', comma: true})
+                    .add('reqDate', '요청일', 120, {})
                     .addNumber('expectAmt', '입금액', 120, {align: 'right', comma: true})
-                    .add('applyStatus', '처리여부', 150, {})
+                    .add('applyStatusName', '진행상태', 150, {})
                     .add('agencyId', '대행사ID', 'auto', {visible: false})
                     .add('incentiveRate', '적용인센티브율', 'auto', {visible: false})
+                    .add('applyStatus', '진행상태', 150, {visible: false})
                 ;
 
                 agencyReqGrid = columns.init('agencyReqGrid', [])
@@ -322,7 +438,7 @@
                 const param = {
                     searchStartDate: $("#searchStartDate").val(),
                     searchEndDate: $("#searchEndDate").val(),
-                    agencyName: $("#searchCustName").val(),
+                    agencyName: $("#searchAgencyName").val(),
                 };
 
                 $.ajax({
@@ -336,14 +452,15 @@
             }
 
             const openPgmModal = (param) => {
-                $("#addModal").clear();
+                clearForm('addModal');
 
                 if (param === '1') {
                     $isNew = true;
 
                     ableBtn(false, _modalPrefix);
 
-                    $('#' + _modalPrefix + 'applyStatus').val('01');
+                    document.getElementById('agencyId').choicesInstance.enable();
+                    $('#applyStatus').val('01');
 
                 } else {
                     $isNew = false;
@@ -367,13 +484,14 @@
             }
 
             const ableBtn = (flag, prefix) => {
-                $('#' + _modalPrefix + 'prodName').attr('disabled', flag);
-                $('#' + _modalPrefix + 'inflowCnt').attr('disabled', flag);
+                $('#inflowCnt').attr('disabled', flag);
 
                 if (flag) {
-                    document.getElementById(prefix + 'agencyId').choicesInstance.disable();
+                    document.getElementById('agencyId').choicesInstance.disable();
+                    document.getElementById('prodId').choicesInstance.disable();
                 } else {
-                    document.getElementById(prefix + 'agencyId').choicesInstance.enable();
+                    document.getElementById('agencyId').choicesInstance.enable();
+                    document.getElementById('prodId').choicesInstance.enable();
                 }
 
                 $("#modalSaveBtn").attr('disabled', flag);
@@ -382,15 +500,14 @@
 
             const fn_saveAgencyReqGrid = () => {
                 let param = $('#addModal').getData();
-                console.log("## param ##", param);
 
                 if (isNull(param.agencyId)) {
                     alert("대행사를 선택해주세요.");
                     return false;
                 }
 
-                if (isNull(param.prodName)) {
-                    alert("상품명을 입력해주세요.");
+                if (isNull(param.prodId)) {
+                    alert("상품을 선택해주세요.");
                     return false;
                 }
 
@@ -454,9 +571,9 @@
                 const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
                 if (confirmResult) {
 
-                    // settlementDtoList 형식에 맞게 객체로 변환
+                    // agencyReqDtoList 형식에 맞게 객체로 변환
                     var requestData = {
-                        settlementDtoList: checkedRows // 배열 그대로 전달
+                        agencyReqDtoList: checkedRows // 배열 그대로 전달
                     };
 
                     $.ajax({
@@ -480,7 +597,7 @@
                 }
             }
 
-            const cancel = () => {
+            function cancel() {
                 const checkedRows = agencyReqGrid.getCheckedRows();
                 if (checkedRows.length <= 0) {
                     alert("요청취소할 행을 선택해주세요.");
@@ -494,12 +611,12 @@
                     return;
                 }
 
-                const confirmResult = confirm("선택한 행의 데이터를 요청취소 하시겠습니까? \n사용한 마일리지는 초기화 됩니다.");
+                const confirmResult = confirm("선택한 행의 데이터를 요청취소 하시겠습니까?");
                 if (confirmResult) {
 
-                    // settlementDtoList 형식에 맞게 객체로 변환
+                    // agencyReqDtoList 형식에 맞게 객체로 변환
                     var requestData = {
-                        settlementDtoList: checkedRows // 배열 그대로 전달
+                        agencyReqDtoList: checkedRows // 배열 그대로 전달
                     };
 
                     $.ajax({
@@ -523,6 +640,27 @@
                 }
             }
         })();
+
+        function clearForm(id) {
+            $('#' + id).find('input, select, textarea').each(function () {
+                if ($(this).is(':checkbox')) {
+                    // 체크박스는 체크 해제
+                    $(this).prop('checked', false);
+                } else if ($(this).is('select')) {
+                    const obj = this;
+                    if (obj.classList.contains('choices') && obj.choicesInstance) {
+                        // Choices.js가 적용된 select 초기화
+                        obj.choicesInstance.setChoiceByValue(''); // 선택값 초기화
+                    } else {
+                        // 일반 select는 첫 번째 값으로 초기화
+                        $(this).val($(this).find('option:first').val());
+                    }
+                } else {
+                    // 나머지 input 및 textarea는 빈 값으로 초기화
+                    $(this).val('');
+                }
+            });
+        };
     </script>
 
 </th:block>

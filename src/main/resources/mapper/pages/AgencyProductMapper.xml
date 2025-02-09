@@ -109,4 +109,12 @@
           AND P.CO_CODE       = #{loginCoId}
           AND USE_IND        = 'Y'
     </select>
+
+    <select id="findProdAmtByPk">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProdAmtByPk */
+        SELECT PROD_AMT
+          FROM TB_AG_PRODUCTS   P
+         WHERE P.CO_CODE        = #{loginCoId}
+           AND P.PROD_ID        = #{prodId}
+    </select>
 </mapper>

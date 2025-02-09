@@ -1,6 +1,7 @@
 package com.biz.framework.mapper.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.pages.AgencyProductDto;
 import com.biz.framework.dto.pages.ProductDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -17,9 +18,9 @@ public interface AgencyProductMapper {
 
     int checkDuplProduct(ProductDto productDto);
 
-    void updateProductEffDate(ProductDto productDto);
-
     String createProdId(ProductDto productDto);
 
     List<CamelCaseMap> findProductPopList(ProductDto productDto);
+
+    CamelCaseMap findProdAmtByPk(AgencyProductDto agencyProductDto);
 }

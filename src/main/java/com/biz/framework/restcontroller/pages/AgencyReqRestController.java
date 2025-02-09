@@ -15,11 +15,28 @@ public class AgencyReqRestController {
 
     private final AgencyReqService agencyReqService;
     private final AgencyService agencyService;
+    private final AgencyProductService agencyProductService;
+    private final AgencyProductRelService agencyProductRelService;
 
 
     @GetMapping("/find/incentiveRate")
     public CamelCaseMap findIncentiveRate(AgencyDto agencyDto) {
         return agencyService.findAgencyIncentiveRate(agencyDto);
+    }
+
+    @GetMapping("/find/agency/product/list")
+    public List<CamelCaseMap> findProdList(AgencyProductDto agencyProductDto) {
+        return agencyProductRelService.findAgencyProductList(agencyProductDto);
+    }
+
+    @GetMapping("/find/prodAmt")
+    public CamelCaseMap findProdAmt(AgencyProductDto agencyProductDto) {
+        return agencyProductService.findProdAmt(agencyProductDto);
+    }
+
+    @GetMapping("/find/product/list")
+    public List<CamelCaseMap> findProductList(AgencyProductDto agencyProductDto) {
+        return agencyProductRelService.findAgProductList(agencyProductDto);
     }
 
     @GetMapping
@@ -35,6 +52,11 @@ public class AgencyReqRestController {
     @DeleteMapping
     public int deleteSettlement(@RequestBody AgencyReqDto agencyReqDto) {
         return agencyReqService.deleteSettlement(agencyReqDto);
+    }
+
+    @PostMapping("/cancel")
+    public int cancelSettlement(@RequestBody AgencyReqDto agencyReqDto) {
+        return agencyReqService.cancelSettlement(agencyReqDto);
     }
 
 }

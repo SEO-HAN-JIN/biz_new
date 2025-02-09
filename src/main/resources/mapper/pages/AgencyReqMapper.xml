@@ -16,20 +16,30 @@
         /* com.biz.framework.mapper.pages.AgencyReqMapper.findApplypayment */
         SELECT AR.CO_CODE
              , AR.AGENCY_SEQ
+             , TA.AGENCY_NAME
              , AR.USER_ID
              , AR.AGENCY_ID
+             , AR.PROD_ID
              , AR.REQ_DATE
              , AR.INCENTIVE_RATE
-             , AR.PROD_NAME
+             , TAP.PROD_NAME
              , AR.INFLOW_CNT
              , AR.PROD_AMT
              , AR.SALE_TOTAL_AMT
              , AR.EXPECT_AMT
              , AR.APPLY_STATUS
+             , C.CODE_NAME                 AS APPLY_STATUS_NAME
           FROM AGENCY_REQ       AR
           LEFT JOIN TB_AGENCY   TA
             ON TA.CO_CODE       = AR.CO_CODE
            AND TA.AGENCY_ID     = AR.AGENCY_ID
+          LEFT JOIN TB_AG_PRODUCTS  TAP
+            ON TAP.CO_CODE      = AR.CO_CODE
+           AND TAP.PROD_ID      = AR.PROD_ID
+          LEFT JOIN CDBASE      C
+           ON C.CO_CODE         = AR.CO_CODE
+          AND C.PATTERN_CODE    = 'SE04'
+          AND C.BASE_CODE        = AR.APPLY_STATUS
          WHERE AR.CO_CODE       = #{loginCoId}
            AND AR.REQ_DATE BETWEEN STR_TO_DATE(REPLACE(#{searchStartDate}, '-', ''), '%Y%m%d') AND STR_TO_DATE(REPLACE(#{searchEndDate}, '-', ''), '%Y%m%d')
         <if test='agencyName != null  and agencyName != "" '>
@@ -52,11 +62,11 @@
         , AGENCY_SEQ
         , USER_ID
         , AGENCY_ID
+        , PROD_ID
         , REQ_DATE
         , INCENTIVE_RATE
-        , PROD_NAME
-        , INFLOW_CNT
         , PROD_AMT
+        , INFLOW_CNT
         , SALE_TOTAL_AMT
         , EXPECT_AMT
         , APPLY_STATUS
@@ -64,13 +74,13 @@
         (
           #{loginCoId}
         , #{agencySeq}
-        , #{loginCoId}
+        , #{loginUserId}
         , #{agencyId}
+        , #{prodId}
         , DATE_FORMAT(NOW(), '%Y-%m-%d')
         , #{incentiveRate}
-        , #{prodName}
-        , #{inflowCnt}
         , #{prodAmt}
+        , #{inflowCnt}
         , #{saleTotalAmt}
         , #{expectAmt}
         , #{applyStatus}
@@ -89,24 +99,23 @@
     <select id="checkApplyStatus">
         /* com.biz.framework.mapper.pages.AgencyReqMapper.checkApplyStatus */
         SELECT APPLY_STATUS
-          FROM SETTLEMENT
+          FROM AGENCY_REQ
         WHERE CO_CODE           = #{loginCoId}
-          AND SETTLEMENT_SEQ    = #{settlementSeq}
-          AND PROD_ID           = #{prodId}
+          AND AGENCY_SEQ        = #{agencySeq}
           AND USER_ID           = #{userId}
-          AND CUST_ID           = #{custId}
+          AND AGENCY_ID         = #{agencyId}
     </select>
 
     <update id="updateAgencyReq">
         /* com.biz.framework.mapper.pages.AgencyReqMapper.updateAgencyReq */
         UPDATE AGENCY_REQ
            SET REQ_DATE         = DATE_FORMAT(NOW(), '%Y-%m-%d')
-             , PROD_NAME        = #{prodName}
-             , INFLOW_CNT       = #{inflowCnt}
+             , PROD_ID          = #{prodId}
              , PROD_AMT         = #{prodAmt}
+             , INFLOW_CNT       = #{inflowCnt}
              , SALE_TOTAL_AMT   = #{saleTotalAmt}
              , EXPECT_AMT       = #{expectAmt}
-             , APPLY_STATUS     = #{applyStatus}
+             , APPLY_STATUS     = '01'  -- 승인요청
          WHERE CO_CODE          = #{loginCoId}
            AND AGENCY_SEQ       = #{agencySeq}
            AND USER_ID          = #{userId}
@@ -115,12 +124,11 @@
 
     <update id="cancelSettlement">
         /* com.biz.framework.mapper.pages.AgencyReqMapper.cancelSettlement */
-        UPDATE SETTLEMENT
+        UPDATE AGENCY_REQ
            SET APPLY_STATUS     = 'C'
-         WHERE CO_cODE          = #{loginCoId}
-           AND SETTLEMENT_SEQ   = #{settlementSeq}
-           AND PROD_ID          = #{prodId}
-           AND USER_ID          = #{userId}
-           AND CUST_ID          = #{custId}
+        WHERE CO_CODE          = #{loginCoId}
+          AND AGENCY_SEQ       = #{agencySeq}
+          AND USER_ID          = #{userId}
+          AND AGENCY_ID        = #{agencyId}
     </update>
 </mapper>

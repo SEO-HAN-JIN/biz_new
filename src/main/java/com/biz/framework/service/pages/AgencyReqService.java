@@ -2,9 +2,7 @@ package com.biz.framework.service.pages;
 
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.pages.AgencyReqDto;
-import com.biz.framework.dto.pages.CustomerDto;
-import com.biz.framework.dto.pages.MileageHisDto;
+import com.biz.framework.dto.pages.*;
 import com.biz.framework.dto.pages.AgencyReqDto;
 import com.biz.framework.mapper.pages.AgencyReqMapper;
 import com.biz.framework.mapper.pages.ApplypaymentMapper;
@@ -69,5 +67,24 @@ public class AgencyReqService {
 
     public List<CamelCaseMap> findSettlement(AgencyReqDto agencyReqDto) {
         return agencyReqMapper.findSettlement(agencyReqDto);
+    }
+
+    public int cancelSettlement(AgencyReqDto agencyReqDto) {
+        int result = 0;
+
+        if(!CollectionUtils.isEmpty(agencyReqDto.getAgencyReqDtoList()))
+        {
+            for(AgencyReqDto dto : agencyReqDto.getAgencyReqDtoList())
+            {
+                if (!"01".equals(agencyReqMapper.checkApplyStatus(dto))) {
+                    throw new ServiceException("승인요청건만 삭제 가능합니다.");
+                }
+
+                result += agencyReqMapper.cancelSettlement(dto);
+            }
+        }
+
+
+        return result;
     }
 }
