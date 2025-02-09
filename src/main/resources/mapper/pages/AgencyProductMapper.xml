@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.AgencyProductMapper">
+
+    <select id="findProducts" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyProductMapper.findProducts */
+        SELECT
+            PROD_ID
+          , PROD_NAME
+          , PROD_AMT
+          , USE_IND
+          , SE06.CODE_NAME AS USE_IND_NAME
+        FROM TB_AG_PRODUCTS        P
+        LEFT JOIN CDBASE        SE06
+          ON SE06.CO_CODE       = P.CO_CODE
+         AND SE06.PATTERN_CODE  = 'SE06'
+         AND SE06.BASE_CODE 	= P.USE_IND
+       WHERE 1=1
+        AND P.CO_CODE       = #{loginCoId}
+        <if test='prodId != null  and prodId != "" '>
+            AND PROD_ID     LIKE CONCAT('%', #{prodId}, '%')
+        </if>
+        <if test='prodName != null  and prodName != "" '>
+            AND PROD_NAME    LIKE CONCAT('%', #{prodName}, '%')
+        </if>
+        <if test='useInd != null  and useInd != "" '>
+            AND USE_IND    = #{useInd}
+        </if>
+    </select>
+
+    <select id="findProductsInfo" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyProductMapper.findProductsInfo */
+        SELECT
+        PROD_ID
+        , PROD_NAME
+        , PROD_AMT
+        , USE_IND
+        FROM TB_AG_PRODUCTS    P
+        WHERE 1=1
+        AND P.CO_CODE       = #{loginCoId}
+        AND PROD_ID         = #{prodId}
+    </select>
+
+    <insert id="saveProducts">
+        /* com.biz.framework.mapper.pages.AgencyProductMapper.saveProducts */
+        INSERT INTO TB_AG_PRODUCTS
+        (
+            CO_CODE
+            , PROD_ID
+            , PROD_NAME
+            , PROD_AMT
+            , USE_IND
+        ) VALUES
+        (
+            #{loginCoId}
+            , #{prodId}
+            , #{prodName}
+            , #{prodAmt}
+            , #{useInd}
+        ) ON DUPLICATE KEY UPDATE
+         PROD_NAME         = #{prodName}
+        , PROD_AMT          = #{prodAmt}
+        , USE_IND           = #{useInd}
+    </insert>
+
+    <delete id="deleteProducts">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProducts */
+        DELETE FROM TB_AG_PRODUCTS
+         WHERE CO_CODE          = #{loginCoId}
+           AND PROD_ID          = #{prodId}
+    </delete>
+
+    <select id="checkDuplProduct">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkDuplProduct */
+        SELECT COUNT(1)
+          FROM TB_AG_PRODUCTS
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROD_ID      = #{prodId}
+    </select>
+
+    <update id="updateProductEffDate">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateProductEffDate */
+        UPDATE TB_AG_PRODUCTS
+           SET EFF_DATE_TO  = DATE_ADD(STR_TO_DATE(#{effDateFrom}, '%Y-%m-%d'), INTERVAL -1 DAY)
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROD_ID      = #{prodId}
+           AND #{effDateFrom} <![CDATA[<=]]> EFF_DATE_TO
+           AND #{effDateTo} >= EFF_DATE_FROM
+    </update>
+
+    <select id="createProdId">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createProdId */
+        SELECT CONCAT('PDA-', LPAD(IFNULL(MAX(cast(SUBSTRING_INDEX(PROD_ID, '-', -1) AS UNSIGNED INTEGER)), 0) + 1, 4, '0'))
+          FROM TB_AG_PRODUCTS	TP
+         WHERE TP.CO_CODE 	= #{loginCoId}
+    </select>
+
+    <select id="findProductPopList">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductPopList */
+        SELECT
+            PROD_ID
+             , PROD_NAME
+             , PROD_AMT
+             , USE_IND
+        FROM TB_AG_PRODUCTS    P
+        WHERE 1=1
+          AND P.CO_CODE       = #{loginCoId}
+          AND USE_IND        = 'Y'
+    </select>
+</mapper>
