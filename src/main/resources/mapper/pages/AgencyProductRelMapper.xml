@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.AgencyProductRelMapper">
+
+    <select id="findAgencyList">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.findAgencyList */
+        SELECT T.CO_CODE
+             , T.AGENCY_ID
+             , T.AGENCY_NAME
+          FROM TB_AGENCY            T
+         WHERE 1=1
+           AND T.CO_CODE        = #{loginCoId}
+        <if test='searchAgencyId != null and searchAgencyId != ""'>
+            AND T.AGENCY_ID LIKE CONCAT('%', #{searchAgencyId}, '%')
+        </if>
+        <if test='searchAgencyName != null and searchAgencyName != ""'>
+            AND T.AGENCY_NAME LIKE CONCAT('%', #{searchAgencyName}, '%')
+        </if>
+    </select>
+
+    <select id="findAgencyProductList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.findAgencyProductList */
+        SELECT AP.AGENCY_ID
+             , AP.PROD_ID
+             , TAP.PROD_NAME
+             , TAP.PROD_AMT
+             , TAP.USE_IND
+        FROM AGENCY_PRODUCT		AP
+        JOIN TB_AG_PRODUCTS     TAP
+          ON TAP.CO_CODE        = AP.CO_CODE
+         AND TAP.PROD_ID 	    = AP.PROD_ID
+       WHERE 1=1
+         AND AP.CO_CODE         = #{loginCoId}
+         AND AP.AGENCY_ID 		= #{agencyId}
+    </select>
+
+    <select id="findAgProductList">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.findAgProductList */
+        SELECT TA.PROD_ID
+             , TA.PROD_NAME
+             , TA.PROD_AMT
+             , TA.USE_IND
+          FROM TB_AG_PRODUCTS      TA
+         WHERE 1=1
+           AND TA.CO_CODE       = #{loginCoId}
+        <if test='searchProdId != null and searchProdId != "" '>
+            AND TA.PROD_ID LIKE CONCAT('%', #{searchProdId}, '%')
+            OR TA.PROD_NAME LIKE CONCAT('%', #{searchProdId},'%')
+        </if>
+    </select>
+
+    <insert id="saveEmpAgencyList">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.saveEmpAgencyList */
+        INSERT INTO AGENCY_PRODUCT(
+            CO_CODE
+            , AGENCY_ID
+            , PROD_ID
+        ) VALUES (
+            #{loginCoId}
+            , #{agencyId}
+            , #{prodId}
+        )
+    </insert>
+
+    <select id="checkDupl">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.checkDupl */
+        SELECT COUNT(1)
+          FROM AGENCY_PRODUCT
+         WHERE CO_CODE  = #{loginCoId}
+           AND AGENCY_ID   = #{agencyId}
+           AND PROD_ID    = #{prodId}
+    </select>
+
+    <delete id="deleteEmpAgencyList">
+        /* com.biz.framework.mapper.pages.AgencyProductRelMapper.deleteEmpAgencyList */
+        DELETE FROM AGENCY_PRODUCT
+        WHERE CO_CODE   = #{loginCoId}
+          AND AGENCY_ID   = #{agencyId}
+          AND PROD_ID    = #{prodId}
+    </delete>
+</mapper>

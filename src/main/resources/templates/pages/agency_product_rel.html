@@ -1,0 +1,379 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
+
+
+<th:block th:fragment="content">
+            
+<div class="page-heading">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>대행사별 상품관리</h3>
+            </div>
+            <div class="col-12 col-md-6 order-md-2 order-first">
+                <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">업무관리</li>
+                        <li class="breadcrumb-item active" aria-current="page">대행사별 상품관리</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <section id="horizontal-input">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body pt-3 pb-3" id="searchForm">
+                        <div class="row align-items-center p-2 search-area custom-bg">
+                            <div class="col-md-11">
+                                <div class="form-group row mb-0 align-items-center text-center" id="searchTable">
+                                    <label class="col-form-label col-lg-1 col-3">대행사ID</label>
+                                    <div class="col-lg-2 col-9">
+                                        <input type="text" id="searchAgencyId" class="form-control form-control-sm" name="searchAgencyId" placeholder="대행사ID">
+                                    </div>
+                                    <label class="col-form-label col-lg-1 col-3">대행사명</label>
+                                    <div class="col-lg-2 col-9">
+                                        <input type="text" id="searchAgencyName" class="form-control form-control-sm" name="searchAgencyName" placeholder="대행사명">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-1 text-end">
+                                <a href="#" class="btn btn-primary cursor-auto" id="searchBtn">조회</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row" id="basic-table">
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">대행사목록</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <!-- 빈 div로 버튼 자리 확보 -->
+                                <div style="height: 32px;"></div>
+                            </div>
+                        </div>
+                        <div id="agencyGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">대행사에 등록된 상품</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-end" style="width: 100%;">
+                            <div class="d-flex" style="gap: 5px; padding-bottom: 5px; padding-top: 0;">
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#agencyModal">추가</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnSaveAgencyGrid">저장</button>
+                                <button type="button" class="btn btn-danger btn-sm" id="btnDeleteAgencyGrid">삭제</button>
+                            </div>
+                        </div>
+                        <div id="productGrid"></div>
+                    </div>
+
+                    <div class="modal fade" id="agencyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title text-white" id="exampleModalCenterTitle">대행사 목록</h5>
+                                    <button type="button" class="btn-close text-white" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <section id="horizontal-input1">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="card">
+                                                    <div class="card-body pt-3 pb-3" id="searchModalForm">
+                                                        <div class="row align-items-center p-2 search-area custom-bg">
+                                                            <!-- 입력 필드1 -->
+                                                            <div class="col-md-4 d-flex align-items-center">
+                                                                <label for="_agencyModal_prodId" class="col-form-label me-2 col-lg-5">상품ID/명</label>
+                                                                <input type="text" id="_agencyModal_prodId" class="form-control form-control-sm col-lg-5" placeholder="상품ID/명">
+                                                            </div>
+                                                            <!-- 입력 필드2 -->
+                                                            <div class="col-md-4 d-flex align-items-center">
+                                                            </div>
+                                                            <!-- 조회 버튼 -->
+                                                            <div class="col-md-4 text-end">
+                                                                <a href="#" class="btn btn-primary cursor-auto" id="searchModalBtn">조회</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <form class="form">
+                                        <div id="productModalGrid" style="height:400px"></div>
+                                    </form>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer bg-light">
+                                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                        <i class="bx bx-x"></i> 닫기
+                                    </button>
+                                    <button type="button" class="btn btn-primary ms-1" id="modalAcceptBtn">
+                                        <i class="bx bx-check"></i> 적용
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+<script th:inline="javascript">
+    (function() {
+    const apiUrl = '/api/pages/agency_product_rel';
+
+    let _isAdmin;
+    let agencyGrid;
+    let productGrid;
+    let productModalGrid;
+
+    $(document).ready(function() {
+        const roleIds = /*[[${roleIds}]]*/'';
+
+        const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+        let isAdmin = adminRoles.some(value => roleIds.includes(value));
+
+        const userId = /*[[${userId}]]*/'';
+        const userNm = /*[[${userNm}]]*/'';
+        
+        initEvent();
+        initAgencyGrid();
+        initProductGrid();
+        initProductModalGrid();
+    });
+
+    const initEvent = () => {
+        $("#btnSaveAgencyGrid").on('click', fn_saveAgencyGrid);
+        $("#btnDeleteAgencyGrid").on('click', fn_deleteAgencyGrid);
+
+        $("#searchBtn").on('click', searchEmpGrid);
+
+        // modal
+        $('#agencyModal').off('shown.bs.modal').on('shown.bs.modal', openPgmModal); // 모달이 완전히 열린 후 이벤트 발생
+        $("#modalAcceptBtn").on('click', modalAcceptBtn);
+        $("#searchModalBtn").on('click', searchCustModalGrid);
+    }
+
+    const initAgencyGrid = () => {
+        const columns = new CustomTuiGrid()
+            .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+            .add('agencyId', '대행사ID', 100, {})
+            .add('agencyName', '대행사명', 150, {})
+        ;
+
+        agencyGrid = columns.init('agencyGrid', [])
+            .render();
+
+        agencyGrid.getGrid().on('focusChange', function (ev) {
+            let value = agencyGrid.getGrid().getRow(ev.rowKey);
+            if (!isNull(value)) {
+                searchAgencyGrid(value);
+            }
+        });
+
+    }
+
+    const initProductGrid = () => {
+        const columns = new CustomTuiGrid()
+            .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+            .enableCheckbox(true) // 체크박스 활성화
+            .add('prodId', '상품ID', 100, {})
+            .add('prodName', '상품명', 120, {})
+            .addNumber('prodAmt', '상품단가', 100, {
+                align: 'right',
+                comma: true,
+            })
+            .add('useInd', '사용여부', 80, {})
+        ;
+
+        productGrid = columns.init('productGrid', []).render();
+
+        searchEmpGrid();
+    }
+
+    const initProductModalGrid = () => {
+        const columns = new CustomTuiGrid()
+            .enableCheckbox(true) // 체크박스 활성화
+            .add('prodId', '상품ID', 170, {})
+            .add('prodName', '상품명', 250, {})
+            .addNumber('prodAmt', '상품단가', 170, {
+                align: 'right',
+                comma: true,
+            })
+            .add('useInd', '사용여부', 110, {})
+        ;
+
+        productModalGrid = columns.init('productModalGrid', []).render();
+    }
+
+    const modalAcceptBtn = () => {
+        const focusedCell = agencyGrid.getGrid().getFocusedCell();
+        const getRow = agencyGrid.getGrid().getRow(focusedCell.rowKey);
+        if (isNull(getRow)) {
+            alert("직원을 선택해 주세요.");
+            return;
+        }
+
+        const checkedRows = productModalGrid.getCheckedRows();
+        if (checkedRows.length === 0) {
+            alert("적용할 행을 선택해주세요.");
+            return;
+        }
+
+        let rowDataList = [];
+        checkedRows.forEach((el) => {
+            let obj = {};
+            obj.agencyId = getRow.agencyId;
+            obj.prodId = el.prodId;
+            obj.prodName = el.prodName;
+            obj.prodAmt = el.prodAmt;
+            obj.useInd = el.useInd;
+            rowDataList.push(obj);
+        })
+        productGrid.getGrid().appendRows(rowDataList, {});
+
+        $('#agencyModal').modal('hide'); // jQuery 사용 시
+    }
+
+    const searchEmpGrid = () => {
+        let param = $("#searchTable").getData();
+        agencyGrid.load(apiUrl + "/agency/list", param, function(data){
+            setTimeout(() => {
+                agencyGrid.getGrid().focus(0, 'agencyId', true);
+            }, 100)
+        });
+    }
+
+    const searchAgencyGrid = (param) => {
+        let params = {
+            agencyId : param.agencyId
+        };
+
+        productGrid.load(apiUrl + "/product/list", params, function(data){});
+    }
+
+    const searchCustModalGrid = () => {
+        let param = {
+            searchProdId : $("#_agencyModal_prodId").val()
+        }
+
+        productModalGrid.load(apiUrl + "/product/modal/list", param, function(data){});
+    }
+
+    const openPgmModal = () => {
+        productModalGrid.clear();
+        productModalGrid.getGrid().refreshLayout();
+
+        searchCustModalGrid();
+    }
+
+
+    const fn_saveAgencyGrid = () => {
+        const upMenuFocusedCell = agencyGrid.getGrid().getFocusedCell();
+        const upMenuFocusData = agencyGrid.getGrid().getRow(upMenuFocusedCell.rowKey);
+
+        let modifiedData = productGrid.getGrid().getModifiedRows();
+        const createdData = modifiedData.createdRows;
+
+        const createdLength = !isNull(createdData.length) ? createdData.length : 0;
+        if (createdLength === 0 ) {
+            alert("변경된 데이터가 없습니다.");
+            return;
+        }
+
+        const result = confirm("총 " + (createdLength) + "건의 데이터를 저장하시겠습니까?");
+
+        let params = [];
+        for (let i = 0; i < createdData.length; i++) {
+            createdData[i].rowStatus = 'C';
+            params.push(createdData[i]);
+        }
+
+        if (result) {
+            $.ajax({
+                url: apiUrl + "/save",
+                data: JSON.stringify(params),
+                contentType:'application/json',
+                type: 'POST',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("저장이 완료되었습니다.");
+                        searchAgencyGrid(upMenuFocusData);
+                    } else {
+                        alert("저장에 실패하였습니다.");
+                        searchAgencyGrid(upMenuFocusData);
+                    }
+                }, error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchAgencyGrid(upMenuFocusData);
+                }
+            })
+        }
+    }
+
+    const fn_deleteAgencyGrid = () => {
+        const focusedCell = agencyGrid.getGrid().getFocusedCell();
+        const getData = agencyGrid.getGrid().getRow(focusedCell.rowKey);
+
+        const checkedRows = productGrid.getCheckedRows();
+
+        if (checkedRows.length <=0 ) {
+            alert("삭제할 행을 선택해주세요.");
+            return;
+        }
+
+        const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+        if (confirmResult) {
+            $.ajax({
+                url: apiUrl,
+                data: JSON.stringify(checkedRows),
+                contentType:'application/json',
+                type: 'DELETE',
+                success: (result) => {
+                    if (result > 0) {
+                        alert("삭제가 완료되었습니다.");
+                        searchAgencyGrid(getData);
+                    } else {
+                        alert("삭제에 실패하였습니다.");
+                        searchAgencyGrid(getData);
+                    }
+                },
+                error: (xhr, status, error) => {
+                    alert(xhr.responseText);
+                    searchAgencyGrid(getData);
+                }
+            })
+        }
+    }
+    })();
+
+</script>
+</th:block>
+
+<!--</html>-->
