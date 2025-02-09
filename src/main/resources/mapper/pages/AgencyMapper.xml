@@ -11,7 +11,6 @@
             AG.AGENCY_ID,
             AG.AGENCY_NAME,
             AG.AGENCY_INCENTIVE_RATE,
-            AG.PROD_AMT,
             AG.USE_IND
         FROM TB_AGENCY      AG
         WHERE AG.CO_CODE = #{loginCoId}
@@ -33,7 +32,6 @@
             , AGENCY_ID
             , AGENCY_NAME
             , AGENCY_INCENTIVE_RATE
-            , PROD_AMT
             , USE_IND
         ) VALUES
         (
@@ -41,7 +39,6 @@
             , #{agencyId}
             , #{agencyName}
             , #{agencyIncentiveRate}
-            , #{prodAmt}
             , #{useInd}
         )
     </insert>
@@ -59,7 +56,6 @@
              , AGENCY_ID
              , AGENCY_NAME
              , AGENCY_INCENTIVE_RATE
-             , PROD_AMT
              , USE_IND
           FROM TB_AGENCY    TA
          WHERE TA.CO_CODE   = #{loginCoId}
@@ -71,7 +67,6 @@
         UPDATE TB_AGENCY
            SET AGENCY_NAME           = #{agencyName}
              , AGENCY_INCENTIVE_RATE = #{agencyIncentiveRate}
-             , PROD_AMT              = #{prodAmt}
              , USE_IND               = #{useInd}
          WHERE CO_CODE          = #{loginCoId}
            AND AGENCY_ID        = #{agencyId}

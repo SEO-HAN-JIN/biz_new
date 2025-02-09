@@ -97,12 +97,6 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
-                                                        <label class="form-label">상품단가</label>
-                                                        <input type="text" id="prodAmt" class="form-control is-num" name="prodAmt" placeholder="상품단가">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
                                                         <label class="form-label">사용여부</label>
                                                         <select class="form-select" id="useInd" name="useInd"></select>
                                                     </div>
@@ -190,10 +184,6 @@
                     .add('agencyId', '대행사ID', 100, {})
                     .add('agencyName', '대행사명', 100, {})
                     .add('agencyIncentiveRate', '대행사마진율', 100, {align: 'right'})
-                    .addNumber('prodAmt', '상품단가', 100, {
-                        align: 'right',
-                        comma: true,
-                    })
                     .add('useInd', '사용여부', 100, {})
                     .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 ;
@@ -244,11 +234,6 @@
 
                 if (isNull(param.agencyIncentiveRate)) {
                     alert("대행사 마진율은 필수 값 입니다.");
-                    return false;
-                }
-
-                if (isNull(param.prodAmt)) {
-                    alert("상품단가는 필수 값 입니다.");
                     return false;
                 }
 
