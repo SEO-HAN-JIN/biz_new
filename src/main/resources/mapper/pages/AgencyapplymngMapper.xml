@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.AgencyapplymngMapper">
+
+    <select id="findApplypaymentmngList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.AgencyapplymngMapper.findApplypaymentmngList */
+        <![CDATA[
+        SELECT
+            ST.SETTLEMENT_SEQ,
+            ST.PROD_ID,
+            PR.PROD_NAME,
+            ST.USER_ID,
+            EP.EMP_NAME,
+            ST.CUST_ID,
+            CU.CUST_NAME,
+            ST.REQ_DATE,
+            ST.PROD_AMT,
+            ST.SALE_AMT,
+            ST.INFLOW_CNT,
+            ST.PROD_TOTAL_AMT,
+            ST.SALE_TOTAL_AMT,
+            DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
+            DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
+            ST.WORK_DAY,
+            IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
+            ST.EXPECT_AMT,
+            ST.EXPECT_RATE_AMT,
+            ST.MILEAGE_USE_IND,
+            ST.USE_MILEAGE,
+            ST.EXIST_MILEAGE,
+            ST.REFUND_IND,
+            DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
+            ST.REFUND_SETTLEMENT_SEQ,
+            ST.REFUND_WORK_DAY,
+            ST.REFUND_INFLOW_CNT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
+            IFNULL(ST.REFUND_PROD_TOTAL_AMT, ST.SALE_TOTAL_AMT) AS TOTAL_AMT,
+            IFNULL(SM.CONFIRM_AMT, 0) AS CONFIRM_AMT,
+            SM.CONFIRM_MILEAGE,
+            SM.CONFIRM_RATE_AMT,
+            SM.CONFIRM_DATE,
+            SM.CONFIRM_IND,
+            SM.TAX_IND,
+            SM.PAY_YM,
+            SM.ATCH_ID,
+            SM.REMARK,
+            ST.GUBUN,
+            CD3.CODE_NAME AS GUBUN_NAME,
+            ST.REQ_GUBUN,
+            CD1.CODE_NAME AS REQ_GUBUN_NAME,
+            ST.APPLY_STATUS,
+            CD2.CODE_NAME AS STATUS_NAME
+       FROM SETTLEMENT          ST
+       LEFT JOIN SETTLEMENTMST  SM
+         ON ST.CO_CODE          = SM.CO_CODE
+        AND ST.SETTLEMENT_SEQ   = SM.SETTLEMENT_SEQ
+       LEFT JOIN TB_CUSTOMER    CU
+         ON ST.CO_CODE          = CU.CO_CODE
+        AND ST.CUST_ID          = CU.BIZ_NO
+       LEFT JOIN TB_PRODUCTS    PR
+         ON ST.CO_CODE          = PR.CO_CODE
+        AND ST.PROD_ID          = PR.PROD_ID
+       LEFT JOIN TB_EMP         EP
+         ON ST.CO_CODE          = EP.CO_CODE
+        AND ST.USER_ID          = EP.EMP_ID
+       LEFT JOIN CDBASE         CD1
+         ON ST.CO_CODE          = CD1.CO_CODE
+        AND CD1.PATTERN_CODE    = 'SE01'
+        AND ST.REQ_GUBUN        = CD1.BASE_CODE
+       LEFT JOIN CDBASE         CD2
+         ON ST.CO_CODE          = CD2.CO_CODE
+        AND CD2.PATTERN_CODE    = 'SE04'
+        AND ST.APPLY_STATUS     = CD2.BASE_CODE
+       LEFT JOIN CDBASE         CD3
+         ON ST.CO_CODE          = CD3.CO_CODE
+        AND CD3.PATTERN_CODE    = 'SE02'
+        AND ST.GUBUN            = CD3.BASE_CODE
+      WHERE 1=1
+        AND ST.CO_CODE          = #{loginCoId}
+        AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+        ]]>
+        <if test='prodName != null  and prodName != "" '>
+            AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
+        </if>
+        <if test='empName != null  and empName != "" '>
+            AND EP.EMP_NAME   LIKE CONCAT('%',#{empName} ,'%')
+        </if>
+        <if test='custName != null  and custName != "" '>
+            AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
+        </if>
+        <if test='applyStatus != null  and applyStatus != "" '>
+            AND ST.APPLY_STATUS  = #{applyStatus}
+        </if>
+        <if test='reqGubun != null  and reqGubun != "" '>
+            AND ST.REQ_GUBUN  = #{reqGubun}
+        </if>
+
+    </select>
+
+    <select id="createConfirmSeq">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
+        FROM SETTLEMENTMST
+        WHERE CO_CODE       = #{loginCoId}
+          AND CONFIRM_DATE  = DATE_FORMAT(NOW(), '%Y-%m-%d')
+    </select>
+
+    <insert id="confirmApplypaymentmst">
+        /* com.biz.framework.mapper.pages.AgencyapplymngMapper.confirmApplypayment */
+        INSERT INTO SETTLEMENTMST (
+            CO_CODE,
+            CONFIRM_SEQ,
+            SETTLEMENT_SEQ,
+            USER_ID,
+            CONFIRM_AMT,
+            CONFIRM_MILEAGE,
+            CONFIRM_RATE_AMT,
+            CONFIRM_DATE,
+            CONFIRM_IND,
+            TAX_IND,
+            PAY_YM,
+            ATCH_ID,
+            REMARK
+        )
+        VALUES
+        (
+           #{loginCoId},
+           #{confirmSeq},
+           #{settlementSeq},
+           #{userId},
+           CASE WHEN #{confirmAmt} = '' THEN 0 ELSE CAST(#{confirmAmt} AS SIGNED) END,
+           CASE WHEN #{confirmMileage} = '' THEN 0 ELSE CAST(#{confirmMileage} AS SIGNED) END,
+           CASE WHEN #{confirmRateAmt} = '' THEN 0 ELSE CAST(#{confirmRateAmt} AS SIGNED) END,
+           DATE_FORMAT(NOW(), '%Y-%m-%d'),
+           'Y',
+           #{taxInd},
+           #{payYm},
+           #{atchId},
+           #{remark}
+       )
+    </insert>
+
+    <select id="checkPayrollInd">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
+        SELECT COUNT(*)
+          FROM SETTLEMENTMST
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PAY_YM IS NOT NULL
+           AND PAY_YM           != ''
+    </select>
+
+    <select id="checkSettlementmst" resultType="int">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
+        SELECT COUNT(*)
+         FROM SETTLEMENTMST
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+    </select>
+
+    <insert id="cancelApplypayment">
+        /* com.biz.framework.mapper.pages.AgencyapplymngMapper.confirmApplypayment */
+        DELETE FROM SETTLEMENTMST
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+    </insert>
+
+    <select id="findSettlement" resultType="com.biz.framework.dto.pages.SettlementDto">
+        /* com.biz.framework.mapper.pages.AgencyapplymngMapper.findSettlement */
+        SELECT
+            ST.SETTLEMENT_SEQ,
+            ST.USER_ID,
+            ST.CUST_ID,
+            ST.PROD_ID,
+            ST.INCENTIVE_RATE,
+            ST.REFUND_IND,
+            ST.GUBUN,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
+            CD.CODE_NAME AS GUBUN_NAME
+       FROM SETTLEMENT      ST
+       LEFT JOIN CDBASE     CD
+         ON CD.CO_CODE      = ST.CO_CODE
+        AND CD.PATTERN_CODE = 'SE02'
+        AND ST.GUBUN        = CD.BASE_CODE
+      WHERE ST.CO_CODE      = #{loginCoId}
+        AND SETTLEMENT_SEQ  = #{settlementSeq}
+    </select>
+
+    <update id="updateSettlement">
+        UPDATE SETTLEMENT
+           SET APPLY_STATUS     = #{applyStatus}
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+    </update>
+
+</mapper>
