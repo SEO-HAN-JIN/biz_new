@@ -29,11 +29,11 @@ public class SettlementmstDto extends BaseDto {
     private String searchPayYmEnd;
     private String searchReqGubun;
     private String searchPayGubun;
+    private String searchEmpName;
+    private String searchCustName;
+    private String searchProdName;
 
     private String empName;
-    private String custName;
-    private String prodName;
-
     
     private List<SettlementmstDto> settlementmstDtoList;
     private String[] reqGubunList;

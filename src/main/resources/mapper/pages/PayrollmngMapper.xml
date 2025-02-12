@@ -28,12 +28,22 @@
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.SALE_TOTAL_AMT,
+            ST.PROD_TOTAL_AMT,
             CAST(SM.CONFIRM_AMT - SM.CONFIRM_MILEAGE AS UNSIGNED) AS CONFIRM_AMT,
-            CAST((ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) * 1.1 AS UNSIGNED) AS CONFIRM_COST_AMT,
+            CAST((ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) AS UNSIGNED) AS CONFIRM_COST_AMT,
             SM.CONFIRM_RATE_AMT,
-            ST.REFUND_IND,
             SM.ATCH_ID,
             CD.CODE_NAME AS REQ_GUBUN_NAME,
+            CD2.CODE_NAME AS GUBUN_NAME,
+            ST.USE_MILEAGE,
+            ST.REFUND_SETTLEMENT_SEQ,
+            ST.REFUND_IND,
+            ST.REFUND_DATE,
+            ST.REFUND_WORK_DAY,
+            ST.REFUND_INFLOW_CNT,
+            ST.REFUND_SALE_TOTAL_AMT,
+            ST.REFUND_PROD_TOTAL_AMT,
+            ST.REFUND_EXPECT_RATE_AMT,
             SM.TAX_IND,
             DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM
         FROM SETTLEMENTMST      SM
@@ -53,29 +63,31 @@
           ON ST.CO_CODE         = CD.CO_CODE
          AND CD.PATTERN_CODE    = 'SE01'
          AND ST.REQ_GUBUN    = CD.BASE_CODE
+        LEFT JOIN CDBASE        CD2
+          ON ST.CO_CODE         = CD2.CO_CODE
+         AND CD2.PATTERN_CODE   = 'SE02'
+         AND ST.GUBUN           = CD2.BASE_CODE
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
          AND (DATE_FORMAT(#{searchPayYmStart} , '%Y%m%d') <= ST.DATE_WORK_FROM)
          AND (DATE_FORMAT(#{searchPayYmEnd} , '%Y%m%d') >= ST.DATE_WORK_TO)
         ]]>
-        <if test='prodName != null  and prodName != "" '>
-            AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
+        <if test='searchProdName != null  and searchProdName != "" '>
+            AND PR.PROD_NAME   LIKE CONCAT('%',#{searchProdName} ,'%')
         </if>
-        <if test='empName != null  and empName != "" '>
-            AND EP.EMP_NAME   LIKE CONCAT('%',#{empName} ,'%')
+        <if test='searchEmpName != null  and searchEmpName != "" '>
+            AND EP.EMP_NAME   LIKE CONCAT('%',#{searchEmpName} ,'%')
         </if>
-        <if test='custName != null  and custName != "" '>
-            AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
+        <if test='searchCustName != null  and searchCustName != "" '>
+            AND CU.CUST_NAME  LIKE CONCAT('%',#{searchCustName} ,'%')
         </if>
-        <if test="searchPayGubun != null and searchPayGubun != ''">
+        <if test='searchPayGubun != null and searchPayGubun != ""'>
             <choose>
-                <when test="searchPayGubun == 'Y'">
+                <when test='searchPayGubun == "Y"'>
                     AND SM.PAY_YM IS NOT NULL
                 </when>
-                <when test="searchPayGubun == 'N'">
-                    AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
-                </when>
                 <otherwise>
+                    AND (SM.PAY_YM IS NULL OR SM.PAY_YM = '')
                 </otherwise>
             </choose>
         </if>

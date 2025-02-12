@@ -46,14 +46,14 @@
                                             <label class="col-form-label">담당자명</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="text" id="empName" name="empName" class="form-control form-control-sm" placeholder="담당자명">
+                                            <input type="text" id="searchEmpName" name="searchEmpName" class="form-control form-control-sm" placeholder="담당자명">
                                         </div>
                                         <!-- 결재상태 -->
                                         <div class="col-md-1 text-start">
                                             <label class="col-form-label">급여작업여부</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <select class="form-select" id="applyStatus" name="applyStatus">
+                                            <select class="form-select" id="searchPayGubun" name="searchPayGubun">
                                                 <option value="" selected>전체</option>
                                                 <option value="Y">급여처리완료</option>
                                                 <option value="N">급여처리대기</option>
@@ -114,12 +114,12 @@
                         </div>
 
                         <!--급여지급처리 상세정보-->
-                        <div class="modal fade" id="payrollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal fade" id="payrollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle2" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">급여지급 상세정보</h5>
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle2">급여지급 상세정보</h5>
                                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
@@ -209,7 +209,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="empName" class="form-control" disabled>
+                                                            <input type="text" name="empName" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -222,25 +222,25 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업시작일</label>
-                                                            <input type="date" id="dateWorkFrom" class="form-control" disabled>
+                                                            <input type="date" name="dateWorkFrom" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업종료일</label>
-                                                            <input type="date" id="dateWorkTo" class="form-control" disabled>
+                                                            <input type="date" name="dateWorkTo" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">작업일수</label>
-                                                            <input type="number" id="workDay" class="form-control" disabled>
+                                                            <input type="number" name="workDay" class="form-control" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">유입수</label>
-                                                            <input type="text" id="inflowCnt" class="form-control" disabled>
+                                                            <input type="text" name="inflowCnt" class="form-control" disabled>
                                                         </div>
                                                     </div>
 
@@ -253,19 +253,19 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">상품가</label>
-                                                            <input type="text" id="prodAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="prodAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">판매가</label>
-                                                            <input type="text" id="saleAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="saleAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">판매총액</label>
-                                                            <input type="text" id="saleTotalAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="saleTotalAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
 
@@ -285,13 +285,13 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">킵사용금액</label>
-                                                            <input type="text" id="useMileage" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="useMileage" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">영업이익</label>
-                                                            <input type="text" id="costAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="confirmCostAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -322,19 +322,19 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불요청일</label>
-                                                            <input type="text" id="refundDate" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="refundDate" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불일수</label>
-                                                            <input type="text" id="refundWorkDay" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="refundWorkDay" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불유입수</label>
-                                                            <input type="text" id="refundInflowCnt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="refundInflowCnt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -344,7 +344,7 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">환불금액</label>
-                                                            <input type="text" id="refundProdTotalAmt" class="form-control is-num text-end" disabled>
+                                                            <input type="text" name="refundProdTotalAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -363,9 +363,9 @@
                                         <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                             <i class="bx bx-x"></i> 닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn213">
-                                            <i class="bx bx-check"></i> 저장
-                                        </button>
+<!--                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn213">-->
+<!--                                            <i class="bx bx-check"></i> 저장-->
+<!--                                        </button>-->
                                     </div>
                                 </div>
                             </div>
@@ -626,7 +626,12 @@
 
                     $("#settlementSeqView").val(focusedData.refundSettlementSeq);
 
-                    $("#refundDay").val(focusedData.workDay);
+                    // $("#refundDate").val(focusedData.refundDate);
+                    // $("#refundDay").val(focusedData.refundWorkDay);
+                    // $("#refundInflowCnt").val(focusedData.refundInflowCnt);
+                    // $("#refundProdTotalAmt").val(focusedData.refundProdTotalAmt);
+                    // $("#refundExpectRateAmt").val(focusedData.refundExpectRateAmt);
+
                     $("#refundView").show();
                 }
                 else {
@@ -634,39 +639,13 @@
                     $("#settlementSeqView").val(focusedData.settlementSeq);
 
                     // 영업이익 = 판매총액 - 상품총액
-                    var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
-
-                    $("#costAmt").val(setComma(costAmt));
-
+                    //var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
+                    // debugger;
+                    // $("#costAmt").val(setComma(focusedData.confirmCostAmt));
                     $("#applyView").show();
                 }
 
-                $('#paymentModal').find('input, select, textarea').each(function() {
-                    const fieldId = $(this).attr('id');
-                    const fieldName = $(this).attr('name');
-
-                    // fieldId와 fieldName 중 사용 가능한 키 선택
-                    const key = fieldId && focusedData[fieldId] !== undefined
-                        ? fieldId
-                        : (fieldName && focusedData[fieldName] !== undefined
-                            ? fieldName
-                            : null);
-
-                    if (key !== null) {
-                        const value = focusedData[key];
-
-                        if ($(this).is(':checkbox')) {
-                            // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                            $(this).prop('checked', value === 'Y' || value === true);
-                        } else if ($(this).is('select')) {
-                            // select 박스
-                            $(this).val(value);
-                        } else {
-                            // 일반 input, textarea
-                            $(this).val(isNumeric(value) ? setComma(value) : value);
-                        }
-                    }
-                });
+                $('#paymentModalDetailView').bindForm(focusedData);
 
                 $('#paymentModalDetailView').modal('show');
             }
