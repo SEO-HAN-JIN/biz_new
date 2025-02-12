@@ -56,7 +56,8 @@
     <insert id="saveMileageReq">
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.saveMileageReq */
         <selectKey resultType="String" keyProperty="reqNo" order="BEFORE">
-            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(REQ_NO), 0) + 1, '4', '0')) AS REQ_NO
+            -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(REQ_NO), 0) + 1, '4', '0')) AS REQ_NO
+            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(REQ_NO), 10, 4), 0) + 1, '4', '0')) AS REQ_NO
               FROM MILEAGE_REQ
              WHERE CO_CODE      = #{loginCoId}
                AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')

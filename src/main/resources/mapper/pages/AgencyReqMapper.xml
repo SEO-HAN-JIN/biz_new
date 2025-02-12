@@ -49,7 +49,8 @@
 
     <select id="createAgencySeq">
         /* com.biz.framework.mapper.pages.AgencyReqMapper.createAgencySeq */
-        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(AGENCY_SEQ), 0) + 1, '4', '0')) AS AGENCY_SEQ
+        -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(AGENCY_SEQ), 0) + 1, '4', '0')) AS AGENCY_SEQ
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(AGENCY_SEQ), 10, 4), 0) + 1, '4', '0')) AS AGENCY_SEQ
           FROM AGENCY_REQ
          WHERE CO_CODE      = #{loginCoId}
            AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')

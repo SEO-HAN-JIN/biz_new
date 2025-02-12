@@ -103,7 +103,8 @@
 
     <select id="createConfirmSeq">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
-        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
+        -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
+        SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(CONFIRM_SEQ), 10, 4), 0) + 1, '4', '0')) AS CONFIRM_SEQ
         FROM SETTLEMENTMST
         WHERE CO_CODE       = #{loginCoId}
           AND CONFIRM_DATE  = DATE_FORMAT(NOW(), '%Y-%m-%d')
