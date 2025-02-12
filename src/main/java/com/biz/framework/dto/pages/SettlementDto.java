@@ -44,7 +44,7 @@ public class SettlementDto extends BaseDto {
 
     private String searchStartDate;
     private String searchEndDate;
-    private String empName;
+    private String emplName;
     private String custName;
     private String prodName;
     private String gubunName;

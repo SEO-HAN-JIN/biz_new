@@ -606,7 +606,7 @@
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('settlementSeq', '정산번호', 140, {})
+                .add('settlementSeq', '정산번호', 140, {sortable: true})
                 .add('reqGubunName', '요청구분', 80, {})
                 .add('empName', '담당자', 120, {sortable: true})
                 .add('custName', '고객명', 120, {sortable: true})
@@ -614,8 +614,8 @@
                 .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
                 .addNumber('inflowCnt', '유입수', 80, {align: 'right'})
-                .addDate('dateWorkFrom', '작업시작일', 120, {})
-                .addDate('dateWorkTo', '작업종료일', 120, {})
+                .addDate('dateWorkFrom', '작업시작일', 120, {sortable: true})
+                .addDate('dateWorkTo', '작업종료일', 120, {sortable: true})
                 .addDate('workDay', '작업일수', 80, {visible: false})
                 .addNumber('prodTotalAmt', '상품총액', 150, {visible: false})
                 .addNumber('totalAmt', '(판매/환불)총액', 150, {
@@ -637,7 +637,8 @@
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
                         openDepositModal(rowData);
-                    }
+                    },
+                    sortable: true
                 })
                 .add('statusName', '진행상태', 80, {})
                 .add('useMileage', '사용마일리지', 0, {
