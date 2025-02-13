@@ -28,9 +28,6 @@ public class AgencyReqService {
         return agencyReqMapper.findApplypayment(agencyReqDto);
     }
 
-    /*
-        환불요청인 경우에도 해당 메서드 사용 중 (컨트롤러에서 요청구분, 승인여부 세팅)
-     */
     public int saveApplypayment(AgencyReqDto agencyReqDto) {
         int result = 0;
 
@@ -54,8 +51,8 @@ public class AgencyReqService {
         {
             for(AgencyReqDto dto : agencyReqDto.getAgencyReqDtoList())
             {
-                if (!"01".equals(agencyReqMapper.checkApplyStatus(dto))) {
-                    throw new ServiceException("승인요청건만 삭제 가능합니다.");
+                if (!"C".equals(agencyReqMapper.checkApplyStatus(dto))) {
+                    throw new ServiceException("요청취소건만 삭제 가능합니다.");
                 }
                 result += agencyReqMapper.deleteSettlement(dto);
             }

@@ -562,9 +562,9 @@
                 }
 
                 // 승인요청건이 아닌 항목을 확인
-                const invalidRows = checkedRows.filter(el => el.applyStatus !== '01');
+                const invalidRows = checkedRows.filter(el => el.applyStatus !== 'C');
                 if (invalidRows.length > 0) {
-                    alert("승인요청건만 삭제가 가능합니다.");
+                    alert("요청취소건만 삭제가 가능합니다.");
                     return;
                 }
 
