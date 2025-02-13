@@ -77,7 +77,7 @@
     <select id="createSettlementSeq">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
         -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
-        SELECT CONCAT('S', DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(SETTLEMENT_SEQ), 10, 4), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
+        SELECT CONCAT('S', DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(SETTLEMENT_SEQ), 11, 4), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
           FROM SETTLEMENT
          WHERE CO_CODE      = #{loginCoId}
            AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
