@@ -49,7 +49,7 @@ public class CustomerService {
                 throw new ServiceException("동일한 사업번호와 직원의 데이터가 존재합니다.");
             }
         }
-        if (customerDto.isNew() && customerDto.getMileage() > 0) {
+        if (customerDto.getMileage() > 0) {
             MileageHisDto mileageHisDto = new MileageHisDto();
             mileageHisDto.setBizNo(customerDto.getBizNo());
             mileageHisDto.setEmpId(customerDto.getEmpId());
