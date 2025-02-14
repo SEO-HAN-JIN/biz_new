@@ -205,9 +205,11 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">고객</label>
-                                                            <th:block th:replace="components/cust-select :: cust-select(
-                                                                id='custId',
-                                                                name='custId')"></th:block>
+                                                            <input type="hidden" id="custId" name="custId" class="form-control" disabled>
+                                                            <input type="text" id="custName" name="custName" class="form-control" disabled>
+<!--                                                            <th:block th:replace="components/cust-select :: cust-select(-->
+<!--                                                                id='custId',-->
+<!--                                                                name='custId')"></th:block>-->
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -517,10 +519,12 @@
         }
 
         const openApplyModal = (data) => {
-            document.getElementById("custId").choicesInstance.disable();
+            //document.getElementById("custId").choicesInstance.disable();
 
             const focusedCell = premileagemngGrid.getGrid().getFocusedCell();
             const focusedData = premileagemngGrid.getGrid().getRow(focusedCell.rowKey);
+
+            debugger;
 
             $("#applyModal").bindForm(focusedData);
             if (data.applyStatus !== '01') {
