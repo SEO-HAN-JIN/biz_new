@@ -347,6 +347,7 @@
 
                     // 고객인센티브 우선적용, 고객인센티브가 없으면(= 0) 직원인센티브율 적용
                     empIncentiveRate = parseFloat(rsData);
+                    console.log("## custIncentive ##", custIncentiveRate);
                     if (custIncentiveRate <= 0) {
                         _incentiveRate = empIncentiveRate;
                     }
@@ -664,6 +665,13 @@
             if (param === '1') {
                 $isNew = true;
 
+                if (isAdmin) {
+                    empIncentiveRate = 0;
+                    custIncentiveRate = 0;
+                    _incentiveRate = 0;
+                } else {
+                    _incentiveRate = empIncentiveRate;
+                }
                 $("#incentiveRate").val(_incentiveRate);
 
                 ableBtn(false);
