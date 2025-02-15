@@ -529,14 +529,14 @@
                 .addDate('refundDate', '환불요청일', 150, {})
                 .add('refundWorkDay', '환불일수', 120, {align: 'right'})
                 .add('refundInflowCnt', '유입수', 120, {align: 'right'})
-                .addNumber('refundSaleTotalAmt', '판매총액', 200, {
+                .addNumber('saleTotalAmt', '판매총액', 200, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('refundSaleTotalAmt', '환불금액', 200, {
+                .addNumber('refundProdTotalAmt', '환불금액', 200, {
                     align: 'right',
                     textColor: 'red',
                     comma: true,
@@ -554,7 +554,7 @@
                 .add('gubunName', '환불구분', 150, {})
                 .add('applyStatusName', '진행상태', 150, {})
                 .add('workDay', '작업일수', 'auto', {visible: false})
-                .add('saleTotalAmt', '판매총액', 'auto', {visible: false})
+                // .add('saleTotalAmt', '판매총액', 'auto', {visible: false})
                 .add('gubun', '환불구분', 'auto', {visible: false})
                 .addNumber('prodAmt', '상품가', 150, { visible: false})
                 .addNumber('saleAmt', '판매가', 120, { visible: false})
