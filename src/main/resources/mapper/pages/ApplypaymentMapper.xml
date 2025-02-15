@@ -9,7 +9,7 @@
         SELECT IFNULL(INCENTIVE_RATE, 0) AS INCENTIVE_RATE
           FROM TB_EMP
          WHERE CO_CODE      = #{loginCoId}
-           AND EMP_ID       = #{loginUserId}
+           AND EMP_ID       = #{userId}
     </select>
 
     <select id="findApplypayment" resultType="CamelCaseMap">
@@ -61,11 +61,13 @@
          AND ST.GUBUN           = CD2.BASE_CODE
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
-         AND ST.USER_ID         = #{loginUserId}
          AND ST.REFUND_IND IS NULL
          AND ST.DATE_WORK_FROM <![CDATA[<=]]> #{searchEndDate}
          AND ST.DATE_WORK_TO    >= #{searchStartDate}
          AND ST.REQ_GUBUN       = 'AQ'
+        <if test="isAdmin != null and !isAdmin">
+            AND ST.USER_ID         = #{loginUserId}
+        </if>
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME LIKE CONCAT('%', #{custName}, '%')
         </if>

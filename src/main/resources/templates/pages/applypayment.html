@@ -107,8 +107,9 @@
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
-                                                            <input type="text" id="userName" name="userName" class="form-control" disabled>
-                                                            <input type="hidden" id="userId" name="userId" class="form-control" disabled>
+                                                            <th:block th:replace="components/emp-select :: emp-select(
+                                                                id='userId',
+                                                                name='userId')"></th:block>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -275,16 +276,24 @@
 
         let paymentGrid;
         let $isNew = 'N';
-        let _incentiveRate; // 직원 인센티브율
+        let _incentiveRate = 0; // 직원 인센티브율
 
         let _userId;
         let _userNm;
+        let isAdmin;
+        let empIncentiveRate = 0;
+        let custIncentiveRate = 0;
 
         $(document).ready(function () {
 
             // 정산요청자(담당자, 로그인 사용자) 정보
             _userId = /*[[${userId}]]*/'';
             _userNm = /*[[${userNm}]]*/'';
+
+            const roleIds = /*[[${roleIds}]]*/'';
+
+            const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+            isAdmin = adminRoles.some(value => roleIds.includes(value));
 
             const nowYear = new Date().getFullYear();
             const nowMonth = new Date().getMonth();
@@ -297,7 +306,11 @@
             $("#searchEndDate").val(formatDate(endDate));
 
             findInitCodes();
-            findIncentiveRate();
+            // 관리자 권한이 아니면 본인(담당자)의 인센티브율을 가지고옴.
+            // 관리자일 경우 선택하는 담당자의 인센티브율 가지고옴.
+            if (!isAdmin) {
+                findIncentiveRate(_userId);
+            }
             initEvent();
             initPaymentGrid();
 
@@ -328,10 +341,18 @@
             $("#gubun").addOptions(options);
         }
 
-        const findIncentiveRate = () => {
-            $.get(apiUrl + "/find/incentiveRate", null, function (rsData) {
+        const findIncentiveRate = (param) => {
+            $.get(apiUrl + "/find/incentiveRate", {userId: param}, function (rsData) {
                 if (!isNull(rsData)) {
-                    _incentiveRate = rsData;
+
+                    // 고객인센티브 우선적용, 고객인센티브가 없으면(= 0) 직원인센티브율 적용
+                    empIncentiveRate = parseFloat(rsData);
+                    if (custIncentiveRate <= 0) {
+                        _incentiveRate = empIncentiveRate;
+                    }
+
+                    $("#incentiveRate").val(_incentiveRate);
+                    saleSum();
                 }
             })
         }
@@ -416,6 +437,11 @@
                 })
             })
 
+            // 관리자 정보 변경할 때마다 고객및 인센티브율 가져오기
+            $('#userId').on("change", function () {
+                findIncentiveRate(this.value);
+            })
+
             $("#saleTotalAmt").on('change', calcSaleAmt);
             $("#btnCancel").on('click', cancel);
         }
@@ -435,10 +461,16 @@
                         $("#curExistMileage").val(setComma(result.mileage));
                         $("#existMileage").val(setComma(result.mileage));
 
-                        // 고객에 대한 인센티브가 존재하면 고객 인센테브 우선 적용
-                        let incentiveRate = result.incentiveRate > 0? result.incentiveRate : _incentiveRate;
+                        // 고객인센을 적용하게 되는 경우에는 특별한 경우에만 적용이 되기때문에 선적용
+                        // 고객인센이 없으면(=0) 직원인센으로 적용
+                        custIncentiveRate = parseFloat(result.incentiveRate);
+                        if (custIncentiveRate > 0) {
+                            _incentiveRate = custIncentiveRate;
+                        } else {
+                            _incentiveRate = empIncentiveRate;
+                        }
 
-                        $("#incentiveRate").val(incentiveRate);
+                        $("#incentiveRate").val(_incentiveRate);
                         saleSum();
                     }
                 }
@@ -480,7 +512,6 @@
         function saleSum()
         {
             const $saleTotalAmt = $("#saleTotalAmt");
-            const $saleAmt = $("#saleAmt");
             const $prodAmt = $("#prodAmt");
             const $inflowCnt = $("#inflowCnt");
             const $workDay = $("#workDay");
@@ -491,7 +522,6 @@
             const $useMileage = $("#useMileage");
 
             const _saleTotalAmt = isNull($saleTotalAmt.val()) ? 0 : parseInt(removeComma($saleTotalAmt.val()));
-            // const _saleAmt = isNull($saleAmt.val()) ? 0 : Number(removeComma($saleAmt.val()));
             const _prodAmt = isNull($prodAmt.val()) ? 0 : Number(removeComma($prodAmt.val()));
             const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
             const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
@@ -501,9 +531,6 @@
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
 
-            // 판매총액 (판매가 * 유입수 * 작업일) - 부가세 포함
-            //const saleTotalAmt = _saleTotalAmt === 0 ? Math.floor((_saleAmt * _inflowCnt * _workDay) * vatRate) : _saleTotalAmt;
-
             // 상품가기준 상품총액 (상품가 * 유입수 * 작업일) - 부가세 포함
             const prodTotalAmt = Math.floor((_prodAmt * _inflowCnt * _workDay));
 
@@ -512,9 +539,6 @@
 
             // * 영업이익 구할때 판매총액은 기입하므로 별도로 다시 안구해도됨 - HC
             const costAmt = _saleTotalAmt - prodTotalAmt
-
-            // 소수점 제외하고 정수만 출력
-            //const rate = Math.floor((costAmt * _incentiveRate) / vatRate);
 
             let rate = 0;
             let expectAmt = 0;
@@ -530,7 +554,6 @@
             }
 
             // * 판매총액 입력으로 변경해서 수정안해도됨
-            //$saleTotalAmt.val(formatNumber(saleTotalAmt));
             $expectRateAmt.val(formatNumber(rate));
             $prodTotalAmt.val(formatNumber(prodTotalAmt));
 
@@ -584,6 +607,7 @@
                 })
                 .add('gubunName', '요청구분', 150, {})
                 .add('applyStatusName', '진행상태', 150, {})
+                .add('userId', '담당자ID', 'auto', {visible: false})
                 .add('prodId', '상품ID', 'auto', {visible: false})
                 .add('custId', '고객ID', 'auto', {visible: false})
                 .add('expectAmt', '예상정산금액', 'auto', {visible: false})
@@ -620,7 +644,8 @@
                 searchStartDate: $("#searchStartDate").val(),
                 searchEndDate: $("#searchEndDate").val(),
                 custName: $("#searchCustName").val(),
-                prodName: $("#searchProdName").val()
+                prodName: $("#searchProdName").val(),
+                isAdmin : isAdmin
             };
 
             $.ajax({
@@ -639,13 +664,17 @@
             if (param === '1') {
                 $isNew = true;
 
-                $("#userId").val(_userId);
-                $("#userName").val(_userNm);
                 $("#incentiveRate").val(_incentiveRate);
 
                 ableBtn(false);
 
                 $("#useMileage").attr('disabled', true);
+                if (isAdmin) {
+                    document.getElementById("userId").choicesInstance.enable();
+                } else {
+                    document.getElementById("userId").choicesInstance.disable();
+                    document.getElementById("userId").choicesInstance.setChoiceByValue(_userId);
+                }
 
             } else {
                 $isNew = false;
@@ -661,18 +690,17 @@
 
                     ableBtn(false);
                     const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
-                    if (isChecked) {
+                    if (isChecked && data.useMileage > 0) {
                         $("#useMileage").attr('disabled', false);
+                    } else {
+                        $("#useMileage").attr('disabled', true);
                     }
+                    document.getElementById("userId").choicesInstance.disable();
                     document.getElementById("custId").choicesInstance.disable();
                     document.getElementById("prodId").choicesInstance.disable();
                 } else {
                     ableBtn(true);
                 }
-
-                // 수정기능 우선 없앰
-                // ableBtn(true);
-                // $("#useMileage").attr('disabled', true);
 
             }
 
@@ -691,9 +719,11 @@
             $("#saleTotalAmt").attr('disabled', flag);
 
             if (flag) {
+                document.getElementById("userId").choicesInstance.disable();
                 document.getElementById("custId").choicesInstance.disable();
                 document.getElementById("prodId").choicesInstance.disable();
             } else {
+                document.getElementById("userId").choicesInstance.enable();
                 document.getElementById("custId").choicesInstance.enable();
                 document.getElementById("prodId").choicesInstance.enable();
             }

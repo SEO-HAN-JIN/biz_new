@@ -1,8 +1,8 @@
-<!-- templates/fragments/cust-select.html -->
+<!-- templates/fragments/emp-select.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:fragment="cust-select (name)"
+<th:block th:fragment="emp-select (name)"
           th:with="id=${id} ?: '',
                    width=${width} ?: '100%',
                    items=${items} ?: ${ { } },
@@ -14,7 +14,7 @@
                    tabindex=${tabindex} ?: '-1',
                    required=${required} ?: false">
 
-<select class="choices cust-select form-control-sm" th:id="${id}" th:name="${name}"></select>
+<select class="choices emp-select form-control-sm" th:id="${id}" th:name="${name}"></select>
 <style>
     .choices__list--dropdown {
         max-height: 200px; /* 최대 높이를 설정 */
@@ -39,16 +39,8 @@
     (function () {
         const selectElement = document.getElementById(/*[[${id}]]*/ "");
 
-        // 현재 날짜를 가져옵니다.
-        var nowDate = new Date();
-
-        // 날짜를 'YYYY-MM-DD' 형식으로 포맷
-        var formattedDate = nowDate.getFullYear() + '-' +
-            String(nowDate.getMonth() + 1).padStart(2, '0') + '-' +
-            String(nowDate.getDate()).padStart(2, '0');
-
         if (selectElement != null) {
-            fetch(`/api/pages/customer?baseDate=${encodeURIComponent(formattedDate)}`)
+            fetch(`/api/pages/emp/select`)
                 .then(response => response.json())
                 .then(data => {
                     selectElement.innerHTML = ''; // 기존 옵션 제거
@@ -63,8 +55,8 @@
 
                     data.forEach(item => {
                         const option = document.createElement('option');
-                        option.value = item.bizNo;
-                        option.textContent = item.custName;
+                        option.value = item.empId;
+                        option.textContent = item.empName;
 
                         selectElement.appendChild(option);
                     });

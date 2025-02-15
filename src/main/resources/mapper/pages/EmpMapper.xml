@@ -96,4 +96,13 @@
         WHERE CO_CODE   = #{loginCoId}
           AND EMP_ID    = #{empId}
     </select>
+
+    <select id="findEmpSelect">
+        /* com.biz.framework.mapper.pages.EmpMapper.findEmpSelect */
+        SELECT CO_CODE
+             , EMP_ID
+             , EMP_NAME
+          FROM TB_EMP
+         WHERE CO_CODE  = #{loginCoId}
+    </select>
 </mapper>

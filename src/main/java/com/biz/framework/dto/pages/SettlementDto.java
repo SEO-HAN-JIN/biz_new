@@ -48,6 +48,7 @@ public class SettlementDto extends BaseDto {
     private String custName;
     private String prodName;
     private String gubunName;
+    private String isAdmin;
 
     private List<SettlementDto> settlementDtoList;
 

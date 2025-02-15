@@ -18,4 +18,6 @@ public interface EmpMapper {
     List<CamelCaseMap> findAllEmps(EmpDto empDto);
 
     EmpDto findByEmpId(EmpDto empDto);
+
+    List<CamelCaseMap> findEmpSelect(EmpDto empDto);
 }

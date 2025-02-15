@@ -33,4 +33,15 @@ public class EmpRestController {
     public int deleteEmp(@RequestBody EmpDto empDto) {
         return empService.deleteEmp(empDto);
     }
+
+
+    /**
+     * choice selectbox 리스트 가져오기
+     * @param empDto
+     * @return
+     */
+    @GetMapping("/select")
+    public List<CamelCaseMap> findEmpSelect(EmpDto empDto) {
+        return empService.findEmpSelect(empDto);
+    }
 }
