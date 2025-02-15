@@ -973,7 +973,7 @@
                 $("#deposit_confirmMaxAmt").val(setComma(expectedAmt));
                 $("#deposit_confirmMileage").val(setComma(confirmMileage));
 
-                costAmt = expectedAmt - prodTotalAmt;
+                costAmt = parseInt(expectedAmt) + parseInt(useMileage) - prodTotalAmt;
             }
             else
             {
