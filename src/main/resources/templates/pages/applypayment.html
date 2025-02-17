@@ -545,7 +545,7 @@
             // * 소수점 반올림 - HC
             if(["05", "06"].includes($("#gubun").val()))
             {
-                rate = -_saleTotalAmt;
+                rate = - Math.round(_saleTotalAmt / 1.1);
                 expectAmt = -(_saleTotalAmt - _useMileage);
             }
             else {
