@@ -119,6 +119,7 @@
         , GUBUN
         , APPLY_STATUS
         , REQ_GUBUN
+        , PROD_INCENTIVE_IND
         ) VALUES
         (
           #{loginCoId}
@@ -152,6 +153,7 @@
         , #{gubun}
         , #{applyStatus}
         , #{reqGubun}
+        , #{prodIncentiveInd}
         )
     </insert>
 
@@ -205,6 +207,7 @@
              , GUBUN            = #{gubun}
              , APPLY_STATUS     = #{applyStatus}
              , REQ_GUBUN        = #{reqGubun}
+             , PROD_INCENTIVE_IND   = #{prodIncentiveInd}
         WHERE CO_CODE           = #{loginCoId}
           AND SETTLEMENT_SEQ    = #{settlementSeq}
           AND PROD_ID           = #{prodId}

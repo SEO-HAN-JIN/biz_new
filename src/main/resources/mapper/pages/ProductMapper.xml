@@ -37,6 +37,7 @@
         PROD_ID
         , PROD_NAME
         , PROD_AMT
+        , IFNULL(PROD_INCENTIVE, 0) AS PROD_INCENTIVE
         , USE_IND
         FROM TB_PRODUCTS    P
         WHERE 1=1

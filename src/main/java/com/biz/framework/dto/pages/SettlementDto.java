@@ -41,6 +41,7 @@ public class SettlementDto extends BaseDto {
     private String gubun;
     private String applyStatus;
     private String reqGubun;        // 요청구분
+    private String prodIncentiveInd;
 
     private String searchStartDate;
     private String searchEndDate;
