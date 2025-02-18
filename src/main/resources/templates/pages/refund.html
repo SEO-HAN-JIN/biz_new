@@ -184,6 +184,7 @@
                                                     <input type="hidden" id="_refundModal_useMileage" name="useMileage">
                                                     <input type="hidden" id="_refundModal_reqGubun" name="reqGubun">
                                                     <input type="hidden" id="_refundModal_existMileage" name="existMileage">
+                                                    <input type="hidden" id="_refundModal_prodIncentiveInd" name="prodIncentiveInd">
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -415,6 +416,9 @@
             $("#" + refundModalPrefix + "refundDate").on('change', validRefundDate);
             $("#" + refundModalPrefix + "refundInflowCnt").on('change', saleSum);
             $("#" + refundModalPrefix + "btnSave").on('click', saveRefund);
+            $("#" + refundModalPrefix + "gubun").on('click', function() {
+                saleSum();
+            })
         }
 
 
@@ -487,34 +491,36 @@
             const refundInflowCnt = isNull($("#" + refundModalPrefix + "refundInflowCnt").val()) ? 0 : parseInt(removeComma($("#" + refundModalPrefix + "refundInflowCnt").val()));    // 유입수
             const workDay = isNull($("#" + refundModalPrefix + "refundWorkDay").val()) ? 0 : parseInt($("#" + refundModalPrefix + "refundWorkDay").val());           // 환불일수
             const incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());   // 직원인센티브율
+            const prodIncentiveInd = $("#" + refundModalPrefix + "prodIncentiveInd").val();
+            const expectRateAmt = isNull($("#" + refundModalPrefix + "expectRateAmt").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "expectRateAmt").val());
 
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
 
-            // 환불상품총액(상품가 * 유입수 * 환불일수) * 부가세
-            //const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay) * vatRate);
-            // * 환불상품총액 부가세 제외
-            const saleTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay));
-
-            // 환불판매총액 (판매가 * 유입수 * 환불일수) * 부가세
-            //const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay) * vatRate);
             // * 환불판매총액 부가세 제외
-            const prodTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay));
+            const prodTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay));
+
+            // * 환불판매총액 부가세 제외
+            const saleTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay));
 
             // 영업이익 (환불판매총액 - 환불상품총액)
-            var costAmt = saleTotalAmt - prodTotalAmt;
+            var costAmt = prodTotalAmt - saleTotalAmt;
 
             // 환불수수료 (영업이익 * 인센티브 / 1.1)
-            var expectRateAmt = 0;
+            var refundExpectRateAmt = 0;
 
             if(["07"].includes($("#_refundModal_gubun").val()))
-                expectRateAmt = saleTotalAmt;
+                refundExpectRateAmt = prodTotalAmt;
             else
-                expectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
+                refundExpectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
 
-            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(saleTotalAmt));      // 환불판매총액
-            $("#" + refundModalPrefix + "refundProdTotalAmt").val(formatNumber(prodTotalAmt));      // 환불상품총액
-            $("#" + refundModalPrefix + "refundExpectRateAmt").val(formatNumber(expectRateAmt));    // 환불수수료
+            if (prodIncentiveInd === 'Y') {
+                refundExpectRateAmt = Math.floor(expectRateAmt / workDay);
+            }
+
+            $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(prodTotalAmt));      // 환불판매총액
+            $("#" + refundModalPrefix + "refundProdTotalAmt").val(formatNumber(saleTotalAmt));      // 환불상품총액
+            $("#" + refundModalPrefix + "refundExpectRateAmt").val(formatNumber(refundExpectRateAmt));    // 환불수수료
         }
 
 
@@ -597,6 +603,7 @@
                 .addNumber('saleTotalAmt', '판매총액', 'auto', {visible: false})
                 .addNumber('depositRealAmt', '실제입금액', 'auto', {visible: false})
                 .add('incentiveRate', '직원인센티브율', 'auto', {visible: false})
+                .add('prodIncentiveInd', '상품수수료적용여부', 'auto', {visible: false})
             ;
 
             paymentModalGrid = columns.init('paymentModalGrid', [])

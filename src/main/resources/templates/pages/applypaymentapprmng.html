@@ -330,6 +330,7 @@
                                                     <input type="hidden" id="incentiveRate">
                                                     <input type="hidden" id="saveMileage">
                                                     <input type="hidden" id="refundInd">
+                                                    <input type="hidden" id="prodIncentiveInd">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label class="form-label">상품총액(VAT)</label>
@@ -687,6 +688,9 @@
                 .add('refundProdTotalAmt', '환불금액', 80, {
                     visible: false
                 })
+                .add('prodIncentiveInd', '환불금액', 80, {
+                    visible: false
+                })
 
             paymentGrid = columns.init('paymentGrid', [])
                 .render();
@@ -877,6 +881,7 @@
             $("#deposit_saleTotalAmt").val(formatNumber(saleTotalAmt));
             $("#deposit_useMileage").val(formatNumber(useMileage));
             $("#deposit_expectRateAmt").val(formatNumber(expectRateAmt));
+            $("#prodIncentiveInd").val(rsData.prodIncentiveInd);
 
             var expectedAmt = (saleTotalAmt - useMileage) <= 0 ? 0 : formatNumber(saleTotalAmt - useMileage);
 
@@ -961,6 +966,8 @@
             // 실제입금금액
             var confirmAmt = removeComma($("#deposit_confirmAmt").val());
 
+            const prodIncentiveInd = $("#prodIncentiveInd").val();
+
             // 영업이익
             var costAmt = (parseInt(confirmAmt) + parseInt(useMileage)) - (prodTotalAmt);
 
@@ -987,8 +994,13 @@
             // 실수형으로 변환
             var incentiveRate = parseFloat(incenRateStr);
 
-            // 소수점 제외하고 정수만 출력
-            var rate = roundDecimal((costAmt * incentiveRate) / 1.1, 0) ;
+            var rate;
+            if (prodIncentiveInd === 'Y') {
+                rate = $("#deposit_expectRateAmt").val();
+            } else {
+                // 소수점 제외하고 정수만 출력
+                rate = roundDecimal((costAmt * incentiveRate) / 1.1, 0) ;
+            }
 
             $("#deposit_confirmRateAmt").val(setComma(rate));
         }

@@ -53,7 +53,8 @@
             ST.REQ_GUBUN,
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
-            CD2.CODE_NAME AS STATUS_NAME
+            CD2.CODE_NAME AS STATUS_NAME,
+            ST.PROD_INCENTIVE_IND
        FROM SETTLEMENT          ST
        LEFT JOIN SETTLEMENTMST  SM
          ON ST.CO_CODE          = SM.CO_CODE
@@ -183,7 +184,8 @@
             ST.REFUND_SALE_TOTAL_AMT,
             ST.REFUND_PROD_TOTAL_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
-            CD.CODE_NAME AS GUBUN_NAME
+            CD.CODE_NAME AS GUBUN_NAME,
+            ST.PROD_INCENTIVE_IND
        FROM SETTLEMENT      ST
        LEFT JOIN CDBASE     CD
          ON CD.CO_CODE      = ST.CO_CODE
