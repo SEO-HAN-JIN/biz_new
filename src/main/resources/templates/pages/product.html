@@ -107,6 +107,12 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="form-group">
+                                                        <label class="form-label">상품수수료</label>
+                                                        <input type="text" id="_productPop_prodIncentive" class="form-control is-num text-end" name="prodIncentive">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
                                                         <label class="form-label">사용여부</label>
                                                         <select class="form-select" id="_productPop_useInd" name="useInd">
                                                         </select>
@@ -214,6 +220,10 @@
                     comma: true,
                 })
                 .add('useIndName', '사용여부', 70, { align: 'center' })
+                .addNumber('prodIncentive', '상품수수료', 80, {
+                    align: 'right',
+                    comma: true,
+                })
                 .add('useInd', '사용여부', 70, { visible: false })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
 
@@ -263,22 +273,8 @@
                 const focusedCell = productGrid.getGrid().getFocusedCell();
                 const focusedData = productGrid.getGrid().getRow(focusedCell.rowKey);
 
-                $('#productModal').find('input, select, textarea').each(function() {
-                    const fieldName = $(this).attr('name');
-                    if (fieldName && focusedData[fieldName] !== undefined) {
-                        if ($(this).is(':checkbox')) {
-                            // 체크박스는 'Y', 'N' 또는 true/false로 값을 바인딩
-                            $(this).prop('checked', focusedData[fieldName] === 'Y' || focusedData[fieldName] === true);
-                        } else if (fieldName === 'prodAmt') {
-                            $('#' + _popPrefix_ + fieldName).val(focusedData[fieldName]);
-                            //const replaceNumber = formatToCurrency(focusedData[fieldName]);
-                            //$(this).val(replaceNumber);
-                        } else {
-                            // 그 외 input, textarea는 값 바인딩
-                            $(this).val(focusedData[fieldName]);
-                        }
-                    }
-                });
+                $('#productModal').bindForm(focusedData);
+
             } else {
                 $isNew = true;
 

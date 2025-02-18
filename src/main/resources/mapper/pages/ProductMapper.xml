@@ -10,6 +10,7 @@
             PROD_ID
           , PROD_NAME
           , PROD_AMT
+          , PROD_INCENTIVE
           , USE_IND
           , SE06.CODE_NAME AS USE_IND_NAME
         FROM TB_PRODUCTS        P
@@ -51,6 +52,7 @@
             , PROD_ID
             , PROD_NAME
             , PROD_AMT
+            , PROD_INCENTIVE
             , USE_IND
         ) VALUES
         (
@@ -58,10 +60,12 @@
             , #{prodId}
             , #{prodName}
             , #{prodAmt}
+            , #{prodIncentive}
             , #{useInd}
         ) ON DUPLICATE KEY UPDATE
          PROD_NAME         = #{prodName}
         , PROD_AMT          = #{prodAmt}
+        , PROD_INCENTIVE    = #{prodIncentive}
         , USE_IND           = #{useInd}
     </insert>
 
