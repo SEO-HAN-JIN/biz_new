@@ -58,7 +58,6 @@ public class EmpService {
         UserDto userDto = new UserDto();
         userDto.setUserId(empDto.getEmpId());
 
-        result += userMapper.deleteUser(userDto);
         return result;
     }
 
