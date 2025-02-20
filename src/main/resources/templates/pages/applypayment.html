@@ -924,15 +924,13 @@
             const _inflowCnt = isNull($inflowCnt.val()) ? 0 : parseInt(removeComma($inflowCnt.val()));
             const _workDay = isNull($workDay.val()) ? 0 : parseInt($workDay.val());
 
-            // 판매가, 상품가도 부가세 포함하여 금액 입력 그러므로 계산식에서 부가세 1*1 안해도됨
-            //const prodAmt = Math.floor(_saleTotalAmt / (_inflowCnt * _workDay * 1.1));
             const inflowAmt = (_inflowCnt * _workDay);
 
-            let prodAmt = 0;
+            let saleAmt = 0;
             if(inflowAmt != 0)
-                prodAmt= roundDecimal(_saleTotalAmt / inflowAmt, 2);
+                saleAmt= roundDecimal(_saleTotalAmt / inflowAmt, 5);
 
-            $saleAmt.val(prodAmt);
+            $saleAmt.val(saleAmt);
 
             saleSum();
         }

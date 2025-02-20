@@ -270,9 +270,11 @@
         // set comma
         var setComma = function (val) {
             if(val){
-                var v = removeComma(val);
-                return v.replace(/(\d)(?=(?:\d{3}){2,}(?:\.|$))|(\d)(\d{3}(?:\.\d*)?$)/g
-                    , '$1$2' + ',' + '$3');
+                // 소수점 기준으로 분리
+                const parts = val.split('.');
+                // 정수 부분에만 천 단위 콤마 추가
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                val = parts.join('.');
             }
             return val;
         };
