@@ -561,7 +561,7 @@
 
             // 상품수수료가 존재하면 예상정산금액=상품수수료
             if (_prodIncentiveInd == 'Y') {
-                rate = parseFloat(_prodIncentive);
+                rate = _workDay * parseFloat(_prodIncentive);
             }
 
             // * 판매총액 입력으로 변경해서 수정안해도됨
