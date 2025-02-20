@@ -86,6 +86,7 @@
                                                 <option value="" selected>전체</option>
                                                 <option value="AQ">정산요청</option>
                                                 <option value="RQ">환불요청</option>
+                                                <option value="DAQ">대행사요청</option>
                                             </select>
                                         </div>
                                     </div>
@@ -111,12 +112,11 @@
                             <span class="data-count">[총 <span id="data-count-value">0</span>건]</span>
                         </div>
                         <div class="card-body">
-<!--                            <div class="d-flex justify-content-end" style="width: 100%;">-->
-<!--                                <div class="d-flex pb-3 gap-1">-->
-<!--                                    <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn" data-bs-toggle="modal" data-bs-target="#paymentModal">추가</button>-->
-<!--                                    <button type="button" class="btn btn-secondary btn-sm" id="btnDeletePaymentGrid">삭제</button>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="d-flex justify-content-end" style="width: 100%;">
+                                <div class="d-flex pb-3 gap-1">
+                                    <button type="button" class="btn btn-danger btn-sm" id="btnDeletePayment">삭제</button>
+                                </div>
+                            </div>
                             <div id="paymentGrid" class="tui-grid"></div>
                         </div>
 
@@ -301,9 +301,6 @@
                                     <div class="modal-footer bg-light">
                                         <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                             <i class="bx bx-x"></i> 닫기
-                                        </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 저장
                                         </button>
                                     </div>
                                 </div>
@@ -500,6 +497,8 @@
             $("#modalDepositApprBtn").on('click', apprDeposit);
             $("#modalDepositRejectBtn").on('click', rejectDeposit);
 
+            $("#btnDeletePayment").on('click', deletePayment);
+
             $('.is-num').bind('keyup', numberKeyupEvent);
         }
 
@@ -604,11 +603,12 @@
 
         const initPaymentGrid = () => {
 
-
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .enableCheckbox(true) // 체크박스 활성화
+                .add('confirmSeq', '승인요청번호', 0, {visible: false})
                 .add('settlementSeq', '정산번호', 140, {sortable: true})
-                .add('reqGubunName', '요청구분', 80, {})
+                .add('reqGubunName', '요청구분', 120, {})
                 .add('empName', '담당자', 120, {sortable: true})
                 .add('custName', '고객명', 120, {sortable: true})
                 .add('prodName', '상품명', 120, { align: 'center', sortable: true })
@@ -1019,7 +1019,45 @@
             search();
         }
 
+        const deletePayment = () => {
+
+            var params = paymentGrid.getCheckedRows();
+
+            if(params.length <= 0) {
+                alert("선택된 정산요청건이 없습니다.");
+                return false;
+            }
+
+            if(confirm("선택된 (" + params.length+ "건) 정산요청 데이터가 전부 삭제됩니다. \r\n\r\n정말 삭제하시겠습니까?"))
+            {
+                var requestData = {
+                    settlementmstDtoList: params // 배열 그대로 전달
+                };
+
+                $.ajax({
+                    url: apiUrl + "/delete",
+                    data: JSON.stringify(requestData), // JSON 문자열로 변환
+                    contentType:'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("급여처리 완료되었습니다.");
+                            $('#payrollModal').modal('hide');
+                            search();
+                        } else {
+                            alert("급여처리에 실패하였습니다.");
+                            search();
+                        }
+                    }
+                })
+
+            }
+
+
+        }
+
         })();
+
     </script>
 
 </th:block>

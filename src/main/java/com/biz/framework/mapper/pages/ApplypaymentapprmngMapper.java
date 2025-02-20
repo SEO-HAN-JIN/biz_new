@@ -26,4 +26,9 @@ public interface ApplypaymentapprmngMapper {
     int cancelApplypayment(SettlementmstDto settlementmstDto);
 
     SettlementDto findSettlement(SettlementmstDto settlementmstDto);
+
+    SettlementmstDto findSettlementmst(SettlementmstDto settlementmstDto);
+
+    int deleteSettlementmst(SettlementmstDto settlementmstDto);
+    int deleteSettlement(SettlementDto settlementDto);
 }

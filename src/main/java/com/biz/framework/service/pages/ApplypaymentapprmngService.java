@@ -2,15 +2,18 @@ package com.biz.framework.service.pages;
 
 import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.dto.pages.SettlementmstDto;
+import com.biz.framework.mapper.pages.ApplypaymentMapper;
 import com.biz.framework.mapper.pages.ApplypaymentapprmngMapper;
 import com.biz.framework.mapper.pages.CustomerMapper;
 import com.biz.framework.mapper.pages.MileageHisMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.thymeleaf.util.StringUtils;
 
@@ -24,6 +27,7 @@ public class ApplypaymentapprmngService {
     private final ApplypaymentapprmngMapper applypaymentapprmngMapper;
     private final MileageHisMapper mileageHisMapper;
     private final CustomerMapper customerMapper;
+    private final ApplypaymentMapper applypaymentMapper;
 
     public List<CamelCaseMap> findApplypaymentmngList(SettlementDto settlementDto) {
         return applypaymentapprmngMapper.findApplypaymentmngList(settlementDto);
@@ -116,6 +120,91 @@ public class ApplypaymentapprmngService {
         result = applypaymentapprmngMapper.updateSettlement(settlementDto);
 
         return result;
+    }
+
+    public int deleteApplypayment(SettlementmstDto settlementmstDto) {
+
+        int result = 0;
+
+        if (!CollectionUtils.isEmpty(settlementmstDto.getSettlementmstDtoList())) {
+
+            for (SettlementmstDto dto : settlementmstDto.getSettlementmstDtoList()) {
+
+                // 정산승인건 확인
+                SettlementmstDto settlementmst = applypaymentapprmngMapper.findSettlementmst(dto);
+
+                int mileage = 0;
+
+                // 정산 승인건 있을 경우
+                if (settlementmst != null && !settlementmst.getConfirmSeq().isEmpty()) {
+                    mileage = Integer.parseInt(settlementmst.getConfirmMileage());
+
+                    // 승인시 적립마일리지 반환
+                    if (mileage > 0) {
+
+                        // 취소니깐 역계산
+                        mileage = -mileage;
+
+                        customerMapper.updateFinalMileage(settlementmst.getLoginCoId(), settlementmst.getCustId(), mileage);
+
+                        MileageHisDto mileageHisDto = new MileageHisDto();
+                        mileageHisDto.setBizNo(settlementmst.getCustId());
+                        mileageHisDto.setEmpId(settlementmst.getUserId());
+                        mileageHisDto.setSettlementSeq(settlementmst.getConfirmMileage());
+                        mileageHisDto.setMileageAmt(mileage);
+                        mileageHisDto.setCreatedPage("RQ"); // 정산승인 후 삭제
+                        mileageHisDto.setCreatedId(settlementmst.getLoginUserId());
+
+                        mileageHisMapper.addMileageHistory(mileageHisDto);
+                    }
+
+                    result = applypaymentapprmngMapper.deleteSettlementmst(settlementmst);
+
+                    if(result == 0)
+                    {
+                        throw new ServiceException("삭제 도중 오류가 발생했습니다. [CODE : 01]");
+                    }
+                }
+
+                SettlementDto settlement = findSettlement(dto);
+
+                if (settlement != null && !settlement.getSettlementSeq().isEmpty()) {
+
+                    mileage = Integer.parseInt(settlement.getUseMileage());
+
+                    // 승인시 적립마일리지 반환
+                    if (mileage > 0) {
+
+                        customerMapper.updateFinalMileage(settlement.getLoginCoId(), settlement.getCustId(), mileage);
+
+                        MileageHisDto mileageHisDto = new MileageHisDto();
+                        mileageHisDto.setBizNo(settlement.getCustId());
+                        mileageHisDto.setEmpId(settlement.getUserId());
+                        mileageHisDto.setSettlementSeq(settlement.getSettlementSeq());
+                        mileageHisDto.setMileageAmt(mileage);
+                        mileageHisDto.setCreatedPage("RQ"); // 정산승인 후 삭제
+                        mileageHisDto.setCreatedId(settlement.getLoginUserId());
+
+                        mileageHisMapper.addMileageHistory(mileageHisDto);
+                    }
+
+                    result = applypaymentapprmngMapper.deleteSettlement(settlement);
+
+                    if(result == 0)
+                    {
+                        throw new ServiceException("삭제 도중 오류가 발생했습니다. [CODE : 02]");
+                    }
+                }
+
+                if(result == 0)
+                    throw new ServiceException("처리 도중 오류가 발생했습니다.");
+            }
+
+            return result;
+
+        }
+        else
+            throw new ServiceException("삭제할 데이터가 없습니다.");
     }
 
     public SettlementDto findSettlement(SettlementmstDto settlementmstDto)

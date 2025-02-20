@@ -35,4 +35,9 @@ public class ApplypaymentapprmngRestController {
     public int cancelApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
         return applypaymentapprmngService.cancelApplypayment(settlementmstDto);
     }
+
+    @PostMapping("/delete")
+    public int deleteApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
+        return applypaymentapprmngService.deleteApplypayment(settlementmstDto);
+    }
 }

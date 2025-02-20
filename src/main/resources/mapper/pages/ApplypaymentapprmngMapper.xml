@@ -9,12 +9,13 @@
         <![CDATA[
         SELECT
             ST.SETTLEMENT_SEQ,
+            SM.CONFIRM_SEQ,
             ST.PROD_ID,
-            PR.PROD_NAME,
+            ST.PROD_NAME,
             ST.USER_ID,
             EP.EMP_NAME,
             ST.CUST_ID,
-            CU.CUST_NAME,
+            ST.CUST_NAME,
             ST.REQ_DATE,
             ST.PROD_AMT,
             ST.SALE_AMT,
@@ -25,11 +26,11 @@
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
-            ST.EXPECT_AMT,
+            -- ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
-            ST.MILEAGE_USE_IND,
+            -- ST.MILEAGE_USE_IND,
             ST.USE_MILEAGE,
-            ST.EXIST_MILEAGE,
+            -- ST.EXIST_MILEAGE,
             ST.REFUND_IND,
             DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') AS REFUND_DATE,
             ST.REFUND_SETTLEMENT_SEQ,
@@ -53,18 +54,14 @@
             ST.REQ_GUBUN,
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
+            CD2.CODE_NAME AS STATUS_NAME
+       FROM V_REQ_VIEW          ST
             CD2.CODE_NAME AS STATUS_NAME,
             ST.PROD_INCENTIVE_IND
        FROM SETTLEMENT          ST
        LEFT JOIN SETTLEMENTMST  SM
          ON ST.CO_CODE          = SM.CO_CODE
         AND ST.SETTLEMENT_SEQ   = SM.SETTLEMENT_SEQ
-       LEFT JOIN TB_CUSTOMER    CU
-         ON ST.CO_CODE          = CU.CO_CODE
-        AND ST.CUST_ID          = CU.BIZ_NO
-       LEFT JOIN TB_PRODUCTS    PR
-         ON ST.CO_CODE          = PR.CO_CODE
-        AND ST.PROD_ID          = PR.PROD_ID
        LEFT JOIN TB_EMP         EP
          ON ST.CO_CODE          = EP.CO_CODE
         AND ST.USER_ID          = EP.EMP_ID
@@ -85,10 +82,10 @@
         AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         ]]>
         <if test='prodName != null  and prodName != "" '>
-            AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
+            AND ST.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
         </if>
         <if test='emplName != null  and emplName != "" '>
-            AND EP.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
+            AND ST.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
         </if>
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
@@ -186,6 +183,7 @@
             ST.REFUND_EXPECT_RATE_AMT,
             CD.CODE_NAME AS GUBUN_NAME,
             ST.PROD_INCENTIVE_IND
+            ST.USE_MILEAGE
        FROM SETTLEMENT      ST
        LEFT JOIN CDBASE     CD
          ON CD.CO_CODE      = ST.CO_CODE
@@ -196,10 +194,45 @@
     </select>
 
     <update id="updateSettlement">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.updateSettlement */
         UPDATE SETTLEMENT
            SET APPLY_STATUS     = #{applyStatus}
          WHERE CO_CODE          = #{loginCoId}
            AND SETTLEMENT_SEQ   = #{settlementSeq}
     </update>
+
+    <select id="findSettlementmst" resultType="com.biz.framework.dto.pages.SettlementmstDto">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findSettlementmst */
+        SELECT
+            SM.CONFIRM_SEQ,
+            SM.SETTLEMENT_SEQ,
+            SM.USER_ID,
+            SM.CONFIRM_AMT,
+            SM.CONFIRM_MILEAGE,
+            SM.CONFIRM_RATE_AMT,
+            SM.CONFIRM_DATE,
+            SM.CONFIRM_IND,
+            ST.CUST_ID
+        FROM SETTLEMENTMST SM
+        JOIN SETTLEMENT ST
+             ON SM.CO_CODE          = ST.CO_CODE
+            AND SM.SETTLEMENT_SEQ   = ST.SETTLEMENT_SEQ
+        WHERE SM.CO_CODE        = #{loginCoId}
+          AND SM.CONFIRM_SEQ    = #{confirmSeq}
+    </select>
+
+    <delete id="deleteSettlementmst">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.deleteSettlementmst */
+        DELETE FROM SETTLEMENTMST
+        WHERE CO_CODE       = #{loginCoId}
+          AND CONFIRM_SEQ   = #{confirmSeq}
+    </delete>
+
+    <delete id="deleteSettlement">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.deleteSettlement */
+        DELETE FROM SETTLEMENT
+        WHERE CO_CODE           = #{loginCoId}
+          AND SETTLEMENT_SEQ    = #{settlementSeq}
+    </delete>
 
 </mapper>
