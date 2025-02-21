@@ -54,11 +54,9 @@
             ST.REQ_GUBUN,
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
-            CD2.CODE_NAME AS STATUS_NAME
-       FROM V_REQ_VIEW          ST
             CD2.CODE_NAME AS STATUS_NAME,
             ST.PROD_INCENTIVE_IND
-       FROM SETTLEMENT          ST
+       FROM V_REQ_VIEW          ST
        LEFT JOIN SETTLEMENTMST  SM
          ON ST.CO_CODE          = SM.CO_CODE
         AND ST.SETTLEMENT_SEQ   = SM.SETTLEMENT_SEQ
