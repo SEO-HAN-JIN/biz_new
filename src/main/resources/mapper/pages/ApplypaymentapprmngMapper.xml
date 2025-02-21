@@ -83,7 +83,7 @@
             AND ST.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
         </if>
         <if test='emplName != null  and emplName != "" '>
-            AND ST.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
+            AND EP.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
         </if>
         <if test='custName != null  and custName != "" '>
             AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
