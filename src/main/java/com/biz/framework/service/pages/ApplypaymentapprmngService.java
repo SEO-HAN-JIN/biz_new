@@ -89,7 +89,12 @@ public class ApplypaymentapprmngService {
                     mileageHisMapper.addMileageHistory(mileageHisDto);
                 }
 
-                result = applypaymentapprmngMapper.updateSettlement(settlementDto);
+                if ("DAQ".equals(settlementDto.getReqGubun())) {
+                    result = applypaymentapprmngMapper.updateAgency(settlementDto);
+                } else {
+                    result = applypaymentapprmngMapper.updateSettlement(settlementDto);
+                }
+
             }
             else
                 throw new ServiceException("처리 도중 오류가 발생했습니다.");
@@ -117,7 +122,11 @@ public class ApplypaymentapprmngService {
         settlementDto.setSettlementSeq(settlementmstDto.getSettlementSeq());
         settlementDto.setApplyStatus("03");
 
-        result = applypaymentapprmngMapper.updateSettlement(settlementDto);
+        if ("DAQ".equals(settlementDto.getReqGubun())) {
+            result = applypaymentapprmngMapper.updateAgency(settlementDto);
+        } else {
+            result = applypaymentapprmngMapper.updateSettlement(settlementDto);
+        }
 
         return result;
     }
@@ -188,7 +197,12 @@ public class ApplypaymentapprmngService {
                         mileageHisMapper.addMileageHistory(mileageHisDto);
                     }
 
-                    result = applypaymentapprmngMapper.deleteSettlement(settlement);
+                    if ("DAQ".equals(settlement.getReqGubun())) {
+                        result = applypaymentapprmngMapper.deleteAgencyReq(settlement);
+                    } else {
+                        result = applypaymentapprmngMapper.deleteSettlement(settlement);
+                    }
+
 
                     if(result == 0)
                     {

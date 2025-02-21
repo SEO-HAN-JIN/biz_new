@@ -31,4 +31,8 @@ public interface ApplypaymentapprmngMapper {
 
     int deleteSettlementmst(SettlementmstDto settlementmstDto);
     int deleteSettlement(SettlementDto settlementDto);
+
+    int updateAgency(SettlementDto settlementDto);
+
+    int deleteAgencyReq(SettlementDto settlement);
 }

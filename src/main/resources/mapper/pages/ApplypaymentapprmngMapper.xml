@@ -180,9 +180,10 @@
             ST.REFUND_PROD_TOTAL_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
             CD.CODE_NAME AS GUBUN_NAME,
-            ST.PROD_INCENTIVE_IND
-            ST.USE_MILEAGE
-       FROM SETTLEMENT      ST
+            ST.PROD_INCENTIVE_IND,
+            ST.USE_MILEAGE,
+            ST.REQ_GUBUN
+       FROM V_REQ_VIEW      ST
        LEFT JOIN CDBASE     CD
          ON CD.CO_CODE      = ST.CO_CODE
         AND CD.PATTERN_CODE = 'SE02'
@@ -199,6 +200,14 @@
            AND SETTLEMENT_SEQ   = #{settlementSeq}
     </update>
 
+    <update id="updateAgency">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.updateAgency */
+        UPDATE AGENCY_REQ
+        SET APPLY_STATUS     = #{applyStatus}
+        WHERE CO_CODE          = #{loginCoId}
+          AND AGENCY_SEQ   = #{settlementSeq}
+    </update>
+
     <select id="findSettlementmst" resultType="com.biz.framework.dto.pages.SettlementmstDto">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findSettlementmst */
         SELECT
@@ -212,7 +221,7 @@
             SM.CONFIRM_IND,
             ST.CUST_ID
         FROM SETTLEMENTMST SM
-        JOIN SETTLEMENT ST
+        JOIN V_REQ_VIEW ST
              ON SM.CO_CODE          = ST.CO_CODE
             AND SM.SETTLEMENT_SEQ   = ST.SETTLEMENT_SEQ
         WHERE SM.CO_CODE        = #{loginCoId}
@@ -231,6 +240,13 @@
         DELETE FROM SETTLEMENT
         WHERE CO_CODE           = #{loginCoId}
           AND SETTLEMENT_SEQ    = #{settlementSeq}
+    </delete>
+
+    <delete id="deleteAgencyReq">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.deleteAgencyReq */
+        DELETE FROM AGECNY_REQ
+        WHERE CO_CODE           = #{loginCoId}
+          AND AGENCY_SEQ    = #{settlementSeq}
     </delete>
 
 </mapper>
