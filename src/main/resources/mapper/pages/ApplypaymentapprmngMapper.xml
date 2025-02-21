@@ -63,6 +63,12 @@
        LEFT JOIN TB_EMP         EP
          ON ST.CO_CODE          = EP.CO_CODE
         AND ST.USER_ID          = EP.EMP_ID
+       LEFT JOIN TB_CUSTOMER    CU
+         ON ST.CO_CODE          = CU.CO_CODE
+        AND ST.CUST_ID          = CU.BIZ_NO
+       LEFT JOIN TB_PRODUCTS    PR
+         ON ST.CO_CODE          = PR.CO_CODE
+        AND ST.PROD_ID          = PR.PROD_ID
        LEFT JOIN CDBASE         CD1
          ON ST.CO_CODE          = CD1.CO_CODE
         AND CD1.PATTERN_CODE    = 'SE01'
@@ -80,7 +86,7 @@
         AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         ]]>
         <if test='prodName != null  and prodName != "" '>
-            AND ST.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
+            AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
         </if>
         <if test='emplName != null  and emplName != "" '>
             AND EP.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
@@ -94,6 +100,7 @@
         <if test='reqGubun != null  and reqGubun != "" '>
             AND ST.REQ_GUBUN  = #{reqGubun}
         </if>
+
 
     </select>
 
