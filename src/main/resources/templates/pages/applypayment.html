@@ -783,6 +783,12 @@
 
             var dateFrom = param.dateWorkFrom;
             var dateTo = param.dateWorkTo;
+
+            if (isNull(param.userId)) {
+                alert("담당자를 입력해주세요.");
+                return false;
+            }
+
             if (isNull(dateFrom)) {
                 alert("시작일을 입력해주세요.");
                 return false;

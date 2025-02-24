@@ -250,14 +250,24 @@
                     // 정산 건수
                     settlementCount.innerText = aqCount;
                     // 정산 금액
-                    settlementAmount.innerText = aqConfirmAmt;
+                    settlementAmount.innerText = setComma(aqConfirmAmt);
                     // 환불 건수
                     refundCount.innerText = rqCount;
                     // 환불 금액
-                    refundAmount.innerText = rqConfirmAmt;
+                    refundAmount.innerText = setComma(rqConfirmAmt);
                 }
             })
         }
+
+        function setComma (val) {
+            var v = removeComma(val);
+            return v.replace(/(\d)(?=(?:\d{3}){2,}(?:\.|$))|(\d)(\d{3}(?:\.\d*)?$)/g
+                , '$1$2' + ',' + '$3');
+        };
+
+        function removeComma(val) {
+            return val.toString().replace(/,/g, '');
+        };
 
         function approvalInfo() {
             const allApproval = document.querySelector("#allApproval");

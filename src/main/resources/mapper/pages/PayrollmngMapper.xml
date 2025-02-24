@@ -69,8 +69,9 @@
          AND ST.GUBUN           = CD2.BASE_CODE
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
-         AND (DATE_FORMAT(#{searchPayYmStart} , '%Y%m%d') <= ST.DATE_WORK_FROM)
-         AND (DATE_FORMAT(#{searchPayYmEnd} , '%Y%m%d') >= ST.DATE_WORK_TO)
+         AND ST.REQ_DATE BETWEEN STR_TO_DATE(#{searchPayYmStart}, '%Y-%m-%d') AND STR_TO_DATE(#{searchPayYmEnd}, '%Y-%m-%d')
+--          AND (DATE_FORMAT(#{searchPayYmStart} , '%Y%m%d') <= ST.DATE_WORK_TO)
+--          AND (DATE_FORMAT(#{searchPayYmEnd} , '%Y%m%d') >= ST.DATE_WORK_FROM)
         ]]>
         <if test='searchProdName != null  and searchProdName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{searchProdName} ,'%')
