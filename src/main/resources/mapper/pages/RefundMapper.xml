@@ -105,6 +105,7 @@
              , ST.EXIST_MILEAGE
              , ST.GUBUN
              , ST.PROD_INCENTIVE_IND
+             , (ST.EXPECT_RATE_AMT / ST.WORK_DAY / ST.INFLOW_CNT) AS PROD_INCENTIVE
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU
             ON ST.CO_CODE           = CU.CO_CODE

@@ -185,6 +185,7 @@
                                                     <input type="hidden" id="_refundModal_reqGubun" name="reqGubun">
                                                     <input type="hidden" id="_refundModal_existMileage" name="existMileage">
                                                     <input type="hidden" id="_refundModal_prodIncentiveInd" name="prodIncentiveInd">
+                                                    <input type="hidden" id="_refundModal_prodIncentive" name="prodIncentive">
                                                 </div>
                                             </div>
                                         </fieldset>
@@ -493,6 +494,7 @@
             const incentiveRate = isNull($("#" + refundModalPrefix + "incentiveRate").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "incentiveRate").val());   // 직원인센티브율
             const prodIncentiveInd = $("#" + refundModalPrefix + "prodIncentiveInd").val();
             const expectRateAmt = isNull($("#" + refundModalPrefix + "expectRateAmt").val()) ? 0 : parseFloat($("#" + refundModalPrefix + "expectRateAmt").val());
+            const prodIncentive = $("#" + refundModalPrefix + "prodIncentive").val();
 
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
@@ -515,7 +517,8 @@
                 refundExpectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
 
             if (prodIncentiveInd === 'Y') {
-                refundExpectRateAmt = Math.floor(expectRateAmt / workDay);
+                refundExpectRateAmt = workDay * parseFloat(prodIncentive) * refundInflowCnt;
+                //refundExpectRateAmt = Math.floor(expectRateAmt / workDay / refundInflowCnt);
             }
 
             $("#" + refundModalPrefix + "refundSaleTotalAmt").val(formatNumber(prodTotalAmt));      // 환불판매총액
