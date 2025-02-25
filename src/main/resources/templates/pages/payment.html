@@ -1,0 +1,499 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/framelayout}">-->
+
+
+<th:block th:fragment="content">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last p-3">
+                    <h3>급여지급관리</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">마일리지관리</li>
+                            <li class="breadcrumb-item active" aria-current="page">마일리지승인관리</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div id="searchTable" class="table">
+                            <div class="card-body pt-3 pb-3" id="searchForm">
+                                <!--                            <div class="row align-items-center p-2" style="">-->
+                                <div class="row align-items-center p-2 search-area custom-bg">
+                                    <div class="col-md-11">
+                                        <div class="form-group row mb-0 align-items-center text-center">
+                                            <!-- 요청일 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">급여지급월</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <input type="month" class="form-control form-control-sm me-2" id="searchPayYmStart" name="searchPayYmStart">
+                                                    <input type="month" class="form-control form-control-sm" id="searchPayYmEnd" name="searchPayYmEnd">
+                                                </div>
+                                            </div>
+                                            <!-- 담당자명 -->
+                                            <div class="col-md-1 text-start">
+                                                <label class="col-form-label">담당자명</label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="text" id="searchEmpName" name="searchEmpName" class="form-control form-control-sm" placeholder="담당자명">
+                                            </div>
+                                        </div>
+<!--                                        <div class="form-group row mb-0 align-items-center text-center mt-2">-->
+
+<!--                                            &lt;!&ndash; 고객명 &ndash;&gt;-->
+<!--                                            <div class="col-md-1 text-start">-->
+<!--                                                <label class="col-form-label">고객명</label>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-3">-->
+<!--                                                <input type="text" id="searchCustName" name="searchCustName" class="form-control form-control-sm" placeholder="고객명">-->
+<!--                                            </div>-->
+<!--                                            &lt;!&ndash; 요청구분 &ndash;&gt;-->
+<!--                                            <div class="col-md-1 text-start">-->
+<!--                                                <label class="col-form-label">요청구분</label>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-3">-->
+<!--                                                <select class="form-select" id="searchReqGubun" name="searchReqGubun">-->
+<!--                                                </select>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+                                    </div>
+                                    <!-- 조회 버튼 -->
+                                    <div class="col-md-1 text-end">
+                                        <a href="#" class="btn btn-primary" id="searchBtn">조회</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="row" id="basic-table">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex align-items-center gap-3">
+                            <h4 class="card-title mb-0">급여지급목록</h4>
+                            <span class="data-count">[총 <span id="data-count-value">0</span>건]</span>
+                        </div>
+                        <div class="card-body">
+                            <div id="paymentGrid" class="tui-grid"></div>
+                        </div>
+                        
+                        <!--정산요청 상세정보-->
+                        <div class="modal fade" id="payInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">조회</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body">
+                                        <div class="card">
+                                            <div class="card-header d-flex align-items-center gap-3">
+                                                <h4 class="card-title mb-0">정산내역</h4>
+                                            </div>
+                                            <div class="card-body">
+                                                <div id="paymentInfoGrid" class="tui-grid" style="height: 500px"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+<!--                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">-->
+<!--                                            <i class="bx bx-check"></i> 저장-->
+<!--                                        </button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!--입금정보 상세정보-->
+                        <div class="modal fade" id="etcPayModal" tabindex="-1" role="dialog" aria-labelledby="depositModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="depositModalCenterTitle">요청정보</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-end" style="width: 100%;">
+                                            <div class="d-flex pb-3 gap-1">
+                                                <button type="button" class="btn btn-primary btn-sm" id="modalAddBtn">추가</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" id="modalSaveBtn">저장</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" id="modalRemoveBtn">삭제</button>
+                                            </div>
+                                        </div>
+                                        <div id="etcPayGrid"></div>
+                                        <input type="hidden" id="payYm">
+                                        <input type="hidden" id="userId">
+                                        <input type="hidden" id="userName">
+                                    </div>
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script type="text/javascript">
+        (function() {
+        const apiUrl = '/api/pages/payment';
+
+        let paymentGrid;
+        let paymentInfoGrid;
+        let etcPayGrid;
+
+        $(document).ready(function() {
+
+            const now = new Date();
+            const year = now.getFullYear();
+
+            const month = ("0" + (now.getMonth() + 1)).slice(-2);
+            $("#searchPayYmStart").val(`${year}-${month}`);
+            $("#searchPayYmEnd").val(`${year}-${month}`);
+
+            findInitCodes();
+            initEvent();
+
+            initPaymentInfoGrid();
+            initEtcPayGrid();
+        });
+
+        const findInitCodes = async () => {
+            const param =
+                [
+                    {"patternCode": "SE04"},
+                    {"patternCode": "SE05"}
+                ];
+
+            const result = await CommonJs.initFindCodes(param);
+            findCodeCallback(result);
+        }
+
+        const findCodeCallback = (result) => {
+            const SE04Options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE04,
+                placeholder: '전체'
+            };
+            $("#searchApplyStatus").addOptions(SE04Options);
+            $("#applyStatus").addOptions(SE04Options);
+
+            $("#searchApplyStatus").val('01');
+
+            const options = {
+                value: 'baseCode',
+                text: 'codeName',
+                items: result.SE05,
+                placeholder: '전체'
+            };
+            $("#searchReqGubun").addOptions(options);
+            $("#reqGubun").addOptions(options);
+
+            initPaymentGrid();
+
+        }
+
+        const initEvent = () => {
+            $("#searchBtn").on('click', search);
+
+            $("#modalAddBtn").on('click', etcAdd);
+            $("#modalSaveBtn").on('click', etcSave);
+            $("#modalRemoveBtn").on('click', etcRemove);
+
+            $('#etcPayModal').off('hide.bs.modal').on('hide.bs.modal', search);  // 모달이 닫히기 전에 이벤트 발생
+        }
+
+        const etcAdd = () => {
+            etcPayGrid.appendRow({ payYm : $("#payYm").val(), userId : $("#userId").val(), empName : $("#userName").val()});
+        }
+
+        const etcSave = () => {
+
+            const param = etcPayGrid.getGrid().getData();
+
+            if(param.length <= 0)
+            {
+                alert("저장할 데이터가 없습니다.");
+                return false;
+            }
+
+            if(!vaild(param))
+                return false;
+
+            if (confirm("저장하시겠습니까?")) {
+
+                $.ajax({
+                    url: apiUrl,
+                    data: JSON.stringify(param),
+                    contentType: 'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("저장 되었습니다.");
+                            etcSearch();
+                        } else {
+                            alert("처리 도중 실패하였습니다.");
+                            etcSearch();
+                        }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+                        return false;
+                    }
+                })
+            }
+        }
+
+        function vaild(data)
+        {
+            data.forEach(function (row) {
+
+                if(isNull(row.payName)) {
+                    alert("수당명을 입력해주세요.");
+                    etcPayGrid.focus(row.rowKey);
+                    return false;
+                }
+
+                if(isNull(row.payAmt)) {
+                    alert("수당금액을 입력해주세요.");
+                    etcPayGrid.focus(row.rowKey);
+                    return false;
+                }
+
+            });
+
+            return true;
+        }
+
+        const etcRemove = () => {
+            const params = etcPayGrid.getCheckedRows();
+            if (params.length === 0) {
+                alert("삭제할 행을 선택해주세요.");
+                return;
+            }
+
+            const confirmResult = confirm("총 " + params.length + "개 행의 데이터를 삭제하시겠습니까?");
+            if (confirmResult) {
+                $.ajax({
+                    url: apiUrl,
+                    data: JSON.stringify(params),
+                    contentType:'application/json',
+                    method: 'DELETE',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("삭제가 완료되었습니다.");
+                            etcSearch();
+                        } else {
+                            alert("삭제에 실패하였습니다.");
+                            etcSearch();
+                        }
+                    }
+                })
+            }
+        }
+
+        const initPaymentGrid = () => {
+
+            var columns = new CustomTuiGrid()
+                .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+                .add('payYm', '급여지급월', 80, {})
+                .add('userId', '담당자ID', 100, {visible:false})
+                .add('empName', '담당자명', 100, {})
+                .addNumber('confirmAmt', '정산금액', 100, { align: 'right', comma: true})
+                .addNumber('cancelConfirmAmt', '환불금액', 100, { align: 'right', comma: true})
+                .addNumber('totalConfirmAmt', '총 정산금액', 100, { align: 'right', comma: true})
+                .addNumber('etcAmt', '기타수당', 100, { align: 'right', comma: true})
+                .addButton('action', '추가수당', 100, {
+                    buttonText: '추가',
+                    textColor: 'red',
+                    onClick: (rowData, rowKey) => {
+                        openEtcPayModal(rowData);
+                    }
+                })
+            ;
+
+            paymentGrid = columns.init('paymentGrid', [])
+                .render();
+
+            // 더블 클릭 이벤트 설정
+            paymentGrid.getGrid().on('dblclick', function(ev) {
+                openPgmModal('2');
+            });
+
+            search();
+        }
+
+        const search = () => {
+            paymentGrid.clear();
+
+            const param = $("#searchTable").getData();
+
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                contentType:'application/json',
+                type: 'GET',
+                success: (data) => {
+                    if (data.length > 0) {
+                        // 데이터 리셋 및 렌더링 강제 갱신
+                        const gridInstance = paymentGrid.getGrid();
+                        gridInstance.resetData(data); // 데이터 새로 고침
+                    }
+                }
+            })
+        }
+
+        const initPaymentInfoGrid = () => {
+
+            var columns = new CustomTuiGrid()
+                .add('payYm', '급여지급월', 120, {})
+                .add('empName', '담당자명', 150, {})
+                .add('settlementSeq', '정산요청번호', 150, {})
+                .add('reqGubunName', '요청구분', 120, {})
+                .addNumber('confirmRateAmt', '승인금액', 160, { align: 'right', comma: true})
+            ;
+
+            paymentInfoGrid = columns.init('paymentInfoGrid', [])
+                .render();
+        }
+
+        const initEtcPayGrid = () => {
+
+            var columns = new CustomTuiGrid()
+                .enableCheckbox(true) // 체크박스 활성화
+                .add('paySeq', 'seq', 0, {visible: false})
+                .add('payYm', '급여지급월', 110, {})
+                .add('empName', '담당자명', 180, {})
+                .add('payName', '수당명', 200, {editor:true})
+                .addNumber('payAmt', '수당금액', 200, {align: 'right', comma: true, editor:true})
+            ;
+
+            etcPayGrid = columns.init('etcPayGrid', [])
+                .render();
+        }
+
+        const openPgmModal = () => {
+
+            $('#payInfoModal').modal('show');
+
+            $('#payInfoModal').on('shown.bs.modal', () => {
+
+                // 모달이 완전히 열린 후 실행
+                paymentInfoGrid.getGrid().clear();
+                paymentInfoGrid.getGrid().refreshLayout();
+
+                const focusedCell = paymentGrid.getGrid().getFocusedCell();
+                const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
+                $.ajax({
+                    url: apiUrl + "/info",
+                    data: focusedData,
+                    contentType:'application/json',
+                    type: 'GET',
+                    success: (data) => {
+                        if (data.length > 0) {
+
+                            // 데이터 리셋 및 렌더링 강제 갱신
+                            const gridInstance = paymentInfoGrid.getGrid();
+                            gridInstance.resetData(data); // 데이터 새로 고침
+                        }
+                    }
+                })
+            });
+
+            $("#payInfoModal").clear();
+        }
+
+        const openEtcPayModal = (data) => {
+            //document.getElementById("custId").choicesInstance.disable();
+
+            $('#etcPayModal').modal('show');
+
+            $('#etcPayModal').on('shown.bs.modal', () => {
+
+                // 모달이 완전히 열린 후 실행
+                etcPayGrid.getGrid().clear();
+                etcPayGrid.getGrid().refreshLayout();
+
+                etcSearch();
+            });
+
+            $("#etcPayModal").clear();
+        }
+
+        const etcSearch = () => {
+
+            const focusedCell = paymentGrid.getGrid().getFocusedCell();
+            const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
+            $.ajax({
+                url: apiUrl + "/etc",
+                data: focusedData,
+                contentType:'application/json',
+                type: 'GET',
+                success: (data) => {
+
+                    $("#payYm").val(focusedData.payYm);
+                    $("#userId").val(focusedData.userId);
+                    $("#userName").val(focusedData.empName);
+
+                    if (data.length > 0) {
+
+                        // 데이터 리셋 및 렌더링 강제 갱신
+                        const gridInstance = etcPayGrid.getGrid();
+                        gridInstance.resetData(data); // 데이터 새로 고침
+                    }
+                }
+            })
+        }
+
+        const closeBeforeModal = () => {
+            console.log('모달이 곧 닫힙니다!');
+        }
+
+        const closeAfterModal = () => {
+            console.log('모달이 닫혔습니다!');
+        }
+
+
+        const modalAcceptBtn = () => {
+            search();
+        }
+        })();
+
+    </script>
+
+</th:block>
+
+<!--</html>-->

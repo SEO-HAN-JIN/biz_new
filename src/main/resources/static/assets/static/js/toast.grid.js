@@ -1,6 +1,5 @@
 let CustomTuiGrid;
 
-
 if (typeof CustomTuiGrid === "undefined") {
 
     // 기존 CustomTuiGrid 정의 바로 아래에 추가
@@ -96,10 +95,8 @@ if (typeof CustomTuiGrid === "undefined") {
             if (props.value) {
                 this.updateText(props.value);
             }
-
         }
     }
-
 
     CustomTuiGrid = (function() {
 
@@ -161,17 +158,45 @@ if (typeof CustomTuiGrid === "undefined") {
 
                 // fitStyle 옵션에 따른 비율 조정
                 if (this.fitStyle === 'fill') {
-                    setTimeout(function() {
+
+                    const containerWidth = self.grid.el.offsetWidth - 10;
+
+                    // visible이 true이고 width가 0보다 큰 컬럼만 포함
+                    const validColumns = self.columns.filter(column => column.visible !== false && column.width > 0);
+
+                    // 유효한 컬럼들의 너비 합계 계산
+                    const totalInitialWidth = validColumns.reduce((sum, column) => sum + column.width, 0);
+
+                    if (totalInitialWidth === 0) {
+                        console.error('유효한 컬럼 너비 합계가 0입니다. 컬럼 설정을 확인하세요.');
+                        return;
+                    }
+
+                    // 체크박스 열 너비 보정
+                    const checkboxWidth = self.rowHeaders.includes('checkbox') ? 40 : 0;
+                    const adjustedContainerWidth = containerWidth - checkboxWidth;
+
+                    // 각 컬럼의 비율에 맞춰 너비 조정
+                    validColumns.forEach(column => {
+                        const widthRatio = column.width / totalInitialWidth;
+                        column.baseWidth = column.width; // 비율에 따라 너비 설정
+                        column.width = Math.floor(adjustedContainerWidth * widthRatio); // 비율에 따라 너비 설정
+                    });
+
+                    self.grid.setColumns(validColumns); // 업데이트된 컬럼 설정 반영
+                    self.grid.refreshLayout(); // 레이아웃 갱신
+
+                    // 전역 이벤트 리스너 등록 (한 번만 실행)
+                    window.addEventListener('resize', function()
+                    {
                         const containerWidth = self.grid.el.offsetWidth - 10;
-
                         // visible이 true이고 width가 0보다 큰 컬럼만 포함
-                        const validColumns = self.columns.filter(column => column.visible !== false && column.width > 0);
-
+                        const validColumns = self.columns.filter(column => column.visible !== false && column.baseWidth > 0);
                         // 유효한 컬럼들의 너비 합계 계산
-                        const totalInitialWidth = validColumns.reduce((sum, column) => sum + column.width, 0);
+                        const totalInitialWidth = validColumns.reduce((sum, column) => sum + column.baseWidth, 0);
 
                         if (totalInitialWidth === 0) {
-                            console.error('유효한 컬럼 너비 합계가 0입니다. 컬럼 설정을 확인하세요.');
+                            console.error('유효한 컬럼 너비 합계가 0입니다. 컬럼 설정을 확인하세요.1');
                             return;
                         }
 
@@ -181,13 +206,13 @@ if (typeof CustomTuiGrid === "undefined") {
 
                         // 각 컬럼의 비율에 맞춰 너비 조정
                         validColumns.forEach(column => {
-                            const widthRatio = column.width / totalInitialWidth;
+                            const widthRatio = column.baseWidth / totalInitialWidth;
                             column.width = Math.floor(adjustedContainerWidth * widthRatio); // 비율에 따라 너비 설정
                         });
 
-                        self.grid.setColumns(self.columns); // 업데이트된 컬럼 설정 반영
+                        self.grid.setColumns(validColumns); // 업데이트된 컬럼 설정 반영
                         self.grid.refreshLayout(); // 레이아웃 갱신
-                    }, 100);
+                    });
                 }
 
                 // 레이아웃 갱신
@@ -251,6 +276,9 @@ if (typeof CustomTuiGrid === "undefined") {
                     hidden: options.visible === false, // visible이 false면 hidden: true 설정
                     ...options
                 };
+
+                if(options.editor === true)
+                    column.editor = { type: 'text' };
 
                 this.columns.push(column);
 

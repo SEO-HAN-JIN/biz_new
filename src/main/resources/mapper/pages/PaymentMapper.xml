@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.PaymentMapper">
+
+    <select id="findPaymentList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.PaymentMapper.findPaymentList */
+        SELECT DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM,
+               SM.USER_ID,
+               U.EMP_NAME,
+               SUM(CASE WHEN SR.REQ_GUBUN = 'AQ' OR SR.REQ_GUBUN = 'DAQ' THEN SM.CONFIRM_RATE_AMT ELSE 0 END) AS CONFIRM_AMT,
+               SUM(CASE WHEN SR.REQ_GUBUN = 'RQ' OR SR.REQ_GUBUN = 'DRQ' THEN SM.CONFIRM_RATE_AMT ELSE 0 END) AS CANCEL_CONFIRM_AMT,
+               SUM(SM.CONFIRM_RATE_AMT) AS TOTAL_CONFIRM_AMT,
+               IFNULL((SELECT SUM(CAST(PAY_AMT AS INT)) FROM PAYMENTETC P
+                                WHERE CO_CODE = #{loginCoId}
+                                AND USER_ID = SM.USER_ID
+                                AND PAY_YM = SM.PAY_YM), 0) AS ETC_AMT
+        FROM SETTLEMENTMST SM
+        JOIN V_REQ_VIEW SR
+             ON SR.CO_CODE 			= SM.CO_CODE
+            AND SR.SETTLEMENT_SEQ 	= SM.SETTLEMENT_SEQ
+        LEFT JOIN TB_EMP U
+             ON U.CO_CODE = SR.CO_CODE
+            AND U.EMP_ID  = SR.USER_ID
+        LEFT JOIN CDBASE SE01
+             ON SE01.CO_CODE 	  = SR.CO_CODE
+            AND SE01.PATTERN_CODE = 'SE01'
+            AND SE01.BASE_CODE 	  = SR.REQ_GUBUN
+        WHERE SM.CO_CODE  = #{loginCoId}
+         AND SM.PAY_YM BETWEEN DATE_FORMAT(STR_TO_DATE(#{searchPayYmStart}, '%Y-%m'), '%Y%m') AND DATE_FORMAT(STR_TO_DATE(#{searchPayYmEnd}, '%Y-%m'), '%Y%m')
+        <if test='searchEmpName != null  and searchEmpName != "" '>
+            AND U.EMP_NAME      = #{searchEmpName}
+        </if>
+        <if test='searchReqGubun != null  and searchReqGubun != "" '>
+            AND SR.REQ_GUBUN    = #{searchReqGubun}
+        </if>
+        GROUP BY SM.PAY_YM,
+                 SM.USER_ID,
+                 U.EMP_NAME
+    </select>
+
+    <select id="findPaymentInfoList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.PaymentMapper.findPaymentList */
+        SELECT DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM,
+               SM.USER_ID,
+               U.EMP_NAME,
+               SR.SETTLEMENT_SEQ,
+               SM.CONFIRM_RATE_AMT,
+               SE01.CODE_NAME AS REQ_GUBUN_NAME
+        FROM SETTLEMENTMST SM
+        JOIN V_REQ_VIEW SR
+             ON SR.CO_CODE 			= SM.CO_CODE
+            AND SR.SETTLEMENT_SEQ 	= SM.SETTLEMENT_SEQ
+        LEFT JOIN CDBASE SE01
+             ON SE01.CO_CODE 	  = SR.CO_CODE
+            AND SE01.PATTERN_CODE = 'SE01'
+            AND SE01.BASE_CODE 	  = SR.REQ_GUBUN
+        LEFT JOIN TB_PRODUCTS PD
+             ON PD.CO_CODE = SR.CO_CODE
+            AND PD.PROD_ID = SR.PROD_ID
+        LEFT JOIN TB_CUSTOMER C
+             ON C.CO_CODE = SR.CO_CODE
+            AND C.BIZ_NO  = SR.CUST_ID
+        LEFT JOIN TB_EMP U
+             ON U.CO_CODE = SR.CO_CODE
+            AND U.EMP_ID  = SR.USER_ID
+        WHERE SM.CO_CODE  = #{loginCoId}
+          AND SM.USER_ID = #{userId}
+          AND SM.PAY_YM = REPLACE(#{payYm}, '-', '')
+    </select>
+
+    <select id="findPaymentEtcList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.PaymentMapper.findPaymentEtcList */
+        SELECT
+            PY.CO_CODE,
+            PY.PAY_SEQ,
+            DATE_FORMAT(CONCAT(PY.PAY_YM, '01'), '%Y-%m') AS PAY_YM,
+            PY.USER_ID,
+            EP.EMP_NAME,
+            PY.PAY_NAME,
+            PY.PAY_AMT,
+            PY.REQ_DATE
+        FROM PAYMENTETC PY
+        LEFT JOIN TB_EMP EP
+             ON EP.CO_CODE = PY.CO_CODE
+            AND EP.EMP_ID  = PY.USER_ID
+        WHERE PY.CO_CODE = #{loginCoId}
+        AND PY.USER_ID = #{userId}
+        AND PY.PAY_YM = REPLACE(#{payYm}, '-', '')
+    </select>
+
+    <select id="createPaySeq" resultType="String">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
+        -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(CONFIRM_SEQ), 0) + 1, '4', '0')) AS CONFIRM_SEQ
+        SELECT CONCAT(REPLACE(#{payYm}, '-', ''), '-', LPAD(IFNULL(SUBSTR(MAX(PAY_SEQ), 8, 3), 0) + 1, '3', '0')) AS PAY_SEQ
+        FROM PAYMENTETC
+        WHERE CO_CODE  = #{loginCoId}
+          AND PAY_YM   = REPLACE(#{payYm}, '-', '')
+    </select>
+
+    <insert id="savePaymentInfo">
+        /* com.biz.framework.mapper.pages.PaymentMapper.savePaymentInfo */
+        INSERT INTO PAYMENTETC
+        (
+            CO_CODE,
+            PAY_SEQ,
+            PAY_YM,
+            USER_ID,
+            PAY_NAME,
+            PAY_AMT,
+            REQ_DATE
+        )
+        VALUES
+        (
+            #{loginCoId},
+            #{paySeq},
+            REPLACE(#{payYm}, '-', ''),
+            #{userId},
+            #{payName},
+            #{payAmt},
+            DATE_FORMAT(NOW(), '%Y%m%d')
+        ) ON DUPLICATE KEY UPDATE
+            PAY_NAME  = #{payName},
+            PAY_AMT   = #{payAmt}
+    </insert>
+
+    <delete id="removePaymentInfo">
+        /* com.biz.framework.mapper.pages.PaymentMapper.removePaymentInfo */
+        DELETE FROM PAYMENTETC
+        WHERE CO_CODE = #{loginCoId}
+          AND PAY_SEQ = #{paySeq}
+    </delete>
+
+    <delete id="removePaymentInfoAll">
+        /* com.biz.framework.mapper.pages.PaymentMapper.removePaymentInfo */
+        DELETE FROM PAYMENTETC
+        WHERE CO_CODE = #{loginCoId}
+          AND PAY_SEQ = #{paySeq}
+    </delete>
+
+</mapper>
