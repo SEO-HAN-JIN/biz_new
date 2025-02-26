@@ -21,7 +21,6 @@
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.REQ_GUBUN,
-            ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
@@ -47,7 +46,7 @@
             SM.TAX_IND,
             DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM
         FROM SETTLEMENTMST      SM
-        JOIN SETTLEMENT         ST
+        JOIN V_REQ_VIEW         ST
           ON ST.CO_CODE         = SM.CO_CODE
          AND ST.SETTLEMENT_SEQ  = SM.SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER   CU
@@ -70,8 +69,6 @@
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
          AND ST.REQ_DATE BETWEEN STR_TO_DATE(#{searchPayYmStart}, '%Y-%m-%d') AND STR_TO_DATE(#{searchPayYmEnd}, '%Y-%m-%d')
---          AND (DATE_FORMAT(#{searchPayYmStart} , '%Y%m%d') <= ST.DATE_WORK_TO)
---          AND (DATE_FORMAT(#{searchPayYmEnd} , '%Y%m%d') >= ST.DATE_WORK_FROM)
         ]]>
         <if test='searchProdName != null  and searchProdName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{searchProdName} ,'%')
