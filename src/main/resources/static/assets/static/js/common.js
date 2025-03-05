@@ -4,20 +4,26 @@ const isNull = (v) => {
 
 // 콤마 형식을 추가하는 함수
 function formatNumber(num) {
-    // 입력 값이 숫자가 아닌 경우 문자열로 변환
+    // 입력 값을 문자열로 변환
     let value = String(num);
-
-    // 음수 기호('-')를 별도로 처리
+    // 음수 기호('-') 처리
     const isNegative = value.startsWith('-');
+    if (isNegative) {
+        value = value.slice(1);
+    }
+    // 소수점 기준으로 정수와 소수점 이하 부분 분리
+    const parts = value.split('.');
+    // 정수 부분만 숫자 외 문자 제거 후 콤마 추가
+    let integerPart = parts[0].replace(/\D/g, '');
+    integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-    // 숫자 외 문자 제거 (음수 기호 제외)
-    value = value.replace(/\D/g, '');
+    // 소수점 이하 부분 처리 (있다면)
+    const fractionalPart = parts[1] ? parts[1].replace(/\D/g, '') : '';
 
-    // 숫자에 콤마 추가
-    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-    // 음수라면 앞에 '-' 추가
-    return isNegative ? `-${value}` : value;
+    // 음수 기호 다시 추가 후 결과 반환
+    return isNegative
+        ? `-${integerPart}${fractionalPart ? '.' + fractionalPart : ''}`
+        : `${integerPart}${fractionalPart ? '.' + fractionalPart : ''}`;
 }
 
 function formatToCurrency(value) {

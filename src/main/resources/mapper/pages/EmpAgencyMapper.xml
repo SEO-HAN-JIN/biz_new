@@ -25,7 +25,6 @@
              , EA.AGENCY_ID
              , TA.AGENCY_NAME
              , TA.AGENCY_INCENTIVE_RATE
-             , TA.PROD_AMT
              , TA.USE_IND
         FROM EMP_AGENCY		EA
         JOIN TB_AGENCY		TA
@@ -41,7 +40,6 @@
         SELECT TA.AGENCY_ID
              , TA.AGENCY_NAME
              , TA.AGENCY_INCENTIVE_RATE
-             , TA.PROD_AMT
              , TA.USE_IND
           FROM TB_AGENCY      TA
          WHERE 1=1

@@ -206,10 +206,6 @@
             .add('agencyId', '대행사ID', 100, {})
             .add('agencyName', '대행사명', 120, {})
             .add('agencyIncentiveRate', '대행사마진율', 100, {})
-            .addNumber('prodAmt', '상품단가', 100, {
-                align: 'right',
-                comma: true,
-            })
             .add('useInd', '사용여부', 80, {})
         ;
 
@@ -221,14 +217,10 @@
     const initAgencyModalGrid = () => {
         const columns = new CustomTuiGrid()
             .enableCheckbox(true) // 체크박스 활성화
-            .add('agencyId', '대행사ID', 170, {})
-            .add('agencyName', '대행사명', 170, {})
-            .add('agencyIncentiveRate', '대행사마진율', 140, {})
-            .addNumber('prodAmt', '상품단가', 120, {
-                align: 'right',
-                comma: true,
-            })
-            .add('useInd', '사용여부', 100, {})
+            .add('agencyId', '대행사ID', 200, {})
+            .add('agencyName', '대행사명', 200, {})
+            .add('agencyIncentiveRate', '대행사마진율', 160, {})
+            .add('useInd', '사용여부', 130, {})
         ;
 
         agencyModalGrid = columns.init('agencyModalGrid', []).render();
