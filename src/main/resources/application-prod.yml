@@ -6,7 +6,7 @@ spring:
     name: framework
   datasource:
 #    url: jdbc:mariadb://localhost:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
-    url: jdbc:log4jdbc:mariadb://52.195.57.103/biz?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mariadb://52.195.57.103:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
     username: biz
     password: 162458
 #    driver-class-name: org.mariadb.jdbc.Driver
