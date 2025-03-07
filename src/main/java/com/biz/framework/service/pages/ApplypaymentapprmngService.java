@@ -118,7 +118,7 @@ public class ApplypaymentapprmngService {
             applypaymentapprmngMapper.cancelApplypayment(settlementmstDto);
         }
 
-        SettlementDto settlementDto = new SettlementDto();
+        SettlementDto settlementDto = findSettlement(settlementmstDto);
         settlementDto.setSettlementSeq(settlementmstDto.getSettlementSeq());
         settlementDto.setApplyStatus("03");
 
