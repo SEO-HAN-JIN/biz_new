@@ -251,7 +251,7 @@
 
     <delete id="deleteAgencyReq">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.deleteAgencyReq */
-        DELETE FROM AGECNY_REQ
+        DELETE FROM AGENCY_REQ
         WHERE CO_CODE           = #{loginCoId}
           AND AGENCY_SEQ    = #{settlementSeq}
     </delete>
