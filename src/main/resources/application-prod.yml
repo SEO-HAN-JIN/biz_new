@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: framework
+  datasource:
+#    url: jdbc:mariadb://localhost:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:log4jdbc:mariadb://52.195.57.103/biz?characterEncoding=UTF-8&serverTimezone=UTC
+    username: biz
+    password: 162458
+#    driver-class-name: org.mariadb.jdbc.Driver
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+  devtools:
+    restart:
+      enabled: false
+
+mybatis:
+  mapper-locations: mapper/**/*.xml
+  configuration:
+      map-underscore-to-camel-case: true
+  type-aliases-package: com.biz.framework.common.map
+
+logging:
+  level:
+    web: OFF
+    jdbc.sqlonly: OFF
+    jdbc.sqltiming: DEBUG
+    jdbc.audit: OFF
+    jdbc.resultset: OFF
+    jdbc.resultsettable: OFF
+    jdbc.connection : OFF
+    org.hibernate.SQL: OFF
+    org.springframework.web: OFF
+    org.springframework.boot.autoconfigure: INFO
+    com.zaxxer.hikari.HikariDataSource: ERROR
+    org.springframework.jdbc.core.JdbcTemplate: OFF
+  config: classpath:log4j2.xml
+
+biz:
+  file:
+    storage:
+      allowed-extensions: hwp, doc, docx, ppt, pptx, xls, xlsx, jpg, jpeg, gif, png, txt, zip, pdf, egg, tif, tiff, bmp
+  file-size: 10485760
