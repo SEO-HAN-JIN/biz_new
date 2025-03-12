@@ -62,8 +62,7 @@
        WHERE 1=1
          AND ST.CO_CODE         = #{loginCoId}
          AND ST.REFUND_IND IS NULL
-         AND ST.DATE_WORK_FROM <![CDATA[<=]]> #{searchEndDate}
-         AND ST.DATE_WORK_TO    >= #{searchStartDate}
+         AND ST.REQ_DATE BETWEEN #{searchStartDate} AND #{searchEndDate}
          AND ST.REQ_GUBUN       = 'AQ'
         <if test="isAdmin != null and !isAdmin">
             AND ST.USER_ID         = #{loginUserId}

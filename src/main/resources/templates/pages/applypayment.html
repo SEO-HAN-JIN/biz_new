@@ -591,6 +591,7 @@
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .enableCheckbox(true) // 체크박스 활성화
                 .add('settlementSeq', '정산번호', 200, {})
+                .add('reqDate', '요청일', 200, {})
                 .add('userName', '담당자', 100, {})
                 .add('custName', '고객명', 100, {})
                 .add('prodName', '상품명', 100, {})
@@ -703,9 +704,9 @@
 
                 $('#paymentModal').bindForm(data);
 
-                // 승인요청인 경우 수정 가능
+                // 요청취소 경우 수정 가능
                 if (data.applyStatus === 'C') {
-                    findExistMileage(data.custId);
+                    findAllIncentiveInfo(data);
 
                     ableBtn(false);
                     const isChecked = $("#mileageUseInd").is(":checked"); // 체크 여부 확인
@@ -1018,6 +1019,48 @@
 
             $("#incentiveRate").val(value);
 
+        }
+
+        const findEmpIncentive2 = (param) => {
+            return $.get(apiUrl + "/find/incentiveRate", {userId: param}, function (rsData) {
+                if (!isNull(rsData)) {
+                    $("#empIncentiveRate").val(parseFloat(rsData));
+                }
+            });
+        }
+
+        const findCustIncentive2 = (param) => {
+            return $.get(apiUrl + "/custinfo", {bizNo: param}, function (rsData) {
+                if (!isNull(rsData)) {
+                    $("#custIncentiveRate").val(parseFloat(rsData.incentiveRate));
+                    $("#curExistMileage").val(setComma(rsData.mileage));
+                    $("#existMileage").val(setComma(rsData.mileage));
+                }
+            });
+        }
+
+        const findProdIncentive2 = (param) => {
+            return $.get(apiUrl + "/prodinfo", {prodId : param}, function (rsData) {
+                if (!isNull(rsData)) {
+                    $("#prodAmt").val(setComma(rsData.prodAmt));
+                    if(parseFloat(rsData.prodIncentive) > 0) {
+                        $("#prodIncentiveInd").val('Y');
+                        $("#prodIncentive").val(parseFloat(rsData.prodIncentive));
+                    } else {
+                        $("#prodIncentiveInd").val('N');
+                        $("#prodIncentive").val('0');
+                    }
+                }
+            });
+        }
+
+        const findAllIncentiveInfo = (param) => {
+                Promise.all([findEmpIncentive2(param.userId), findCustIncentive2(param.custId), findProdIncentive2(param.prodId)])
+                    .then(() => {
+                        setIncentiveRate();
+                        saleSum();
+                    })
+            ;
         }
         })();
     </script>
