@@ -673,12 +673,16 @@
             clearForm('paymentModal');
 
             if (param === '1') {
+
                 $isNew = true;
 
                 let incentiveRate = 0;
                 if (!isAdmin) {
                     incentiveRate = parseFloat($("#myIncentiveRate").val());
                 }
+
+                $("#empIncentiveRate").val(incentiveRate);
+
                 $("#incentiveRate").val(incentiveRate);
 
                 ableBtn(false);
