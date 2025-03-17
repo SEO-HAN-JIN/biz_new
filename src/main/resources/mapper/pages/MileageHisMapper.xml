@@ -57,12 +57,12 @@
            #{mileageAmt},
            -- 누적 마일리지 : 이전 마일리지 + savemileage
            (
-               SELECT IFNULL(MAX(MILEAGE_AFT), 0)
-                 FROM TB_MILEAGE_HIS
-                WHERE CO_CODE       = #{loginCoId}
-                  AND BIZ_NO        = #{bizNo}
-                ORDER BY SEQ DESC
-                LIMIT 1
+               SELECT IFNULL((SELECT MILEAGE_AFT
+                              FROM TB_MILEAGE_HIS
+                              WHERE CO_CODE = #{loginCoId}
+                                AND BIZ_NO = #{bizNo}
+                              ORDER BY SEQ DESC
+                   LIMIT 1 ), 0)
            ) + #{mileageAmt},
            NOW(),
            #{createdPage},
