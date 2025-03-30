@@ -1,11 +1,12 @@
+# 펜트미디어
 spring:
   application:
     name: framework
   datasource:
 #    url: jdbc:mariadb://localhost:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
-    url: jdbc:log4jdbc:mariadb://52.195.57.103:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
-    username: biz_user
-    password: 162458
+    url: jdbc:log4jdbc:mariadb://43.201.197.131:3306/biz?characterEncoding=UTF-8&serverTimezone=UTC
+    username: bizuser
+    password: 202503
 #    driver-class-name: org.mariadb.jdbc.Driver
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
   devtools:
