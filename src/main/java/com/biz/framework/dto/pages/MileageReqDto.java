@@ -24,4 +24,6 @@ public class MileageReqDto extends BaseDto {
     private String searchReqGubun;
     private String searchApplyStatus;
 
+    private String isAdmin;
+
 }

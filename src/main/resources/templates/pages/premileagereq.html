@@ -212,9 +212,16 @@
         let _userId;
         let _userNm;
 
+        let isAdmin;
+
         $(document).ready(function() {
             _userId = /*[[${userId}]]*/'';
             _userNm = /*[[${userNm}]]*/'';
+
+            const roleIds = /*[[${roleIds}]]*/'';
+
+            const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
+            isAdmin = adminRoles.some(value => roleIds.includes(value));
 
             const nowYear = new Date().getFullYear();
             const nowMonth = new Date().getMonth();
@@ -315,6 +322,7 @@
             preMileageReqGrid.clear();
 
             const param = $("#searchTable").getData();
+            param.isAdmin = isAdmin;
 
             $.ajax({
                 url: apiUrl,
