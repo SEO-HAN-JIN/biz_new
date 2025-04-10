@@ -438,14 +438,14 @@
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('reqNo', '요청번호', 100, {})
+                .add('reqNo', '요청번호', 100, {sortable: true})
                 .add('custName', '고객명', 100, {})
                 .add('userName', '담당자명', 100, {})
                 .addNumber('reqAmt', '요청마일리지', 100, {
                     align: 'right',
                     comma: true,
                 })
-                .add('applyStatusNm', '결재상태', 100, {})
+                .add('applyStatusNm', '결재상태', 100, {sortable: true})
                 .add('reqDate', '요청일자', 100, {})
                 .add('reqGubunNm', '요청구분', 100, {})
                 .addButton('action', '적립여부', 100, {
@@ -453,7 +453,8 @@
                     textColor: 'red',
                     onClick: (rowData, rowKey) => {
                         openApplyModal(rowData);
-                    }
+                    },
+                    sortable: true
                 })
             ;
 

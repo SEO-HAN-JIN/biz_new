@@ -590,7 +590,7 @@
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .enableCheckbox(true) // 체크박스 활성화
-                .add('settlementSeq', '정산번호', 200, {})
+                .add('settlementSeq', '정산번호', 200, {sortable: true})
                 .add('reqDate', '요청일', 200, {})
                 .add('userName', '담당자', 100, {})
                 .add('custName', '고객명', 100, {})
@@ -617,8 +617,8 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }
                 })
-                .add('gubunName', '요청구분', 150, {})
-                .add('applyStatusName', '진행상태', 150, {})
+                .add('gubunName', '요청구분', 150, {sortable: true})
+                .add('applyStatusName', '진행상태', 150, {sortable: true})
                 .add('userId', '담당자ID', 'auto', {visible: false})
                 .add('prodId', '상품ID', 'auto', {visible: false})
                 .add('custId', '고객ID', 'auto', {visible: false})

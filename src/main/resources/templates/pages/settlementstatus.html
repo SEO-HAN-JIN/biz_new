@@ -185,7 +185,7 @@
                             template: valueMap => `합계:      ${valueMap.sum.toLocaleString()}`
                         }
                     })
-                    .add('settlementSeq', '정산요청번호', 100, {})
+                    .add('settlementSeq', '정산요청번호', 100, {sortable: true})
                     .add('prodName', '상품명', 120, {})
                     .add('custName', '고객명', 120, {})
                 ;

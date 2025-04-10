@@ -627,7 +627,7 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .add('gubunName', '요청구분', 120, {})
+                .add('gubunName', '요청구분', 120, {sortable: true})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
                     visible: false
                 })
@@ -642,7 +642,7 @@
                     },
                     sortable: true
                 })
-                .add('statusName', '진행상태', 80, {})
+                .add('statusName', '진행상태', 80, {sortable: true})
                 .add('useMileage', '사용마일리지', 0, {
                     visible: false
                 })

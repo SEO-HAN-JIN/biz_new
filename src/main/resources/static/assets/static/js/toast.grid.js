@@ -358,6 +358,7 @@ if (typeof CustomTuiGrid === "undefined") {
                     header: header,
                     width: width || 150,
                     align: options.align || 'center',
+                    sortable: options.sortable || false, // 정렬 여부 설정
                     renderer: {
                         type: CustomTuiGridButtonRenderer,
                         options: {

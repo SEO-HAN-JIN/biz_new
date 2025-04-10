@@ -531,7 +531,7 @@
 
             var columns = new CustomTuiGrid()
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
-                .add('refundSettlementSeq', '환불번호', 250, {})
+                .add('refundSettlementSeq', '환불번호', 250, {sortable: true})
                 .add('empName', '담당자', 150, {})
                 .add('custName', '고객명', 150, {})
                 .add('prodName', '상품명', 200, { align: 'center' })
@@ -559,8 +559,8 @@
                     summary: {
                         template: valueMap => `${valueMap.sum.toLocaleString()}`
                     }})
-                .add('settlementSeq', '정산번호', 250, {})
-                .add('gubunName', '환불구분', 150, {})
+                .add('settlementSeq', '정산번호', 250, {sortable: true})
+                .add('gubunName', '환불구분', 150, {sortable: true})
                 .add('applyStatusName', '진행상태', 150, {})
                 .add('workDay', '작업일수', 'auto', {visible: false})
                 // .add('saleTotalAmt', '판매총액', 'auto', {visible: false})
