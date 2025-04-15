@@ -84,6 +84,7 @@
       WHERE 1=1
         AND ST.CO_CODE          = #{loginCoId}
         AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+        AND ST.APPLY_STATUS     != 'C'      -- 취소요청은 목록제외
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
@@ -189,7 +190,8 @@
             CD.CODE_NAME AS GUBUN_NAME,
             ST.PROD_INCENTIVE_IND,
             ST.USE_MILEAGE,
-            ST.REQ_GUBUN
+            ST.REQ_GUBUN,
+            ST.APPLY_STATUS
        FROM V_REQ_VIEW      ST
        LEFT JOIN CDBASE     CD
          ON CD.CO_CODE      = ST.CO_CODE

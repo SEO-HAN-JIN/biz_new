@@ -24,6 +24,7 @@ public class SettlementmstDto extends BaseDto {
     private String reqGubun;        // 요청구분
     private String atchId;          // 첨부ID
     private String remark;
+    private String applyStatus;     // 정산요청상태
 
     private String searchPayYmStart;
     private String searchPayYmEnd;

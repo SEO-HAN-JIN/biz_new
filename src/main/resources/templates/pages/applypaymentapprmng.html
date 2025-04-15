@@ -1042,13 +1042,17 @@
                     type: 'POST',
                     success: (result) => {
                         if (result > 0) {
-                            alert("급여처리 완료되었습니다.");
+                            alert("삭제 완료되었습니다.");
                             $('#payrollModal').modal('hide');
                             search();
                         } else {
-                            alert("급여처리에 실패하였습니다.");
+                            alert("삭제처리에 실패하였습니다.");
                             search();
                         }
+                    },
+                    error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+                        search();
                     }
                 })
 

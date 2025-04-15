@@ -139,6 +139,12 @@ public class ApplypaymentapprmngService {
 
             for (SettlementmstDto dto : settlementmstDto.getSettlementmstDtoList()) {
 
+                SettlementDto settlement = findSettlement(dto);
+
+                if ("C".equals(settlement.getApplyStatus())) {
+                    throw new ServiceException("이미 요청취소된 건 입니다.");
+                }
+
                 // 정산승인건 확인
                 SettlementmstDto settlementmst = applypaymentapprmngMapper.findSettlementmst(dto);
 
@@ -161,7 +167,7 @@ public class ApplypaymentapprmngService {
                         mileageHisDto.setEmpId(settlementmst.getUserId());
                         mileageHisDto.setSettlementSeq(settlementmst.getConfirmMileage());
                         mileageHisDto.setMileageAmt(mileage);
-                        mileageHisDto.setCreatedPage("RQ"); // 정산승인 후 삭제
+                        mileageHisDto.setCreatedPage("ACQ1"); // 정산승인 후 삭제
                         mileageHisDto.setCreatedId(settlementmst.getLoginUserId());
 
                         mileageHisMapper.addMileageHistory(mileageHisDto);
@@ -174,8 +180,6 @@ public class ApplypaymentapprmngService {
                         throw new ServiceException("삭제 도중 오류가 발생했습니다. [CODE : 01]");
                     }
                 }
-
-                SettlementDto settlement = findSettlement(dto);
 
                 if (settlement != null && !settlement.getSettlementSeq().isEmpty()) {
 
@@ -191,7 +195,7 @@ public class ApplypaymentapprmngService {
                         mileageHisDto.setEmpId(settlement.getUserId());
                         mileageHisDto.setSettlementSeq(settlement.getSettlementSeq());
                         mileageHisDto.setMileageAmt(mileage);
-                        mileageHisDto.setCreatedPage("RQ"); // 정산승인 후 삭제
+                        mileageHisDto.setCreatedPage("ACQ2"); // 정산승인 후 삭제
                         mileageHisDto.setCreatedId(settlement.getLoginUserId());
 
                         mileageHisMapper.addMileageHistory(mileageHisDto);
