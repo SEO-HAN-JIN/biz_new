@@ -274,6 +274,7 @@ if (typeof CustomTuiGrid === "undefined") {
                     align: options.align || "center",
                     sortable: options.sortable || false, // 정렬 여부 설정
                     hidden: options.visible === false, // visible이 false면 hidden: true 설정
+                    sortable: true,
                     ...options
                 };
 

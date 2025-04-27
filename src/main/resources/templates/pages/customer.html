@@ -234,20 +234,20 @@
 
             var columns = new CustomTuiGrid()
                 .add('bizNo', '사업자번호', 200, {})
-                .add('custName', '고객명', 120, {})
-                .add('ownerName', '대표자성명', 120, { align: 'center' })
+                .add('custName', '고객명', 130, {})
+                .add('ownerName', '대표자성명', 150, { align: 'center' })
                 .add('custAddr', '주소', 300, { align: 'center' })
                 .add('custTel', '연락처', 150, { align: 'center' })
                 .add('custMail', '이메일', 150, { align: 'center' })
-                .add('depositorName', '입금자명', 120, { align: 'center' })
-                .addNumber('mileage', '마일리지', 100, {
+                .add('depositorName', '입금자명', 130, { align: 'center' })
+                .addNumber('mileage', '마일리지', 130, {
                     align: 'right',
                     comma: true,
                     visible:isAdmin
                 })
-                .add('incentiveRate', '인센티브율', 100, { align: 'right', visible:isAdmin })
-                .add('useInd', '사용여부', 70, { align: 'center' })
-                .addDate('regDate', '등록일자', 100, { align: 'center' })
+                .add('incentiveRate', '인센티브율', 150, { align: 'right', visible:isAdmin })
+                .add('useInd', '사용여부', 130, { align: 'center' })
+                .addDate('regDate', '등록일자', 140, { align: 'center' })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
             ;
 
