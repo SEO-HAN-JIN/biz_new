@@ -33,7 +33,7 @@ logging:
     org.springframework.boot.autoconfigure: INFO
     com.zaxxer.hikari.HikariDataSource: ERROR
     org.springframework.jdbc.core.JdbcTemplate: OFF
-  config: classpath:log4j2.xml
+  config: classpath:log4j2_prod.xml
 
 biz:
   file:

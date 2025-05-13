@@ -6,8 +6,9 @@
         <Property name="consoleLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,
             ERROR=red, INFO=green, DEBUG=blue} [%c] %style{[%t]}{yellow}- %m%n
         </Property>
-<!--        <Property name="fileLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,-->
-<!--            ERROR=red, INFO=green, DEBUG=blue} [%c{1.}] %style{[%t]}{yellow}- %m%n</Property>-->
+        <Property name="fileLayout">%style{%d{yyyy/MM/dd HH:mm:ss,SSS}}{cyan} %highlight{[%-5p]}{FATAL=bg_red,
+            ERROR=red, INFO=green, DEBUG=blue} [%c{1.}] %style{[%t]}{yellow}- %m%n
+        </Property>
     </Properties>
 
     <Appenders>
@@ -17,19 +18,23 @@
         <Console name="SlowConsole" target="SYSTEM_OUT">
             <PatternLayout charset="UTF-8" disableAnsi="false" pattern="${consoleLayout}"/>
         </Console>
-<!--        <RollingFile name="file" fileName="logs/${logFileName}.log" filePattern="logs/${logFileName}.%d{yyyy-MM-dd}.log">-->
-<!--            <PatternLayout pattern="${fileLayout}"/>-->
-<!--            <Policies>-->
-<!--                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>&lt;!&ndash; 시간별 로그 파일 생성&ndash;&gt;-->
-<!--            </Policies>-->
-<!--            <DefaultRolloverStrategy max="10" fileIndex="min"/>&lt;!&ndash; 롤링 파일 5개 까지 생성 &ndash;&gt;-->
-<!--        </RollingFile>-->
+
+        <!-- 하루에 한 번 롤링, 2일치만 보관 -->
+        <RollingFile name="File" fileName="logs/${logFileName}.log" filePattern="logs/${logFileName}.%d{yyyy-MM-dd}.log">
+            <PatternLayout charset="UTF-8" pattern="${fileLayout}" />
+            <Policies>
+                <!-- 하루 단위로 롤링 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!-- 최대 2개 파일만 보관 -->
+            <DefaultRolloverStrategy max="2" fileIndex="min"/>
+        </RollingFile>
     </Appenders>
 
     <Loggers>
         <ROOT level="INFO">
             <AppenderRef ref="SlowConsole"/>
-<!--            <AppenderRef ref="file"/>-->
+            <AppenderRef ref="File"/>
         </ROOT>
     </Loggers>
 </Configuration>

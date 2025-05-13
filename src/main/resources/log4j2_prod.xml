@@ -20,7 +20,7 @@
         </Console>
 
         <!-- 하루에 한 번 롤링, 2일치만 보관 -->
-        <RollingFile name="File" fileName="/home/sloth/app/logs/${logFileName}.log" filePattern="/home/sloth/app/logs/${logFileName}.%d{yyyy-MM-dd}.log">
+        <RollingFile name="File" fileName="/home/ec2-user/logs/${logFileName}.log" filePattern="/home/ec2-user/logs/${logFileName}.%d{yyyy-MM-dd}.log">
             <PatternLayout charset="UTF-8" pattern="${fileLayout}" />
             <Policies>
                 <!-- 하루 단위로 롤링 -->
