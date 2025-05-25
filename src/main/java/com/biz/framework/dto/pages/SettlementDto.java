@@ -3,6 +3,7 @@ package com.biz.framework.dto.pages;
 import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class SettlementDto extends BaseDto {
     private String gubunName;
     private String isAdmin;
 
+    private String atchFileId;
+    private List<MultipartFile> files;
     private List<SettlementDto> settlementDtoList;
 
 }

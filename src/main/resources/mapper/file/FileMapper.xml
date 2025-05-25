@@ -6,41 +6,46 @@
 
     <select id="findByAtchFileIdAndUseAt">
         /* com.biz.framework.mapper.file.FileMapper.findByAtchFileIdAndUseAt */
-        SELECT FILE_SN
+        SELECT CO_CODE
              , ATCH_FILE_ID
+             , FILE_SN
              , FILE_EXTSN
              , FILE_SIZE
              , FILE_STRE_COURS
-             , ORIGINA_FILE_NM
+             , ORIGINAL_FILE_NM
              , STRE_FILE_NM
-             , USET_AT
+             , USE_AT
           FROM TB_FILE
-         WHERE ATCH_FILE_ID     = #{atchFileId}
+         WHERE CO_CODE          = #{loginCoId}
+           AND ATCH_FILE_ID     = #{atchFileId}
            AND USE_AT           = #{useAt}
     </select>
 
     <select id="findByATchfileIdAndFileSnAndUseAt">
         /* com.biz.framework.mapper.file.FileMapper.findByATchfileIdAndFileSnAndUseAt */
-        SELECT FILE_SN
+        SELECT CO_CODE
              , ATCH_FILE_ID
+             , FILE_SN
              , FILE_EXTSN
              , FILE_SIZE
              , FILE_STRE_COURS
-             , ORIGINA_FILE_NM
+             , ORIGINAL_FILE_NM
              , STRE_FILE_NM
-             , USET_AT
+             , USE_AT
         FROM TB_FILE
-        WHERE FILE_SN          = #{fileSn}
+        WHERE CO_CODE          = #{loginCoId}
+          AND FILE_SN          = #{fileSn}
           AND ATCH_FILE_ID     = #{atchFileId}
           AND USE_AT           = #{useAt}
     </select>
 
-    <insert id="saveFile">
+    <insert id="saveFile" parameterType="com.biz.framework.file.FileDto">
         /* com.biz.framework.file.FileMapper.saveFile */
         INSERT INTO TB_FILE
         (
-            FILE_SN
+            CO_CODE
             , ATCH_FILE_ID
+            , FILE_SN
             , FILE_EXTSN
             , FILE_SIZE
             , FILE_STRE_COURS
@@ -50,8 +55,9 @@
             , CREATED_DATE
         ) VALUES
         (
-            #{fileSn}
+            #{loginCoId}
             , #{atchFileId}
+            , #{fileSn}
             , #{fileExtsn}
             , #{fileSize}
             , #{fileStreCours}
@@ -61,4 +67,21 @@
             , DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
         )
     </insert>
+
+    <update id="updateUseAtByFileIdAndFileSn">
+        /* com.biz.framework.file.FileMapper.updateUseAtByFileIdAndFileSn */
+        UPDATE TB_FILE
+           SET USE_AT           = #{useAt}
+         WHERE CO_CODE          = #{loginCoId}
+           AND FILE_SN          = #{fileSn}
+           AND ATCH_FILE_ID     = #{atchFileId}
+    </update>
+
+    <delete id="removeFile">
+        /* com.biz.framework.file.FileMapper.removeFile */
+        DELETE FROM TB_FILE
+        WHERE CO_CODE       = #{loginCoId}
+          AND ATCH_FILE_ID  = #{atchFileId}
+          AND FILE_SN       = #{fileSn}
+    </delete>
 </mapper>

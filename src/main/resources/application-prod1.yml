@@ -1,5 +1,9 @@
 # 펜트미디어
 spring:
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
   application:
     name: framework
   datasource:
@@ -37,6 +41,8 @@ logging:
 
 biz:
   file:
+    upload:
+      path: ${user.home}/biz/file
     storage:
-      allowed-extensions: hwp, doc, docx, ppt, pptx, xls, xlsx, jpg, jpeg, gif, png, txt, zip, pdf, egg, tif, tiff, bmp
+      allowed-extensions: jpg, jpeg, png
   file-size: 10485760

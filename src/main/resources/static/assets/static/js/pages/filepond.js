@@ -36,7 +36,11 @@ FilePond.create(document.querySelector(".with-validation-filepond"), {
   allowMultiple: true,
   allowFileEncode: false,
   required: true,
-  acceptedFileTypes: ["image/png"],
+  acceptedFileTypes: ['image/jpeg', 'image/jpg', 'image/png'],
+  labelFileTypeNotAllowed: '허용되지 않는 파일 형식입니다.',
+  fileValidateTypeLabelExpectedTypes: '허용 형식: {allTypes}',
+  labelMaxFileSizeExceeded: '용량이 너무 큽니다',
+  labelMaxFileSize: '최대 허용 용량은 {filesize}입니다',
   fileValidateTypeDetectType: (source, type) =>
     new Promise((resolve, reject) => {
       // Do custom type detection here and return with promise

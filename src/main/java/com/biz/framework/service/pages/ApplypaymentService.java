@@ -161,4 +161,9 @@ public class ApplypaymentService {
 
         return result;
     }
+
+    public int updateAtchFileId(SettlementDto settlementDto) {
+        return applypaymentMapper.updateAtchFileId(settlementDto);
+    }
+
 }
