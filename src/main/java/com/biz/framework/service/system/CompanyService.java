@@ -1,5 +1,6 @@
 package com.biz.framework.service.system;
 
+import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.system.CompanyDto;
 import com.biz.framework.mapper.system.CompanyMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +18,13 @@ public class CompanyService {
 
     public List<CompanyDto> findCompanyList() {
         return companyMapper.findCompanyList();
+    }
+
+    public CamelCaseMap findCompany(CompanyDto companyDto) {
+        return companyMapper.findCompany(companyDto);
+    }
+
+    public int updateCompany(CompanyDto companyDto) {
+        return companyMapper.updateCompany(companyDto);
     }
 }

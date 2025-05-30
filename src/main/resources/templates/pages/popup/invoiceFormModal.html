@@ -1,0 +1,176 @@
+<th:block th:fragment="invoiceFormContent (form)">
+    <!-- 모달 헤더 -->
+    <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title text-white" th:text="세금계산서">발행</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <!-- 모달 바디 -->
+    <div class="modal-body" style="max-height: none !important;">
+        <form id="invoiceForm" th:object="${form}" method="post">
+<!--              th:action="@{${form.confirmSeq} == null ? '/api/pages/taxinvoices' : '/api/pages/taxinvoices/' + ${form.confirmSeq}}"-->
+
+
+            <input type="hidden" th:field="*{confirmSeq}"/>
+
+            <!-- 기본 정보 -->
+            <fieldset class="border p-3 rounded mt-4">
+                <legend class="float-none w-auto px-2">고객정보</legend>
+
+                <div class="row mb-2">
+                    <label class="col-sm-2 col-form-label">고객명</label>
+                    <div class="col-sm-4">
+                        <input type="text" th:field="*{custName}" class="form-control bg-light" readonly />
+                    </div>
+                    <label class="col-sm-2 col-form-label">사업자번호</label>
+                    <div class="col-sm-4">
+                        <input type="text" th:field="*{bizNo}" class="form-control bg-light" readonly />
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <label class="col-sm-2 col-form-label">대표자명</label>
+                    <div class="col-sm-4">
+                        <input type="text" th:field="*{ownerName}" class="form-control bg-light" readonly />
+                    </div>
+                    <label class="col-sm-2 col-form-label">이메일</label>
+                    <div class="col-sm-4">
+                        <input type="email" th:field="*{custMail}" class="form-control bg-light" readonly />
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <label class="col-sm-2 col-form-label">업태</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" th:field="*{bizType}"/>
+                    </div>
+                    <label class="col-sm-2 col-form-label">종목</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" th:field="*{bizClass}" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-sm-2 col-form-label">사업장주소</label>
+                    <div class="col-sm-10">
+                        <input type="text" th:field="*{custAddr}" class="form-control bg-light" readonly />
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- 품목 리스트 -->
+            <!-- 품목 리스트 -->
+            <fieldset class="border p-3 rounded mt-4">
+                <legend class="float-none w-auto px-2">품목</legend>
+                <div class="card mb-3">
+                    <button type="button" class="btn btn-sm btn-light" id="addItem">+ 추가</button>
+<!--                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">-->
+<!--                        <span>품목</span>-->
+<!--                        <button type="button" class="btn btn-sm btn-light" id="addItem">+ 추가</button>-->
+<!--                    </div>-->
+                    <div class="table-scroll-wrapper card-body p-0">
+                        <table class="table table-bordered table-scrollable mb-0">
+                            <colgroup>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead class="table-light">
+                            <tr>
+                                <th>품명</th>
+                                <th>수량</th>
+                                <th>단가</th>
+                                <th>공급가액</th>
+                                <th>세액</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="itemRows">
+                            <tr th:each="line, iterStat : *{taxinvoiceslineDtoList}">
+                                <td>
+                                    <input type="text"
+                                           th:field="*{taxinvoiceslineDtoList[__${iterStat.index}__].description}"
+                                           class="form-control" required/>
+                                </td>
+                                <td>
+                                    <input type="number"
+                                           th:field="*{taxinvoiceslineDtoList[__${iterStat.index}__].quantity}"
+                                           class="form-control qty" min="1" required/>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           th:field="*{taxinvoiceslineDtoList[__${iterStat.index}__].unitPrice}"
+                                           class="form-control price text-end" step="0.01" required/>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control supply text-end"
+                                           th:field="*{taxinvoiceslineDtoList[__${iterStat.index}__].supplyAmount}"/>
+                                </td>
+                                <td>
+                                    <input type="text"
+                                           class="form-control tax text-end"
+                                           th:field="*{taxinvoiceslineDtoList[__${iterStat.index}__].taxAmount}"/>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-outline-danger removeItem">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <!-- 요약 -->
+            <fieldset class="border p-3 rounded mt-4">
+<!--                <legend class="float-none w-auto px-2"></legend>-->
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">공급가액 합계</span>
+                            <input type="text" th:field="*{supplyAmount}" id="summarySupply" class="form-control is-num text-end"
+                                   aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">세액 합계</span>
+                            <input type="text" th:field="*{taxAmount}" id="summaryTax" class="form-control is-num text-end"
+                                   aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">합계 금액</span>
+                            <input type="text" th:field="*{totalAmount}" id="summaryTotal" class="form-control is-num text-end"
+                                   aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+        </form>
+    </div>
+
+    <!-- 모달 푸터 -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x"></i> 닫기
+        </button>
+        <button type="button" id="btnSubmitInvoice" class="btn btn-primary">
+            <i class="bi bi-send"></i> 발행
+        </button>
+<!--        <button type="button" id="btnSubmitNext" class="btn btn-outline-primary">-->
+<!--            <i class="bi bi-arrow-right-circle"></i> 발행 후 다음-->
+<!--        </button>-->
+    </div>
+</th:block>

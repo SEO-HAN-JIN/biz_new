@@ -1,0 +1,118 @@
+<th:block th:fragment="content">
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm rounded-3 border-0">
+                    <div class="card-header bg-primary text-white rounded-top">
+                        <h5 class="mb-0 text-white">회사 정보 관리</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="myDetail">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="coCode" class="form-label">회사 ID</label>
+                                    <input type="text" class="form-control" id="coCode" name="coCode" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="ceoName" class="form-label">대표자 성명</label>
+                                    <input type="text" class="form-control" id="ceoName" name="ceoName" placeholder="대표자 이름 입력">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="coName" class="form-label">회사(법인)명</label>
+                                <input type="text" class="form-control" id="coName" name="coName" placeholder="회사명 입력">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="bizNo" class="form-label">사업자번호</label>
+                                <input type="text" class="form-control" id="bizNo" name="bizNo" placeholder="사업자번호 입력">
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="companyTel" class="form-label">대표 연락처</label>
+                                    <input type="tel" class="form-control" id="companyTel" name="companyTel" placeholder="예) 02-123-4567">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="companyMail" class="form-label">대표 이메일</label>
+                                    <input type="email" class="form-control" id="companyMail" name="companyMail" placeholder="예) info@company.com">
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="bizType" class="form-label">업태</label>
+                                    <input type="text" class="form-control" id="bizType" name="bizType" placeholder="업태 입력">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="bizClass" class="form-label">종목</label>
+                                    <input type="text" class="form-control" id="bizClass" name="bizClass" placeholder="종목 입력">
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="companyAddress" class="form-label">회사 주소</label>
+                                <input type="text" class="form-control" id="companyAddress" name="companyAddress" placeholder="상세 주소 입력">
+                            </div>
+
+                            <div class="text-end">
+                                <button type="button" id="btnSave" class="btn btn-success px-4">💾 저장하기</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer bg-light text-muted small rounded-bottom text-black">
+                        <i class="bi bi-info-circle-fill text-danger"></i>
+                        해당 회사 정보는 세금계산서 발행 시 사용합니다.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function() {
+                var apiUrl = "/api/system/company"
+
+                $(document).ready(function() {
+                    searchCompany();
+                });
+
+                function searchCompany()
+                {
+                    $.ajax({
+                        url: apiUrl,
+                        data: null,
+                        type: 'GET',
+                        success: (result) => {
+                            $("#myDetail").bindForm(result);
+                        }
+                    });
+                }
+
+                $("#btnSave").on('click', fnSave);
+
+                function fnSave()
+                {
+                    $.ajax({
+                        url: apiUrl + "/upd",
+                        data: JSON.stringify($("#myDetail").getData()),
+                        contentType:'application/json',
+                        type: 'POST',
+                        success: (result) => {
+
+                            debugger;
+
+                            if(result > 0)
+                                alert("저장되었습니다.");
+
+                            searchCompany();
+                        },
+                        error: (result) => {
+                            alert(result.responseText);
+                        },
+                    })
+                }
+
+            })();
+        </script>
+    </div>
+</th:block>
