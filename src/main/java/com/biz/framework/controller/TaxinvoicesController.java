@@ -30,7 +30,7 @@ public class TaxinvoicesController {
         // 각 번호별 DTO 생성
         TaxinvoicesDto form = taxinvoicesService.loadFormList(dtoWrapper);
         model.addAttribute("form", form);
-        return "/pages/popup/invoiceFormModal :: invoiceFormContent";
+        return "pages/popup/invoiceFormModal :: invoiceFormContent";
     }
 
     /**
