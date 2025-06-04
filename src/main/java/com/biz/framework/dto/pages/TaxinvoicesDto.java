@@ -35,8 +35,8 @@ public class TaxinvoicesDto extends BaseDto {
 
     private String remark;
 
-    private String searchPayYmStart;
-    private String searchPayYmEnd;
+    private String searchStartDate;
+    private String searchEndDate;
     private String searchCustName;
 
     private List<TaxinvoicesDto> taxinvoicesDtoList;
