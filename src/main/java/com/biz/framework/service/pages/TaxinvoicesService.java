@@ -139,6 +139,9 @@ public class TaxinvoicesService {
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);
 
+        //테스트용 사업자번호
+        bizNo = "8888888888";
+
         // 세금계산서 데이터 주입
         Taxinvoice tx = buildPopbillTaxinvoice(form, companyInfo, bizNo);
 
