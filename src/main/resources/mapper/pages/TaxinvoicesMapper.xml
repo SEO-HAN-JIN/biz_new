@@ -6,6 +6,7 @@
 
     <select id="findTaxinvoicesList" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findTaxinvoicesList */
+
         SELECT
             SM.CO_CODE,
             SM.CONFIRM_SEQ,
@@ -30,9 +31,32 @@
             AND SM.TAX_KEY = TX.TAX_KEY
         WHERE SM.CO_CODE = #{loginCoId}
         AND IFNULL(V.REFUND_IND, 'N') != 'Y'
-        <if test='searchCustName != null  and searchCustName != "" '>
-            AND V.CUST_NAME = #{searchCustName}
+        <if test='searchStartDate != null  and searchStartDate != "" '>
+            <![CDATA[
+            AND DATE_FORMAT(V.REQ_DATE, '%Y%m%d') >= DATE_FORMAT(#{searchStartDate} , '%Y%m%d')
+            ]]>
         </if>
+        <if test='searchEndDate != null  and searchEndDate != "" '>
+            <![CDATA[
+            AND DATE_FORMAT(V.REQ_DATE, '%Y%m%d') <= DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+            ]]>
+        </if>
+        <if test='custName != null  and custName != "" '>
+            AND V.CUST_NAME LIKE CONCAT('%',#{custName}, '%')
+        </if>
+        <if test='confirmSeq != null  and confirmSeq != "" '>
+            AND SM.CONFIRM_SEQ LIKE CONCAT('%',#{confirmSeq}, '%')
+        </if>
+        <if test='taxKey != null  and taxKey != "" '>
+            AND TX.TAX_KEY LIKE CONCAT('%', #{taxKey}, '%')
+        </if>
+        <if test='taxInd != null  and taxInd != "" '>
+            AND IFNULL(SM.TAX_IND, 'N') = #{taxInd}
+        </if>
+        <if test='invoiceNo != null  and invoiceNo != "" '>
+            AND TX.INVOICE_NO LIKE CONCAT('%', #{invoiceNo}, '%')
+        </if>
+
     </select>
 
     <select id="findCustInfo" resultType="com.biz.framework.dto.pages.TaxinvoicesDto">

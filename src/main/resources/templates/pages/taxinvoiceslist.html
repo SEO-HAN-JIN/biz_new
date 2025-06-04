@@ -31,19 +31,41 @@
                                             </div>
                                         </div>
                                         <label class="col-form-label col-lg-1 col-3">고객명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchCustName" class="form-control form-control-sm"
-                                                   name="fname" placeholder="메뉴명">
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="custName" class="form-control form-control-sm"
+                                                   name="custName" placeholder="메뉴명">
                                         </div>
-                                        <label class="col-form-label col-lg-1 col-3">상품명</label>
-                                        <div class="col-lg-2 col-9">
-                                            <input type="text" id="searchProdName" class="form-control form-control-sm"
-                                                   name="fname" placeholder="메뉴명">
+                                        <label class="col-form-label col-lg-1 col-3">발행상태</label>
+                                        <div class="col-lg-3 col-9">
+                                            <select class="form-select" id="taxInd" name="taxInd">
+                                                <option value="" selected>전체</option>
+                                                <option value="Y">발행</option>
+                                                <option value="N">미발행</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-1 text-end">
                                     <a href="#" class="btn btn-primary cursor-auto" id="searchBtn">조회</a>
+                                </div>
+                                <div class="col-md-11">
+                                    <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">정산승인번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="confirmSeq" class="form-control form-control-sm"
+                                                   name="confirmSeq" placeholder="메뉴명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">연동번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="taxKey" class="form-control form-control-sm"
+                                                   name="taxKey" placeholder="메뉴명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">세금계산서번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="invoiceNo" class="form-control form-control-sm"
+                                                   name="invoiceNo" placeholder="메뉴명">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -142,10 +164,15 @@
 
                 $.ajax({
                     url: apiUrl,
-                    data:{ searchStartDate:start, searchEndDate:end,
-                        custName:$("#searchCustName").val(),
-                        prodName:$("#searchProdName").val(),
-                        isAdmin:isAdmin },
+                    data:{
+                        searchStartDate:start,
+                        searchEndDate:end,
+                        confirmSeq:$("#confirmSeq").val(),
+                        custName:$("#custName").val(),
+                        taxKey:$("#taxKey").val(),
+                        taxInd:$("#taxInd").val(),
+                        invoiceNo:$("#invoiceNo").val()
+                    },
                     type:'GET',
                     success: (data) => {
 
@@ -166,6 +193,8 @@
                     }
                 });
             }
+
+            $('#searchBtn').on('click', fetchList);
 
             // 합 발행
             $('#btnSumIssue').on('click', ()=>{
