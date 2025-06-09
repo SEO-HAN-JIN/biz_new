@@ -136,11 +136,11 @@ public class TaxinvoicesService {
 
         String bizNo = companyInfo.getBizNo().replaceAll("-", "");
 
+        //테스트용 사업자번호
+        form.setBizNo("8888888888");
+
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);
-
-        //테스트용 사업자번호
-        bizNo = "8888888888";
 
         // 세금계산서 데이터 주입
         Taxinvoice tx = buildPopbillTaxinvoice(form, companyInfo, bizNo);
@@ -296,11 +296,32 @@ public class TaxinvoicesService {
 
         try {
             // 3번째 파라미터로 userId를 넘겨야 해당 사용자의 권한으로 팝업이 뜹니다.
-            return popbillSvc.getPopUpURL(corpNum, MgtKeyType.SELL, taxKey, "");
+            return popbillSvc.getViewURL(corpNum, MgtKeyType.SELL, taxKey, "");
         } catch (PopbillException e) {
             throw new ServiceException("세금계산서 팝업 URL 생성 실패: code="
                     + e.getCode() + " msg=" + e.getMessage(), e);
         }
+    }
+
+    public int taxCancelIssue(TaxinvoicesDto form)
+    {
+        try {
+            Response cel = popbillSvc.cancelIssue(form.getBizNo(), MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
+            form.setRemark("[정산요청 상태 업데이트 도중 오류 발생] " + cel.getMessage());
+            taxSvc.cancelTaxinvoice(form);
+        }
+        catch (PopbillException e) {
+
+            form.setRemark("[" + e.getCode() + "] " + e.getMessage());
+            taxSvc.cancelTaxinvoice(form);
+
+            throw new RuntimeException(
+                    "세금계산서 취소 실패: confirmSeq=" + form.getConfirmSeq() +
+                            " code=" + e.getCode() + " message=" + e.getMessage(), e
+            );
+        }
+
+        return 1;
     }
 
 
