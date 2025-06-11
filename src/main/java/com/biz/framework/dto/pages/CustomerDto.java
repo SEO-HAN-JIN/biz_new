@@ -22,6 +22,8 @@ public class CustomerDto extends BaseDto {
     private float incentiveRate;
     private String regDate;
     private String useInd;
+    private String bizType;
+    private String bizClass;
 
     private String empName;
 
