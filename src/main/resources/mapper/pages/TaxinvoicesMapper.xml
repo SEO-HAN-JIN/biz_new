@@ -69,6 +69,8 @@
             CU.CUST_MAIL,
             CU.CUST_TEL,
             CU.CUST_ADDR,
+            CU.BIZ_TYPE,
+            CU.BIZ_CLASS,
             DATE_FORMAT(NOW(), '%Y%m%d') as ISSUE_DATE
         FROM TB_CUSTOMER CU
         WHERE CU.CO_CODE = #{loginCoId}

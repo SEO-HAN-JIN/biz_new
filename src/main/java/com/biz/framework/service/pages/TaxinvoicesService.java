@@ -59,6 +59,8 @@ public class TaxinvoicesService {
             form.setCustTel(custInfo.getCustTel());
             form.setCustMail(custInfo.getCustMail());
             form.setOwnerName(custInfo.getOwnerName());
+            form.setBizType(custInfo.getBizType());
+            form.setBizClass(custInfo.getBizClass());
 
             BigDecimal totalSupply = BigDecimal.ZERO;
             BigDecimal totalTax    = BigDecimal.ZERO;
