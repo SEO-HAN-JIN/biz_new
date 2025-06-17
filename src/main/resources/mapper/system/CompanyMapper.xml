@@ -13,4 +13,34 @@
          WHERE 1=1
            AND USE_YN   = 'Y'
     </select>
+
+    <select id="findCompany">
+        /* com.biz.framework.mapper.system.CompanyMapper.findCompany */
+        SELECT CO_CODE
+             , CO_NAME
+             , CEO_NAME
+             , COMPANY_MAIL
+             , COMPANY_TEL
+             , COMPANY_ADDRESS
+             , BIZ_TYPE
+             , BIZ_CLASS
+             , BIZ_NO
+        FROM TB_COMPANY
+        WHERE 1=1
+          AND CO_CODE  = #{loginCoId}
+    </select>
+
+    <update id="updateCompany">
+        /* com.biz.framework.mapper.system.CompanyMapper.updateCompany */
+        UPDATE TB_COMPANY
+        SET CEO_NAME        = #{ceoName},
+            COMPANY_MAIL    = #{companyMail},
+            COMPANY_TEL     = #{companyTel},
+            COMPANY_ADDRESS = #{companyAddress},
+            BIZ_TYPE        = #{bizType},
+            BIZ_CLASS       = #{bizClass},
+            BIZ_NO          = #{bizNo}
+        WHERE CO_CODE = #{coCode}
+    </update>
+
 </mapper>

@@ -1,0 +1,486 @@
+<th:block th:fragment="content">
+    <div class="page-heading">
+        <!-- 1) 헤더 -->
+        <div class="page-title d-flex justify-content-between align-items-center mb-3">
+            <h3>세금계산서 발행 대상</h3>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">정산관리</li>
+                    <li class="breadcrumb-item active" aria-current="page">세금계산서 조회</li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- 2. 검색 필터 -->
+        <section id="horizontal-input">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body pt-3 pb-3" id="searchForm">
+                            <!--                            <div class="row align-items-center p-2" style="">-->
+                            <div class="row align-items-center p-2 search-area custom-bg">
+                                <div class="col-md-11">
+                                    <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">정산요청일</label>
+                                        <div class="col-lg-3 col-9">
+                                            <div class="d-flex">
+                                                <input type="date" class="form-control form-control-sm me-2"
+                                                       id="searchStartDate">
+                                                <input type="date" class="form-control form-control-sm"
+                                                       id="searchEndDate">
+                                            </div>
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">고객명</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="custName" class="form-control form-control-sm"
+                                                   name="custName" placeholder="메뉴명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">발행상태</label>
+                                        <div class="col-lg-3 col-9">
+                                            <select class="form-select" id="taxInd" name="taxInd">
+                                                <option value="" selected>전체</option>
+                                                <option value="Y">발행</option>
+                                                <option value="N">미발행</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-end">
+                                    <a href="#" class="btn btn-primary cursor-auto" id="searchBtn">조회</a>
+                                </div>
+                                <div class="col-md-11">
+                                    <div class="form-group row mb-0 align-items-center text-center">
+                                        <label class="col-form-label col-lg-1 col-3">정산승인번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="confirmSeq" class="form-control form-control-sm"
+                                                   name="confirmSeq" placeholder="메뉴명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">연동번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="taxKey" class="form-control form-control-sm"
+                                                   name="taxKey" placeholder="메뉴명">
+                                        </div>
+                                        <label class="col-form-label col-lg-1 col-3">세금계산서번호</label>
+                                        <div class="col-lg-3 col-9">
+                                            <input type="text" id="invoiceNo" class="form-control form-control-sm"
+                                                   name="invoiceNo" placeholder="메뉴명">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<!--        <div class="card mb-3">-->
+<!--            <div class="card-body d-flex align-items-center gap-2">-->
+<!--                <label class="me-1">판매일</label>-->
+<!--                <input type="date" id="filterSaleFrom" class="form-control form-control-sm" />-->
+<!--                <input type="date" id="filterSaleTo"   class="form-control form-control-sm" />-->
+<!--                <label class="me-1 ms-3">거래처</label>-->
+<!--&lt;!&ndash;                <th:block th:replace="components/cust-select :: cust-select('filterCust')"/>&ndash;&gt;-->
+<!--                <button id="btnFilter" class="btn btn-primary btn-sm ms-auto">조회</button>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <!-- 3) 결과 테이블 -->
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-3">
+                <h4 class="card-title mb-0">승인된 정산요청 목록</h4>
+                <span class="data-count">[총 <span id="data-count-value">0</span>건]</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-end" style="width: 100%;">
+                    <div class="d-flex pb-3 gap-1">
+<!--                        <button id="btnIssue" class="btn btn-success btn-sm ms-auto">신규발행</button>-->
+                        <button id="btnSumIssue" class="btn btn-success btn-sm ms-auto">합발행</button>
+                    </div>
+                </div>
+                <div id="invoicesGrid" class="tui-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4) 발행 폼 모달 -->
+    <div class="modal fade" id="invoiceFormModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content no-scroll-modal" >
+                <!-- AJAX 로 로드된 pages/popup/invoiceFormModal.html의 #invoiceFormContent -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 5) 스크립트 -->
+    <script th:inline="javascript">
+        (function(){
+            const apiUrl = '/api/pages/taxinvoices';
+            let selected = [], idx = 0;
+            let invoicesGrid, _userId, _userNm, isAdmin;
+
+            $(document).ready(function () {
+                // 사용자 정보, 날짜 세팅 등 기존 로직...
+                initInvoicesGrid();
+            });
+
+            const initInvoicesGrid = () => {
+                const columns = new CustomTuiGrid()
+                    .enableCheckbox(true)
+                    .add('confirmSeq', '승인번호', 120, {})
+                    .add('settlementSeq', '요청번호', 120, {visible:false})
+                    .add('custName', '고객명', 100, {})
+                    .add('bizNo', '사업자번호', 100, {})
+                    .addNumber('confirmAmt', '입금액', 100, { align:'right', comma:true })
+                    .addNumber('totalAmount','신고금액',100, { align:'right', comma:true })
+                    .add('taxKey', '연동번호', 120, {})
+                    .add('invoiceNo', '세금계산서번호', 150, {})
+                    .add('taxInd', '발행여부', 60, {})
+                    .addButton('action','발행',100,{
+                        buttonText:'발행',
+                        textColor:'red',
+                        onClick:(rowData,rowKey)=>{
+                            if(rowData.taxInd == "Y")
+                                openTaxPopup(rowData);
+                            else
+                                openFormModal([rowData]);
+                        },
+                        sortable:true
+                    })
+                    .setFitStyle('fill')
+                ;
+                invoicesGrid = columns.init('invoicesGrid',[]).render();
+                fetchList();
+            };
+
+            function fetchList(){
+
+                const start = $("#searchStartDate").val();
+                const end   = $("#searchEndDate").val();
+
+                // if(!start||!end){
+                //     alert("날짜를 입력해주세요");
+                //     return;
+                // }
+
+                $.ajax({
+                    url: apiUrl,
+                    data:{
+                        searchStartDate:start,
+                        searchEndDate:end,
+                        confirmSeq:$("#confirmSeq").val(),
+                        custName:$("#custName").val(),
+                        taxKey:$("#taxKey").val(),
+                        taxInd:$("#taxInd").val(),
+                        invoiceNo:$("#invoiceNo").val()
+                    },
+                    type:'GET',
+                    success: (data) => {
+
+                        if (data.length > 0) {
+
+                            data.forEach(row => {
+                                if(row.taxInd == "Y") {
+                                    row.hideButton = true;
+                                    row.action = "완료";
+                                }
+                            });
+
+                            // 데이터 리셋 및 렌더링 강제 갱신
+                            const gridInstance = invoicesGrid.getGrid();
+                            gridInstance.resetData(data); // 데이터 새로 고침
+
+                        }
+                    }
+                });
+            }
+
+            $('#searchBtn').on('click', fetchList);
+
+            // 합 발행
+            $('#btnSumIssue').on('click', ()=>{
+
+                selected = invoicesGrid.getCheckedRows();
+                openFormModal(selected);
+
+            });
+
+            function openTaxPopup(item)
+            {
+                $.ajax({
+                    url: '/pages/taxinvoices/popup',
+                    method: 'GET',
+                    data: {
+                        taxKey:  item.taxKey
+                    },
+                    success: function(popupUrl) {
+
+                        debugger;
+
+                        window.open(
+                            popupUrl,
+                            '_blank',
+                            'width=1000,height=700,scrollbars=yes'
+                        );
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(status, error);
+                        alert('팝업 URL 호출 중 오류가 발생했습니다.');
+                    }
+                });
+            }
+
+
+
+            function isSameBizNoSelected(items) {
+
+                // ToastGrid에서 체크된 로우 데이터 배열 가져오기
+                if (items.length === 0) {
+                    alert('선택된 항목이 없습니다.');
+                    return false; // 선택된 게 없으면 false 처리
+                }
+
+                if(items.filter(row => row.taxInd == "Y").length > 0)
+                {
+                    alert('세금계산서 발행이 완료된 건이 있습니다.');
+                    return false;
+                }
+
+                // bizNo만 뽑아서 배열 생성
+                const bizNos = items.map(row => row.bizNo);
+
+                // 첫 번째 값과 모두 같은지 비교
+                if(!bizNos.every(bizNo => bizNo === bizNos[0]))
+                {
+                    alert('합발행 하시려면 동일한 사업자 번호를 가진 요청만 선택해 주세요.');
+                    return false;
+                }
+
+                if(bizNos.filter(bizNo => bizNo === null).length > 0)
+                {
+                    alert('고객정보(사업자번호)가 잘못되었습니다.');
+                    return false;
+                }
+
+                return true;
+            }
+
+            function openFormModal(items){
+
+                if (isSameBizNoSelected(items)) {
+                    const payload = {
+                        bizNo: items[0].bizNo,
+                        taxinvoicesDtoList: items.map(r => ({confirmSeq: r.confirmSeq}))
+                    };
+
+                    $.ajax({
+                        url: '/pages/taxinvoices/form',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(payload),
+                        success: html => {
+                            $('#invoiceFormModal .modal-content').html(html);
+                            $('#invoiceFormModal').modal('show');
+                            bindModalEvents();              // ① 이벤트 바인딩
+                            initializeModalCalculations();  // ② 초기 재계산
+                        },
+                        error: err => alert('폼 로드 실패: ' + err.responseText)
+                    });
+                }
+            }
+
+            function bindModalEvents(){
+                bindRowEvents();
+                $('#btnSubmitInvoice').off('click').on('click', ()=> saveInvoice(false));
+                $('#btnSubmitNext').   off('click').on('click', ()=> saveInvoice(true));
+            }
+
+            function saveInvoice(proceedNext){
+
+                if(!validateForm())
+                    return;
+
+                $.ajax({
+                    url: apiUrl,
+                    type:'POST',
+                    contentType:'application/json',
+                    data:JSON.stringify(buildPayload()),
+                    success: ()=>{
+                        alert('발행 완료');
+                        fetchList();
+                        if(proceedNext && ++idx<selected.length){
+                            openFormModal(selected[idx]);
+                        } else {
+                            $('#invoiceFormModal').modal('hide');
+                        }
+                    },
+                    error: xhr=> alert(xhr.responseText)
+                });
+            }
+
+            function validateForm(){
+                let valid = true;
+
+                if($('#itemRows tr').length <= 0) {
+                    alert("등록된 품목정보가 없습니다.");
+                    return false
+                }
+
+                $('#itemRows tr').each(function(i){
+                    const rowIdx = i + 1;
+                    const desc = $(this).find('.form-control[name$=".description"]').val().trim();
+                    if(!desc){
+                        alert(`품명은 필수입니다`);
+                        $(this).find('.form-control[name$=".description"]').focus();
+                        valid = false;
+                        return false;
+                    }
+                    const qty = parseFloat($(this).find('.qty').val()) || 0;
+                    if(qty < 1){
+                        alert(`수량은 1 이상이어야 합니다`);
+                        $(this).find('.qty').focus();
+                        valid = false;
+                        return false;
+                    }
+                    const supply = parseFloat(stripComma($(this).find('.supply').val())) || 0;
+                    const tax    = parseFloat(stripComma($(this).find('.tax').val()))    || 0;
+                    if(supply <= 0 || tax <= 0){
+                        alert(`공급가액 또는 세액은 0원 이상이어야 합니다`);
+                        $(this).find('.supply').focus();
+                        valid = false;
+                        return false;
+                    }
+                });
+                return valid;
+            }
+
+            function buildPayload(){
+                const flat = $('#invoiceForm').serializeObject(),
+                    payload = {};
+                ['confirmSeq','custName','bizNo','ownerName','custMail','custAddr','supplyAmount','taxAmount','totalAmount']
+                    .forEach(k=> flat[k]!=null && (payload[k]=flat[k]) );
+                payload.taxinvoiceslineDtoList = [];
+                Object.entries(flat).forEach(([k,v])=>{
+                    const m = k.match(/^taxinvoiceslineDtoList\[(\d+)\]\.(.+)$/);
+                    if(m){
+                        const i=+m[1], prop=m[2];
+                        payload.taxinvoiceslineDtoList[i] = payload.taxinvoiceslineDtoList[i]||{};
+                        payload.taxinvoiceslineDtoList[i][prop]=v;
+                    }
+                });
+                return payload;
+            }
+
+            function initializeModalCalculations(){
+                // 공급/세액이 이미 바인딩 되어 있을 수 있으니
+                $('#itemRows tr').each(function(){
+                    const $r = $(this);
+                    const sup = $r.find('.supply').val().trim(),
+                        tax = $r.find('.tax').val().trim();
+                    if(sup || tax){
+                        recalcReverseRow($r);
+                    } else {
+                        recalcRow($r);
+                    }
+                });
+                recalcSummary();
+            }
+
+            // 공통 유틸
+            function formatCurrency(n){ return String(Math.floor(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+            function stripComma(s){ return (s||'').toString().replace(/,/g,''); }
+
+            function bindRowEvents(){
+
+                // 정방향 계산: qty, price → supply, tax
+                window.recalcRow = function($row){
+                    const qty   = parseFloat(stripComma($row.find('.qty').val()))   || 0,
+                        price = parseFloat(stripComma($row.find('.price').val())) || 0,
+                        total = qty * price,
+                        supply= Math.floor(total/1.1),
+                        tax   = Math.floor(total-supply);
+
+                    $row.find('.price').val(formatCurrency(price));
+                    $row.find('.supply').val(formatCurrency(supply));
+                    $row.find('.tax')   .val(formatCurrency(tax));
+                };
+
+                // 역방향 계산: supply, tax → price
+                window.recalcReverseRow = function($row){
+                    const supply= parseFloat(stripComma($row.find('.supply').val()))||0,
+                        tax   = parseFloat(stripComma($row.find('.tax')   .val()))||0,
+                        total = supply+tax,
+                        qty   = parseFloat(stripComma($row.find('.qty')   .val()))||1,
+                        price = total/qty;
+
+                    $row.find('.price').val(formatCurrency(price));
+                    $row.find('.supply').val(formatCurrency(supply));
+                    $row.find('.tax').val(formatCurrency(tax));
+                };
+
+                // 하단 요약 계산
+                window.recalcSummary = function(){
+                    let sumS=0, sumT=0;
+                    $('#itemRows tr').each(function(){
+                        sumS += parseFloat(stripComma($(this).find('.supply').val()))||0;
+                        sumT += parseFloat(stripComma($(this).find('.tax')   .val()))||0;
+                    });
+                    $('#summarySupply').val(formatCurrency(sumS));
+                    $('#summaryTax')   .val(formatCurrency(sumT));
+                    $('#summaryTotal') .val(formatCurrency(sumS+sumT));
+                };
+
+                // 행 추가
+                $('#addItem').off('click').on('click',()=>{
+                    const $tb = $('#itemRows'),
+                        i   = $tb.find('tr').length;
+                    const row = `<tr data-index="${i}">
+                <td><input type="text" name="taxinvoiceslineDtoList[${i}].description"  class="form-control" required/></td>
+                <td><input type="text" name="taxinvoiceslineDtoList[${i}].quantity"     class="form-control qty"  value="1"  required/></td>
+                <td><input type="text" name="taxinvoiceslineDtoList[${i}].unitPrice"    class="form-control price text-end" required/></td>
+                <td><input type="text" name="taxinvoiceslineDtoList[${i}].supplyAmount" class="form-control supply text-end"/></td>
+                <td><input type="text" name="taxinvoiceslineDtoList[${i}].taxAmount"    class="form-control tax text-end"/></td>
+                <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger removeItem"><i class="bi bi-trash"></i></button></td>
+            </tr>`;
+                    $tb.append(row);
+                    const $new = $tb.find('tr').last();
+                    recalcRow($new);
+                    recalcSummary();
+                });
+
+                // 행 삭제
+                $('#itemRows').off('click','.removeItem').on('click','.removeItem',function(){
+                    $(this).closest('tr').remove();
+                    $('#itemRows tr').each(function(i){
+                        $(this).attr('data-index',i)
+                            .find('input').each(function(){
+                            const n=$(this).attr('name');
+                            $(this).attr('name',n.replace(/\[\d+\]/,`[${i}]`));
+                        });
+                    });
+                    recalcSummary();
+                });
+
+                // 변경 이벤트
+                $('#itemRows')
+                    .off('input','.qty, .price').on('input','.qty, .price',function(){
+                    const $r=$(this).closest('tr');
+                    recalcRow($r);
+                    recalcSummary();
+                })
+                    .off('input','.supply, .tax').on('input','.supply, .tax',function(){
+                    const $r=$(this).closest('tr');
+                    recalcReverseRow($r);
+                    recalcSummary();
+                });
+
+                // 이 위치에는 초기 계산을 두지 않습니다.
+            }
+
+            // 폼 직렬화 헬퍼
+            $.fn.serializeObject = function(){
+                return this.serializeArray().reduce((o,i)=>{ o[i.name]=i.value; return o;},{});
+            };
+
+        })();
+    </script>
+</th:block>

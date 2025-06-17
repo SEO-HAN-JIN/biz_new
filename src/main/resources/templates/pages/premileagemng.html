@@ -523,8 +523,6 @@
             const focusedCell = premileagemngGrid.getGrid().getFocusedCell();
             const focusedData = premileagemngGrid.getGrid().getRow(focusedCell.rowKey);
 
-            debugger;
-
             $("#applyModal").bindForm(focusedData);
             if (data.applyStatus !== '01') {
                 $("#rejectBtn").attr('disabled', true);

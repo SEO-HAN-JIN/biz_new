@@ -68,103 +68,93 @@
                             <div id="customerGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                        <!-- 고객 정보 (회사 정보 디자인 적용) 모달 -->
+                        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="customerModalTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle">고객 정보
-                                        </h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
+                                <div class="modal-content shadow-sm rounded-3 border-0">
+                                    <div class="modal-header bg-primary text-white rounded-top">
+                                        <h5 class="modal-title text-white mb-0" id="customerModalTitle">고객 정보 관리</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <form class="form">
-                                            <div class="row g-3">
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label for="bizNo">사업자번호</label>
-                                                        <input type="text" id="bizNo" class="form-control" placeholder="사업자번호" name="bizNo">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="custName">고객명</label>
-                                                        <input type="text" id="custName" class="form-control" placeholder="고객명" name="custName">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="ownerName">대표자성명</label>
-                                                        <input type="text" id="ownerName" class="form-control" placeholder="대표자성명" name="ownerName">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="custTel">연락처</label>
-                                                        <input type="text" id="custTel" class="form-control" name="custTel" placeholder="연락처">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="custMail">이메일</label>
-                                                        <input type="email" id="custMail" class="form-control" placeholder="이메일" name="custMail">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="depositorName">입금자명</label>
-                                                        <input type="text" id="depositorName" class="form-control" name="depositorName" placeholder="입금자명">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 " >
-                                                    <div class="form-group">
-                                                        <label for="mileage">마일리지 누적금액</label>
-                                                        <input type="text" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
-                                                        <input type="hidden" id="mileagePrev" class="form-control" name="mileagePrev">
-                                                    </div>
-                                                </div>
 
-                                                <div class="col-md-3 " id="incentiveDiv">
-                                                    <div class="form-group">
-                                                        <label for="mileage">인센티브율</label>
-                                                        <input type="number" id="incentiveRate" class="form-control" name="mileage" placeholder="인센티브율" step="0.1" min="0" max="99.9">
-                                                    </div>
+                                    <div class="card-body p-4">
+                                        <form id="customerForm" class="form">
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label for="bizNo" class="form-label">사업자번호</label>
+                                                    <input type="text" id="bizNo" class="form-control" placeholder="사업자번호" name="bizNo">
                                                 </div>
-                                                <div class="col-md-3 ">
-                                                    <div class="form-group">
-                                                        <label for="regDate">등록일자</label>
-                                                        <input type="text" id="regDate" class="form-control" name="regDate" placeholder="등록일자" disabled>
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <label for="custName" class="form-label">고객명</label>
+                                                    <input type="text" id="custName" class="form-control" placeholder="고객명" name="custName">
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">사용여부</label>
-                                                        <select class="form-select" id="useInd" name="useInd"></select>
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <label for="ownerName" class="form-label">대표자성명</label>
+                                                    <input type="text" id="ownerName" class="form-control" placeholder="대표자성명" name="ownerName">
                                                 </div>
-                                                <!-- 주소 필드를 맨 아래로 이동 -->
-                                                <div class="col-md-6 ">
-                                                    <div class="form-group">
-                                                        <label class="form-label" for="custAddr">주소</label>
-                                                        <input type="text" id="custAddr" class="form-control" name="custAddr" placeholder="주소">
-                                                    </div>
+                                            </div>
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label for="custTel" class="form-label">연락처</label>
+                                                    <input type="text" id="custTel" class="form-control" name="custTel" placeholder="연락처">
                                                 </div>
+                                                <div class="col-md-4">
+                                                    <label for="custMail" class="form-label">이메일</label>
+                                                    <input type="email" id="custMail" class="form-control" placeholder="이메일" name="custMail">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="depositorName" class="form-label">입금자명</label>
+                                                    <input type="text" id="depositorName" class="form-control" name="depositorName" placeholder="입금자명">
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label for="mileage" class="form-label">마일리지 누적금액</label>
+                                                    <input type="text" id="mileage" class="form-control" name="mileage" placeholder="마일리지 누적금액">
+                                                    <input type="hidden" id="mileagePrev" class="form-control" name="mileagePrev">
+                                                </div>
+                                                <div class="col-md-4" id="incentiveDiv">
+                                                    <label for="incentiveRate" class="form-label">인센티브율</label>
+                                                    <input type="number" id="incentiveRate" class="form-control" name="incentiveRate" placeholder="인센티브율" step="0.1" min="0" max="99.9">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="useInd" class="form-label">사용여부</label>
+                                                    <select class="form-select" id="useInd" name="useInd"></select>
+                                                </div>
+                                            </div>
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label for="bizType" class="form-label">업태</label>
+                                                    <input type="text" class="form-control" id="bizType" name="bizType" placeholder="업태 입력">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="bizClass" class="form-label">종목</label>
+                                                    <input type="text" class="form-control" id="bizClass" name="bizClass" placeholder="종목 입력">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="regDate" class="form-label">등록일자</label>
+                                                    <input type="text" id="regDate" class="form-control" name="regDate" placeholder="등록일자" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="custAddr" class="form-label">주소</label>
+                                                <input type="text" id="custAddr" class="form-control" name="custAddr" placeholder="주소">
                                             </div>
                                         </form>
                                     </div>
 
-                                    <div class="modal-footer bg-light">
-                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                            <i class="bx bx-x"></i> 닫기
+                                    <div class="modal-footer bg-light rounded-bottom d-flex justify-content-end">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 저장
+                                        <button type="button" class="btn btn-success ms-2" id="modalSaveBtn">
+                                            💾 저장
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>

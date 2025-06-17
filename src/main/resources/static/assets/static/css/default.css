@@ -18,3 +18,38 @@
 .choices.is-disabled .choices__inner .choices__list {
     background-color: #e9ecef; /* 원하는 배경색 */
 }
+
+
+/* 1) 모달 콘텐츠에만 적용할 커스텀 클래스 */
+.no-scroll-modal .modal-body {
+    overflow-y: visible !important;
+    max-height: none !important;
+    flex: none !important;
+}
+
+/* 2) 테이블 스크롤만 담당할 래퍼 */
+.table-scroll-wrapper {
+    width: 100%;
+    max-height: 220px;   /* 필요시 조절 */
+    overflow-y: auto;
+}
+
+/* 3) 고정 레이아웃 테이블 */
+.table-scroll-wrapper table {
+    width: 100%;
+    table-layout: fixed; /* 반드시 있어야 col 너비가 %로 먹힘 */
+}
+
+/* 4) sticky 헤더 */
+.table-scroll-wrapper thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e9ecef;
+    z-index: 2;
+    text-align: center;
+}
+
+/* 5) 컬럼 너비 (예시) */
+.table-scroll-wrapper col:nth-child(1) { width: 35%; }
+.table-scroll-wrapper col:nth-child(2) { width: 10%; }
+/* … 이하 필요에 따라 조절 */

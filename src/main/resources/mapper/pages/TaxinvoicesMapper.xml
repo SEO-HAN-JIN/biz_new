@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.TaxinvoicesMapper">
+
+    <select id="findTaxinvoicesList" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findTaxinvoicesList */
+
+        SELECT
+            SM.CO_CODE,
+            SM.CONFIRM_SEQ,
+            SM.SETTLEMENT_SEQ,
+            V.REQ_DATE,
+            SM.CONFIRM_DATE,
+            SM.CONFIRM_AMT,
+            V.PROD_ID,
+            V.PROD_NAME,
+            V.CUST_ID AS BIZ_NO,
+            V.CUST_NAME,
+            TX.TOTAL_AMOUNT,
+            TX.TAX_KEY,
+            TX.INVOICE_NO,
+            IFNULL(SM.TAX_IND, 'N') AS TAX_IND
+        FROM SETTLEMENTMST SM
+        JOIN V_REQ_VIEW V
+             ON SM.CO_CODE = V.CO_CODE
+            AND SM.SETTLEMENT_SEQ = V.SETTLEMENT_SEQ
+        LEFT JOIN TAXINVOICE TX
+             ON SM.CO_CODE = TX.CO_CODE
+            AND SM.TAX_KEY = TX.TAX_KEY
+        WHERE SM.CO_CODE = #{loginCoId}
+        AND IFNULL(V.REFUND_IND, 'N') != 'Y'
+        <if test='searchStartDate != null  and searchStartDate != "" '>
+            <![CDATA[
+            AND DATE_FORMAT(V.REQ_DATE, '%Y%m%d') >= DATE_FORMAT(#{searchStartDate} , '%Y%m%d')
+            ]]>
+        </if>
+        <if test='searchEndDate != null  and searchEndDate != "" '>
+            <![CDATA[
+            AND DATE_FORMAT(V.REQ_DATE, '%Y%m%d') <= DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+            ]]>
+        </if>
+        <if test='custName != null  and custName != "" '>
+            AND V.CUST_NAME LIKE CONCAT('%',#{custName}, '%')
+        </if>
+        <if test='confirmSeq != null  and confirmSeq != "" '>
+            AND SM.CONFIRM_SEQ LIKE CONCAT('%',#{confirmSeq}, '%')
+        </if>
+        <if test='taxKey != null  and taxKey != "" '>
+            AND TX.TAX_KEY LIKE CONCAT('%', #{taxKey}, '%')
+        </if>
+        <if test='taxInd != null  and taxInd != "" '>
+            AND IFNULL(SM.TAX_IND, 'N') = #{taxInd}
+        </if>
+        <if test='invoiceNo != null  and invoiceNo != "" '>
+            AND TX.INVOICE_NO LIKE CONCAT('%', #{invoiceNo}, '%')
+        </if>
+
+    </select>
+
+    <select id="findCustInfo" resultType="com.biz.framework.dto.pages.TaxinvoicesDto">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findCustInfo */
+        SELECT
+            CU.CO_CODE,
+            CU.BIZ_NO,
+            CU.CUST_NAME,
+            CU.OWNER_NAME,
+            CU.CUST_MAIL,
+            CU.CUST_TEL,
+            CU.CUST_ADDR,
+            DATE_FORMAT(NOW(), '%Y%m%d') as ISSUE_DATE
+        FROM TB_CUSTOMER CU
+        WHERE CU.CO_CODE = #{loginCoId}
+          AND CU.BIZ_NO = #{bizNo}
+    </select>
+
+    <select id="findTaxinvoicesDetail" resultType="com.biz.framework.dto.pages.TaxinvoicesDto">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findTaxinvoicesDetail */
+        SELECT
+            SM.CO_CODE,
+            SM.CONFIRM_SEQ,
+            SM.SETTLEMENT_SEQ,
+            V.REQ_DATE,
+            SM.CONFIRM_DATE,
+            SM.CONFIRM_AMT,
+            V.PROD_ID,
+            V.PROD_NAME,
+            V.CUST_ID,
+            V.CUST_NAME,
+            TX.INVOICE_NO,
+            TX.STATUS,
+            DATE_FORMAT(NOW(), '%Y%m%d') as ISSUE_DATE
+        FROM SETTLEMENTMST SM
+        JOIN V_REQ_VIEW V
+        ON SM.CO_CODE = V.CO_CODE
+        AND SM.SETTLEMENT_SEQ = V.SETTLEMENT_SEQ
+        LEFT JOIN TAXINVOICE TX
+        ON SM.CO_CODE = TX.CO_CODE
+        AND SM.TAX_KEY = TX.TAX_KEY
+        WHERE SM.CO_CODE = #{loginCoId}
+        AND SM.CONFIRM_SEQ = #{confirmSeq}
+    </select>
+
+    <select id="findCompanyInfo" resultType="com.biz.framework.dto.system.CompanyDto">
+        SELECT
+            CO_CODE,
+            CO_NAME,
+            BIZ_NO,
+            CEO_NAME,
+            COMPANY_MAIL,
+            COMPANY_TEL,
+            COMPANY_ADDRESS,
+            BIZ_TYPE,
+            BIZ_CLASS
+        FROM TB_COMPANY
+        WHERE CO_CODE = #{loginCoId}
+    </select>
+
+    <update id="updateTaxinvoice">
+        UPDATE TAXINVOICE
+        SET INVOICE_NO = #{invoiceNo}
+        WHERE TAX_KEY = #{taxKey}
+    </update>
+
+    <update id="cancelTaxinvoice">
+        UPDATE TAXINVOICE
+        SET REMARK = #{remark}
+        WHERE TAX_KEY = #{taxKey}
+    </update>
+
+    <update id="updateSettlement" parameterType="map">
+        UPDATE SETTLEMENTMST
+        SET
+        TAX_KEY     = #{taxKey},
+        ISSUE_DATE  = #{issueDate},
+        TAX_IND     = #{taxInd}
+        WHERE CONFIRM_SEQ IN
+        <foreach collection="confirmSeqList" item="seq" open="(" separator="," close=")">
+            #{seq}
+        </foreach>
+    </update>
+
+    <select id="createTaxkey" resultType="String">
+        SELECT CONCAT('T', DATE_FORMAT(NOW(), '%Y%m%d'), LPAD(IFNULL(SUBSTR(MAX(TAX_KEY), 10, 4), 0) + 1, '4', '0')) AS TAX_KEY
+        FROM TAXINVOICE
+        WHERE CO_CODE      = #{loginCoId}
+    </select>
+
+    <insert id="insertTaxinvoice" parameterType="com.biz.framework.dto.pages.TaxinvoicesDto">
+        INSERT INTO TAXINVOICE
+        (
+            CO_CODE,
+            TAX_KEY,
+            INVOICE_NO,
+            BIZ_NO,
+            ISSUE_DATE,
+            SUPPLY_AMOUNT,
+            TAX_AMOUNT,
+            TOTAL_AMOUNT,
+            STATUS
+        )
+        VALUES
+        (
+            #{loginCoId},
+            #{taxKey},
+            #{invoiceNo},
+            #{bizNo},
+            #{issueDate},
+            #{supplyAmount},
+            #{taxAmount},
+            #{totalAmount},
+            #{status}
+        )
+    </insert>
+
+    <insert id="insertTaxinvoiceline" parameterType="com.biz.framework.dto.pages.TaxinvoiceslineDto">
+        INSERT INTO TAXINVOICEITEM
+        (
+            CO_CODE,
+            TAX_KEY,
+            NO,
+            QUANTITY,
+            UNIT_PRICE,
+            SUPPLY_AMOUNT,
+            TAX_AMOUNT,
+            DESCRIPTION
+        )
+        VALUES
+        (
+            #{loginCoId},
+            #{taxKey},
+            #{no},
+            #{quantity},
+            #{unitPrice},
+            #{supplyAmount},
+            #{taxAmount},
+            #{description}
+        )
+    </insert>
+
+</mapper>

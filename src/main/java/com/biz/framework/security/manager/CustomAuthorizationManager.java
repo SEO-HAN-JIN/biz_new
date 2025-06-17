@@ -32,7 +32,7 @@ public class CustomAuthorizationManager implements AuthorizationManager<RequestA
         HttpServletRequest request = object.getRequest();
         String requestURI = request.getRequestURI();
 
-        if (requestURI.startsWith("/api")) {
+        if (requestURI.startsWith("/api") || requestURI.startsWith("/pages")) {
             String referer = request.getHeader("Referer");
 
             // 프로토콜 (http 또는 https), 서버 이름, 포트 정보를 동적으로 구성하여 제거
