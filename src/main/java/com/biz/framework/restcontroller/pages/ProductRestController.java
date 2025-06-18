@@ -8,6 +8,7 @@ import com.biz.framework.service.pages.ApplypaymentService;
 import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.pages.ProductService;
 import com.biz.framework.service.system.UserService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +40,15 @@ public class ProductRestController {
     @GetMapping("/pop/list")
     public List<CamelCaseMap> findProductPopList(ProductDto productDto) {
         return productService.findProductPopList(productDto);
+    }
+
+    @GetMapping("/item/list")
+    public List<CamelCaseMap> findProductItemList(ProductDto productDto) {
+        return productService.findProductItemList(productDto);
+    }
+
+    @DeleteMapping("/delete/item/{prodId}/{seq}")
+    public int deleteProductItem(@PathVariable String prodId, @PathVariable Integer seq) {
+        return productService.deleteProductItem(prodId, seq);
     }
 }

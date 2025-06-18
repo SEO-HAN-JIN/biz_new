@@ -74,61 +74,66 @@
                             <div id="productGrid" class="tui-grid"></div>
                         </div>
 
-                        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                        <!-- 상품 정보 모달 -->
+                        <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalTitle" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle text-white">상품 정보</h5>
-                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
-                                            <i data-feather="x"></i>
-                                        </button>
+                                <div class="modal-content shadow-sm rounded-3 border-0">
+                                    <div class="modal-header bg-primary text-white rounded-top">
+                                        <h5 class="modal-title text-white" id="productModalCenterTitle text-white">상품 정보</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div id="programModal" class="modal-body">
-                                        <form class="form">
-                                            <div class="row g-3">
-                                                <!-- Row 1 -->
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품코드</label>
-                                                        <input type="text" id="_productPop_prodId" class="form-control" name="prodId" placeholder="상품코드 자동 생성">
-                                                    </div>
+
+                                    <div class="card-body p-4">
+                                        <form id="productForm" class="form">
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label" for="_productPop_prodId">상품코드</label>
+                                                    <input type="text" id="_productPop_prodId" class="form-control" name="prodId" placeholder="상품코드 자동 생성">
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품명</label>
-                                                        <input type="text" id="_productPop_prodName" class="form-control" name="prodName">
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label" for="_productPop_prodName">상품명</label>
+                                                    <input type="text" id="_productPop_prodName" class="form-control" name="prodName">
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품가</label>
-                                                        <input type="text" id="_productPop_prodAmt" class="form-control is-num text-end" name="prodAmt">
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label" for="_productPop_prodAmt">상품가</label>
+                                                    <input type="text" id="_productPop_prodAmt" class="form-control is-num text-end" name="prodAmt">
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">상품수수료</label>
-                                                        <input type="text" id="_productPop_prodIncentive" class="form-control is-num text-end" name="prodIncentive">
-                                                    </div>
+                                            </div>
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-4">
+                                                    <label class="form-label" for="_productPop_prodIncentive">상품수수료</label>
+                                                    <input type="text" id="_productPop_prodIncentive" class="form-control is-num text-end" name="prodIncentive">
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div class="form-group">
-                                                        <label class="form-label">사용여부</label>
-                                                        <select class="form-select" id="_productPop_useInd" name="useInd">
-                                                        </select>
-                                                    </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label" for="_productPop_useInd">사용여부</label>
+                                                    <select class="form-select" id="_productPop_useInd" name="useInd"></select>
                                                 </div>
                                             </div>
                                         </form>
+
+                                        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+                                            <h6 class="mb-0">상품 항목 목록</h6>
+                                            <div>
+                                                <button type="button" class="btn btn-outline-primary btn-sm" id="productModalGridAddBtn">
+                                                    추가
+                                                </button>
+                                                <button type="button" class="btn btn-primary btn-sm" id="productModalGridDeleteBtn">
+                                                    삭제
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div id="productModalGrid" class="tui-grid" style="height: 250px;"></div>
                                     </div>
 
+
                                     <!-- Modal Footer -->
-                                    <div class="modal-footer bg-light">
-                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                                            <i class="bx bx-x"></i> 닫기
+                                    <div class="modal-footer bg-light rounded-bottom d-flex justify-content-end">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            닫기
                                         </button>
-                                        <button type="button" class="btn btn-primary ms-1" id="modalSaveBtn">
-                                            <i class="bx bx-check"></i> 저장
+                                        <button type="button" class="btn btn-success ms-2" id="modalSaveBtn">
+                                            💾 저장
                                         </button>
                                     </div>
                                 </div>
@@ -145,8 +150,10 @@
         const _popPrefix_ = '_productPop_';
 
         let productGrid;
+        let productModalGrid;
 
         let $isNew;
+        let $needSearch = false;
 
         $(document).ready(function() {
             initEvent();
@@ -154,11 +161,16 @@
         });
 
         const initEvent = () => {
-            $("#modalAddBtn").on('click', openProductPop);
+            $("#modalAddBtn").on('click', function() {
+                openProductPop('1');
+            });
             $("#modalSaveBtn").on('click', fn_saveProductGrid);
 
             $("#searchBtn").on('click', searchProductGrid);
             $("#btnDeleteProductGrid").on('click', fn_deleteProductGrid);
+
+            $('#productModalGridAddBtn').on('click', addRowModalGrid);
+            $('#productModalGridDeleteBtn').on('click', deleteRowModalGrid);
 
             $("#searchForm").on('keydown', function(event) {
                 if (event.key === "Enter") {
@@ -173,9 +185,16 @@
                 obj.val(formatNumber(obj.val()));
             });
 
-            // $("#_productPop_prodAmt").on('input', formatCurrency);
-
             $('.is-num').bind('keyup', numberKeyupEvent);
+
+            $('#productModal').on('shown.bs.modal', () => {
+                productModalGrid.getGrid().clear();
+                productModalGrid.getGrid().refreshLayout();
+
+                if ($needSearch) {
+                    searchProductModalGrid();
+                }
+            });
         }
 
         const findInitCodes = async () => {
@@ -207,6 +226,7 @@
             $("#_productPop_useInd").addOptions(SE06Options);
 
             initProductGrid();
+            initProductModalGrid();
         }
 
         const initProductGrid = () => {
@@ -238,6 +258,22 @@
             searchProductGrid();
         }
 
+
+        const initProductModalGrid = () => {
+            var columns = new CustomTuiGrid()
+                .addNumber('seq', '순번', 250, {
+                    editor: true,
+                    align: 'center',
+                    comma: true,
+                })
+                .add('name', '항목명', 480, {editor: true})
+                .add('prodId', '상품코드', 100, {visible: false})
+                // .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
+
+            productModalGrid = columns.init('productModalGrid', [])
+                .render();
+        }
+
         const searchProductGrid = () => {
             productGrid.clear();
 
@@ -259,6 +295,7 @@
             });
         }
 
+        // param : 1(추가버튼) , 2(그리드 더블클릭)
         const openProductPop = (param) => {
 
             clearForm('productModal');
@@ -267,6 +304,7 @@
             // 셀 더블 버튼 클릭 시
             if (param === '2') {
                 $isNew = false;
+                $needSearch = true;
 
                 $("#" + _popPrefix_ + "prodId").attr('disabled', true);
 
@@ -277,6 +315,7 @@
 
             } else {
                 $isNew = true;
+                $needSearch = false;
 
                 $("#" + _popPrefix_ + "prodId").attr('disabled', false);
             }
@@ -298,6 +337,9 @@
 
 
         const fn_saveProductGrid = () => {
+            // 다른 임의 셀로 포커스 변경 → 간접적으로 현재 셀 포커스 해제
+            productModalGrid.getGrid().focus(0, 'seq');
+
             const param = {};
             $('#productModal').find('input, select, input[type="checkbox"]').each((index, item) => {
                 // checkbox일 때
@@ -329,6 +371,8 @@
             } else {
                 param.rowStatus = "U";
             }
+
+            param.productModalGridDtoList = productModalGrid.getGrid().getData();
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 return new Promise((resolve, reject) => {
@@ -386,24 +430,6 @@
                 })
             }
         }
-
-        // const openPgmModal = () => {
-            // pgmModalGrid.clear();
-            // pgmModalGrid.refreshLayout();
-            //
-            // const param = {
-            //     programNm : $("#mp_modal_pgmNm").val()
-            // };
-            //
-            // $.ajax({
-            //     url: "/api/system/program",
-            //     data: param,
-            //     type: 'GET',
-            //     success: (result) => {
-            //         pgmModalGrid.resetData(result);
-            //     }
-            // });
-        // }
 
         const closeBeforeModal = () => {
             console.log('모달이 곧 닫힙니다!');
@@ -473,6 +499,63 @@
 
             // 포맷팅된 값을 입력 필드에 설정
             $(this).val(value);
+        }
+
+        const addRowModalGrid = () => {
+            const focusedCell = productGrid.getGrid().getFocusedCell();
+            const focusedData = productGrid.getGrid().getRow(focusedCell.rowKey);
+
+            const allRow = productModalGrid.getGrid().getData();
+
+            let list = [];
+            let row = {};
+
+            row.prodId = focusedData.prodId;
+            if (allRow.length === 0) {
+                row.seq = '1';
+            } else {
+                row.seq = (allRow.reduce((max, row) => {
+                    const seq = Number(row.seq ?? 0);
+                    return seq > max ? seq : max;
+                }, 0) + 1).toString();
+            }
+            list.push(row);
+            productModalGrid.getGrid().appendRows(list, {});
+        }
+
+        const deleteRowModalGrid = () => {
+            const confirmResult = confirm("선택한 행의 데이터를 삭제하시겠습니까?");
+            if (confirmResult) {
+
+                const focusedCell = productModalGrid.getGrid().getFocusedCell();
+                const focusedData = productModalGrid.getGrid().getRow(focusedCell.rowKey);
+
+                $.ajax({
+                    url: apiUrl + "/delete/item/" + focusedData.prodId + "/" + focusedData.seq,
+                    data: null,
+                    contentType:'application/json',
+                    type: 'DELETE',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("삭제가 완료되었습니다.");
+                            searchProductModalGrid();
+                        } else {
+                            alert("삭제에 실패하였습니다.");
+                            searchProductModalGrid();
+                        }
+                    },
+                    error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+                        searchProductModalGrid();
+                    }
+                })
+            }
+        }
+
+        const searchProductModalGrid = () => {
+            const focusedCell = productGrid.getGrid().getFocusedCell();
+            const focusedData = productGrid.getGrid().getRow(focusedCell.rowKey);
+            productModalGrid.load(apiUrl + "/item/list", focusedData, function(data){});
         }
         })();
     </script>

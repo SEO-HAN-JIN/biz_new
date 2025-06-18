@@ -4,6 +4,8 @@ import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ProductDto extends BaseDto {
@@ -16,4 +18,12 @@ public class ProductDto extends BaseDto {
     private String prodIncentive;
     private String useInd;
     private String baseDate;
+    private List<ProductModalGridDto> productModalGridDtoList;
+
+    @Getter @Setter
+    public static class ProductModalGridDto extends BaseDto {
+        private String prodId;
+        private String seq;
+        private String name;
+    }
 }

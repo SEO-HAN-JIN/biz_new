@@ -24,4 +24,12 @@ public interface ProductMapper {
     String createProdId(ProductDto productDto);
 
     List<CamelCaseMap> findProductPopList(ProductDto productDto);
+
+    void saveProdItems(ProductDto.ProductModalGridDto productModalGridDto);
+
+    List<CamelCaseMap> findProductItemList(ProductDto productDto);
+
+    int deleteProductItem(String coCode, String prodId, Integer seq);
+
+    void deleteProductItemAll(ProductDto productDto);
 }

@@ -114,4 +114,46 @@
           AND P.CO_CODE       = #{loginCoId}
           AND USE_IND        = 'Y'
     </select>
+
+    <insert id="saveProdItems">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductPopList */
+        INSERT INTO TB_PRODUCTITEM
+        (
+            CO_CODE
+            , PROD_ID
+            , SEQ
+            , NAME
+        ) VALUES (
+            #{loginCoId}
+            , #{prodId}
+            , #{seq}
+            , #{name}
+        )
+    </insert>
+
+    <select id="findProductItemList">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductItemList */
+        SELECT PROD_ID
+             , SEQ
+             , NAME
+          FROM TB_PRODUCTITEM
+         WHERE CO_CODE      = #{loginCoId}
+           AND PROD_ID      = #{prodId}
+         ORDER BY SEQ
+    </select>
+
+    <delete id="deleteProductItem">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProductItem */
+        DELETE FROM TB_PRODUCTITEM
+        WHERE CO_CODE       = #{coCode}
+          AND PROD_ID       = #{prodId}
+          AND SEQ           = #{seq}
+    </delete>
+
+    <delete id="deleteProductItemAll">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteProductItemAll */
+        DELETE FROM TB_PRODUCTITEM
+        WHERE CO_CODE       = #{loginCoId}
+          AND PROD_ID       = #{prodId}
+    </delete>
 </mapper>
