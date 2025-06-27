@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/pages/applypayment")
@@ -30,7 +32,7 @@ public class ApplypaymentRestController {
     }
 
     @GetMapping
-    public List<CamelCaseMap> findCustomers(SettlementDto settlementDto) {
+    public Map<String, Object> findApplypayment(SettlementDto settlementDto) {
         return applypaymentService.findApplypayment(settlementDto);
     }
 

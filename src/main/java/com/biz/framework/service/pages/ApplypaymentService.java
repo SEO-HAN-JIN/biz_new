@@ -13,10 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @Transactional
@@ -27,8 +26,30 @@ public class ApplypaymentService {
     private final CustomerMapper customerMapper;
     private final MileageHisMapper mileageHisMapper;
 
-    public List<CamelCaseMap> findApplypayment(SettlementDto settlementDto) {
-        return applypaymentMapper.findApplypayment(settlementDto);
+    public Map<String, Object> findApplypayment(SettlementDto settlementDto) {
+
+        List<CamelCaseMap> list = applypaymentMapper.findApplypayment(settlementDto);
+
+        // 전체 잔여마일리지 합산
+        int mileage = applypaymentMapper.findCustSumMileage(settlementDto);
+
+        String totalProfit = list.stream()
+                // 각 행에서 (판매총액 – 상품총액) 계산
+                .map(map -> {
+                    BigDecimal sale  = new BigDecimal(Objects.toString(map.get("saleTotalAmt"), "0"));
+                    BigDecimal prod  = new BigDecimal(Objects.toString(map.get("prodTotalAmt"),   "0"));
+                    return sale.subtract(prod);
+                })
+                // 전부 더해서 한 개의 BigDecimal로
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                // 문자열로 변환
+                .toPlainString();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", list);
+        result.put("totalMileage", mileage);
+        result.put("totalProfit", totalProfit);
+        return result;
     }
 
     /*

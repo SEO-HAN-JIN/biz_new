@@ -6,6 +6,7 @@ import com.biz.framework.dto.pages.SettlementDto;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ApplypaymentMapper {
@@ -27,4 +28,6 @@ public interface ApplypaymentMapper {
     String createSettlementSeq(SettlementDto settlementDto);
 
     int cancelSettlement(SettlementDto dto);
+
+    int findCustSumMileage(SettlementDto dto);
 }

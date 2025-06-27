@@ -75,6 +75,26 @@
         </if>
     </select>
 
+    <select id="findCustSumMileage" resultType="int">
+        SELECT
+            SUM(TC.MILEAGE) AS TOTAL_MILEAGE
+        FROM SETTLEMENT ST
+        LEFT JOIN EMP_CUSTOMER EC
+         ON EC.CO_CODE = ST.CO_CODE
+        AND EC.BIZ_NO = ST.CUST_ID
+        AND EC.EMP_ID = ST.USER_ID
+        LEFT JOIN TB_CUSTOMER TC
+         ON ST.CO_CODE = TC.CO_CODE
+        AND ST.CUST_ID = TC.BIZ_NO
+        WHERE ST.CO_CODE = #{loginCoId}
+            AND ST.REFUND_IND IS NULL
+            AND ST.REQ_DATE BETWEEN #{searchStartDate} AND #{searchEndDate}
+            AND ST.REQ_GUBUN = 'AQ'
+        <if test="isAdmin != null and !isAdmin">
+            AND ST.USER_ID = #{loginUserId}
+        </if>
+    </select>
+
     <select id="createSettlementSeq">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.createSettlementSeq */
         -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(SETTLEMENT_SEQ), 0) + 1, '4', '0')) AS SETTLEMENT_SEQ
