@@ -42,7 +42,7 @@ public class ProductService {
                 result += productMapper.saveProducts(productDto);
 
                 if (!CollectionUtils.isEmpty(productDto.getProductModalGridDtoList())) {
-                    for (ProductDto.ProductModalGridDto productModalGridDto : productDto.getProductModalGridDtoList()) {
+                    for (ProductDto.ProductItemDto productModalGridDto : productDto.getProductModalGridDtoList()) {
                         productModalGridDto.setProdId(prodId);
                         productMapper.saveProdItems(productModalGridDto);
                     }
@@ -53,7 +53,7 @@ public class ProductService {
 
                 if (!CollectionUtils.isEmpty(productDto.getProductModalGridDtoList())) {
                     productMapper.deleteProductItemAll(productDto);
-                    for (ProductDto.ProductModalGridDto productModalGridDto : productDto.getProductModalGridDtoList()) {
+                    for (ProductDto.ProductItemDto productModalGridDto : productDto.getProductModalGridDtoList()) {
                         productMapper.saveProdItems(productModalGridDto);
                     }
 

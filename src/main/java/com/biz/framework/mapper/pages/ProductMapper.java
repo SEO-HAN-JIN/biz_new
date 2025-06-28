@@ -25,7 +25,7 @@ public interface ProductMapper {
 
     List<CamelCaseMap> findProductPopList(ProductDto productDto);
 
-    void saveProdItems(ProductDto.ProductModalGridDto productModalGridDto);
+    void saveProdItems(ProductDto.ProductItemDto productModalGridDto);
 
     List<CamelCaseMap> findProductItemList(ProductDto productDto);
 

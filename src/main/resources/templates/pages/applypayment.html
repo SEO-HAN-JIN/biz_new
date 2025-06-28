@@ -249,6 +249,12 @@
                                                 </div>
                                             </fieldset>
 
+                                            <!-- 상품 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="product_form" style="display: none;">
+                                                <legend class="float-none w-auto px-2">상품 정보</legend>
+                                                <div class="row g-3" id="product_info_container"></div>
+                                            </fieldset>
+
                                             <!-- 킵 사용 설정 섹션 -->
                                             <fieldset class="border p-3 rounded mt-4">
                                                 <legend class="float-none w-auto px-2">킵 사용 설정</legend>
@@ -483,6 +489,11 @@
 
             $("#saleTotalAmt").on('change', calcSaleAmt);
             $("#btnCancel").on('click', cancel);
+
+            $("#prodId").on('change', function() {
+                const value = $(this).val();
+                settingProdForm(value);
+            });
         }
 
         const findExistMileage = (param) => {
@@ -644,7 +655,7 @@
                     }
                 })
                 .add('gubunName', '요청구분', 150, {sortable: true})
-                .add('applyStatusName', '진행상태', 'auto', {sortable: true})
+                .add('applyStatusName', '진행상태', 150, {sortable: true})
                 .add('userId', '담당자ID', 'auto', {visible: false})
                 .add('prodId', '상품ID', 'auto', {visible: false})
                 .add('custId', '고객ID', 'auto', {visible: false})
@@ -728,7 +739,8 @@
                     document.getElementById("userId").choicesInstance.setChoiceByValue(_userId);
                 }
 
-            } else {
+            }
+            else {  // 그리드 더블 클릭
                 $isNew = false;
 
                 const focusedCell = paymentGrid.getGrid().getFocusedCell();
@@ -753,6 +765,8 @@
                 } else {
                     ableBtn(true);
                 }
+
+                settingProdFormBind(data.settlementSeq, data.prodId, data.applyStatus);
 
             }
 
@@ -817,6 +831,25 @@
                     param[item.id] = item.value.replace(/,/g, ''); // input 값 설정
                 }
             });
+
+            // 상품 정보 파라미터
+            const prodItemList = [];
+
+            $('#product_info_container')
+                .find('input')
+                .each((_, inputEl) => {
+                    const $input = $(inputEl);
+                    const value = $input.val() ? $input.val().replace(/,/g, '') : '';
+
+                    prodItemList.push({
+                        prodId: $input.data('prod-id') || '',
+                        seq: $input.data('seq') || '',
+                        name: $input.attr('name') || '',
+                        inputValue: value
+                    });
+                })
+            ;
+            param.tbSettlementProdItemDtoList = prodItemList;
 
             var dateFrom = param.dateWorkFrom;
             var dateTo = param.dateWorkTo;
@@ -1094,6 +1127,82 @@
                     })
             ;
         }
+
+        const settingProdForm = (prodId) => {
+            $.get(apiUrl + "/prodItem/list/" + prodId, null, function (result) {
+                const formWrapper = $("#product_form");
+                const container = $("#product_info_container");
+
+                // 초기화
+                container.empty();
+
+                // 데이터 없으면 숨김
+                if (!result || result.length === 0) {
+                    formWrapper.hide();
+                    return;
+                }
+
+                // 데이터 있으면 보이기
+                formWrapper.show();
+
+                // 각 필드 추가
+                result.forEach(item => {
+                    const inputHtml = `
+                                          <div class="col-md-3" data-seq="${item.seq}" data-prod-id="${item.prodId}">
+                                              <div class="form-group">
+                                                  <label class="form-label">${item.name}</label>
+                                                  <input type="text"
+                                                         name="${item.name}"
+                                                         class="form-control"
+                                                         data-seq="${item.seq}"
+                                                         data-prod-id="${item.prodId}">
+                                              </div>
+                                          </div>
+                                      `;
+                    container.append(inputHtml);
+                });
+            });
+        };
+
+        const settingProdFormBind = (settlementSeq, prodId, applyStatus) => {
+            $.get(apiUrl + "/prodItem/list/" + settlementSeq + "/" + prodId, null, function (result) {
+                const formWrapper = $("#product_form");
+                const container = $("#product_info_container");
+
+                // 초기화
+                container.empty();
+
+                // 데이터 없으면 숨김
+                if (!result || result.length === 0) {
+                    formWrapper.hide();
+                    return;
+                }
+
+                // 데이터 있으면 보이기
+                formWrapper.show();
+
+                // 각 필드 추가
+                result.forEach(item => {
+                    const inputHtml = `
+                                      <div class="col-md-3" data-seq="${item.seq}" data-prod-id="${item.prodId}">
+                                          <div class="form-group">
+                                              <label class="form-label">${item.name}</label>
+                                              <input type="text"
+                                                     name="${item.name}"
+                                                     class="form-control"
+                                                     data-seq="${item.seq}"
+                                                     value="${item.inputValue}"
+                                                     data-prod-id="${item.prodId}"
+                                                     ${applyStatus !== 'C' ? 'disabled' : ''}>
+                                          </div>
+                                      </div>
+                                  `;
+                    container.append(inputHtml);
+                });
+            });
+        };
+
+
         })();
     </script>
 

@@ -62,4 +62,20 @@ public class ApplypaymentRestController {
     public int cancelSettlement(@RequestBody SettlementDto settlementDto) {
         return applypaymentService.cancelSettlement(settlementDto);
     }
+
+    @GetMapping("/prodItem/list/{prodId}")
+    public List<ProductDto.ProductItemDto> findProductItemList(@PathVariable String prodId) {
+        SettlementDto settlementDto = new SettlementDto();
+        settlementDto.setProdId(prodId);
+        return applypaymentService.findProductItemListByProdId(settlementDto);
+    }
+
+    @GetMapping("/prodItem/list/{settlementSeq}/{prodId}")
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemBySettlementSeq(@PathVariable String settlementSeq, @PathVariable String prodId) {
+        SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto = new SettlementDto.TbSettlementProdItemDto();
+        tbSettlementProdItemDto.setSettlementSeq(settlementSeq);
+        tbSettlementProdItemDto.setProdId(prodId);
+        return applypaymentService.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
+
+    }
 }

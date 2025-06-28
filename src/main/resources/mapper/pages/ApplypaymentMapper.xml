@@ -244,4 +244,60 @@
            AND USER_ID          = #{userId}
            AND CUST_ID          = #{custId}
     </update>
+
+    <select id="findProductItemListByProdId">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductItemListByProdId */
+        SELECT CO_CODE
+             , PROD_ID
+             , SEQ
+             , NAME
+         FROM TB_PRODUCTITEM
+        WHERE CO_CODE       = #{loginCoId}
+          AND PROD_ID       = #{prodId}
+        ORDER BY SEQ
+    </select>
+
+    <insert id="saveTbSettlementProdItem">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.saveTbSettlementProdItem */
+        INSERT INTO TB_SETTLEMENT_PRODITEM
+        (
+            CO_CODE
+            , SETTLEMENT_SEQ
+            , PROD_ID
+            , SEQ
+            , NAME
+            , INPUT_VALUE
+        )
+        VALUES
+        (
+            #{loginCoId}
+            , #{settlementSeq}
+            , #{prodId}
+            , #{seq}
+            , #{name}
+            , #{inputValue}
+        )
+    </insert>
+
+    <select id="findProductItemListBySettlementSeqAndProdId">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.findProductItemListBySettlementSeqAndProdId */
+        SELECT CO_CODE
+             , SETTLEMENT_SEQ
+             , PROD_ID
+             , SEQ
+             , NAME
+             , INPUT_VALUE
+          FROM TB_SETTLEMENT_PRODITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PROD_ID          = #{prodId}
+    </select>
+
+    <delete id="deleteSettlementProditem">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteSettlementProditem */
+        DELETE FROM TB_SETTLEMENT_PRODITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PROD_ID          = #{prodId}
+    </delete>
 </mapper>

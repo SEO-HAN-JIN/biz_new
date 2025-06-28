@@ -52,5 +52,15 @@ public class SettlementDto extends BaseDto {
     private String isAdmin;
 
     private List<SettlementDto> settlementDtoList;
+    private List<TbSettlementProdItemDto> tbSettlementProdItemDtoList;
+
+    @Getter @Setter
+    public static class TbSettlementProdItemDto extends BaseDto{
+        private String settlementSeq;
+        private String prodId;
+        private String seq;
+        private String name;
+        private String inputValue;
+    }
 
 }

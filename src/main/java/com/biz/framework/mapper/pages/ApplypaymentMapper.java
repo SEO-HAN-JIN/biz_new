@@ -2,6 +2,7 @@ package com.biz.framework.mapper.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
+import com.biz.framework.dto.pages.ProductDto;
 import com.biz.framework.dto.pages.SettlementDto;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -30,4 +31,12 @@ public interface ApplypaymentMapper {
     int cancelSettlement(SettlementDto dto);
 
     int findCustSumMileage(SettlementDto dto);
+
+    List<ProductDto.ProductItemDto> findProductItemListByProdId(SettlementDto settlementDto);
+
+    void saveTbSettlementProdItem(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
+
+    List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
+
+    int deleteSettlementProditem(SettlementDto dto);
 }

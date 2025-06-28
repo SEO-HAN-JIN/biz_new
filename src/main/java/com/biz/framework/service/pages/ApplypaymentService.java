@@ -4,6 +4,7 @@ import com.biz.framework.common.exception.ServiceException;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
+import com.biz.framework.dto.pages.ProductDto;
 import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.mapper.pages.ApplypaymentMapper;
 import com.biz.framework.mapper.pages.CustomerMapper;
@@ -71,6 +72,10 @@ public class ApplypaymentService {
                 if ("Y".equals(settlementDto.getMileageUseInd())) {
                     saveMileageAq(settlementDto);
                 }
+
+                if (!settlementDto.getTbSettlementProdItemDtoList().isEmpty()) {
+                    saveSettlementProdItem(settlementDto);
+                }
             }
             case U -> {
                 result += applypaymentMapper.updateApplypayment(settlementDto);
@@ -78,9 +83,22 @@ public class ApplypaymentService {
                 if ("Y".equals(settlementDto.getMileageUseInd())) {
                     saveMileageAq(settlementDto);
                 }
+
+                if (!settlementDto.getTbSettlementProdItemDtoList().isEmpty()) {
+                    saveSettlementProdItem(settlementDto);
+                }
             }
         }
         return result;
+    }
+
+    private void saveSettlementProdItem(SettlementDto settlementDto) {
+
+        applypaymentMapper.deleteSettlementProditem(settlementDto);
+        settlementDto.getTbSettlementProdItemDtoList().forEach(dto -> {
+           dto.setSettlementSeq(settlementDto.getSettlementSeq());
+           applypaymentMapper.saveTbSettlementProdItem(dto);
+        });
     }
 
     public int deleteSettlement(SettlementDto settlementDto) {
@@ -94,6 +112,7 @@ public class ApplypaymentService {
                     throw new ServiceException("요청취소건만 삭제 가능합니다.");
                 }
 
+                result += applypaymentMapper.deleteSettlementProditem(dto);
                 result += applypaymentMapper.deleteSettlement(dto);
             }
         }
@@ -181,5 +200,13 @@ public class ApplypaymentService {
 
 
         return result;
+    }
+
+    public List<ProductDto.ProductItemDto> findProductItemListByProdId(SettlementDto settlementDto) {
+        return applypaymentMapper.findProductItemListByProdId(settlementDto);
+    }
+
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto) {
+        return applypaymentMapper.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
     }
 }

@@ -18,10 +18,10 @@ public class ProductDto extends BaseDto {
     private String prodIncentive;
     private String useInd;
     private String baseDate;
-    private List<ProductModalGridDto> productModalGridDtoList;
+    private List<ProductItemDto> productModalGridDtoList;
 
     @Getter @Setter
-    public static class ProductModalGridDto extends BaseDto {
+    public static class ProductItemDto extends BaseDto {
         private String prodId;
         private String seq;
         private String name;
