@@ -35,4 +35,7 @@ public interface ApplypaymentapprmngMapper {
     int updateAgency(SettlementDto settlementDto);
 
     int deleteAgencyReq(SettlementDto settlement);
+
+    List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
+    int deleteSettlementProditem(SettlementDto dto);
 }

@@ -211,6 +211,12 @@
                                                 </div>
                                             </fieldset>
 
+                                            <!-- 상품 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="product_form" style="display: none;">
+                                                <legend class="float-none w-auto px-2">상품 정보</legend>
+                                                <div class="row g-3" id="product_info_container"></div>
+                                            </fieldset>
+
                                             <!-- 정산요청 정보 섹션 -->
                                             <fieldset class="border p-3 rounded mt-4" id="applyView">
                                                 <legend class="float-none w-auto px-2">정산금액정보</legend>
@@ -843,6 +849,8 @@
                 }
             });
 
+            settingProdFormBind(focusedData.settlementSeq, focusedData.prodId, focusedData.applyStatus);
+
             $('#paymentModal').modal('show');
         }
 
@@ -1060,6 +1068,44 @@
 
 
         }
+
+            const settingProdFormBind = (settlementSeq, prodId, applyStatus) => {
+                $.get(apiUrl + "/prodItem/list/" + settlementSeq + "/" + prodId, null, function (result) {
+                    const formWrapper = $("#product_form");
+                    const container = $("#product_info_container");
+
+                    // 초기화
+                    container.empty();
+
+                    // 데이터 없으면 숨김
+                    if (!result || result.length === 0) {
+                        formWrapper.hide();
+                        return;
+                    }
+
+                    // 데이터 있으면 보이기
+                    formWrapper.show();
+
+                    // 각 필드 추가
+                    result.forEach(item => {
+                        const inputHtml = `
+                                      <div class="col-md-3" data-seq="${item.seq}" data-prod-id="${item.prodId}">
+                                          <div class="form-group">
+                                              <label class="form-label">${item.name}</label>
+                                              <input type="text"
+                                                     name="${item.name}"
+                                                     class="form-control"
+                                                     data-seq="${item.seq}"
+                                                     value="${item.inputValue}"
+                                                     data-prod-id="${item.prodId}"
+                                                     disabled>
+                                          </div>
+                                      </div>
+                                  `;
+                        container.append(inputHtml);
+                    });
+                });
+            };
 
         })();
 

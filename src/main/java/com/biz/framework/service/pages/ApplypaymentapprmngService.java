@@ -214,6 +214,8 @@ public class ApplypaymentapprmngService {
                     }
                 }
 
+                result += applypaymentapprmngMapper.deleteSettlementProditem(settlement);
+
                 if(result == 0)
                     throw new ServiceException("처리 도중 오류가 발생했습니다.");
             }
@@ -228,5 +230,9 @@ public class ApplypaymentapprmngService {
     public SettlementDto findSettlement(SettlementmstDto settlementmstDto)
     {
         return applypaymentapprmngMapper.findSettlement(settlementmstDto);
+    }
+
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto) {
+        return applypaymentapprmngMapper.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
     }
 }
