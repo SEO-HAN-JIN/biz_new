@@ -84,4 +84,20 @@
           AND ATCH_FILE_ID  = #{atchFileId}
           AND FILE_SN       = #{fileSn}
     </delete>
+
+    <select id="findByAtchfileId">
+        /* com.biz.framework.file.FileMapper.findByAtchfileId */
+        SELECT CO_CODE
+             , ATCH_FILE_ID
+             , FILE_SN
+             , FILE_EXTSN
+             , FILE_SIZE
+             , FILE_STRE_COURS
+             , ORIGINAL_FILE_NM
+             , STRE_FILE_NM
+             , USE_AT
+        FROM TB_FILE
+        WHERE CO_CODE          = #{loginCoId}
+          AND ATCH_FILE_ID     = #{atchFileId}
+    </select>
 </mapper>

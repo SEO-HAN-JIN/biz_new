@@ -192,7 +192,8 @@
             ST.PROD_INCENTIVE_IND,
             ST.USE_MILEAGE,
             ST.REQ_GUBUN,
-            ST.APPLY_STATUS
+            ST.APPLY_STATUS,
+            ST.ATCH_FILE_ID
        FROM V_REQ_VIEW      ST
        LEFT JOIN CDBASE     CD
          ON CD.CO_CODE      = ST.CO_CODE

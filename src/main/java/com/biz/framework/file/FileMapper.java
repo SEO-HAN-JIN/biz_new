@@ -16,4 +16,6 @@ public interface FileMapper {
     int updateUseAtByFileIdAndFileSn(FileDto fileDto);
 
     int removeFile(FileDto fileDto);
+
+    List<FileDto> findByAtchfileId(FileDto fileDto);
 }

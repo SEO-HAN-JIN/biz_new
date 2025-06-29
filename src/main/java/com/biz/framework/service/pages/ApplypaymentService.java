@@ -6,6 +6,7 @@ import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.dto.pages.ProductDto;
 import com.biz.framework.dto.pages.SettlementDto;
+import com.biz.framework.file.FileService;
 import com.biz.framework.mapper.pages.ApplypaymentMapper;
 import com.biz.framework.mapper.pages.CustomerMapper;
 import com.biz.framework.mapper.pages.MileageHisMapper;
@@ -26,6 +27,7 @@ public class ApplypaymentService {
     private final ApplypaymentMapper applypaymentMapper;
     private final CustomerMapper customerMapper;
     private final MileageHisMapper mileageHisMapper;
+    private final FileService fileService;
 
     public Map<String, Object> findApplypayment(SettlementDto settlementDto) {
 
@@ -114,6 +116,7 @@ public class ApplypaymentService {
 
                 result += applypaymentMapper.deleteSettlementProditem(dto);
                 result += applypaymentMapper.deleteSettlement(dto);
+                fileService.removeByAtchFileId(dto.getAtchFileId());
             }
         }
 

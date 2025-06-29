@@ -6,6 +6,7 @@ import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
 import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.dto.pages.SettlementmstDto;
+import com.biz.framework.file.FileService;
 import com.biz.framework.mapper.pages.ApplypaymentMapper;
 import com.biz.framework.mapper.pages.ApplypaymentapprmngMapper;
 import com.biz.framework.mapper.pages.CustomerMapper;
@@ -27,7 +28,7 @@ public class ApplypaymentapprmngService {
     private final ApplypaymentapprmngMapper applypaymentapprmngMapper;
     private final MileageHisMapper mileageHisMapper;
     private final CustomerMapper customerMapper;
-    private final ApplypaymentMapper applypaymentMapper;
+    private final FileService fileService;
 
     public List<CamelCaseMap> findApplypaymentmngList(SettlementDto settlementDto) {
         return applypaymentapprmngMapper.findApplypaymentmngList(settlementDto);
@@ -214,7 +215,10 @@ public class ApplypaymentapprmngService {
                     }
                 }
 
+                // 정산상품항목 삭제
                 result += applypaymentapprmngMapper.deleteSettlementProditem(settlement);
+                // 이미자피일삭제
+                fileService.removeByAtchFileId(settlement.getAtchFileId());
 
                 if(result == 0)
                     throw new ServiceException("처리 도중 오류가 발생했습니다.");

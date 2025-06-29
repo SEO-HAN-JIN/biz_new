@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -112,6 +113,28 @@ public class FileService {
         } catch (IOException e) {
             throw new ServiceException("파일 삭제 실패: " + filePath);
         }
+        return result;
+    }
+
+    public int removeByAtchFileId(String fileId) {
+        int result = 0;
+
+        FileDto fileDto = new FileDto(fileId, "Y");
+        List<FileDto> findFilInfoList = fileMapper.findByAtchfileId(fileDto);
+
+        for (FileDto dto : findFilInfoList) {
+            String uploadDir = dto.getFileStreCours();
+            String fileName = dto.getStreFileNm();
+            Path filePath = Paths.get(uploadDir).resolve(fileName);
+
+            try {
+                Files.deleteIfExists(filePath);
+                result += fileMapper.removeFile(fileDto);
+            } catch (IOException e) {
+                throw new ServiceException("파일 삭제 실패: " + filePath);
+            }
+        }
+
         return result;
     }
 }
