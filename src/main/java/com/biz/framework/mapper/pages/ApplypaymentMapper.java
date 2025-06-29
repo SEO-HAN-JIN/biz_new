@@ -30,6 +30,8 @@ public interface ApplypaymentMapper {
 
     int cancelSettlement(SettlementDto dto);
 
+    int updateAtchFileId(SettlementDto settlementDto);
+
     int findCustSumMileage(SettlementDto dto);
 
     List<ProductDto.ProductItemDto> findProductItemListByProdId(SettlementDto settlementDto);

@@ -1,5 +1,6 @@
 package com.biz.framework.file;
 
+import com.biz.framework.common.dto.BaseDto;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,7 +11,7 @@ import java.util.*;
 
 @Getter
 @Setter
-public class FileDto {
+public class FileDto extends BaseDto {
     private String fileSn;
     private String atchFileId;
     private String fileExtsn;
@@ -63,5 +64,18 @@ public class FileDto {
 
         return Paths.get(rootPath, cours.toArray(new String[cours.size()])).toString();
     }
+
+    public FileDto(String atchFileId, String fileSn, String useAt) {
+        this.fileSn = fileSn;
+        this.atchFileId = atchFileId;
+        this.useAt = useAt;
+    }
+
+    public FileDto(String atchFileId, String useAt) {
+        this.atchFileId = atchFileId;
+        this.useAt = useAt;
+    }
+
+    public FileDto() {}
 
 }

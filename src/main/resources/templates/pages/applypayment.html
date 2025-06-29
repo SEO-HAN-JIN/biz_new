@@ -301,6 +301,57 @@
                             </div>
                         </div>
 
+                        <!-- 첨부파일 팝업 -->
+                        <div class="modal fade" id="fileUploadModal" tabindex="-1" role="dialog" aria-labelledby="fileUploadModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="fileUploadModalCenterTitle">첨부파일</h5>
+                                        <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="col-12 col-md-12">
+                                            <div class="card">
+                                                <div class="card-content">
+                                                    <div class="card-body">
+
+                                                        <!-- 썸네일 표시용 영역 -->
+                                                        <div id="file-thumbnails">
+                                                            <!-- 썸네일 wrapper들이 여기에 추가됨 -->
+                                                        </div>
+
+                                                        <br/>
+                                                        <div class="d-flex justify-content-end" style="width: 100%;">
+                                                            <div class="d-flex pb-3 gap-1">
+                                                                <button type="button" class="btn btn-primary btn-m" id="file-upload-save-btn">저장</button>
+                                                            </div>
+                                                        </div>
+
+                                                        <input type="file" id="file-upload-input" class="with-validation-filepond" required multiple data-max-file-size="10MB" data-max-files="5">
+                                                        <input type="hidden" id="file-atach-id">
+                                                        <input type="hidden" id="file-settlement-seq">
+                                                        <input type="hidden" id="file-prod-id">
+                                                        <input type="hidden" id="file-user-id">
+                                                        <input type="hidden" id="file-cust-id">
+                                                        <input type="hidden" id="file-apply-status">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -405,6 +456,8 @@
             $("#btnDeletePaymentGrid").on('click', fn_deletePaymentGrid);
 
             $("#searchBtn").on('click', searchPaymentGrid);
+
+            $("#file-upload-save-btn").on('click', fn_saveFileUpload);
 
             // 숫자 input 콤마 형식
             $(".priceformat").on('input', function () {
@@ -654,6 +707,14 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }
                 })
+                .addButton('fileUpload', '첨부파일', 200, {
+                    buttonText: '첨부파일',
+                    textColor: 'red',
+                    onClick: (rowData, rowKey) => {
+                        openFileUploadPop(rowData);
+                    },
+                    sortable: true
+                })
                 .add('gubunName', '요청구분', 150, {sortable: true})
                 .add('applyStatusName', '진행상태', 150, {sortable: true})
                 .add('userId', '담당자ID', 'auto', {visible: false})
@@ -664,6 +725,7 @@
                 .add('useMileage', '킵사용금액', 'auto', {visible: false})
                 .add('applyStatus', '승인상태', 'auto', {visible: false})
                 .add('existMileage', '기존마일리지', 'auto', {visible: false})
+                .add('atchFileId', '파일ID', 'auto', {visible: false})
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
             ;
 
@@ -1128,6 +1190,188 @@
             ;
         }
 
+        const openFileUploadPop = (rowData) => {
+
+            clearFileModal();
+
+            if (!isNull(rowData.atchFileId)) {
+                findUploadFiles(rowData.atchFileId);
+            }
+
+            $("#file-atach-id").val(rowData.atchFileId);
+            $("#file-settlement-seq").val(rowData.settlementSeq);
+            $("#file-prod-id").val(rowData.prodId);
+            $("#file-user-id").val(rowData.userId);
+            $("#file-cust-id").val(rowData.custId);
+            $("#file-apply-status").val(rowData.applyStatus);
+
+            $('#fileUploadModal').modal('show');
+        }
+
+        const findUploadFiles = (atchFileId) => {
+            $.get(apiUrl + "/files", {atchFileId: atchFileId}, function (result) {
+                const container = document.getElementById("file-thumbnails");
+                container.innerHTML = ""; // 기존 썸네일 제거
+                if (result.length > 0) {
+
+                    const focusCell = paymentGrid.getGrid().getFocusedCell();
+                    const focusData = paymentGrid.getGrid().getRow(focusCell.rowKey);
+
+                    if (focusData.applyStatus === '02') {
+                        $('#file-upload-save-btn').hide(); // display: none
+                    } else {
+                        $('#file-upload-save-btn').show(); // display: none
+                    }
+
+                    result.forEach(file => {
+                        const atchFileId = file.atchFileId;
+                        const fileSn = file.fileSn;
+                        const fileName = file.originalFileNm; // 서버에서 전달된 원본 파일명이라고 가정
+
+                        const imgUrl = `/files/${atchFileId}/${fileSn}/view`;
+                        const downloadUrl = `/files/${atchFileId}/${fileSn}/download`;
+
+                        // 썸네일+파일명 담을 wrapper div
+                        const wrapper = document.createElement("div");
+                        wrapper.className = "thumbnail-wrapper";
+
+                        // 이미지
+                        const img = document.createElement("img");
+                        img.src = imgUrl;
+                        img.className = "thumbnail-img";
+
+                        img.style.cursor = "pointer";
+                        img.addEventListener("click", () => {
+                            window.open(imgUrl, "_blank", "width=800,height=600,scrollbars=yes,resizable=yes");
+                        });
+
+                        // 파일명 및 삭제버튼을 감쌀 div
+                        const nameContainer = document.createElement("div");
+                        nameContainer.className = "file-name-container";
+
+                        // 파일명 링크
+                        const link = document.createElement("a");
+                        link.href = downloadUrl;
+                        link.innerText = fileName;
+                        link.download = fileName; // 다운로드 속성
+                        link.className = "file-name-link";
+                        nameContainer.appendChild(link);
+
+                        // 삭제 버튼
+                        if (focusData.applyStatus !== '02') {
+                            const deleteBtn = document.createElement("button");
+                            deleteBtn.innerText = "삭제";
+                            deleteBtn.className = "delete-file-btn";
+                            deleteBtn.addEventListener("click", () => {
+                                if (confirm("정말 삭제하시겠습니까?")) {
+                                    $.ajax({
+                                        url: `/files/${atchFileId}/${fileSn}`,
+                                        type: "DELETE",
+                                        success: () => {
+                                            alert("삭제되었습니다.");
+                                            findUploadFiles(atchFileId); // 리스트 새로고침
+                                        },
+                                        error: () => {
+                                            alert("삭제 중 오류가 발생했습니다.");
+                                        }
+                                    });
+                                }
+                            });
+
+                            nameContainer.appendChild(deleteBtn);
+                        }
+
+
+
+                        // 추가
+                        wrapper.appendChild(img);
+                        wrapper.appendChild(nameContainer);
+                        container.appendChild(wrapper);
+                    });
+                }
+            });
+        };
+
+        const fn_saveFileUpload = () => {
+            // FilePond 인스턴스 가져오기
+            const pond = FilePond.find(document.querySelector("#file-upload-input"));
+
+            if (!pond) {
+                alert("파일 선택창이 초기화되지 않았습니다.");
+                return;
+            }
+
+            const files = pond.getFiles();
+
+            if (files.length === 0) {
+                alert("업로드할 파일을 선택하세요.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("atchFileId", $("#file-atach-id").val());
+            formData.append("settlementSeq", $("#file-settlement-seq").val());
+            formData.append("prodId", $("#file-prod-id").val());
+            formData.append("userId", $("#file-user-id").val());
+            formData.append("custId", $("#file-cust-id").val());
+            formData.append("applyStatus", $("#file-apply-status").val());
+
+            files.forEach(fileItem => {
+                formData.append("files", fileItem.file); // name="files" 에 맞춰 추가
+            });
+
+            $.ajax({
+                url: apiUrl + "/files/save",
+                type: "POST",
+                data: formData,
+                processData: false,  // 중요: jQuery가 데이터를 문자열로 처리하지 않게
+                contentType: false,  // 중요: FormData의 contentType 사용하게
+                success: function (result) {
+                    if (result > 0) {
+                        alert("업로드가 완료했습니다.");
+
+                        clearFileModal();
+                        searchPaymentGrid();
+                        $('#fileUploadModal').modal('hide');
+                    } else {
+                        alert("업로드를 실패했습니다.");
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    let txt = '';
+                    if (!isNull(xhr.responseText)) {
+                        txt = xhr.responseText;
+                    }
+                    alert("업로드 중 오류 발생 : " + txt);
+                }
+            });
+        };
+
+        function clearFileModal() {
+            // FilePond 인스턴스 가져오기
+            const pond = FilePond.find(document.getElementById("file-upload-input"));
+
+            // 파일 목록 제거
+            if (pond) {
+                pond.removeFiles(); // 전체 파일 제거
+            }
+
+            $("#file-atach-id").val('');
+            $("#file-settlement-seq").val('');
+            $("#file-prod-id").val('');
+            $("#file-user-id").val('');
+            $("#file-cust-id").val('');
+            $("#file-apply-status").val('');
+
+            // 썸네일 이미지 리스트 초기화
+            const container = document.getElementById("file-thumbnails");
+            if (container) {
+                container.innerHTML = ""; // 썸네일 제거
+            }
+        }
+
+
         const settingProdForm = (prodId) => {
             $.get(apiUrl + "/prodItem/list/" + prodId, null, function (result) {
                 const formWrapper = $("#product_form");
@@ -1205,6 +1449,13 @@
 
         })();
     </script>
+
+    <link rel="stylesheet" href="/assets/extensions/filepond/filepond.css">
+
+    <script src="/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js" defer></script>
+    <script src="/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js" defer></script>
+    <script src="/assets/extensions/filepond/filepond.js" defer></script>
+    <script src="/assets/static/js/pages/filepond.js" defer></script>
 
 </th:block>
 

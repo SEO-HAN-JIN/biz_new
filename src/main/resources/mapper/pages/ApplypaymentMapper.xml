@@ -40,7 +40,8 @@
             IFNULL(ST.USE_MILEAGE,0)    AS USE_MILEAGE,
             IFNULL(ST.EXIST_MILEAGE, 0)  AS CUR_EXIST_MILEAGE,
             ST.APPLY_STATUS,
-            C.CODE_NAME                 AS APPLY_STATUS_NAME
+            C.CODE_NAME                 AS APPLY_STATUS_NAME,
+            ST.ATCH_FILE_ID
         FROM SETTLEMENT         ST
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CO_CODE         = CU.CO_CODE
@@ -239,6 +240,17 @@
         UPDATE SETTLEMENT
            SET APPLY_STATUS     = 'C'
          WHERE CO_cODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+           AND PROD_ID          = #{prodId}
+           AND USER_ID          = #{userId}
+           AND CUST_ID          = #{custId}
+    </update>
+
+    <update id="updateAtchFileId">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateAtchFileId */
+        UPDATE SETTLEMENT
+           SET ATCH_FILE_ID     = #{atchFileId}
+         WHERE CO_CODE          = #{loginCoId}
            AND SETTLEMENT_SEQ   = #{settlementSeq}
            AND PROD_ID          = #{prodId}
            AND USER_ID          = #{userId}

@@ -55,7 +55,8 @@
             CD1.CODE_NAME AS REQ_GUBUN_NAME,
             ST.APPLY_STATUS,
             CD2.CODE_NAME AS STATUS_NAME,
-            ST.PROD_INCENTIVE_IND
+            ST.PROD_INCENTIVE_IND,
+            ST.ATCH_FILE_ID
        FROM V_REQ_VIEW          ST
        LEFT JOIN SETTLEMENTMST  SM
          ON ST.CO_CODE          = SM.CO_CODE

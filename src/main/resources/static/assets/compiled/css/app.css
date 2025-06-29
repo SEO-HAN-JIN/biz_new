@@ -19467,3 +19467,68 @@ a {
 .z-1 {
   z-index: 1;
 }
+
+.thumbnail-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 220px; /* 이미지보다 살짝 여유 있게 */
+}
+
+.thumbnail-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  flex-shrink: 0;             /* 줄어들지 않도록 */
+  display: block;
+  margin-bottom: 4px;
+}
+
+.file-name-link {
+  font-size: 14px;
+  color: #000;                /* 글자색: 검정 */
+  text-align: center;
+  text-decoration: underline; /* 밑줄 추가 */
+  word-break: break-all;
+}
+
+.file-name-link:hover {
+  text-decoration: underline;
+}
+
+.delete-file-btn {
+  font-size: 12px;
+  padding: 2px 6px;
+  color: black;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#file-thumbnails {
+  display: flex;
+  flex-wrap: nowrap;          /* 줄바꿈 없이 가로로 나열 */
+  overflow-x: auto;           /* 수평 스크롤 허용 */
+  gap: 20px;                  /* 썸네일 간 간격 */
+  padding-bottom: 8px;        /* 스크롤바 안 겹치게 여유 */
+}
+
+.no-file-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  padding: 40px 20px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 20px auto;
+  max-width: 300px;
+  text-align: center;
+}

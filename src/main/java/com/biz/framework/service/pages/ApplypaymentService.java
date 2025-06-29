@@ -202,6 +202,11 @@ public class ApplypaymentService {
         return result;
     }
 
+    public int updateAtchFileId(SettlementDto settlementDto) {
+        return applypaymentMapper.updateAtchFileId(settlementDto);
+    }
+
+
     public List<ProductDto.ProductItemDto> findProductItemListByProdId(SettlementDto settlementDto) {
         return applypaymentMapper.findProductItemListByProdId(settlementDto);
     }

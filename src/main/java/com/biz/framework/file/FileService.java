@@ -87,11 +87,31 @@ public class FileService {
         return result;
     }
 
-    public List<FileDto> findByFileId(String fileId) {
-        return fileMapper.findByAtchFileIdAndUseAt(fileId, "Y");
+    public List<FileDto> findByFileId(String atchFileId) {
+        FileDto fileDto = new FileDto(atchFileId, "Y");
+        return fileMapper.findByAtchFileIdAndUseAt(fileDto);
     }
 
     public FileDto loadByFileSn(String fileId, String fileSn) {
-        return fileMapper.findByATchfileIdAndFileSnAndUseAt(fileId, fileSn, "Y");
+        FileDto fileDto = new FileDto(fileId, fileSn, "Y");
+        return fileMapper.findByATchfileIdAndFileSnAndUseAt(fileDto);
+    }
+
+    public int remove(String fileId, String fileSn) {
+        int result = 0;
+
+        FileDto fileDto = new FileDto(fileId, fileSn, "Y");
+        FileDto findFileInfo = fileMapper.findByATchfileIdAndFileSnAndUseAt(fileDto);
+        String uploadDir = findFileInfo.getFileStreCours();
+        String fileName = findFileInfo.getStreFileNm();
+        Path filePath = Paths.get(uploadDir).resolve(fileName);
+
+        try {
+            Files.deleteIfExists(filePath);
+            result += fileMapper.removeFile(fileDto);
+        } catch (IOException e) {
+            throw new ServiceException("파일 삭제 실패: " + filePath);
+        }
+        return result;
     }
 }
