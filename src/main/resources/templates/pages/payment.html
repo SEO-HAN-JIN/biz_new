@@ -94,7 +94,7 @@
                         
                         <!--정산요청 상세정보-->
                         <div class="modal fade" id="payInfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
@@ -378,10 +378,13 @@
 
             var columns = new CustomTuiGrid()
                 .add('payYm', '급여지급월', 120, {})
-                .add('empName', '담당자명', 150, {})
+                .add('empName', '담당자명', 120, {})
                 .add('settlementSeq', '정산요청번호', 150, {})
-                .add('reqGubunName', '요청구분', 120, {})
-                .addNumber('confirmRateAmt', '승인금액', 160, { align: 'right', comma: true})
+                .add('reqGubunName', '요청구분', 100, {})
+                .addNumber('confirmAmt', '승인금액', 150, { align: 'right', comma: true})
+                .addNumber('confirmRateAmt', '승인수수료', 150, { align: 'right', comma: true})
+                .addNumber('finalRate', '변경인센률', 80, { align: 'right'})
+                .addNumber('finalAmt', '최종수수료', 150, { align: 'right', comma: true})
             ;
 
             paymentInfoGrid = columns.init('paymentInfoGrid', [])
