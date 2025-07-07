@@ -28,9 +28,15 @@
             IFNULL(ST.INCENTIVE_RATE, 0) AS INCENTIVE_RATE,
             ST.SALE_TOTAL_AMT,
             ST.PROD_TOTAL_AMT,
-            CAST(SM.CONFIRM_AMT - SM.CONFIRM_MILEAGE AS UNSIGNED) AS CONFIRM_AMT,
-            CAST((ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) AS UNSIGNED) AS CONFIRM_COST_AMT,
-            SM.CONFIRM_RATE_AMT,
+            -- CAST(SM.CONFIRM_AMT - SM.CONFIRM_MILEAGE AS UNSIGNED) AS CONFIRM_AMT,
+            -- (ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) AS CONFIRM_COST_AMT,
+            CAST(SM.CONFIRM_AMT + ST.USE_MILEAGE AS UNSIGNED) AS CONFIRM_AMT,
+            CASE
+            	WHEN ST.REFUND_IND = 'Y' THEN (ST.REFUND_SALE_TOTAL_AMT - ST.REFUND_PROD_TOTAL_AMT)
+            	-- ELSE (ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT)
+                ELSE ((SM.CONFIRM_AMT + ST.USE_MILEAGE) - ST.PROD_TOTAL_AMT)
+            END AS CONFIRM_COST_AMT,
+            IFNULL(SM.FINAL_AMT, SM.CONFIRM_RATE_AMT) AS CONFIRM_RATE_AMT,
             SM.ATCH_ID,
             CD.CODE_NAME AS REQ_GUBUN_NAME,
             CD2.CODE_NAME AS GUBUN_NAME,
@@ -95,7 +101,9 @@
     <update id="confirmApplypayment" parameterType="list">
         /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
         UPDATE SETTLEMENTMST
-            SET PAY_YM      = REPLACE(#{payYm}, '-', '')
+            SET PAY_YM      = REPLACE(#{payYm}, '-', ''),
+                FINAL_RATE  = #{finalRate},
+                FINAL_AMT   = #{finalAmt}
         WHERE CO_CODE       = #{loginCoId}
         AND CONFIRM_SEQ     = #{confirmSeq}
     </update>
@@ -103,22 +111,29 @@
     <delete id="checkPayrollInd">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayrollInd */
         SELECT COUNT(*)
-          FROM SETTLEMENT
-         WHERE CO_CODE          = #{loginCoId}
-           AND SETTLEMENT_SEQ   = #{settlementSeq}
-           AND PAY_YM IS NOT NULL
-           AND PAY_YM           != ''
+          FROM PAYMENTETC
+         WHERE CO_CODE  = #{loginCoId}
+           AND USER_ID  = #{userId}
+           AND PAY_YM   = #{payYm}
     </delete>
 
+    <select id="checkPayroll" resultType="int">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.checkPayroll */
+        SELECT COUNT(*)
+        FROM PAYMENTETC
+        WHERE CO_CODE  = #{loginCoId}
+          AND USER_ID  = #{userId}
+          AND PAY_YM   = REPLACE(#{payYm}, '-', '')
+    </select>
+
     <insert id="cancelApplypayment">
-        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.confirmApplypayment */
-        UPDATE SETTLEMENT
-           SET CONFIRM_AMT          = 0,
-               CONFIRM_RATE_AMT     = 0,
-               SAVE_MILEAGE         = 0,
-               STATUS               = '3'
-         WHERE CO_CODE              = #{loginCoId}
-           AND SETTLEMENT_SEQ       = #{settlementSeq}
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.cancelApplypayment */
+        UPDATE SETTLEMENTMST
+        SET PAY_YM          = null,
+            FINAL_RATE      = null,
+            FINAL_AMT       = null
+        WHERE CO_CODE       = #{loginCoId}
+          AND CONFIRM_SEQ   = #{confirmSeq}
     </insert>
 
 </mapper>

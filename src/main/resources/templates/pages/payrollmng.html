@@ -115,7 +115,7 @@
 
                         <!--급여지급처리 상세정보-->
                         <div class="modal fade" id="payrollModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle2" aria-hidden="true" data-bs-backdrop="static">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
@@ -151,12 +151,24 @@
                                                     <div class="col-md-12">
 <!--                                                        <div id="payrollGrid" class="tui-grid" style="height:430px"></div>-->
                                                         <table class="table table-hover table-bordered mt-3 align-middle">
+                                                            <colgroup>
+                                                                <col style="width: 10%;">  <!-- 직원ID -->
+                                                                <col style="width: 10%;">  <!-- 직원명 -->
+                                                                <col style="width: 18%;">  <!-- 영업이익 -->
+                                                                <col style="width: 18%;">  <!-- 정산금액 -->
+                                                                <col style="width: 18%;">  <!-- 정산수수료 -->
+                                                                <col style="width: 10%;">  <!-- 적용인센율 -->
+                                                                <col style="width: 18%;">  <!-- 확정수수료 -->
+                                                            </colgroup>
                                                             <thead class="bg-primary">
                                                             <tr>
                                                                 <th class="text-white text-center">직원ID</th>
                                                                 <th class="text-white text-center">직원명</th>
-                                                                <th class="text-white text-center">정산금액</th>
+                                                                <th class="text-white text-center">영업이익(부가세포함)</th>
+                                                                <th class="text-white text-center">승인금액</th>
                                                                 <th class="text-white text-center">정산수수료</th>
+                                                                <th class="text-white text-center">적용인센율</th>
+                                                                <th class="text-white text-center">확정수수료</th>
                                                             </tr>
                                                             </thead>
                                                             <tbody id="payrollTable">
@@ -284,8 +296,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">킵사용금액</label>
-                                                            <input type="text" name="useMileage" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">승인금액</label>
+                                                            <input type="text" name="confirmAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-3">
@@ -296,8 +308,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">담당자정산예정금액</label>
-                                                            <input type="text" name="expectRateAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">담당자확정수수료</label>
+                                                            <input type="text" name="confirmRateAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -420,8 +432,8 @@
                 .add('empName', '담당자', 120, {sortable: true})
                 .add('custName', '고객명', 150, {sortable: true})
                 .add('prodName', '상품명', 150, { align: 'center', sortable: true })
-                .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
-                .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
+                .addNumber('prodAmt', '상품가', 100, { align: 'right'})
+                .addNumber('saleAmt', '판매가', 100, { align: 'right' })
                 .addNumber('inflowCnt', '유입수', 100, {})
                 .addDate('dateWorkFrom', '작업시작일', 120, {sortable: true})
                 .addDate('dateWorkTo', '작업종료일', 120, {sortable: true})
@@ -448,6 +460,15 @@
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
                 .add('payYm', '급여지급년월', 150, {})
+                .add('useMileage', '사용마일리지', 0, {
+                    visible: false
+                })
+                .add('prodTotalAmt', '상품총액', 0, {
+                    visible: false
+                })
+                .add('confirmCostAmt', '영업이익', 0, {
+                    visible: false
+                })
 
 
             paymentGrid = columns.init('paymentGrid', [])
@@ -508,6 +529,10 @@
                 const userId = item.userId;
                 const confirmAmt = parseFloat(item.confirmAmt || 0);
                 const confirmRateAmt = parseFloat(item.confirmRateAmt || 0);
+                const useMileage = parseFloat(item.useMileage || 0);
+                const prodTotalAmt = parseFloat(item.prodTotalAmt || 0);
+
+                const confirmCostAmt = parseFloat(item.confirmCostAmt || 0);
 
                 // 그룹 초기화
                 if (!groupedData[userId]) {
@@ -515,13 +540,18 @@
                         userId: userId,
                         empName: item.empName, // 대표 이름 설정
                         totalConfirmAmt: 0,
-                        totalConfirmRateAmt: 0
+                        totalConfirmRateAmt: 0,
+                        totalConfirmCostAmt: 0
                     };
                 }
 
+                //const confirmCostAmt = (confirmAmt + useMileage) - prodTotalAmt;
+
                 // 합산
-                groupedData[userId].totalConfirmAmt += confirmAmt;
+                groupedData[userId].totalConfirmAmt += (confirmAmt + useMileage);
                 groupedData[userId].totalConfirmRateAmt += confirmRateAmt;
+                groupedData[userId].totalConfirmCostAmt += confirmCostAmt;
+
             });
 
             const tableBody = document.getElementById("payrollTable");
@@ -540,6 +570,10 @@
                 empNameCell.classList.add("text-center");
                 empNameCell.textContent = values.empName;
 
+                const totalConfirmCostAmtCell = document.createElement("td");
+                totalConfirmCostAmtCell.classList.add("text-end");
+                totalConfirmCostAmtCell.textContent = setComma(values.totalConfirmCostAmt.toLocaleString());
+
                 const totalConfirmAmtCell = document.createElement("td");
                 totalConfirmAmtCell.classList.add("text-end");
                 totalConfirmAmtCell.textContent = setComma(values.totalConfirmAmt.toLocaleString());
@@ -548,11 +582,43 @@
                 totalConfirmRateAmtCell.classList.add("text-end");
                 totalConfirmRateAmtCell.textContent = setComma(values.totalConfirmRateAmt.toLocaleString());
 
+                const totalFinalRateCell = document.createElement("td");
+                totalFinalRateCell.classList.add("text-end");
+
+                const inputRate = document.createElement("input");
+                inputRate.type = "number";
+                inputRate.step = "0.1";             // 소수점 둘째자리까지 허용
+                inputRate.min = "0.0";              // 최소 0.01 이상
+                inputRate.classList.add("form-control", "text-end");
+                inputRate.style.width = "80px";
+                inputRate.value = "0.0";
+                inputRate.setAttribute("data-user-id", userId);
+                inputRate.placeholder = "0.0";
+
+                // 💡 정산수수료가 0 이하이면 비활성화
+                if (values.totalConfirmRateAmt <= 0) {
+                    inputRate.disabled = true;
+                }
+
+                // 입력 이벤트 연결
+                inputRate.addEventListener("input", function (e) {
+                    handleFinalAmtChange(e.target.value, userId);
+                });
+
+                totalFinalRateCell.appendChild(inputRate);
+
+                const totalFinalAmtCell = document.createElement("td");
+                totalFinalAmtCell.classList.add("text-end");
+                totalFinalAmtCell.textContent = setComma(values.totalConfirmRateAmt.toLocaleString());
+
                 // 행에 셀 추가
                 row.appendChild(userIdCell);
                 row.appendChild(empNameCell);
+                row.appendChild(totalConfirmCostAmtCell);
                 row.appendChild(totalConfirmAmtCell);
                 row.appendChild(totalConfirmRateAmtCell);
+                row.appendChild(totalFinalRateCell);
+                row.appendChild(totalFinalAmtCell);
 
                 // 테이블 본문에 행 추가
                 tableBody.appendChild(row);
@@ -561,6 +627,39 @@
             // 모달 표시
             $('#payrollModal').modal('show');
         };
+
+        function handleFinalAmtChange(rateValue, userId) {
+            const tableBody = document.getElementById("payrollTable");
+
+            // 해당 row 찾기
+            const rows = tableBody.querySelectorAll("tr");
+            rows.forEach(row => {
+                const rowUserId = row.cells[0].textContent.trim(); // 0번째 셀 = userId
+                if (rowUserId === userId) {
+                    const costText = row.cells[2].textContent.replace(/,/g, '');
+                    const totalConfirmCostAmt = parseFloat(costText) || 0;
+
+                    const rate = parseFloat(rateValue);
+
+                    const finalAmtCell = row.cells[6]; // 확정수수료 셀
+                    const fallbackText = row.cells[4].textContent; // 정산수수료 셀 값 그대로 복사
+
+                    // 유효성 체크
+                    if (isNaN(rate) || rate <= 0) {
+                        finalAmtCell.textContent = fallbackText;
+                        return;
+                    }
+
+                    const result = Math.round((totalConfirmCostAmt / 1.1) * rate); // 정수 반올림
+
+                    // 마지막 셀 = 확정 수수료
+                    finalAmtCell.textContent = setComma(result.toLocaleString());
+
+                    // 선택적으로 콘솔 출력
+                    console.log(`[${userId}] 영업이익(${totalConfirmCostAmt}) x 인센률(${rate}) = ${result}`);
+                }
+            });
+        }
 
         const payroll = () => {
 
@@ -571,10 +670,23 @@
                 return false;
             }
 
+            // 💡 팝업에서 인센률 맵 가져오기
+            const rateMap = collectFinalRates();
+
+            // 체크된 row에 finalRate 매핑
+            const updatedParams = params.map(row => {
+                const rate = rateMap.get(row.userId);
+                return {
+                    ...row,
+                    finalRate: rate || 0 // 못찾은 경우 0 또는 null 등으로 처리
+                };
+            });
+
+
             // settlementDtoList 형식에 맞게 객체로 변환
             var requestData = {
                 payYm: $("#payrollDate").val(),
-                settlementmstDtoList: params // 배열 그대로 전달
+                settlementmstDtoList: updatedParams // 배열 그대로 전달
             };
 
             $.ajax({
@@ -597,7 +709,6 @@
 
         const payrollCancel = () => {
 
-
             var grid = paymentGrid.getCheckedRows();
 
             if (grid.length <= 0) {
@@ -605,50 +716,95 @@
                 return false;
             }
 
-            if(grid.filter(x => !isNull(x.payYm)).length > 0)
+            if(grid.filter(x => isNull(x.payYm)).length > 0)
             {
                 alert("급여지급처리가 되지 않은 정산건이 포함되어있습니다.");
                 return false;
             }
 
+            if (confirm("정말 급여취소 처리하시겠습니까?")) {
+                // settlementDtoList 형식에 맞게 객체로 변환
+                var requestData = {
+                    payYm: null,
+                    settlementmstDtoList: grid // 배열 그대로 전달
+                };
+
+                $.ajax({
+                    url: apiUrl + "/cancel",
+                    data: JSON.stringify(requestData), // JSON 문자열로 변환
+                    contentType: 'application/json',
+                    type: 'POST',
+                    success: (result) => {
+                        if (result > 0) {
+                            alert("급여취소가 완료되었습니다.");
+                            search();
+                        } else {
+                            alert("급여취소에 실패하였습니다.");
+                            search();
+                        }
+                    }, error: (xhr, status, error) => {
+                        alert(xhr.responseText);
+                        return false;
+                    }
+                })
+            }
         }
 
-            const openPgmModalView = () => {
 
-                const focusedCell = paymentGrid.getGrid().getFocusedCell();
-                const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+        const openPgmModalView = () => {
 
-                $("#applyView").hide();
-                $("#refundView").hide();
+            const focusedCell = paymentGrid.getGrid().getFocusedCell();
+            const focusedData = paymentGrid.getGrid().getRow(focusedCell.rowKey);
+
+            $("#applyView").hide();
+            $("#refundView").hide();
 
 
-                if(focusedData["refundInd"] == "Y") {
+            if(focusedData["refundInd"] == "Y") {
 
-                    $("#settlementSeqView").val(focusedData.refundSettlementSeq);
+                $("#settlementSeqView").val(focusedData.refundSettlementSeq);
 
-                    // $("#refundDate").val(focusedData.refundDate);
-                    // $("#refundDay").val(focusedData.refundWorkDay);
-                    // $("#refundInflowCnt").val(focusedData.refundInflowCnt);
-                    // $("#refundProdTotalAmt").val(focusedData.refundProdTotalAmt);
-                    // $("#refundExpectRateAmt").val(focusedData.refundExpectRateAmt);
+                // $("#refundDate").val(focusedData.refundDate);
+                // $("#refundDay").val(focusedData.refundWorkDay);
+                // $("#refundInflowCnt").val(focusedData.refundInflowCnt);
+                // $("#refundProdTotalAmt").val(focusedData.refundProdTotalAmt);
+                // $("#refundExpectRateAmt").val(focusedData.refundExpectRateAmt);
 
-                    $("#refundView").show();
-                }
-                else {
-
-                    $("#settlementSeqView").val(focusedData.settlementSeq);
-
-                    // 영업이익 = 판매총액 - 상품총액
-                    //var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
-                    // debugger;
-                    // $("#costAmt").val(setComma(focusedData.confirmCostAmt));
-                    $("#applyView").show();
-                }
-
-                $('#paymentModalDetailView').bindForm(focusedData);
-
-                $('#paymentModalDetailView').modal('show');
+                $("#refundView").show();
             }
+            else {
+
+                $("#settlementSeqView").val(focusedData.settlementSeq);
+
+                // 영업이익 = 판매총액 - 상품총액
+                //var costAmt = parseInt(focusedData.saleTotalAmt) - parseInt(focusedData.prodTotalAmt);
+                // debugger;
+                // $("#costAmt").val(setComma(focusedData.confirmCostAmt));
+                $("#applyView").show();
+            }
+
+            $('#paymentModalDetailView').bindForm(focusedData);
+
+            $('#paymentModalDetailView').modal('show');
+        }
+
+        function collectFinalRates() {
+            const rateMap = new Map();
+            const rows = document.querySelectorAll("#payrollTable tr");
+
+            rows.forEach(row => {
+                const userId = row.cells[0].textContent.trim(); // 0번째 셀 = userId
+                const input = row.querySelector("input[type='number']");
+                if (input && !input.disabled) {
+                    const rate = parseFloat(input.value);
+                    if (!isNaN(rate) && rate > 0) {
+                        rateMap.set(userId, rate);
+                    }
+                }
+            });
+
+            return rateMap;
+        }
 
         const closeBeforeModal = () => {
             console.log('모달이 곧 닫힙니다!');
