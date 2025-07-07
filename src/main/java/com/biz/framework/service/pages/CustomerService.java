@@ -5,6 +5,7 @@ import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.EmpCustomerDto;
 import com.biz.framework.dto.pages.MileageHisDto;
+import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.mapper.pages.CustomerMapper;
 import com.biz.framework.mapper.pages.EmpCustomerMapper;
 import com.biz.framework.security.dto.AuthenticationDto;
@@ -85,4 +86,9 @@ public class CustomerService {
     public List<CamelCaseMap> findCustomerByLoginId(CustomerDto customerDto) {
         return customerMapper.findCustomerByLoginId(customerDto);
     }
+
+    public double findIncentiveRate(SettlementDto settlementDto) {
+        return customerMapper.findIncentiveRate(settlementDto);
+    }
+
 }

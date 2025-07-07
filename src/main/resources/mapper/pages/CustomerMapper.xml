@@ -173,4 +173,12 @@
             AND E.EMP_ID        = #{loginUserId}
     </select>
 
+    <select id="findIncentiveRate" resultType="double">
+        /* com.biz.framework.mapper.pages.CustomerMapper.findIncentiveRate */
+        SELECT IFNULL(INCENTIVE_RATE, 0) AS INCENTIVE_RATE
+        FROM TB_EMP
+        WHERE CO_CODE      = #{loginCoId}
+          AND EMP_ID       = #{loginUserId}
+    </select>
+
 </mapper>

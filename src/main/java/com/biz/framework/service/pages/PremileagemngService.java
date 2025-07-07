@@ -39,14 +39,14 @@ public class PremileagemngService {
         int result = 0;
         int reqAmt;
 
-        // 잔여킵환불시 기존 마일리지와 비교하여 요청 마일리지가 더 큰지 확인
-        if ("02".equals(mileageReqDto.getReqGubun())) {
+        // 잔여킵환불, 마일리지전환시 기존 마일리지와 비교하여 요청 마일리지가 더 큰지 확인
+        if ("02".equals(mileageReqDto.getReqGubun()) || "03".equals(mileageReqDto.getReqGubun())) {
             int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId());
             if (mileage - Integer.parseInt(mileageReqDto.getReqAmt()) < 0) {
                 NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
                 String formattedMileage = formatter.format(mileage);
 
-                throw new ServiceException("요청금액은 현재 고객의 잔여마일리지 보다 작아야합니다.\n고개마일리지: " + formattedMileage);
+                throw new ServiceException("요청금액은 현재 고객의 잔여마일리지 보다 작아야합니다.\n고객마일리지: " + formattedMileage);
             }
 
             reqAmt = -(Integer.parseInt(mileageReqDto.getReqAmt()));
@@ -60,6 +60,36 @@ public class PremileagemngService {
         // 결재상태 변경
         result += premileagemngMapper.updateApplyStatus(mileageReqDto);
 
+        String regGubun = "";
+        switch (mileageReqDto.getReqGubun())
+        {
+            case "01":
+                regGubun = "MK";
+                break;
+            case "02":
+                regGubun = "MR";
+                break;
+            case "03":
+                regGubun = "CV";
+
+                SettlementmstDto settlementmstDto = new SettlementmstDto();
+
+                String confirmSeq = applypaymentapprmngMapper.createConfirmSeq(settlementmstDto);
+                settlementmstDto.setConfirmSeq(confirmSeq);
+                settlementmstDto.setSettlementSeq(mileageReqDto.getReqNo());
+                settlementmstDto.setUserId(mileageReqDto.getUserId());
+                settlementmstDto.setCustId(mileageReqDto.getCustId());
+                settlementmstDto.setConfirmAmt(mileageReqDto.getReqAmt());
+                settlementmstDto.setConfirmMileage("0");
+                settlementmstDto.setConfirmRateAmt(mileageReqDto.getReqRateAmt());
+
+                // 입금확인 마스터 저장
+                if(applypaymentapprmngMapper.confirmApplypaymentmst(settlementmstDto) <= 0)
+                    throw new ServiceException("마일리지전환 처리 도중 오류가 발생했습니다.");
+
+                break;
+        }
+
         if (result > 0) {
 
             customerMapper.updateFinalMileage(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId(), reqAmt);
@@ -69,10 +99,9 @@ public class PremileagemngService {
             mileageHisDto.setEmpId(mileageReqDto.getUserId());           // 담당자 ID
             mileageHisDto.setSettlementSeq(mileageReqDto.getReqNo());    // 승인번호
             mileageHisDto.setMileageAmt(reqAmt);
-            mileageHisDto.setCreatedPage("MR");                           // 마일리지_선입금킵
+            mileageHisDto.setCreatedPage(regGubun);                          // 마일리지_선입금킵
             mileageHisDto.setCreatedId(mileageReqDto.getLoginUserId());
             mileageHisMapper.addMileageHistory(mileageHisDto);
-
         }
         else {
             throw new ServiceException("처리 도중 오류가 발생했습니다.");

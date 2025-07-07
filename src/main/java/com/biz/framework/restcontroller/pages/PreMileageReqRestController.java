@@ -3,6 +3,7 @@ package com.biz.framework.restcontroller.pages;
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.MileageReqDto;
+import com.biz.framework.dto.pages.SettlementDto;
 import com.biz.framework.service.pages.CustomerService;
 import com.biz.framework.service.pages.PreMileageReqService;
 import lombok.RequiredArgsConstructor;
@@ -37,4 +38,10 @@ public class PreMileageReqRestController {
     public CamelCaseMap findCustInfo(CustomerDto customerDto) {
         return customerService.findCustomerInfo(customerDto);
     }
+
+    @GetMapping("/find/incentiveRate")
+    public double findIncentiveRate(SettlementDto settlementDto) {
+        return customerService.findIncentiveRate(settlementDto);
+    }
+
 }

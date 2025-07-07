@@ -39,23 +39,21 @@ public class PayrollmngService {
 
             try {
 
+                BigDecimal confirmAmt = new BigDecimal(dto.getConfirmAmt());         // 확정 금액
                 BigDecimal confirmRateAmt = new BigDecimal(dto.getConfirmRateAmt()); // 확정 수수료
                 BigDecimal confirmRate = new BigDecimal(dto.getIncentiveRate());     // 확정 인센률
                 BigDecimal finalRate = new BigDecimal(dto.getFinalRate());           // 변경 인센률
 
-                if(finalRate.compareTo(BigDecimal.valueOf(0)) > 0) {
+                // 인센률이 0보다 커야만 변경 수수료 계산
+                if (finalRate.signum() > 0) {
+                    BigDecimal finalAmt;
+                    if ("CVQ".equals(dto.getReqGubun())) {
+                        finalAmt = calculateFinalAmtForCVQ(confirmAmt, finalRate);
+                    } else {
+                        finalAmt = calculateFinalAmtDefault(confirmRateAmt, confirmRate, finalRate);
+                    }
 
-                    // 영업이익 = 확정수수료 × 1.1 / 확정 인센률
-                    BigDecimal profit = confirmRateAmt
-                            .multiply(BigDecimal.valueOf(1.1))
-                            .divide(confirmRate, 10, RoundingMode.HALF_UP);
-
-                    // 변경된 수수료 = 영업이익 × 변경 인센률 / 1.1
-                    BigDecimal finalAmt = profit
-                            .multiply(finalRate)
-                            .divide(BigDecimal.valueOf(1.1), 0, RoundingMode.HALF_UP);
-
-                    // 결과 세팅 (String)
+                    // DTO에 결과 세팅
                     dto.setFinalRate(finalRate.toPlainString());
                     dto.setFinalAmt(finalAmt.toPlainString());
                 }
@@ -110,5 +108,30 @@ public class PayrollmngService {
         }
 
         return result;
+    }
+
+    /**
+     * CVQ 건에 대한 변경 수수료 계산:
+     *    (확정 수수료 / 1.1) × 변경 인센률
+     */
+    private BigDecimal calculateFinalAmtForCVQ(BigDecimal confirmRateAmt, BigDecimal finalRate) {
+        return confirmRateAmt
+                .multiply(finalRate)
+                .divide(BigDecimal.valueOf(1.1), 0, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * 일반 건에 대한 변경 수수료 계산:
+     *    영업이익 = 확정수수료 × 1.1 / 확정 인센률
+     *    변경 수수료 = 영업이익 × 변경 인센률 / 1.1
+     */
+    private BigDecimal calculateFinalAmtDefault(BigDecimal confirmRateAmt, BigDecimal confirmRate, BigDecimal finalRate) {
+        BigDecimal profit = confirmRateAmt
+                .multiply(BigDecimal.valueOf(1.1))
+                .divide(confirmRate, 10, RoundingMode.HALF_UP);
+
+        return profit
+                .multiply(finalRate)
+                .divide(BigDecimal.valueOf(1.1), 0, RoundingMode.HALF_UP);
     }
 }

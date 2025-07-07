@@ -2,6 +2,7 @@ package com.biz.framework.mapper.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
 import com.biz.framework.dto.pages.CustomerDto;
+import com.biz.framework.dto.pages.SettlementDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +25,6 @@ public interface CustomerMapper {
     void updateFinalMileage(@Param("coCode") String coCode, @Param("bizNo") String bizNo, @Param("mileage") int mileage);
 
     List<CamelCaseMap> findCustomerByLoginId(CustomerDto customerDto);
+
+    double findIncentiveRate(SettlementDto settlementDto);
 }

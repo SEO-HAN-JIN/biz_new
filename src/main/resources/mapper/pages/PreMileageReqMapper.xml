@@ -11,13 +11,16 @@
              , TE.EMP_NAME  AS USER_NAME
              , MR.CUST_ID
              , TC.CUST_NAME
+             , MR.PRE_AMT
              , MR.REQ_AMT
+             , MR.REQ_RATE_AMT
              , MR.APPLY_STATUS
              , SE04.CODE_NAME   AS APPLY_STATUS_NM
              , DATE_FORMAT(MR.REQ_DATE, '%Y-%m-%d') AS REQ_DATE
              , MR.REQ_GUBUN
-             , SE05.CODE_NAME      AS REQ_GUBUN_NM
+             , SE05.CODE_NAME   AS REQ_GUBUN_NM
              , TC.MILEAGE       AS REST_MILEAGE
+             , TE.INCENTIVE_RATE
           FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
             ON TE.CO_CODE       = MR.CO_CODE
@@ -60,7 +63,7 @@
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.saveMileageReq */
         <selectKey resultType="String" keyProperty="reqNo" order="BEFORE">
             -- SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(COUNT(REQ_NO), 0) + 1, '4', '0')) AS REQ_NO
-            SELECT CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD(IFNULL(SUBSTR(MAX(REQ_NO), 10, 4), 0) + 1, '4', '0')) AS REQ_NO
+            SELECT CONCAT('M',CONCAT(DATE_FORMAT(NOW(), '%Y%m%d')), '-', LPAD(IFNULL(SUBSTR(MAX(REQ_NO), 11, 4), 0) + 1, '4', '0')) AS REQ_NO
               FROM MILEAGE_REQ
              WHERE CO_CODE      = #{loginCoId}
                AND REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
@@ -70,7 +73,9 @@
             , REQ_NO
             , USER_ID
             , CUST_ID
+            , PRE_AMT
             , REQ_AMT
+            , REQ_RATE_AMT
             , APPLY_STATUS
             , REQ_DATE
             , REQ_GUBUN
@@ -79,7 +84,9 @@
             , #{reqNo}
             , #{userId}
             , #{custId}
+            , #{preAmt}
             , #{reqAmt}
+            , #{reqRateAmt}
             , #{applyStatus}
             , STR_TO_DATE(#{reqDate}, '%Y-%m-%d')
             , #{reqGubun}
@@ -89,7 +96,9 @@
     <update id="updateMileageReq">
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.updateMileageReq */
         UPDATE MILEAGE_REQ
-           SET REQ_AMT      = #{reqAmt}
+           SET PRE_AMT      = #{preAmt}
+             , REQ_AMT      = #{reqAmt}
+             , REQ_RATE_AMT = #{reqRateAmt}
              , APPLY_STATUS = #{applyStatus}
              , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
              , REQ_GUBUN    = #{reqGubun}

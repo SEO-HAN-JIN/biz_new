@@ -11,12 +11,14 @@
              , TE.EMP_NAME  AS USER_NAME
              , MR.CUST_ID
              , TC.CUST_NAME
+             , MR.PRE_AMT
              , MR.REQ_AMT
+             , IFNULL(MR.REQ_RATE_AMT, 0) AS REQ_RATE_AMT
              , MR.APPLY_STATUS
              , SE04.CODE_NAME   AS APPLY_STATUS_NM
              , DATE_FORMAT(MR.REQ_DATE, '%Y-%m-%d') AS REQ_DATE
              , MR.REQ_GUBUN
-             , SE05.CODE_NAME      AS REQ_GUBUN_NM
+             , SE05.CODE_NAME   AS REQ_GUBUN_NM
              , TC.MILEAGE       AS REST_MILEAGE
           FROM MILEAGE_REQ      MR
           LEFT JOIN TB_EMP      TE
@@ -67,6 +69,7 @@
         /* com.biz.framework.mapper.pages.PremileagemngMapper.updateApplyStatus */
         UPDATE MILEAGE_REQ
            SET APPLY_STATUS = #{applyStatus}
+             , PRE_AMT      = #{preAmt}
          WHERE CO_CODE      = #{loginCoId}
            AND REQ_NO       = #{reqNo}
            AND USER_ID      = #{userId}

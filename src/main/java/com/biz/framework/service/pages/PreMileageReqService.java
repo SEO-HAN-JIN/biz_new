@@ -31,13 +31,13 @@ public class PreMileageReqService {
     public int savePreMileageReq(MileageReqDto mileageReqDto) {
         int result = 0;
 
-        if ("02".equals(mileageReqDto.getReqGubun())) {
+        if ("02".equals(mileageReqDto.getReqGubun()) || "03".equals(mileageReqDto.getReqGubun())) {
             int mileage = customerMapper.findMileageByBizNo(mileageReqDto.getLoginCoId(), mileageReqDto.getCustId());
             if (mileage - Integer.parseInt(mileageReqDto.getReqAmt()) < 0) {
                 NumberFormat formatter = NumberFormat.getNumberInstance(Locale.KOREA);
                 String formattedMileage = formatter.format(mileage);
 
-                throw new ServiceException("요청금액은 현재 고객의 잔여마일리지 보다 작아야합니다.\n고개마일리지: " + formattedMileage);
+                throw new ServiceException("요청금액은 현재 고객의 잔여마일리지 보다 작아야합니다.\n고객마일리지: " + formattedMileage);
             }
         }
 
