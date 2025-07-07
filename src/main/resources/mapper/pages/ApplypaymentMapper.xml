@@ -30,6 +30,11 @@
             ST.PROD_TOTAL_AMT,
             ST.EXPECT_AMT,
             ST.EXPECT_RATE_AMT,
+            CASE
+                WHEN IFNULL(SM.CONFIRM_AMT + ST.USE_MILEAGE, 0) > IFNULL(ST.EXPECT_AMT, 0) THEN IFNULL(ST.EXPECT_AMT, 0)
+                ELSE IFNULL(SM.CONFIRM_AMT + ST.USE_MILEAGE, 0)
+            END AS CONFIRM_AMT,
+            IFNULL(SM.CONFIRM_RATE_AMT, 0) AS CONFIRM_RATE_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,
@@ -43,6 +48,9 @@
             C.CODE_NAME                 AS APPLY_STATUS_NAME,
             ST.ATCH_FILE_ID
         FROM SETTLEMENT         ST
+        LEFT JOIN SETTLEMENTMST SM
+          ON ST.CO_CODE = SM.CO_CODE
+         AND ST.SETTLEMENT_SEQ = SM.SETTLEMENT_SEQ
         LEFT JOIN TB_CUSTOMER   CU
           ON ST.CO_CODE         = CU.CO_CODE
          AND ST.CUST_ID         = CU.BIZ_NO

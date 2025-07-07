@@ -53,3 +53,17 @@
 .table-scroll-wrapper col:nth-child(1) { width: 35%; }
 .table-scroll-wrapper col:nth-child(2) { width: 10%; }
 /* … 이하 필요에 따라 조절 */
+
+
+.compact-card .card-body {
+    padding: 0.75rem;
+}
+.compact-card .fs-2 {
+    font-size: 1.25rem;
+}
+.compact-card .fs-5 {
+    font-size: 1rem;
+}
+.compact-card .fs-6 {
+    font-size: 0.875rem;
+}

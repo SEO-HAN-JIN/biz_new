@@ -499,13 +499,13 @@
             // 부가세율 설정 (10% 부가세)
             const vatRate = 1.1;
 
-            // * 환불판매총액 부가세 제외
+            // * 환불상품총액 부가세 제외
             const prodTotalAmt = Math.floor((prodAmt *  refundInflowCnt * workDay));
 
             // * 환불판매총액 부가세 제외
             const saleTotalAmt = Math.floor((saleAmt * refundInflowCnt * workDay));
 
-            // 영업이익 (환불판매총액 - 환불상품총액)
+            // 영업이익 (환불상품총액 - 환불판매총액)
             var costAmt = prodTotalAmt - saleTotalAmt;
 
             // 환불수수료 (영업이익 * 인센티브 / 1.1)

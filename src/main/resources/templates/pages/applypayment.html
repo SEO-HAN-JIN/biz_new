@@ -285,6 +285,29 @@
                                                     </div>
                                                 </div>
                                             </fieldset>
+
+                                            <!-- 킵 사용 설정 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="confirmDiv" disabled>
+                                                <legend class="float-none w-auto px-2">승인 정보</legend>
+                                                <div class="row g-3 align-items-center">
+                                                    <div class="col-md-6">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text"id="">승인 금액</span>
+                                                            <input type="text" class="form-control is-num text-end"
+                                                                   id="confirmAmt" name="confirmAmt" aria-describedby="basic-addon1"
+                                                                   disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">확정 수수료</span>
+                                                            <input type="text" class="form-control is-num text-end"
+                                                                   id="confirmRateAmt" name="confirmRateAmt" aria-describedby="basic-addon2"
+                                                                   disabled>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
                                         </form>
                                     </div>
 
@@ -780,6 +803,8 @@
 
             if (param === '1') {
 
+                $("#confirmDiv").hide();
+
                 $isNew = true;
 
                 let incentiveRate = 0;
@@ -826,6 +851,7 @@
                     document.getElementById("prodId").choicesInstance.disable();
                 } else {
                     ableBtn(true);
+                    $("#confirmDiv").show();
                 }
 
                 settingProdFormBind(data.settlementSeq, data.prodId, data.applyStatus);
