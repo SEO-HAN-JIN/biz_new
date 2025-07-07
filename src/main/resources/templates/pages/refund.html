@@ -514,7 +514,7 @@
             if(["07"].includes($("#_refundModal_gubun").val()))
                 refundExpectRateAmt = prodTotalAmt;
             else
-                refundExpectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
+                refundExpectRateAmt = Math.round((costAmt * incentiveRate) / vatRate);
 
             if (prodIncentiveInd === 'Y') {
                 refundExpectRateAmt = workDay * parseFloat(prodIncentive) * refundInflowCnt;
