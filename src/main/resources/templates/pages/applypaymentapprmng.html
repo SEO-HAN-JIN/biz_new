@@ -966,6 +966,7 @@
                 $("#deposit_confirmMaxAmt").val(formatNumber(confirmAmt - confirmMileage));
             }
 
+            depositSum();
 
             $('#depositModal').modal('show');
         }
@@ -1017,7 +1018,7 @@
                 rate = $("#deposit_expectRateAmt").val();
             } else {
                 // 소수점 제외하고 정수만 출력
-                rate = roundDecimal((costAmt * incentiveRate) / 1.1, 0) ;
+                rate = roundDecimal((costAmt * incentiveRate) / 1.1, 0);
             }
 
             $("#deposit_confirmRateAmt").val(setComma(rate));
