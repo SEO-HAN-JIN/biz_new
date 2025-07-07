@@ -512,7 +512,7 @@
             var refundExpectRateAmt = 0;
 
             if(["07"].includes($("#_refundModal_gubun").val()))
-                refundExpectRateAmt = prodTotalAmt;
+                refundExpectRateAmt = -prodTotalAmt;
             else
                 refundExpectRateAmt = Math.floor((costAmt * incentiveRate) / vatRate);
 
