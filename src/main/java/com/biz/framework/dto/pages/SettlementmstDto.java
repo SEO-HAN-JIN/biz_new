@@ -19,6 +19,8 @@ public class SettlementmstDto extends BaseDto {
     private String confirmRateAmt;  // 정산확정수수료
     private String confirmDate;     // 승인일자
     private String confirmInd;      // 승인여부
+    private String finalRate;       // 급여반영 적용 인센률
+    private String finalAmt;        // 급여반영 적용 수수료
     private String taxInd;          // 세금계산서발행여부
     private String payYm;           // 급여년월
     private String reqGubun;        // 요청구분
@@ -38,6 +40,8 @@ public class SettlementmstDto extends BaseDto {
     private String paySeq;
     private String payName;
     private String payAmt;
+    private String confirmCostAmt;
+    private String incentiveRate;
     
     private List<SettlementmstDto> settlementmstDtoList;
     private String[] reqGubunList;

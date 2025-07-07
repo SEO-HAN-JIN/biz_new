@@ -86,6 +86,7 @@
         AND ST.CO_CODE          = #{loginCoId}
         AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         AND ST.APPLY_STATUS     != 'C'      -- 취소요청은 목록제외
+        AND ST.GUBUN_REQ        != 'M'
         ]]>
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
