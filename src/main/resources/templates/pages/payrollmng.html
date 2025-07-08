@@ -296,8 +296,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">담당자정산예정금액</label>
-                                                            <input type="text" name="expectRateAmt" class="form-control is-num text-end" disabled>
+                                                            <label class="form-label">담당자정산수수료</label>
+                                                            <input type="text" name="confirmRateAmt" class="form-control is-num text-end" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -595,23 +595,48 @@
             })
         }
 
-        const payrollCancel = () => {
+            const payrollCancel = () => {
 
+                var grid = paymentGrid.getCheckedRows();
 
-            var grid = paymentGrid.getCheckedRows();
+                if (grid.length <= 0) {
+                    alert("데이터가 없습니다.");
+                    return false;
+                }
 
-            if (grid.length <= 0) {
-                alert("데이터가 없습니다.");
-                return false;
+                if(grid.filter(x => isNull(x.payYm)).length > 0)
+                {
+                    alert("급여지급처리가 되지 않은 정산건이 포함되어있습니다.");
+                    return false;
+                }
+
+                if (confirm("정말 급여취소 처리하시겠습니까?")) {
+                    // settlementDtoList 형식에 맞게 객체로 변환
+                    var requestData = {
+                        payYm: null,
+                        settlementmstDtoList: grid // 배열 그대로 전달
+                    };
+
+                    $.ajax({
+                        url: apiUrl + "/cancel",
+                        data: JSON.stringify(requestData), // JSON 문자열로 변환
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("급여취소가 완료되었습니다.");
+                                search();
+                            } else {
+                                alert("급여취소에 실패하였습니다.");
+                                search();
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                            return false;
+                        }
+                    })
+                }
             }
-
-            if(grid.filter(x => !isNull(x.payYm)).length > 0)
-            {
-                alert("급여지급처리가 되지 않은 정산건이 포함되어있습니다.");
-                return false;
-            }
-
-        }
 
             const openPgmModalView = () => {
 

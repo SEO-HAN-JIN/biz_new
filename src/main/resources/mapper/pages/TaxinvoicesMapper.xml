@@ -6,7 +6,6 @@
 
     <select id="findTaxinvoicesList" resultType="CamelCaseMap">
         /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findTaxinvoicesList */
-
         SELECT
             SM.CO_CODE,
             SM.CONFIRM_SEQ,
@@ -31,6 +30,7 @@
             AND SM.TAX_KEY = TX.TAX_KEY
         WHERE SM.CO_CODE = #{loginCoId}
         AND IFNULL(V.REFUND_IND, 'N') != 'Y'
+        AND V.GUBUN_REQ != 'M'
         <if test='searchStartDate != null  and searchStartDate != "" '>
             <![CDATA[
             AND DATE_FORMAT(V.REQ_DATE, '%Y%m%d') >= DATE_FORMAT(#{searchStartDate} , '%Y%m%d')

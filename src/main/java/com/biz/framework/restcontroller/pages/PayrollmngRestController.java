@@ -27,9 +27,9 @@ public class PayrollmngRestController {
     public int payrollApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
         return payrollmngService.payrollApplypayment(settlementmstDto);
     }
-//
-//    @PostMapping("/cancel")
-//    public int cancelApplypayment(@RequestBody SettlementDto settlementDto) {
-//        return payrollmngService.cancelApplypayment(settlementDto);
-//    }
+
+    @PostMapping("/cancel")
+    public int cancelApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
+        return payrollmngService.cancelApplypayment(settlementmstDto);
+    }
 }
