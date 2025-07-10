@@ -283,7 +283,7 @@
                 if ($(item).is(':checkbox')) {
                     param[item.id] = $(item).prop('checked') ? 'Y' : 'N'; // 체크 여부에 따라 Y 또는 N 설정
                 } else if (item.id === 'mileage') {
-                    param[item.id] = item.value.replace(',', ''); // input 값 설정
+                    param[item.id] = item.value.replaceAll(',', ''); // input 값 설정
                 } else{
                     // input일 때의 처리
                     param[item.id] = item.value; // input 값 설정
