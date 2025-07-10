@@ -13,7 +13,7 @@ public interface PayrollmngMapper {
     List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto);
     int confirmApplypayment(SettlementmstDto settlementmstDtoList);
 
-    int checkPayrollInd(SettlementDto settlementDto);
+    int checkPayroll(SettlementmstDto settlementmstDto);
 
-    int cancelApplypayment(SettlementDto settlementDto);
+    int cancelApplypayment(SettlementmstDto settlementmstDto);
 }
