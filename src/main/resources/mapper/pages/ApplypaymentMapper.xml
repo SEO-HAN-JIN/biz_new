@@ -82,6 +82,9 @@
         <if test='prodName != null  and prodName != "" '>
             AND PR.PROD_NAME LIKE CONCAT('%', #{prodName}, '%')
         </if>
+        <if test='userName != null  and userName != "" '>
+            AND EP.EMP_NAME LIKE CONCAT('%', #{userName}, '%')
+        </if>
     </select>
 
     <select id="findCustSumMileage" resultType="int">
