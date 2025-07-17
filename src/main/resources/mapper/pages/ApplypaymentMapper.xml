@@ -89,7 +89,7 @@
 
     <select id="findCustSumMileage" resultType="int">
         SELECT
-            SUM(TC.MILEAGE) AS TOTAL_MILEAGE
+            IFNULL(SUM(TC.MILEAGE), 0) AS TOTAL_MILEAGE
         FROM EMP_CUSTOMER EC
         LEFT JOIN TB_CUSTOMER TC
          ON EC.CO_CODE = TC.CO_CODE
