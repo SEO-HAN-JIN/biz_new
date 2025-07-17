@@ -84,9 +84,9 @@
             , #{reqNo}
             , #{userId}
             , #{custId}
-            , #{preAmt}
-            , #{reqAmt}
-            , #{reqRateAmt}
+            , IFNULL(NULLIF(#{preAmt}, ''), 0)
+            , IFNULL(NULLIF(#{reqAmt}, ''), 0)
+            , IFNULL(NULLIF(#{reqRateAmt}, ''), 0)
             , #{applyStatus}
             , STR_TO_DATE(#{reqDate}, '%Y-%m-%d')
             , #{reqGubun}
@@ -96,9 +96,9 @@
     <update id="updateMileageReq">
         /* com.biz.framework.mapper.pages.PreMileageReqMapper.updateMileageReq */
         UPDATE MILEAGE_REQ
-           SET PRE_AMT      = #{preAmt}
-             , REQ_AMT      = #{reqAmt}
-             , REQ_RATE_AMT = #{reqRateAmt}
+           SET PRE_AMT      = IFNULL(NULLIF(#{preAmt}, ''), 0)
+             , REQ_AMT      = IFNULL(NULLIF(#{reqAmt}, ''), 0)
+             , REQ_RATE_AMT = IFNULL(NULLIF(#{reqRateAmt}, ''), 0)
              , APPLY_STATUS = #{applyStatus}
              , REQ_DATE     = DATE_FORMAT(NOW(), '%Y-%m-%d')
              , REQ_GUBUN    = #{reqGubun}

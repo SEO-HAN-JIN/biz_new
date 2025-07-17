@@ -299,13 +299,15 @@
                 var _reqAmt = removeComma(this.value);
                 var _preAmt = removeComma($("#preAmt").val());
 
-                if (_preAmt - _reqAmt < 0) {
-                    alert("요청금액은 잔여마일리지보다 작아야합니다.");
-                    this.value = setComma(_preAmt);
-                    return false;
+                if($("#reqGubun").val() === "02" || $("#reqGubun").val() === "03") {
+                    if (_preAmt - _reqAmt < 0) {
+                        alert("요청금액은 잔여마일리지보다 작아야합니다.");
+                        this.value = setComma(_preAmt);
+                        return false;
+                    }
                 }
 
-                if($("#reqGubun").val() == "03")
+                if($("#reqGubun").val() === "03")
                 {
                     let incentiveRate = parseFloat($("#incentiveRate").val());
                     let amt = roundDecimal((removeComma(this.value) * incentiveRate) / 1.1, 0);
