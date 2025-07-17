@@ -232,10 +232,9 @@
                 .add('depositorName', '입금자명', 130, { align: 'center' })
                 .addNumber('mileage', '마일리지', 130, {
                     align: 'right',
-                    comma: true,
-                    visible:isAdmin
+                    comma: true
                 })
-                .add('incentiveRate', '인센티브율', 150, { align: 'right', visible:isAdmin })
+                .add('incentiveRate', '인센티브율', 150, { align: 'right'})
                 .add('useInd', '사용여부', 130, { align: 'center' })
                 .addDate('regDate', '등록일자', 140, { align: 'center' })
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
