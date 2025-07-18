@@ -84,7 +84,7 @@ public class ApplypaymentRestController {
     }
 
     @GetMapping("/prodItem/list/{prodId}")
-    public List<ProductDto.ProductItemDto> findProductItemList(@PathVariable String prodId) {
+    public List<ProductDto.ProductItemDto> findProductItemList(@PathVariable("prodId") String prodId) {
         SettlementDto settlementDto = new SettlementDto();
         settlementDto.setProdId(prodId);
         return applypaymentService.findProductItemListByProdId(settlementDto);

@@ -50,7 +50,7 @@ public class ApplypaymentapprmngRestController {
     }
 
     @GetMapping("/prodItem/list/{settlementSeq}/{prodId}")
-    public List<SettlementDto.TbSettlementProdItemDto> findProductItemBySettlementSeq(@PathVariable String settlementSeq, @PathVariable String prodId) {
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemBySettlementSeq(@PathVariable("settlementSeq") String settlementSeq, @PathVariable("prodId") String prodId) {
         SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto = new SettlementDto.TbSettlementProdItemDto();
         tbSettlementProdItemDto.setSettlementSeq(settlementSeq);
         tbSettlementProdItemDto.setProdId(prodId);
