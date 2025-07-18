@@ -129,7 +129,7 @@ public class FileService {
 
             try {
                 Files.deleteIfExists(filePath);
-                result += fileMapper.removeFile(fileDto);
+                result += fileMapper.removeFile(dto);
             } catch (IOException e) {
                 throw new ServiceException("파일 삭제 실패: " + filePath);
             }
