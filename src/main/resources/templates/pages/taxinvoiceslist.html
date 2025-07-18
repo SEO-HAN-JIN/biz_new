@@ -95,6 +95,7 @@
                     <div class="d-flex pb-3 gap-1">
 <!--                        <button id="btnIssue" class="btn btn-success btn-sm ms-auto">신규발행</button>-->
                         <button id="btnSumIssue" class="btn btn-success btn-sm ms-auto">합발행</button>
+                        <button id="btnCancelIssue" class="btn btn-success btn-sm ms-auto">발행취소</button>
                     </div>
                 </div>
                 <div id="invoicesGrid" class="tui-grid"></div>
@@ -203,6 +204,52 @@
                 openFormModal(selected);
 
             });
+
+            $('#btnCancelIssue').on('click', () => {
+                let checkedRows = invoicesGrid.getCheckedRows();
+                if (checkedRows.length === 0) {
+                    alert('발행취소할 목록을 선택해주세요.');
+                    return;
+                }
+
+                const firstTaxKey = checkedRows[0].taxKey;
+                const hasDiffTaxKey = checkedRows.some(row => row.taxKey !== firstTaxKey);
+                if (hasDiffTaxKey) {
+                    alert('선택된 항목 중 서로 다른 연동번호가 있습니다.');
+                    return;
+                }
+
+                if (checkedRows[0].taxInd !== 'Y') {
+                    alert('발행완료된 건만 발행취소가 가능합니다.');
+                    return;
+                }
+
+                let param = {
+                    bizNo: checkedRows[0].bizNo,
+                    taxKey: checkedRows[0].taxKey
+                }
+
+                if (confirm('선택한 세금계산서(' + checkedRows[0].invoiceNo + ')로 발행된 요청 건 전부 발행 취소 처리 됩니다.\n발행취소하시겠습니까?')) {
+                    $.ajax({
+                        url: apiUrl + '/cancel',
+                        data: JSON.stringify(param),
+                        contentType: 'application/json',
+                        type: 'POST',
+                        success: (result) => {
+                            if (result > 0) {
+                                alert("발행취소가 완료되었습니다.");
+                                fetchList();
+                            } else {
+                                alert("발행취소를 실패하였습니다.");
+                                fetchList();
+                            }
+                        }, error: (xhr, status, error) => {
+                            alert(xhr.responseText);
+                            return false;
+                        }
+                    })
+                }
+            })
 
             function openTaxPopup(item)
             {

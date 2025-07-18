@@ -28,4 +28,5 @@ public interface TaxinvoicesMapper {
     int insertTaxinvoice(TaxinvoicesDto taxinvoicesDto);
     int insertTaxinvoiceline(TaxinvoiceslineDto taxinvoiceslineDto);
 
+    void updateSettlementCancel(TaxinvoicesDto form);
 }

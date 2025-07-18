@@ -6,10 +6,7 @@ import com.biz.framework.dto.pages.TaxinvoicesDto;
 import com.biz.framework.dto.pages.TaxinvoiceslineDto;
 import com.biz.framework.dto.system.CompanyDto;
 import com.biz.framework.mapper.pages.TaxinvoicesMapper;
-import com.popbill.api.IssueResponse;
-import com.popbill.api.PopbillException;
-import com.popbill.api.Response;
-import com.popbill.api.TaxinvoiceService;
+import com.popbill.api.*;
 import com.popbill.api.taxinvoice.MgtKeyType;
 import com.popbill.api.taxinvoice.Taxinvoice;
 import com.popbill.api.taxinvoice.TaxinvoiceDetail;
@@ -38,6 +35,7 @@ public class TaxinvoicesService {
 
     // 프록시된 자기 자신
     private final TaxinvoicePreparer taxSvc;
+    private final PopbillServiceFactory popbillServiceFactory;
 
     public List<CamelCaseMap> findTaxinvoicesList(TaxinvoicesDto taxinvoicesDto) {
         return taxinvoicesMapper.findTaxinvoicesList(taxinvoicesDto);
@@ -59,6 +57,8 @@ public class TaxinvoicesService {
             form.setCustTel(custInfo.getCustTel());
             form.setCustMail(custInfo.getCustMail());
             form.setOwnerName(custInfo.getOwnerName());
+            form.setBizType(custInfo.getBizType());
+            form.setBizClass(custInfo.getBizClass());
 
             BigDecimal totalSupply = BigDecimal.ZERO;
             BigDecimal totalTax    = BigDecimal.ZERO;
@@ -136,11 +136,11 @@ public class TaxinvoicesService {
 
         String bizNo = companyInfo.getBizNo().replaceAll("-", "");
 
-        //테스트용 사업자번호
-        form.setBizNo("8888888888");
-
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);
+
+        // 팝빌 서비스 객체 생성
+        TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
 
         // 세금계산서 데이터 주입
         Taxinvoice tx = buildPopbillTaxinvoice(form, companyInfo, bizNo);
@@ -148,7 +148,7 @@ public class TaxinvoicesService {
         try {
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             // 팝빌 즉시발행
-            IssueResponse resp = popbillSvc.registIssue(
+            IssueResponse resp = dynamicPopbillSvc.registIssue(
                     bizNo,    // 우리 회사 사업자번호
                     tx,
                     false,      // 거래명세서 동시작성 여부
@@ -182,7 +182,7 @@ public class TaxinvoicesService {
         if(updateTaxinvoiceAfter(form, seqList) <= 0)
         {
             try {
-                Response cel = popbillSvc.cancelIssue(bizNo, MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
+                Response cel = dynamicPopbillSvc.cancelIssue(bizNo, MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
                 form.setRemark("[정산요청 상태 업데이트 도중 오류 발생] " + cel.getMessage());
                 taxSvc.cancelTaxinvoice(form);
             }
@@ -296,7 +296,8 @@ public class TaxinvoicesService {
 
         try {
             // 3번째 파라미터로 userId를 넘겨야 해당 사용자의 권한으로 팝업이 뜹니다.
-            return popbillSvc.getViewURL(corpNum, MgtKeyType.SELL, taxKey, "");
+            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
+            return dynamicPopbillSvc.getViewURL(corpNum, MgtKeyType.SELL, taxKey, "");
         } catch (PopbillException e) {
             throw new ServiceException("세금계산서 팝업 URL 생성 실패: code="
                     + e.getCode() + " msg=" + e.getMessage(), e);
@@ -305,10 +306,14 @@ public class TaxinvoicesService {
 
     public int taxCancelIssue(TaxinvoicesDto form)
     {
+        CompanyDto companyInfo = taxinvoicesMapper.findCompanyInfo(form);
         try {
-            Response cel = popbillSvc.cancelIssue(form.getBizNo(), MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
+            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
+
+            Response cel = dynamicPopbillSvc.cancelIssue(companyInfo.getBizNo().replaceAll("-", ""), MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
             form.setRemark("[정산요청 상태 업데이트 도중 오류 발생] " + cel.getMessage());
             taxSvc.cancelTaxinvoice(form);
+            taxinvoicesMapper.updateSettlementCancel(form);
         }
         catch (PopbillException e) {
 
@@ -320,6 +325,8 @@ public class TaxinvoicesService {
                             " code=" + e.getCode() + " message=" + e.getMessage(), e
             );
         }
+
+
 
         return 1;
     }

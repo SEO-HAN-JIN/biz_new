@@ -20,4 +20,7 @@ public class CompanyDto extends BaseDto {
     private String bizType;
     private String bizClass;
     private String useYn;
+    private String taxLinkId;
+    private String taxSecretKey;
+    private String taxTestInd;
 }
