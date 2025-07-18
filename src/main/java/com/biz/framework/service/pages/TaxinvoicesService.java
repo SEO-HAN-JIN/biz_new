@@ -6,10 +6,7 @@ import com.biz.framework.dto.pages.TaxinvoicesDto;
 import com.biz.framework.dto.pages.TaxinvoiceslineDto;
 import com.biz.framework.dto.system.CompanyDto;
 import com.biz.framework.mapper.pages.TaxinvoicesMapper;
-import com.popbill.api.IssueResponse;
-import com.popbill.api.PopbillException;
-import com.popbill.api.Response;
-import com.popbill.api.TaxinvoiceService;
+import com.popbill.api.*;
 import com.popbill.api.taxinvoice.MgtKeyType;
 import com.popbill.api.taxinvoice.Taxinvoice;
 import com.popbill.api.taxinvoice.TaxinvoiceDetail;
@@ -38,6 +35,7 @@ public class TaxinvoicesService {
 
     // 프록시된 자기 자신
     private final TaxinvoicePreparer taxSvc;
+    private final PopbillServiceFactory popbillServiceFactory;
 
     public List<CamelCaseMap> findTaxinvoicesList(TaxinvoicesDto taxinvoicesDto) {
         return taxinvoicesMapper.findTaxinvoicesList(taxinvoicesDto);
@@ -144,13 +142,19 @@ public class TaxinvoicesService {
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);
 
+        String linkID = "PENTMIDEA";      // 회사별 연동키
+        String secretKey = "ZjJZns6amTipvjraDMeiEBwTXdPBvAyAcIyFbzxjWRQ="; // 회사별 시크릿키
+
+        // 팝빌 서비스 객체 생성
+        TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(bizNo, linkID, secretKey);
+
         // 세금계산서 데이터 주입
         Taxinvoice tx = buildPopbillTaxinvoice(form, companyInfo, bizNo);
 
         try {
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             // 팝빌 즉시발행
-            IssueResponse resp = popbillSvc.registIssue(
+            IssueResponse resp = dynamicPopbillSvc.registIssue(
                     bizNo,    // 우리 회사 사업자번호
                     tx,
                     false,      // 거래명세서 동시작성 여부
@@ -184,7 +188,7 @@ public class TaxinvoicesService {
         if(updateTaxinvoiceAfter(form, seqList) <= 0)
         {
             try {
-                Response cel = popbillSvc.cancelIssue(bizNo, MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
+                Response cel = dynamicPopbillSvc.cancelIssue(bizNo, MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
                 form.setRemark("[정산요청 상태 업데이트 도중 오류 발생] " + cel.getMessage());
                 taxSvc.cancelTaxinvoice(form);
             }
@@ -322,6 +326,8 @@ public class TaxinvoicesService {
                             " code=" + e.getCode() + " message=" + e.getMessage(), e
             );
         }
+
+
 
         return 1;
     }
