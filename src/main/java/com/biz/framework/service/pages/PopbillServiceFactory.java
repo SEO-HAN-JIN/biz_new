@@ -17,17 +17,12 @@ public class PopbillServiceFactory {
 
     private final CompanyMapper companyMapper;
 
-    public TaxinvoiceService getService(String coCode) {
-
-        CompanyDto companyDto = new CompanyDto();
-        companyDto.setCoCode(coCode);
-
-        CamelCaseMap findCompany = companyMapper.findCompany(companyDto);
+    public TaxinvoiceService getService(CompanyDto companyDto) {
 
         TaxinvoiceServiceImp service = new TaxinvoiceServiceImp();
-        service.setLinkID((String) findCompany.get("taxLinkId"));
-        service.setSecretKey((String) findCompany.get("taxSecretKey"));
-        service.setTest("Y".equals(findCompany.get("taxTestInd")));
+        service.setLinkID(companyDto.getTaxLinkId());
+        service.setSecretKey(companyDto.getTaxSecretKey());
+        service.setTest("Y".equals(companyDto.getTaxTestInd()));
         service.setUseStaticIP(false);
 
         return service;

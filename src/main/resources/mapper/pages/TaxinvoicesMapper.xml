@@ -117,7 +117,10 @@
             COMPANY_TEL,
             COMPANY_ADDRESS,
             BIZ_TYPE,
-            BIZ_CLASS
+            BIZ_CLASS,
+            TAX_LINK_ID,
+            TAX_SECRET_KEY,
+            TAX_TEST_IND
         FROM TB_COMPANY
         WHERE CO_CODE = #{loginCoId}
     </select>

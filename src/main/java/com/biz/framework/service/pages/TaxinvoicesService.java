@@ -143,7 +143,7 @@ public class TaxinvoicesService {
         taxSvc.updateTaxinvoiceBefore(form);
 
         // 팝빌 서비스 객체 생성
-        TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(form.getLoginCoId());
+        TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
 
         // 세금계산서 데이터 주입
         Taxinvoice tx = buildPopbillTaxinvoice(form, companyInfo, bizNo);
@@ -299,7 +299,7 @@ public class TaxinvoicesService {
 
         try {
             // 3번째 파라미터로 userId를 넘겨야 해당 사용자의 권한으로 팝업이 뜹니다.
-            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(dto.getLoginCoId());
+            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
             return dynamicPopbillSvc.getViewURL(corpNum, MgtKeyType.SELL, taxKey, "");
         } catch (PopbillException e) {
             throw new ServiceException("세금계산서 팝업 URL 생성 실패: code="
@@ -309,10 +309,11 @@ public class TaxinvoicesService {
 
     public int taxCancelIssue(TaxinvoicesDto form)
     {
+        CompanyDto companyInfo = taxinvoicesMapper.findCompanyInfo(form);
         try {
-            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(form.getLoginCoId());
+            TaxinvoiceService dynamicPopbillSvc = popbillServiceFactory.getService(companyInfo);
 
-            Response cel = dynamicPopbillSvc.cancelIssue("3778602125", MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
+            Response cel = dynamicPopbillSvc.cancelIssue(companyInfo.getBizNo().replaceAll("-", ""), MgtKeyType.SELL, form.getTaxKey(), "시스템 오류로 취소");
             form.setRemark("[정산요청 상태 업데이트 도중 오류 발생] " + cel.getMessage());
             taxSvc.cancelTaxinvoice(form);
             taxinvoicesMapper.updateSettlementCancel(form);
