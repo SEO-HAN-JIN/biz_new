@@ -107,6 +107,7 @@
     </select>
 
     <select id="findCompanyInfo" resultType="com.biz.framework.dto.system.CompanyDto">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.findCompanyInfo */
         SELECT
             CO_CODE,
             CO_NAME,
@@ -122,18 +123,21 @@
     </select>
 
     <update id="updateTaxinvoice">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.updateTaxinvoice */
         UPDATE TAXINVOICE
         SET INVOICE_NO = #{invoiceNo}
         WHERE TAX_KEY = #{taxKey}
     </update>
 
     <update id="cancelTaxinvoice">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.cancelTaxinvoice */
         UPDATE TAXINVOICE
         SET REMARK = #{remark}
         WHERE TAX_KEY = #{taxKey}
     </update>
 
     <update id="updateSettlement" parameterType="map">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.updateSettlement */
         UPDATE SETTLEMENTMST
         SET
         TAX_KEY     = #{taxKey},
@@ -146,12 +150,14 @@
     </update>
 
     <select id="createTaxkey" resultType="String">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.createTaxkey */
         SELECT CONCAT('T', DATE_FORMAT(NOW(), '%Y%m%d'), LPAD(IFNULL(SUBSTR(MAX(TAX_KEY), 10, 4), 0) + 1, '4', '0')) AS TAX_KEY
         FROM TAXINVOICE
         WHERE CO_CODE      = #{loginCoId}
     </select>
 
     <insert id="insertTaxinvoice" parameterType="com.biz.framework.dto.pages.TaxinvoicesDto">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.insertTaxinvoice */
         INSERT INTO TAXINVOICE
         (
             CO_CODE,
@@ -179,6 +185,7 @@
     </insert>
 
     <insert id="insertTaxinvoiceline" parameterType="com.biz.framework.dto.pages.TaxinvoiceslineDto">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.insertTaxinvoiceline */
         INSERT INTO TAXINVOICEITEM
         (
             CO_CODE,
@@ -203,4 +210,12 @@
         )
     </insert>
 
+    <update id="updateSettlementCancel">
+        /* com.biz.framework.mapper.pages.TaxinvoicesMapper.updateSettlementCancel */
+        UPDATE SETTLEMENTMST
+           SET TAX_KEY     = NULL
+             , ISSUE_DATE  = NULL
+             , TAX_IND     = 'N'
+         WHERE TAX_KEY      = #{taxKey}
+    </update>
 </mapper>

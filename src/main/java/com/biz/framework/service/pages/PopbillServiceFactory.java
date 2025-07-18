@@ -1,29 +1,35 @@
 package com.biz.framework.service.pages;
 
+import com.biz.framework.common.map.CamelCaseMap;
+import com.biz.framework.dto.system.CompanyDto;
+import com.biz.framework.mapper.system.CompanyMapper;
 import com.popbill.api.TaxinvoiceService;
 import com.popbill.api.taxinvoice.TaxinvoiceServiceImp;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class PopbillServiceFactory {
 
-    private final Map<String, TaxinvoiceService> serviceMap = new HashMap<>();
+    private final CompanyMapper companyMapper;
 
-    public TaxinvoiceService getService(String corpNum, String linkId, String secretKey) {
-        if (serviceMap.containsKey(corpNum)) {
-            return serviceMap.get(corpNum);
-        }
+    public TaxinvoiceService getService(String coCode) {
+
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setCoCode(coCode);
+
+        CamelCaseMap findCompany = companyMapper.findCompany(companyDto);
 
         TaxinvoiceServiceImp service = new TaxinvoiceServiceImp();
-        service.setLinkID(linkId);       // 동적으로 설정
-        service.setSecretKey(secretKey); // 동적으로 설정
-        service.setTest(true);
+        service.setLinkID((String) findCompany.get("taxLinkId"));
+        service.setSecretKey((String) findCompany.get("taxSecretKey"));
+        service.setTest("Y".equals(findCompany.get("taxTestInd")));
         service.setUseStaticIP(false);
 
-        serviceMap.put(corpNum, service);
         return service;
     }
 }

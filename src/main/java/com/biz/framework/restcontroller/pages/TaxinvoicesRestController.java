@@ -29,5 +29,10 @@ public class TaxinvoicesRestController {
         return taxinvoicesService.createInvoices(taxinvoicesDto);
     }
 
+    @PostMapping("/cancel")
+    public int cancelInvoices(@RequestBody TaxinvoicesDto taxinvoicesDto) {
+        return taxinvoicesService.taxCancelIssue(taxinvoicesDto);
+    }
+
 
 }

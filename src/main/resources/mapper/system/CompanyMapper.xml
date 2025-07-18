@@ -25,6 +25,9 @@
              , BIZ_TYPE
              , BIZ_CLASS
              , BIZ_NO
+             , TAX_LINK_ID
+             , TAX_SECRET_KEY
+             , TAX_TEST_IND
         FROM TB_COMPANY
         WHERE 1=1
           AND CO_CODE  = #{loginCoId}
