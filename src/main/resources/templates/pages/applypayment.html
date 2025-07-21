@@ -230,14 +230,6 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <div class="form-group">
-                                                            <label class="form-label">예상정산금액</label>
-                                                            <input type="text" id="expectRateAmt"
-                                                                   class="form-control is-num text-end"
-                                                                   name="expectRateAmt" disabled>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
                                                             <label class="form-label">적용 인센티브율</label>
                                                             <input type="text" id="incentiveRate" name="incentiveRate" class="form-control is-num text-end" disabled>
                                                         </div>
@@ -249,6 +241,7 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <input type="hidden" id="expectRateAmt" name="expectRateAmt">
                                                     <input type="hidden" id="settlementSeq" name="settlementSeq">
                                                     <input type="hidden" id="expectAmt" name="expectAmt">
                                                     <input type="hidden" id="prodTotalAmt" name="prodTotalAmt">
@@ -738,7 +731,15 @@
                     textColor: 'red',
                     comma: true,
                     summary: {
-                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                        template: valueMap => `${valueMap.sum.toLocaleString()}`
+                    }
+                })
+                .addNumber('costAmt', '영업이익', 190, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `${valueMap.sum.toLocaleString()}`
                     }
                 })
                 .addButton('fileUpload', '첨부파일', 200, {

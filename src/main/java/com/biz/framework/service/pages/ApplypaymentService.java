@@ -36,18 +36,25 @@ public class ApplypaymentService {
         // 전체 잔여마일리지 합산
         int mileage = applypaymentMapper.findCustSumMileage(settlementDto);
 
+        for (CamelCaseMap map : list) {
+            BigDecimal sale = new BigDecimal(Objects.toString(map.get("saleTotalAmt"), "0"));
+
+            BigDecimal confirmAmt  = new BigDecimal(Objects.toString(map.get("confirmAmt"), "0"));
+            if(confirmAmt.signum() > 0)
+                sale = confirmAmt;
+
+            BigDecimal prod  = new BigDecimal(Objects.toString(map.get("prodTotalAmt"),   "0"));
+
+            BigDecimal costAmt = sale.subtract(prod);
+
+            map.put("COST_AMT", costAmt);
+        }
+
         String totalProfit = list.stream()
                 // 각 행에서 (판매총액 – 상품총액) 계산
                 .map(map -> {
-
-                    BigDecimal sale  = new BigDecimal(Objects.toString(map.get("saleTotalAmt"), "0"));
-
-                    BigDecimal confirmAmt  = new BigDecimal(Objects.toString(map.get("confirmAmt"), "0"));
-                    if(confirmAmt.signum() > 0)
-                        sale = confirmAmt;
-
-                    BigDecimal prod  = new BigDecimal(Objects.toString(map.get("prodTotalAmt"),   "0"));
-                    return sale.subtract(prod);
+                    Object val = map.get("costAmt");
+                    return val != null ? new BigDecimal(val.toString()) : BigDecimal.ZERO;
                 })
                 // 전부 더해서 한 개의 BigDecimal로
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
