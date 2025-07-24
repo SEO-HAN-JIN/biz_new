@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pages/payrollmng")
@@ -18,7 +19,7 @@ public class PayrollmngRestController {
     private final PayrollmngService payrollmngService;
 
     @GetMapping
-    public List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto) {
+    public Map<String, Object> findPayrollList(SettlementmstDto settlementmstDto) {
         return payrollmngService.findPayrollList(settlementmstDto);
     }
 

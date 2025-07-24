@@ -36,7 +36,8 @@
             	-- ELSE (ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT)
                 ELSE (((SM.CONFIRM_AMT  + ST.USE_MILEAGE) - SM.CONFIRM_MILEAGE ) - ST.PROD_TOTAL_AMT)
             END AS CONFIRM_COST_AMT,
-            IFNULL(SM.FINAL_AMT, SM.CONFIRM_RATE_AMT) AS CONFIRM_RATE_AMT,
+--             IFNULL(SM.FINAL_AMT, SM.CONFIRM_RATE_AMT) AS CONFIRM_RATE_AMT,
+            SM.CONFIRM_RATE_AMT,
             SM.ATCH_ID,
             CD.CODE_NAME AS REQ_GUBUN_NAME,
             CD2.CODE_NAME AS GUBUN_NAME,
@@ -50,7 +51,8 @@
             ST.REFUND_PROD_TOTAL_AMT,
             ST.REFUND_EXPECT_RATE_AMT,
             SM.TAX_IND,
-            DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM
+            DATE_FORMAT(CONCAT(SM.PAY_YM, '01'), '%Y-%m') AS PAY_YM,
+            CASE WHEN ST.REFUND_IND = 'Y' THEN (ST.REFUND_SALE_TOTAL_AMT - ST.REFUND_PROD_TOTAL_AMT) ELSE (ST.SALE_TOTAL_AMT - ST.PROD_TOTAL_AMT) END AS PROD_COST_AMT
         FROM SETTLEMENTMST      SM
         JOIN V_REQ_VIEW         ST
           ON ST.CO_CODE         = SM.CO_CODE
@@ -136,4 +138,29 @@
           AND CONFIRM_SEQ   = #{confirmSeq}
     </insert>
 
+    <select id="findCustSumMileage" resultType="long">
+        SELECT IFNULL(SUM(MILEAGE), 0) AS TOTAL_MILEAGE
+         FROM (
+                SELECT TC.CO_CODE,
+                       EC.EMP_ID,
+                       TC.CUST_NAME,
+                       TC.MILEAGE
+                  FROM EMP_CUSTOMER         EC
+                  LEFT JOIN TB_CUSTOMER     TC
+                    ON EC.CO_CODE           = TC.CO_CODE
+                   AND EC.BIZ_NO            = TC.BIZ_NO
+                  LEFT JOIN TB_EMP          TE
+                    ON EC.CO_CODE           = TE.CO_CODE
+                    AND EC.EMP_ID           = TE.EMP_ID
+                  WHERE EC.CO_CODE          = #{loginCoId}
+                <if test='searchEmpName != null  and searchEmpName != "" '>
+                    AND TE.EMP_NAME LIKE CONCAT('%', #{searchEmpName}, '%')
+                </if>
+                <if test='searchCustName != null  and searchCustName != "" '>
+                    AND TC.CUST_NAME LIKE CONCAT('%', #{searchCustName}, '%')
+                </if>
+              GROUP BY EC.CO_CODE, TC.BIZ_NO
+        ) AS M
+        WHERE 1=1
+    </select>
 </mapper>

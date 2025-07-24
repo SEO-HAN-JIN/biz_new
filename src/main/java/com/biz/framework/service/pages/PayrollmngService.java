@@ -12,9 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,8 +23,28 @@ public class PayrollmngService {
     private final PayrollmngMapper payrollmngMapper;
     private final MileageHisMapper mileageHisMapper;
 
-    public List<CamelCaseMap> findPayrollList(SettlementmstDto settlementmstDto) {
-        return payrollmngMapper.findPayrollList(settlementmstDto);
+    public Map<String, Object> findPayrollList(SettlementmstDto settlementmstDto) {
+        Long mileage = payrollmngMapper.findCustSumMileage(settlementmstDto);
+
+        List<CamelCaseMap> payrollList = payrollmngMapper.findPayrollList(settlementmstDto);
+
+        String totalProfit = payrollList.stream()
+                // 각 행에서 (판매총액 – 상품총액) 계산
+                .map(map -> {
+                    Object val = map.get("prodCostAmt");
+                    return val != null ? new BigDecimal(val.toString()) : BigDecimal.ZERO;
+                })
+                // 전부 더해서 한 개의 BigDecimal로
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                // 문자열로 변환
+                .toPlainString();
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("data", payrollList);
+        result.put("totalMileage", mileage);
+        result.put("totalProfit", totalProfit);
+
+        return result;
     }
 
     public int payrollApplypayment(SettlementmstDto settlementmstDto) {

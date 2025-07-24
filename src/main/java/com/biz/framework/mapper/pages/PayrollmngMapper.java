@@ -16,4 +16,6 @@ public interface PayrollmngMapper {
     int checkPayroll(SettlementmstDto settlementmstDto);
 
     int cancelApplypayment(SettlementmstDto settlementmstDto);
+
+    Long findCustSumMileage(SettlementmstDto settlementmstDto);
 }

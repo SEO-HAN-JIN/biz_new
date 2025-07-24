@@ -89,6 +89,32 @@
                 </div>
             </div>
         </section>
+        <section id="profit-mileage">
+            <div class="row gx-2" id="profitMileageRow">
+                <!-- 총 영업이익 -->
+                <div class="col">
+                    <div class="card border-0 shadow-sm compact-card">
+                        <div class="card-body text-center p-2">
+                            <i class="bi bi-graph-up fs-2 text-info mb-1"></i>
+                            <div class="fs-6 fw-medium">총 영업이익</div>
+                            <div class="fs-5 text-info"><span id="totalProfit">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 총 잔여 마일리지 -->
+                <div class="col">
+                    <div class="card border-0 shadow-sm compact-card">
+                        <div class="card-body text-center p-2">
+                            <i class="bi bi-coin fs-2 text-secondary mb-1"></i>
+                            <div class="fs-6 fw-medium">고객 총 잔여 마일리지</div>
+                            <div class="fs-5 text-secondary"><span id="totalMileage">0</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <section class="section">
             <div class="row" id="basic-table">
@@ -452,6 +478,13 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
+                .addNumber('prodCostAmt', '영업이익', 180, {
+                    align: 'right',
+                    textColor: 'red',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }})
                 .addNumber('confirmRateAmt', '정산수수료', 150, {
                     align: 'right',
                     textColor: 'red',
@@ -488,7 +521,21 @@
 
             const param = $("#searchTable").getData();
 
-            paymentGrid.load(apiUrl, param, function(data){
+            $.ajax({
+                url: apiUrl,
+                data: param,
+                type: 'GET',
+                success: (result) => {
+
+                    paymentGrid.bind(result.data);
+
+                    $("#totalProfit").text(setComma(result.totalProfit));
+                    $("#totalMileage").text(setComma(result.totalMileage));
+
+                }
+            });
+
+            // paymentGrid.load(apiUrl, param, function(data){
 
                 // // 초기 상태 설정
                 // data.forEach(row => {
@@ -497,7 +544,7 @@
                 //
                 // paymentGrid.bind(data);
 
-            });
+            // });
         }
 
         const openPgmModal = () => {
