@@ -33,9 +33,6 @@ public class TaxinvoicesService {
 
     private final TaxinvoiceService popbillSvc;
 
-    @Value("${spring.profiles.active}")
-    private String profile;
-
     // 프록시된 자기 자신
     private final TaxinvoicePreparer taxSvc;
     private final PopbillServiceFactory popbillServiceFactory;
@@ -138,11 +135,6 @@ public class TaxinvoicesService {
             throw new ServiceException("회사 사업자번호를 확인해주세요.");
 
         String bizNo = companyInfo.getBizNo().replaceAll("-", "");
-
-        if (!"prod2".equals(profile)) {
-            //테스트용 사업자번호
-            form.setBizNo("8888888888");
-        }
 
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);

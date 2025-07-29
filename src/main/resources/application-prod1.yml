@@ -1,7 +1,5 @@
 # 펜트미디어
 spring:
-  profiles:
-    active: prod1
   servlet:
     multipart:
       max-file-size: 15MB

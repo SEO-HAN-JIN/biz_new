@@ -1,7 +1,5 @@
 # 위아더스
 spring:
-  profiles:
-    active: prod3
   servlet:
     multipart:
       max-file-size: 15MB
