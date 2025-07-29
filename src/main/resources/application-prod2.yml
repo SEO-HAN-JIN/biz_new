@@ -1,5 +1,7 @@
 # 유노애드, 리코프리, 애드프리
 spring:
+  profiles:
+    active: prod2
   servlet:
     multipart:
       max-file-size: 15MB

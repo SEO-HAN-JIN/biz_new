@@ -11,8 +11,8 @@ import com.popbill.api.taxinvoice.MgtKeyType;
 import com.popbill.api.taxinvoice.Taxinvoice;
 import com.popbill.api.taxinvoice.TaxinvoiceDetail;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -32,6 +32,9 @@ public class TaxinvoicesService {
     private final TaxinvoicesMapper taxinvoicesMapper;
 
     private final TaxinvoiceService popbillSvc;
+
+    @Value("${spring.profiles.active}")
+    private String profile;
 
     // 프록시된 자기 자신
     private final TaxinvoicePreparer taxSvc;
@@ -136,8 +139,10 @@ public class TaxinvoicesService {
 
         String bizNo = companyInfo.getBizNo().replaceAll("-", "");
 
-        //테스트용 사업자번호
-        form.setBizNo("8888888888");
+        if (!"prod2".equals(profile)) {
+            //테스트용 사업자번호
+            form.setBizNo("8888888888");
+        }
 
         // 정산요청건 초기 INSERT
         taxSvc.updateTaxinvoiceBefore(form);
