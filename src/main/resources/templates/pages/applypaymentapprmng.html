@@ -519,15 +519,13 @@
 
         $(document).ready(function() {
 
-            const nowYear = new Date().getFullYear();
-            const nowMonth = new Date().getMonth();
-
-            const startDate = new Date(nowYear, nowMonth - 1, 1); // 이전 달 1일
-            const endDate = new Date(nowYear, nowMonth + 1, 0); // 현재 달의 마지막 날
+            const today = new Date();   // 오늘 날짜 기준
+            const prevMonth21 = new Date(today.getFullYear(), today.getMonth() - 1, 21);        // 전월 21일
+            const currentMonth20 = new Date(today.getFullYear(), today.getMonth(), 20);         // 당월 20일
 
             // 포맷팅된 날짜 값을 input에 설정
-            $("#searchStartDate").val(formatDate(startDate));
-            $("#searchEndDate").val(formatDate(endDate));
+            $("#searchStartDate").val(formatDate(prevMonth21));
+            $("#searchEndDate").val(formatDate(currentMonth20));
 
             initEvent();
             initPaymentGrid();

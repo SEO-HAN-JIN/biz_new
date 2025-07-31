@@ -302,14 +302,14 @@
                                                                    disabled>
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">확정 수수료</span>
-                                                            <input type="text" class="form-control is-num text-end"
-                                                                   id="confirmRateAmt" name="confirmRateAmt" aria-describedby="basic-addon2"
-                                                                   disabled>
-                                                        </div>
-                                                    </div>
+<!--                                                    <div class="col-md-6">-->
+<!--                                                        <div class="input-group">-->
+<!--                                                            <span class="input-group-text">확정 수수료</span>-->
+<!--                                                            <input type="text" class="form-control is-num text-end"-->
+<!--                                                                   id="confirmRateAmt" name="confirmRateAmt" aria-describedby="basic-addon2"-->
+<!--                                                                   disabled>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
                                                 </div>
                                             </fieldset>
                                         </form>
@@ -408,15 +408,13 @@
             const adminRoles = ['1', '2'];  // 슈퍼관리자(1), 관리자(2)
             isAdmin = adminRoles.some(value => roleIds.includes(value));
 
-            const nowYear = new Date().getFullYear();
-            const nowMonth = new Date().getMonth();
-
-            const startDate = new Date(nowYear, nowMonth, 1); // 당월 1일
-            const endDate = new Date(nowYear, nowMonth + 1, 0); // 현재 달의 마지막 날
+            const today = new Date();   // 오늘 날짜 기준
+            const prevMonth21 = new Date(today.getFullYear(), today.getMonth() - 1, 21);        // 전월 21일
+            const currentMonth20 = new Date(today.getFullYear(), today.getMonth(), 20);         // 당월 20일
 
             // 포맷팅된 날짜 값을 input에 설정
-            $("#searchStartDate").val(formatDate(startDate));
-            $("#searchEndDate").val(formatDate(endDate));
+            $("#searchStartDate").val(formatDate(prevMonth21));
+            $("#searchEndDate").val(formatDate(currentMonth20));
 
             findInitCodes();
             // 관리자 권한이 아니면 본인(담당자)의 인센티브율을 가지고옴.
