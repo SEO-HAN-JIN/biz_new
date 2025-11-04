@@ -15,4 +15,5 @@ public interface RefundMapper {
     List<CamelCaseMap> findRefund(SettlementDto settlementDto);
 
     List<CamelCaseMap> findSettlement(SettlementDto settlementDto);
+    List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
 }

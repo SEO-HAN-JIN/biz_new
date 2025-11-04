@@ -1,15 +1,10 @@
 package com.biz.framework.restcontroller.pages;
 
 import com.biz.framework.common.map.CamelCaseMap;
-import com.biz.framework.dto.pages.CustomerDto;
 import com.biz.framework.dto.pages.SettlementDto;
-import com.biz.framework.mapper.pages.RefundMapper;
 import com.biz.framework.service.pages.ApplypaymentService;
-import com.biz.framework.service.pages.EmpService;
 import com.biz.framework.service.pages.RefundService;
-import com.biz.framework.service.system.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,5 +39,14 @@ public class RefundRestController {
     @DeleteMapping
     public int deleteRefund(@RequestBody SettlementDto settlementDto) {
         return refundService.deleteRefund(settlementDto);
+    }
+
+    @GetMapping("/prodItem/list/{settlementSeq}/{prodId}")
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemBySettlementSeq(@PathVariable String settlementSeq, @PathVariable String prodId) {
+        SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto = new SettlementDto.TbSettlementProdItemDto();
+        tbSettlementProdItemDto.setSettlementSeq(settlementSeq);
+        tbSettlementProdItemDto.setProdId(prodId);
+        return refundService.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
+
     }
 }

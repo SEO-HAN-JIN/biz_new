@@ -52,4 +52,7 @@ public class RefundService {
     public List<CamelCaseMap> findSettlement(SettlementDto settlementDto) {
         return refundMapper.findSettlement(settlementDto);
     }
+    public List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto) {
+        return refundMapper.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
+    }
 }
