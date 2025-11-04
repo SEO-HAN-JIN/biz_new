@@ -520,12 +520,37 @@
         $(document).ready(function() {
 
             const today = new Date();   // 오늘 날짜 기준
-            const prevMonth21 = new Date(today.getFullYear(), today.getMonth() - 1, 21);        // 전월 21일
-            const currentMonth20 = new Date(today.getFullYear(), today.getMonth(), 20);         // 당월 20일
+            const year = today.getFullYear();
+            const month = today.getMonth(); // 0 = 1월, 11 = 12월
+            const day = today.getDate();
+
+            let dateFrom, dateTo;
+
+            if (day >= 21) {
+                // 이번달 21일
+                dateFrom = new Date(year, month, 21);
+                // 다음달 20일
+                dateTo = new Date(year, month + 1, 20);
+            } else {
+                // 지난달 21일
+                dateFrom = new Date(year, month - 1, 21);
+                // 이번달 20일
+                dateTo = new Date(year, month, 20);
+            }
+
+            const format = (year, month, day) => {
+                // month는 0부터 시작하니 +1 필요
+                const mm = String(month).padStart(2, "0");
+                const dd = String(day).padStart(2, "0");
+                return `${year}-${mm}-${dd}`;
+            };
+
+            dateFrom = format(dateFrom.getFullYear(), dateFrom.getMonth() + 1, dateFrom.getDate());
+            dateTo   = format(dateTo.getFullYear(),   dateTo.getMonth() + 1, dateTo.getDate());
 
             // 포맷팅된 날짜 값을 input에 설정
-            $("#searchStartDate").val(formatDate(prevMonth21));
-            $("#searchEndDate").val(formatDate(currentMonth20));
+            $("#searchStartDate").val(dateFrom);
+            $("#searchEndDate").val(dateTo);
 
             initEvent();
             initPaymentGrid();
