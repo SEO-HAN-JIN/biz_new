@@ -144,6 +144,19 @@
                                                 <div class="row g-3">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
+                                                            <label class="form-label">정산요청일</label>
+                                                            <input type="date" id="reqDate" class="form-control"
+                                                                   name="reqDate">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
                                                             <label class="form-label">담당자</label>
                                                             <th:block th:replace="components/emp-select :: emp-select(
                                                                 id='userId',
@@ -840,6 +853,8 @@
 
             if (param === '1') {
 
+                $("#reqDate").val(new Date().toISOString().split('T')[0]);
+
                 $("#confirmDiv").hide();
 
                 $isNew = true;
@@ -900,6 +915,7 @@
         }
 
         const ableBtn = (flag) => {
+            $("#reqDate").attr('disabled', flag);
             $("#dateWorkFrom").attr('disabled', flag);
             $("#dateWorkTo").attr('disabled', flag);
             //$("#saleAmt").attr('disabled', flag);
@@ -978,6 +994,11 @@
 
             var dateFrom = param.dateWorkFrom;
             var dateTo = param.dateWorkTo;
+
+            if (isNull(param.reqDate)) {
+                alert("정산요청일을 입력해주세요.");
+                return false;
+            }
 
             if (isNull(param.userId)) {
                 alert("담당자를 입력해주세요.");

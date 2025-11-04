@@ -137,7 +137,7 @@
                                             <fieldset class="border p-3 rounded">
                                                 <legend class="float-none w-auto px-2">정산요청정보</legend>
                                                 <div class="row g-3">
-                                                    <div class="col-md-6">
+                                                    <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">정산번호</label>
                                                             <div class="d-flex align-items-center">
@@ -145,6 +145,14 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="form-group">
+                                                            <label class="form-label">정산요청일</label>
+                                                            <input type="date" id="reqDate" class="form-control" disabled>
+                                                        </div>
+                                                    </div>
+
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="form-label">담당자</label>
@@ -674,7 +682,7 @@
                 .setFitStyle('fill')  // 페이지 폭에 맞추어 그리드를 채우기
                 .enableCheckbox(true) // 체크박스 활성화
                 .add('confirmSeq', '승인요청번호', 0, {visible: false})
-                .add('settlementSeq', '정산번호', 140, {sortable: true})
+                .add('settlementSeq', '정산번호', 150, {sortable: true})
                 .add('reqDate', '요청일', 120, {})
                 .add('reqGubunName', '요청구분', 120, {})
                 .add('empName', '담당자', 120, {sortable: true})
@@ -682,10 +690,10 @@
                 .add('prodName', '상품명', 120, { align: 'center', sortable: true })
                 .addNumber('prodAmt', '상품가', 100, { align: 'right', comma: true})
                 .addNumber('saleAmt', '판매가', 100, { align: 'right', comma: true})
-                .addNumber('inflowCnt', '유입수', 80, {align: 'right'})
+                .addNumber('inflowCnt', '유입수', 90, {align: 'right'})
                 .addDate('dateWorkFrom', '작업시작일', 120, {sortable: true})
                 .addDate('dateWorkTo', '작업종료일', 120, {sortable: true})
-                .addDate('workDay', '작업일수', 80, {visible: false})
+                .addDate('workDay', '작업일수', 90, {visible: false})
                 .addNumber('prodTotalAmt', '상품총액', 150, {visible: false})
                 .addNumber('totalAmt', '(판매/환불)총액', 150, {
                     align: 'right',
@@ -694,10 +702,12 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
+                .addNumber('incomAmt', '영업이익', 150, {align: 'right', comma: true})
                 .add('gubunName', '요청구분', 120, {sortable: true})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
                     visible: false
                 })
+
                 .addNumber('confirmAmt', '입금액', 150, {
                     visible: false
                 })

@@ -16,12 +16,19 @@
             EP.EMP_NAME,
             ST.CUST_ID,
             ST.CUST_NAME,
-            ST.REQ_DATE,
+            DATE_FORMAT(ST.REQ_DATE, '%Y-%m-%d') AS REQ_DATE,
             ST.PROD_AMT,
             ST.SALE_AMT,
             ST.INFLOW_CNT,
             ST.PROD_TOTAL_AMT,
             ST.SALE_TOTAL_AMT,
+            CAST(
+			    CASE
+			        WHEN ST.REFUND_IND = 'Y' AND ST.GUBUN = '04' THEN IFNULL(ST.REFUND_PROD_TOTAL_AMT, 0)
+			        WHEN ST.REFUND_IND = 'Y' THEN IFNULL(ST.SALE_TOTAL_AMT, 0) - IFNULL(ST.REFUND_PROD_TOTAL_AMT, 0) - (IFNULL(ST.PROD_AMT, 0) * IFNULL(ST.INFLOW_CNT, 0) * (IFNULL(ST.WORK_DAY, 0) - IFNULL(ST.REFUND_WORK_DAY, 0)))
+			        ELSE (IFNULL(ST.SALE_TOTAL_AMT, 0) - IFNULL(ST.PROD_TOTAL_AMT, 0))
+			    END AS SIGNED
+			) AS INCOM_AMT,
             DATE_FORMAT(ST.DATE_WORK_FROM, '%Y-%m-%d') AS DATE_WORK_FROM,
             DATE_FORMAT(ST.DATE_WORK_TO, '%Y-%m-%d') AS DATE_WORK_TO,
             ST.WORK_DAY,

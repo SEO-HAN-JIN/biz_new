@@ -149,7 +149,7 @@
         , #{prodId}
         , #{userId}
         , #{custId}
-        , DATE_FORMAT(NOW(), '%Y-%m-%d')
+        , #{reqDate}
         , #{prodAmt}
         , #{saleAmt}
         , #{inflowCnt}
@@ -203,7 +203,7 @@
     <update id="updateApplypayment">
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateApplypayment */
         UPDATE SETTLEMENT
-           SET REQ_DATE         = DATE_FORMAT(NOW(), '%Y-%m-%d')
+           SET REQ_DATE         = #{reqDate}
              , PROD_AMT         = #{prodAmt}
              , SALE_AMT         = #{saleAmt}
              , INFLOW_CNT       = #{inflowCnt}
@@ -241,7 +241,7 @@
         /* com.biz.framework.mapper.pages.ApplypaymentMapper.cancelSettlement */
         UPDATE SETTLEMENT
            SET APPLY_STATUS     = 'C'
-         WHERE CO_cODE          = #{loginCoId}
+         WHERE CO_CODE          = #{loginCoId}
            AND SETTLEMENT_SEQ   = #{settlementSeq}
            AND PROD_ID          = #{prodId}
            AND USER_ID          = #{userId}
