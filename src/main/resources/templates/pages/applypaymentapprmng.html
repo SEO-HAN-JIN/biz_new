@@ -702,7 +702,13 @@
                     summary: {
                         template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
                     }})
-                .addNumber('incomAmt', '영업이익', 150, {align: 'right', comma: true})
+                .addNumber('incomAmt', '영업이익', 150, {
+                    align: 'right',
+                    comma: true,
+                    summary: {
+                        template: valueMap => `합계: ${valueMap.sum.toLocaleString()}`
+                    }
+                })
                 .add('gubunName', '요청구분', 120, {sortable: true})
                 .addNumber('saleTotalAmt', '판매총액', 150, {
                     visible: false
