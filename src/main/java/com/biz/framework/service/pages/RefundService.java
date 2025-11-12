@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +28,10 @@ public class RefundService {
 
     public int saveRefund(SettlementDto settlementDto) {
         int result = 0;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date now = new Date();
+        settlementDto.setReqDate(dateFormat.format(now));
 
         // 정산번호 가져오기
         String settlementSeq = applypaymentMapper.createSettlementSeq(settlementDto);
