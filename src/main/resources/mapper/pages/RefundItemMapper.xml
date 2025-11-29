@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.biz.framework.mapper.pages.RefundItemMapper">
+
+    <select id="findRefundItems" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.RefundItemMapper.findRefundItems */
+        SELECT
+            REFUND_ITEM_ID
+          , REFUND_ITEM_NAME
+          , USE_IND
+          , SE06.CODE_NAME AS USE_IND_NAME
+        FROM  TB_REFUNDITEM     RI
+        LEFT JOIN CDBASE        SE06
+          ON SE06.CO_CODE       = RI.CO_CODE
+         AND SE06.PATTERN_CODE  = 'SE06'
+         AND SE06.BASE_CODE 	= RI.USE_IND
+       WHERE 1=1
+        AND RI.CO_CODE       = #{loginCoId}
+        <if test='searchId != null  and searchId != "" '>
+            AND REFUND_ITEM_ID     LIKE CONCAT('%', #{searchId}, '%')
+        </if>
+        <if test='searchName != null  and searchName != "" '>
+            AND REFUND_ITEM_NAME    LIKE CONCAT('%', #{searchName}, '%')
+        </if>
+        <if test='searchUseInd != null  and searchUseInd != "" '>
+            AND USE_IND    = #{searchUseInd}
+        </if>
+    </select>
+
+    <insert id="saveRefundItem">
+        /* com.biz.framework.mapper.pages.RefundItemMapper.saveRefundItem */
+        <selectKey resultType="String" keyProperty="refundItemId" order="BEFORE">
+            SELECT CONCAT('RI-', LPAD(IFNULL(MAX(cast(SUBSTRING_INDEX(REFUND_ITEM_ID , '-', -1) AS UNSIGNED INTEGER)), 0) + 1, 4, '0'))
+            FROM TB_REFUNDITEM
+            WHERE CO_CODE      = #{loginCoId}
+        </selectKey>
+        INSERT INTO TB_REFUNDITEM
+        (
+            CO_CODE
+            , REFUND_ITEM_ID
+            , REFUND_ITEM_NAME
+            , USE_IND
+        ) VALUES
+        (
+            #{loginCoId}
+            , #{refundItemId}
+            , #{refundItemName}
+            , #{useInd}
+        )
+    </insert>
+
+    <update id="updateRefundItem">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.updateRefundItem */
+        UPDATE TB_REFUNDITEM
+           SET REFUND_ITEM_NAME     = #{refundItemName}
+             , USE_IND              = #{useInd}
+         WHERE CO_CODE              = #{loginCoId}
+           AND REFUND_ITEM_ID       = #{refundItemId}
+    </update>
+
+    <delete id="deleteRefundItem">
+        /* com.biz.framework.mapper.pages.ApplypaymentMapper.deleteRefundItem */
+        DELETE FROM TB_REFUNDITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND REFUND_ITEM_ID   = #{refundItemId}
+    </delete>
+</mapper>
