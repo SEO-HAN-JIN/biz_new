@@ -33,4 +33,11 @@ public class PayrollmngRestController {
     public int cancelApplypayment(@RequestBody SettlementmstDto settlementmstDto) {
         return payrollmngService.cancelApplypayment(settlementmstDto);
     }
+
+    @GetMapping("/refund-items/{settlementSeq}")
+    public List<SettlementmstDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(@PathVariable("settlementSeq") String settlementSeq) {
+        SettlementmstDto.TbSettlementRefundItemDto tbSettlementRefundItemDto = new SettlementmstDto.TbSettlementRefundItemDto();
+        tbSettlementRefundItemDto.setSettlementSeq(settlementSeq);
+        return payrollmngService.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
+    }
 }

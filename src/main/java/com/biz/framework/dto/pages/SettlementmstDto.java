@@ -46,4 +46,13 @@ public class SettlementmstDto extends BaseDto {
     private List<SettlementmstDto> settlementmstDtoList;
     private String[] reqGubunList;
 
+    @Getter @Setter
+    public static class TbSettlementRefundItemDto extends BaseDto{
+        private String settlementSeq;
+        private String refundItemId;
+        private String refundItemName;
+        private String inputValue;
+    }
+
+
 }

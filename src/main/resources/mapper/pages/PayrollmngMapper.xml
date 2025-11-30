@@ -163,4 +163,16 @@
         ) AS M
         WHERE 1=1
     </select>
+
+    <select id="findRefundItemsBySettlementSeq">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findRefundItemsBySettlementSeq */
+        SELECT CO_CODE
+             , SETTLEMENT_SEQ
+             , REFUND_ITEM_ID
+             , REFUND_ITEM_NAME
+             , INPUT_VALUE
+        FROM TB_SETTLEMENT_REFUNDITEM
+        WHERE CO_CODE          = #{loginCoId}
+          AND SETTLEMENT_SEQ   = #{settlementSeq}
+    </select>
 </mapper>

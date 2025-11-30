@@ -128,6 +128,10 @@ public class PayrollmngService {
         return result;
     }
 
+    public List<SettlementmstDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(SettlementmstDto.TbSettlementRefundItemDto tbSettlementRefundItemDto) {
+        return payrollmngMapper.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
+    }
+
     /**
      * CVQ 건에 대한 변경 수수료 계산:
      *    (확정 수수료 / 1.1) × 변경 인센률

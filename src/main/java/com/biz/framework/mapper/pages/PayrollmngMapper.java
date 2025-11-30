@@ -18,4 +18,6 @@ public interface PayrollmngMapper {
     int cancelApplypayment(SettlementmstDto settlementmstDto);
 
     Long findCustSumMileage(SettlementmstDto settlementmstDto);
+
+    List<SettlementmstDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(SettlementmstDto.TbSettlementRefundItemDto tbSettlementRefundItemDto);
 }
