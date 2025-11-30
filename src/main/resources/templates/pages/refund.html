@@ -781,7 +781,6 @@
                 const data = refundGrid.getGrid().getRow(focusedCell.rowKey);
 
                 settingProdFormBind(data.settlementSeq, data.prodId, data.applyStatus);
-                console.log("## data ##", data);
                 loadRefundItem(data.refundSettlementSeq);
                 $('#refundModal').bindForm(data);
 

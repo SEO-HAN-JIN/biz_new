@@ -290,4 +290,22 @@
           AND PROD_ID          = #{prodId}
     </delete>
 
+    <select id="findRefundItemsBySettlementSeq">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.findRefundItemsBySettlementSeq */
+        SELECT CO_CODE
+             , SETTLEMENT_SEQ
+             , REFUND_ITEM_ID
+             , REFUND_ITEM_NAME
+             , INPUT_VALUE
+          FROM TB_SETTLEMENT_REFUNDITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+    </select>
+
+    <delete id="deleteSettlementRefunditem">
+        /* com.biz.framework.mapper.pages.ApplypaymentapprmngMapper.deleteSettlementRefunditem */
+        DELETE FROM TB_SETTLEMENT_REFUNDITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND SETTLEMENT_SEQ   = #{settlementSeq}
+    </delete>
 </mapper>

@@ -308,6 +308,12 @@
                                                     </div>
                                                 </div>
                                             </fieldset>
+
+                                            <!-- 환불항목 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" id="refundItem_form" style="display: none;">
+                                                <legend class="float-none w-auto px-2">환불항목 정보</legend>
+                                                <div class="row g-3" id="refundItem_info_container"></div>
+                                            </fieldset>
                                         </form>
                                     </div>
 
@@ -898,6 +904,7 @@
             });
 
             settingProdFormBind(focusedData.settlementSeq, focusedData.prodId, focusedData.applyStatus);
+            settingRefundFormBind(focusedData.settlementSeq);
 
             $('#paymentModal').modal('show');
         }
@@ -1240,6 +1247,43 @@
                                                      data-seq="${item.seq}"
                                                      value="${item.inputValue}"
                                                      data-prod-id="${item.prodId}"
+                                                     disabled>
+                                          </div>
+                                      </div>
+                                  `;
+                        container.append(inputHtml);
+                    });
+                });
+            };
+
+            const settingRefundFormBind = (settlementSeq) => {
+                $.get(apiUrl + "/refund-items/" + settlementSeq, null, function (result) {
+                    const formWrapper = $("#refundItem_form");
+                    const container = $("#refundItem_info_container");
+
+                    // 초기화
+                    container.empty();
+
+                    // 데이터 없으면 숨김
+                    if (!result || result.length === 0) {
+                        formWrapper.hide();
+                        return;
+                    }
+
+                    // 데이터 있으면 보이기
+                    formWrapper.show();
+
+                    // 각 필드 추가
+                    result.forEach(item => {
+                        const inputHtml = `
+                                      <div class="col-md-3" data-seq="${item.seq}" data-refunditem-id="${item.refundItemId}">
+                                          <div class="form-group">
+                                              <label class="form-label">${item.refundItemName}</label>
+                                              <input type="text"
+                                                     name="${item.refundItemName}"
+                                                     class="form-control"
+                                                     value="${item.inputValue}"
+                                                     data-refunditem-id="${item.refundItemId}"
                                                      disabled>
                                           </div>
                                       </div>

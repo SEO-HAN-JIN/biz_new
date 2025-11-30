@@ -217,6 +217,9 @@ public class ApplypaymentapprmngService {
 
                 // 정산상품항목 삭제
                 result += applypaymentapprmngMapper.deleteSettlementProditem(settlement);
+                // 환불요청항목 삭제
+                result += applypaymentapprmngMapper.deleteSettlementRefunditem(settlement);
+
                 // 이미자피일삭제
                 fileService.removeByAtchFileId(settlement.getAtchFileId());
 
@@ -238,5 +241,9 @@ public class ApplypaymentapprmngService {
 
     public List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto) {
         return applypaymentapprmngMapper.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
+    }
+
+    public List<SettlementDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto) {
+        return applypaymentapprmngMapper.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
     }
 }

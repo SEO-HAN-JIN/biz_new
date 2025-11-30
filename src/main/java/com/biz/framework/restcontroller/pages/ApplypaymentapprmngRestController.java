@@ -57,4 +57,11 @@ public class ApplypaymentapprmngRestController {
         return applypaymentapprmngService.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
 
     }
+
+    @GetMapping("/refund-items/{settlementSeq}")
+    public List<SettlementDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(@PathVariable("settlementSeq") String settlementSeq) {
+        SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto = new SettlementDto.TbSettlementRefundItemDto();
+        tbSettlementRefundItemDto.setSettlementSeq(settlementSeq);
+        return applypaymentapprmngService.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
+    }
 }

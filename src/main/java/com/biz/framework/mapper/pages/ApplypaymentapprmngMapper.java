@@ -38,4 +38,9 @@ public interface ApplypaymentapprmngMapper {
 
     List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
     int deleteSettlementProditem(SettlementDto dto);
+
+    List<SettlementDto.TbSettlementRefundItemDto> findRefundItemsBySettlementSeq(SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto);
+
+    int deleteSettlementRefunditem(SettlementDto settlement);
+
 }
