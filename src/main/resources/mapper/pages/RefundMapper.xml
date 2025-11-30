@@ -151,4 +151,27 @@
           AND SETTLEMENT_SEQ   = #{settlementSeq}
           AND PROD_ID          = #{prodId}
     </select>
+
+    <select id="findRefundItems" resultType="CamelCaseMap">
+        /* com.biz.framework.mapper.pages.RefundMapper.findRefundItems */
+        SELECT CO_CODE
+             , REFUND_ITEM_ID
+             , REFUND_ITEM_NAME
+             , USE_IND
+          FROM TB_REFUNDITEM
+         WHERE CO_CODE          = #{loginCoId}
+           AND USE_IND          = 'Y'
+    </select>
+
+    <select id="findRefundItemsBySettlementSeq">
+        /* com.biz.framework.mapper.pages.RefundMapper.findRefundItemsBySettlementSeq */
+        SELECT CO_CODE
+             , SETTLEMENT_SEQ
+             , REFUND_ITEM_ID
+             , REFUND_ITEM_NAME
+             , INPUT_VALUE
+        FROM TB_SETTLEMENT_REFUNDITEM
+        WHERE CO_CODE          = #{loginCoId}
+          AND SETTLEMENT_SEQ   = #{settlementSeq}
+    </select>
 </mapper>

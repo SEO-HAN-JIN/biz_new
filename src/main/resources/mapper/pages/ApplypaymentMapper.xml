@@ -315,4 +315,31 @@
            AND SETTLEMENT_SEQ   = #{settlementSeq}
            AND PROD_ID          = #{prodId}
     </delete>
+
+    <insert id="saveTbSettlementRefundItem">
+        /* com.biz.framework.mapper.pages.RefundMapper.saveTbSettlementRefundItem */
+        INSERT INTO TB_SETTLEMENT_REFUNDITEM
+        (
+          CO_CODE
+        , SETTLEMENT_SEQ
+        , REFUND_ITEM_ID
+        , REFUND_ITEM_NAME
+        , INPUT_VALUE
+        )
+        VALUES
+            (
+              #{loginCoId}
+            , #{settlementSeq}
+            , #{refundItemId}
+            , #{refundItemName}
+            , #{inputValue}
+            )
+    </insert>
+
+    <delete id="deleteSettlementRefundItem">
+        /* com.biz.framework.mapper.pages.RefundMapper.deleteSettlementRefundItem */
+        DELETE FROM TB_SETTLEMENT_REFUNDITEM
+         WHERE CO_CODE           = #{loginCoId}
+           AND SETTLEMENT_SEQ    = #{settlementSeq}
+    </delete>
 </mapper>

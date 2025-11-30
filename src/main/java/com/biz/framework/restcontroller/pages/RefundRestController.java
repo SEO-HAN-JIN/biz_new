@@ -49,4 +49,16 @@ public class RefundRestController {
         return refundService.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
 
     }
+
+    @GetMapping("/refund-items")
+    public List<CamelCaseMap> findRefundItems(SettlementDto settlementDto) {
+        return refundService.findRefundItems(settlementDto);
+    }
+
+    @GetMapping("/refund-items/{settlementSeq}")
+    public List<CamelCaseMap> findRefundItemsBySettlementSeq(@PathVariable String settlementSeq) {
+        SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto = new SettlementDto.TbSettlementRefundItemDto();
+        tbSettlementRefundItemDto.setSettlementSeq(settlementSeq);
+        return refundService.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
+    }
 }

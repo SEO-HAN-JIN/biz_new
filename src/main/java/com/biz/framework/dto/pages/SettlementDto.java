@@ -57,6 +57,7 @@ public class SettlementDto extends BaseDto {
     private List<MultipartFile> files;
     private List<SettlementDto> settlementDtoList;
     private List<TbSettlementProdItemDto> tbSettlementProdItemDtoList;
+    private List<TbSettlementRefundItemDto> tbSettlementRefundItemDtoList;
 
     @Getter @Setter
     public static class TbSettlementProdItemDto extends BaseDto{
@@ -64,6 +65,14 @@ public class SettlementDto extends BaseDto {
         private String prodId;
         private String seq;
         private String name;
+        private String inputValue;
+    }
+
+    @Getter @Setter
+    public static class TbSettlementRefundItemDto extends BaseDto{
+        private String settlementSeq;
+        private String refundItemId;
+        private String refundItemName;
         private String inputValue;
     }
 

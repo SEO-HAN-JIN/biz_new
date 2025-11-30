@@ -242,6 +242,13 @@
                                             </div>
                                             <input type="hidden" id="_refundModal_refundSaleTotalAmt" name="refundSaleTotalAmt">
                                         </fieldset>
+
+
+                                        <!-- 환불항목 정보 섹션 -->
+                                        <fieldset class="border p-3 rounded mt-4" id="refundItem_form">
+                                            <legend class="float-none w-auto px-2">환불항목 정보</legend>
+                                            <div class="row g-3" id="refundItem_info_container"></div>
+                                        </fieldset>
                                     </div>
 
                                     <!-- Modal Footer -->
@@ -647,6 +654,81 @@
             });
         }
 
+        function initRefundItem() {
+            $.get(apiUrl + "/refund-items", null, function (result) {
+                const formWrapper = $("#refundItem_form");
+                const container = $("#refundItem_info_container");
+
+                // 초기화
+                container.empty();
+
+                // 데이터 없으면 숨김
+                if (!result || result.length === 0) {
+                    formWrapper.hide();
+                    return;
+                }
+
+                // 데이터 있으면 보이기
+                formWrapper.show();
+
+                // 각 필드 추가
+                result.forEach(item => {
+                    const inputHtml = `
+                                  <div class="col-md-3" data-refunditem-id="${item.refundItemId}">
+                                      <div class="form-group">
+                                          <label class="form-label">${item.refundItemName}</label>
+                                          <input type="text"
+                                                 name="${item.refundItemName}"
+                                                 class="form-control"
+                                                 value=""
+                                                 data-refunditem-id="${item.refundItemId}"
+                                                 >
+                                      </div>
+                                  </div>
+                              `;
+                    container.append(inputHtml);
+                });
+            });
+        }
+
+        function loadRefundItem(settlementSeq) {
+            $.get(apiUrl + "/refund-items/" + settlementSeq, null, function (result) {
+                const formWrapper = $("#refundItem_form");
+                const container = $("#refundItem_info_container");
+
+                // 초기화
+                container.empty();
+
+                // 데이터 없으면 숨김
+                if (!result || result.length === 0) {
+                    formWrapper.hide();
+                    return;
+                }
+
+                // 데이터 있으면 보이기
+                formWrapper.show();
+
+                // 각 필드 추가
+                result.forEach(item => {
+                    const inputHtml = `
+                                  <div class="col-md-3" data-refunditem-id="${item.refundItemId}">
+                                      <div class="form-group">
+                                          <label class="form-label">${item.refundItemName}</label>
+                                          <input type="text"
+                                                 name="${item.refundItemName}"
+                                                 class="form-control"
+                                                 value="${item.inputValue}"
+                                                 data-refunditem-id="${item.refundItemId}"
+                                                 disabled
+                                                 >
+                                      </div>
+                                  </div>
+                              `;
+                    container.append(inputHtml);
+                });
+            });
+        }
+
         const searchRefundGrid = () => {
 
             let startDate = $("#searchStartDate").val();
@@ -685,6 +767,7 @@
             if (param === '1') {
                 $isNew = true;
                 $("#_refundModal_applyPaymentBtn").attr('disabled', false);
+                initRefundItem();
             } else {
                 $isNew = false;
                 $("#_refundModal_applyPaymentBtn").attr('disabled', true);
@@ -698,6 +781,8 @@
                 const data = refundGrid.getGrid().getRow(focusedCell.rowKey);
 
                 settingProdFormBind(data.settlementSeq, data.prodId, data.applyStatus);
+                console.log("## data ##", data);
+                loadRefundItem(data.refundSettlementSeq);
                 $('#refundModal').bindForm(data);
 
                 $("#_refundModal_refundDate").attr('disabled', true);
@@ -764,6 +849,24 @@
                 alert("환불구분을 입력해주세요.");
                 return false;
             }
+
+            // 환불항목 정보 파라미터
+            const refundItemList = [];
+
+            $('#refundItem_info_container')
+                .find('input')
+                .each((_, inputEl) => {
+                    const $input = $(inputEl);
+                    const value = $input.val() ? $input.val().replace(/,/g, '') : '';
+
+                    refundItemList.push({
+                        refundItemId: $input.data('refunditem-id') || '',
+                        refundItemName: $input.attr('name') || '',
+                        inputValue: value
+                    });
+                })
+            ;
+            param.tbSettlementRefundItemDtoList = refundItemList;
 
             if (confirm("데이터를 저장하시겠습니까?")) {
                 return new Promise((resolve, reject) => {

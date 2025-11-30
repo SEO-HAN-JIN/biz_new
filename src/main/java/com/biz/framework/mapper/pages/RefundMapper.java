@@ -9,11 +9,9 @@ import java.util.List;
 
 @Mapper
 public interface RefundMapper {
-
-    int deleteCustomer(CustomerDto customerDto);
-
     List<CamelCaseMap> findRefund(SettlementDto settlementDto);
-
     List<CamelCaseMap> findSettlement(SettlementDto settlementDto);
     List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto);
+    List<CamelCaseMap> findRefundItems(SettlementDto settlementDto);
+    List<CamelCaseMap> findRefundItemsBySettlementSeq(SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto);
 }

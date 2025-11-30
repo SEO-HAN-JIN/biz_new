@@ -9,6 +9,7 @@ import com.biz.framework.mapper.pages.RefundMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,15 +41,24 @@ public class RefundService {
         settlementDto.setSettlementSeq(settlementSeq);
         result += applypaymentMapper.saveApplypayment(settlementDto);
 
+        if (!CollectionUtils.isEmpty(settlementDto.getTbSettlementRefundItemDtoList())) {
+            for (SettlementDto.TbSettlementRefundItemDto itemDto : settlementDto.getTbSettlementRefundItemDtoList()) {
+                itemDto.setSettlementSeq(settlementSeq);
+                applypaymentMapper.saveTbSettlementRefundItem(itemDto);
+            }
+        }
+
         return result;
     }
 
     public int deleteRefund(SettlementDto settlementDto) {
+        int result = 0;
         if (!"01".equals(applypaymentMapper.checkApplyStatus(settlementDto))) {
             throw new ServiceException("환불요청건만 삭제 가능합니다.");
         }
-
-        return applypaymentMapper.deleteSettlement(settlementDto);
+        result += applypaymentMapper.deleteSettlement(settlementDto);
+        applypaymentMapper.deleteSettlementRefundItem(settlementDto);
+        return result;
     }
 
     public List<CamelCaseMap> findRefund(SettlementDto settlementDto) {
@@ -60,5 +70,13 @@ public class RefundService {
     }
     public List<SettlementDto.TbSettlementProdItemDto> findProductItemListBySettlementSeqAndProdId(SettlementDto.TbSettlementProdItemDto tbSettlementProdItemDto) {
         return refundMapper.findProductItemListBySettlementSeqAndProdId(tbSettlementProdItemDto);
+    }
+
+    public List<CamelCaseMap> findRefundItems(SettlementDto settlementDto) {
+        return refundMapper.findRefundItems(settlementDto);
+    }
+
+    public List<CamelCaseMap> findRefundItemsBySettlementSeq(SettlementDto.TbSettlementRefundItemDto tbSettlementRefundItemDto) {
+        return refundMapper.findRefundItemsBySettlementSeq(tbSettlementRefundItemDto);
     }
 }
