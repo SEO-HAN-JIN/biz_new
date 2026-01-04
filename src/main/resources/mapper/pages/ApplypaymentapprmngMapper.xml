@@ -94,7 +94,7 @@
         AND ST.GUBUN            = CD3.BASE_CODE
       WHERE 1=1
         AND ST.CO_CODE          = #{loginCoId}
-        AND ST.REQ_DATE BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
+        AND (CASE WHEN ST.REFUND_IND = 'Y' THEN DATE_FORMAT(ST.REFUND_DATE, '%Y%m%d') ELSE DATE_FORMAT(ST.REQ_DATE, '%Y%m%d') END) BETWEEN DATE_FORMAT(#{searchStartDate} , '%Y%m%d') AND DATE_FORMAT(#{searchEndDate} , '%Y%m%d')
         AND ST.APPLY_STATUS     != 'C'      -- 취소요청은 목록제외
         AND ST.GUBUN_REQ        != 'M'
         ]]>
