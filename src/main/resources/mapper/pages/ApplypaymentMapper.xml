@@ -46,7 +46,8 @@
             IFNULL(ST.EXIST_MILEAGE, 0)  AS CUR_EXIST_MILEAGE,
             ST.APPLY_STATUS,
             C.CODE_NAME                 AS APPLY_STATUS_NAME,
-            ST.ATCH_FILE_ID
+            ST.ATCH_FILE_ID,
+            ST.MEMO
         FROM SETTLEMENT         ST
         LEFT JOIN SETTLEMENTMST SM
           ON ST.CO_CODE = SM.CO_CODE
@@ -143,6 +144,7 @@
         , APPLY_STATUS
         , REQ_GUBUN
         , PROD_INCENTIVE_IND
+        , MEMO
         ) VALUES
         (
           #{loginCoId}
@@ -177,6 +179,7 @@
         , #{applyStatus}
         , #{reqGubun}
         , #{prodIncentiveInd}
+        , #{memo}
         )
     </insert>
 
@@ -231,6 +234,7 @@
              , APPLY_STATUS     = #{applyStatus}
              , REQ_GUBUN        = #{reqGubun}
              , PROD_INCENTIVE_IND   = #{prodIncentiveInd}
+             , MEMO             = #{memo}
         WHERE CO_CODE           = #{loginCoId}
           AND SETTLEMENT_SEQ    = #{settlementSeq}
           AND PROD_ID           = #{prodId}

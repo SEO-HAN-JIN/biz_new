@@ -173,6 +173,13 @@
                                                             <input type="text" id="_refundModal_saleTotalAmt" class="form-control is-num text-end" name="saleTotalAmt" disabled>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">메모</label>
+                                                            <input type="text" id="_refundModal_memo" class="form-control" name="memo" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" id="_refundModal_reqDate" name="reqDate">
                                                     <input type="hidden" id="_refundModal_incentiveRate" name="incentiveRate">
                                                     <input type="hidden" id="_refundModal_custId" name="custId">
                                                     <input type="hidden" id="_refundModal_prodId" name="prodId">
@@ -598,6 +605,7 @@
                 .add('settlementSeq', '정산번호', 250, {sortable: true})
                 .add('gubunName', '환불구분', 150, {sortable: true})
                 .add('applyStatusName', '진행상태', 150, {})
+                .add('memo', '메모', 'auto', {visible: false})
                 .add('workDay', '작업일수', 'auto', {visible: false})
                 // .add('saleTotalAmt', '판매총액', 'auto', {visible: false})
                 .add('gubun', '환불구분', 'auto', {visible: false})
@@ -636,6 +644,7 @@
                 .addDate('dateWorkTo', '작업종료일', 150, {})
                 .addDate('workDay', '작업일수', 120, {})
                 .add('inflowCnt', '유입수', 120, {})
+                .add('memo', '메모', 200, {})
                 .add('statusName', '진행상태', 'auto', {visible: false})
                 .add('prodAmt', '상품가', 'auto', {visible: false})
                 .add('saleAmt', '판매가', 'auto', {visible: false})

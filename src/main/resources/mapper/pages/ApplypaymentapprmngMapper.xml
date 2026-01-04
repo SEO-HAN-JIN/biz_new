@@ -17,6 +17,7 @@
             ST.CUST_ID,
             ST.CUST_NAME,
             DATE_FORMAT(ST.REQ_DATE, '%Y-%m-%d') AS REQ_DATE,
+            CASE WHEN ST.REFUND_IND = 'Y' THEN DATE_FORMAT(ST.REFUND_DATE, '%Y-%m-%d') ELSE DATE_FORMAT(ST.REQ_DATE, '%Y-%m-%d') END AS DISP_REQ_DATE,
             ST.PROD_AMT,
             ST.SALE_AMT,
             ST.INFLOW_CNT,
@@ -64,7 +65,8 @@
             ST.APPLY_STATUS,
             CD2.CODE_NAME AS STATUS_NAME,
             ST.PROD_INCENTIVE_IND,
-            ST.ATCH_FILE_ID
+            ST.ATCH_FILE_ID,
+            ST.MEMO
        FROM V_REQ_VIEW          ST
        LEFT JOIN SETTLEMENTMST  SM
          ON ST.CO_CODE          = SM.CO_CODE

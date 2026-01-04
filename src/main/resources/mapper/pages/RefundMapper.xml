@@ -41,7 +41,8 @@
             ST.EXPECT_RATE_AMT,
             CD.CODE_NAME    AS GUBUN_NAME,
             ST.GUBUN,
-            SE04.CODE_NAME      AS APPLY_STATUS_NAME
+            SE04.CODE_NAME      AS APPLY_STATUS_NAME,
+            ST.MEMO
         FROM SETTLEMENT         ST      -- 환불요청
         LEFT JOIN SETTLEMENT    ST2     -- 전산요청
           ON ST2.CO_CODE        = ST.CO_CODE
@@ -106,6 +107,7 @@
              , ST.GUBUN
              , ST.PROD_INCENTIVE_IND
              , (ST.EXPECT_RATE_AMT / ST.WORK_DAY / ST.INFLOW_CNT) AS PROD_INCENTIVE
+             , ST.MEMO
           FROM SETTLEMENT           ST
           LEFT JOIN TB_CUSTOMER     CU
             ON ST.CO_CODE           = CU.CO_CODE

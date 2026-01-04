@@ -187,6 +187,12 @@
                                                                    disabled>
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label class="form-label">메모</label>
+                                                            <input type="text" id="memo" class="form-control" name="memo">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </fieldset>
 
@@ -779,6 +785,7 @@
                         template: valueMap => `${valueMap.sum.toLocaleString()}`
                     }
                 })
+                .add('memo', '메모', 500, {})
                 .addButton('fileUpload', '첨부파일', 200, {
                     buttonText: '첨부파일',
                     textColor: 'red',
@@ -924,6 +931,7 @@
             $("#mileageUseInd").attr('disabled', flag);
             $("#useMileage").attr('disabled', flag);
             $("#saleTotalAmt").attr('disabled', flag);
+            $("#memo").attr('disabled', flag);
 
             if (flag) {
                 document.getElementById("userId").choicesInstance.disable();
