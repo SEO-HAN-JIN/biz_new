@@ -60,6 +60,10 @@ public class SettlementDto extends BaseDto {
     private List<TbSettlementProdItemDto> tbSettlementProdItemDtoList;
     private List<TbSettlementRefundItemDto> tbSettlementRefundItemDtoList;
 
+    private List<String> prodNameList;
+    private List<String> emplNameList;
+    private List<String> custNameList;
+
     @Getter @Setter
     public static class TbSettlementProdItemDto extends BaseDto{
         private String settlementSeq;

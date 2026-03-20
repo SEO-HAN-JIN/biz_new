@@ -98,14 +98,28 @@
         AND ST.APPLY_STATUS     != 'C'      -- 취소요청은 목록제외
         AND ST.GUBUN_REQ        != 'M'
         ]]>
-        <if test='prodName != null  and prodName != "" '>
-            AND PR.PROD_NAME   LIKE CONCAT('%',#{prodName} ,'%')
+        <if test='prodNameList != null and prodNameList.size() > 0'>
+            AND (
+            <foreach collection="prodNameList" item="name" separator=" OR ">
+                PR.PROD_NAME LIKE CONCAT('%', trim(#{name}), '%')
+            </foreach>
+            )
         </if>
-        <if test='emplName != null  and emplName != "" '>
-            AND EP.EMP_NAME   LIKE CONCAT('%',#{emplName} ,'%')
+
+        <if test='emplNameList != null and emplNameList.size() > 0'>
+            AND (
+            <foreach collection="emplNameList" item="name" separator=" OR ">
+                EP.EMP_NAME LIKE CONCAT('%', trim(#{name}), '%')
+            </foreach>
+            )
         </if>
-        <if test='custName != null  and custName != "" '>
-            AND CU.CUST_NAME  LIKE CONCAT('%',#{custName} ,'%')
+
+        <if test='custNameList != null and custNameList.size() > 0'>
+            AND (
+            <foreach collection="custNameList" item="name" separator=" OR ">
+                CU.CUST_NAME LIKE CONCAT('%', trim(#{name}), '%')
+            </foreach>
+            )
         </if>
         <if test='applyStatus != null  and applyStatus != "" '>
             AND ST.APPLY_STATUS  = #{applyStatus}

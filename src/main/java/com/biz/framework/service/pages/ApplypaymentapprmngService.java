@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -31,6 +32,16 @@ public class ApplypaymentapprmngService {
     private final FileService fileService;
 
     public List<CamelCaseMap> findApplypaymentmngList(SettlementDto settlementDto) {
+        // "상품A,상품B,상품C" → List로 변환
+        if (!StringUtils.isEmpty(settlementDto.getProdName())) {
+            settlementDto.setProdNameList(Arrays.asList(settlementDto.getProdName().split(",")));
+        }
+        if (!StringUtils.isEmpty(settlementDto.getEmplName())) {
+            settlementDto.setEmplNameList(Arrays.asList(settlementDto.getEmplName().split(",")));
+        }
+        if (!StringUtils.isEmpty(settlementDto.getCustName())) {
+            settlementDto.setCustNameList(Arrays.asList(settlementDto.getCustName().split(",")));
+        }
         return applypaymentapprmngMapper.findApplypaymentmngList(settlementDto);
     }
 
