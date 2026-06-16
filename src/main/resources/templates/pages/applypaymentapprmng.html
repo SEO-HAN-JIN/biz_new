@@ -114,7 +114,8 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-end" style="width: 100%;">
                                 <div class="d-flex pb-3 gap-1">
-                                    <button type="button" class="btn btn-danger btn-sm" id="btnCostAmtPop">영업이익</button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="btnCostAmtPop">직원별 영업이익</button>
+                                    <button type="button" class="btn btn-danger btn-sm" id="btnCustomerProfitPop">고객별 영업이익</button>
                                     <button type="button" class="btn btn-danger btn-sm" id="btnDeletePayment">삭제</button>
                                 </div>
                             </div>
@@ -532,7 +533,7 @@
                                 <div class="modal-content">
                                     <!-- Modal Header -->
                                     <div class="modal-header bg-primary text-white">
-                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle2">영업이익 상세정보</h5>
+                                        <h5 class="modal-title text-white" id="exampleModalCenterTitle2">직원별 영업이익 상세정보</h5>
                                         <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
 
@@ -572,6 +573,69 @@
                                                             </tr>
                                                             </thead>
                                                             <tbody id="incomAmtTable">
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+
+                                    <!-- Modal Footer -->
+                                    <div class="modal-footer bg-light">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x"></i> 닫기
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="customerProfitModal" tabindex="-1" role="dialog" aria-labelledby="customerProfitModalTitle" aria-hidden="true" data-bs-backdrop="static">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+                                <div class="modal-content">
+                                    <!-- Modal Header -->
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title text-white" id="customerProfitModalTitle">고객별 영업이익 상세정보</h5>
+                                        <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+
+                                    <!-- Modal Body -->
+                                    <div class="modal-body" style="height:800px">
+                                        <form class="form">
+                                            <!-- 기본 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded">
+                                                <legend class="float-none w-auto px-2">기본정보</legend>
+                                                <div class="row g-3">
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">정산기간</label>
+                                                        <input type="text" id="customerProfitPeriod" class="form-control" disabled>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+
+                                            <!-- 작업 정보 섹션 -->
+                                            <fieldset class="border p-3 rounded mt-4" style="height: 500px">
+                                                <legend class="float-none w-auto px-2">고객별 영업이익</legend>
+                                                <div class="row g-3">
+                                                    <div class="col-md-12">
+                                                        <!--                                                        <div id="payrollGrid" class="tui-grid" style="height:430px"></div>-->
+                                                        <table class="table table-hover table-bordered mt-3 align-middle">
+                                                            <colgroup>
+                                                                <col style="width: 14%;">  <!-- 고객ID -->
+                                                                <col style="width: 18%;">  <!-- 고객명 -->
+                                                                <col style="width: 18%;">  <!-- 판매총액 -->
+                                                                <col style="width: 18%;">  <!-- 영업이익 -->
+                                                            </colgroup>
+                                                            <thead class="bg-primary">
+                                                            <tr>
+                                                                <th class="text-white text-center">고객ID</th>
+                                                                <th class="text-white text-center">고객명</th>
+                                                                <th class="text-white text-center">총 (판매/환불)총액</th>
+                                                                <th class="text-white text-center">총 영업이익</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody id="customerProfitTableBody">
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -652,6 +716,8 @@
             $("#btnDeletePayment").on('click', deletePayment);
 
             $("#btnCostAmtPop").on('click', costAmtpopUp);
+
+            $("#btnCustomerProfitPop").on('click', openCustomerProfitPopup);
 
             $('.is-num').bind('keyup', numberKeyupEvent);
         }
@@ -1162,8 +1228,6 @@
 
         const costAmtpopUp = () => {
 
-            debugger;
-
             var grid = paymentGrid.getGrid().getData();
 
             if (grid.length <= 0) {
@@ -1202,8 +1266,11 @@
             const tableBody = document.getElementById("incomAmtTable");
             tableBody.innerHTML = ""; // 기존 데이터 초기화
 
+            // 영업이익 높은 순으로 정렬
+            const sortedData = Object.values(groupedData).sort((a, b) => b.incomAmt - a.incomAmt);
+
             // 그룹화된 데이터를 테이블에 추가
-            for (const [userId, values] of Object.entries(groupedData)) {
+            sortedData.forEach(values => {
                 const row = document.createElement("tr");
 
                 // 각 데이터 셀 추가
@@ -1231,10 +1298,88 @@
 
                 // 테이블 본문에 행 추가
                 tableBody.appendChild(row);
-            }
+            });
 
             // 모달 표시
             $('#incomAmtModal').modal('show');
+        }
+
+        const openCustomerProfitPopup = () => {
+
+            var grid = paymentGrid.getGrid().getData();
+
+            if (grid.length <= 0) {
+                alert("데이터가 없습니다.");
+                return false;
+            }
+
+            var paymentDate = $("#searchStartDate").val() + " ~ " + $("#searchEndDate").val();
+
+            $("#customerProfitPeriod").val(paymentDate);
+
+            // 고객별 집계 결과 저장 객체
+            const groupedData = {};
+
+            // 데이터를 고객별로 그룹화 및 합산
+            grid.forEach(item => {
+                const custId = item.custId || item.custCode || item.custSeq || item.custName;
+                const incomAmt = parseFloat(item.incomAmt || 0);
+                const totalAmt = parseFloat(item.totalAmt || 0);
+
+                // 그룹 초기화
+                if (!groupedData[custId]) {
+                    groupedData[custId] = {
+                        custId: custId,
+                        custName: item.custName,
+                        incomAmt: 0,
+                        totalAmt: 0
+                    };
+                }
+
+                // 합산
+                groupedData[custId].incomAmt += incomAmt;
+                groupedData[custId].totalAmt += totalAmt;
+            });
+
+            const tableBody = document.getElementById("customerProfitTableBody");
+            tableBody.innerHTML = ""; // 기존 데이터 초기화
+
+            // 영업이익 높은 순으로 정렬
+            const sortedData = Object.values(groupedData).sort((a, b) => b.incomAmt - a.incomAmt);
+
+            // 그룹화된 데이터를 테이블에 추가
+            sortedData.forEach(values => {
+                const row = document.createElement("tr");
+
+                // 각 데이터 셀 추가
+                const custIdCell = document.createElement("td");
+                custIdCell.classList.add("text-center");
+                custIdCell.textContent = values.custId;
+
+                const custNameCell = document.createElement("td");
+                custNameCell.classList.add("text-center");
+                custNameCell.textContent = values.custName;
+
+                const totalConfirmTotalAmtCell = document.createElement("td");
+                totalConfirmTotalAmtCell.classList.add("text-end");
+                totalConfirmTotalAmtCell.textContent = setComma(values.totalAmt.toLocaleString());
+
+                const totalConfirmCostAmtCell = document.createElement("td");
+                totalConfirmCostAmtCell.classList.add("text-end");
+                totalConfirmCostAmtCell.textContent = setComma(values.incomAmt.toLocaleString());
+
+                // 행에 셀 추가
+                row.appendChild(custIdCell);
+                row.appendChild(custNameCell);
+                row.appendChild(totalConfirmTotalAmtCell);
+                row.appendChild(totalConfirmCostAmtCell);
+
+                // 테이블 본문에 행 추가
+                tableBody.appendChild(row);
+            });
+
+            // 모달 표시
+            $('#customerProfitModal').modal('show');
         }
 
         const deletePayment = () => {
